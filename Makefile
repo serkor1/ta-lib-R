@@ -12,6 +12,7 @@ help:
 
 build: ## Build the R package
 	@Rscript -e "devtools::document()" > /dev/null 2>&1
+	@tools/generate_API.sh src/ src/api.h && tools/generate_FFI.sh src/api.h src/init.c
 	@R CMD build . && R CMD INSTALL $(tarball_location)
 
 check:
