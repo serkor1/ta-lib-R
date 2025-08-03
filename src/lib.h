@@ -28,8 +28,6 @@ static void ensure_ta_initialized(void) {
   }
 }
 
-
-
 // maps strings to MA enums
 // 
 // args
