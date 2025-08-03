@@ -1,0 +1,3 @@
+[submodule "src/ta-lib"]
+	path = src/ta-lib
+	url = https://github.com/TA-Lib/ta-lib.git

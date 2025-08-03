@@ -1,9 +1,0 @@
-{
-  "files.associations": {
-    "stdlib.h": "c",
-    "random": "c",
-    "cstdlib": "c",
-    "string.h": "c",
-    "ta_memory.h": "c"
-  }
-}
