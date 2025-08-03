@@ -1,0 +1,114 @@
+# Periodic tests of latest dev branch
+#
+# This is for early detection of breaking changes.
+#
+
+name: dev nightly tests
+
+# Controls when the workflow will run
+on:
+  schedule:
+    - cron: "0 5 * * *" # every day 5AM
+
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Test ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-2022]
+
+    steps:
+      - name: Checkout dev Branch
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Prepare shell envs (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          echo "PYTHON=python3" >> $GITHUB_ENV
+
+      - name: Build dist assets (Linux)
+        if: runner.os == 'Linux'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          sudo apt update
+          sudo apt install -y automake libtool autogen mcpp
+          sudo apt install -y openjdk-21-jdk
+          sudo apt install -y gcc-multilib
+          sudo apt install -y gcc-i686-linux-gnu
+          sudo apt install -y gcc-aarch64-linux-gnu
+          $PYTHON $GITHUB_WORKSPACE/scripts/package.py
+          $PYTHON $GITHUB_WORKSPACE/scripts/test-dist.py
+
+      - name: Prepare shell envs (Windows x64)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          :: call "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe > msbuild_path.txt
+          :: set /p MSBUILD_PATH=<msbuild_path.txt
+          :: set VCVARSALL=%MSBUILD_PATH%\..\..\..\..\VC\Auxiliary\Build\vcvarsall.bat
+          :: echo VCVARSALL=%VCVARSALL% >> %GITHUB_ENV%
+          echo PYTHON=python >> %GITHUB_ENV%
+
+      - name: Build dist assets (Windows x64)
+        if: runner.os == 'Windows'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: cmd
+        run: |
+          :: call "%VCVARSALL%" x64
+          dotnet tool install --global wix
+          set PATH=%PATH%;%USERPROFILE%\.dotnet\tools
+          wix extension add --global WixToolset.UI.wixext
+          wix extension list --global
+          %PYTHON% %GITHUB_WORKSPACE%\scripts\package.py
+          %PYTHON% %GITHUB_WORKSPACE%\scripts\test-dist.py
+
+      - name: Check for changes and commit if any
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          dist_changes=$(git status --porcelain dist/)
+          ta_common_changes=$(git status --porcelain include/ta_common.h)
+          if [ -n "$dist_changes" ] || [ -n "$ta_common_changes" ]; then
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            echo "Changes detected by git status:"
+            if [ -n "$dist_changes" ]; then
+              echo "$dist_changes"
+              git add dist/
+            fi
+            if [ -n "$ta_common_changes" ]; then
+              echo "$ta_common_changes"
+              git add include/ta_common.h
+            fi
+
+            git commit -m "Update dist package (from ${{ matrix.os }})"
+
+            # Check for unstaged changes and log them.
+            # (this help debugging because it should not happen)
+            if [ -n "$(git status --porcelain)" ]; then
+              echo "Unstaged changes detected:"
+              git status --porcelain
+            fi
+
+            # Retry mechanism for handling concurrent pushes
+            for i in {1..5}; do
+              git pull --rebase --strategy-option=ours origin dev && git push origin dev && break || sleep 10
+            done
+          else
+            echo "No changes detected in dist directory"
+          fi
