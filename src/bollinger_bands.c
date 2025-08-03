@@ -3,39 +3,15 @@
  */
 #include "lib.h"
 
-// Map user-supplied MA type string to TA_MAType enum. Defaults to SMA.
-static TA_MAType parse_ma_type(SEXP maTypeSEXP) {
-  if (maTypeSEXP == R_NilValue || !isString(maTypeSEXP) ||
-      LENGTH(maTypeSEXP) < 1)
-    return TA_MAType_SMA;
-
-  const char *s = CHAR(STRING_ELT(maTypeSEXP, 0));
-  if (strcasecmp(s, "SMA") == 0)
-    return TA_MAType_SMA;
-  if (strcasecmp(s, "EMA") == 0)
-    return TA_MAType_EMA;
-  if (strcasecmp(s, "WMA") == 0)
-    return TA_MAType_WMA;
-  if (strcasecmp(s, "DEMA") == 0)
-    return TA_MAType_DEMA;
-  if (strcasecmp(s, "TEMA") == 0)
-    return TA_MAType_TEMA;
-  if (strcasecmp(s, "TRIMA") == 0)
-    return TA_MAType_TRIMA;
-  if (strcasecmp(s, "KAMA") == 0)
-    return TA_MAType_KAMA;
-  if (strcasecmp(s, "MAMA") == 0)
-    return TA_MAType_MAMA;
-  if (strcasecmp(s, "T3") == 0)
-    return TA_MAType_T3;
-  // fallback
-  return TA_MAType_SMA;
-}
-
 // .Call interface: x, timePeriod (int scalar or NA), nbDevUp (double or NA),
 // nbDevDn, maType (string)
-SEXP c_bollinger_bands(SEXP x, SEXP timePeriod, SEXP nbDevUp, SEXP nbDevDn,
-                       SEXP maType) {
+SEXP c_bollinger_bands(
+  const SEXP x, 
+  const SEXP timePeriod, 
+  const SEXP nbDevUp, 
+  const SEXP nbDevDn,
+  const SEXP maType) {
+
   static int ta_initialized = 0;
   if (!ta_initialized) {
     if (TA_Initialize() != TA_SUCCESS)
@@ -78,7 +54,7 @@ SEXP c_bollinger_bands(SEXP x, SEXP timePeriod, SEXP nbDevUp, SEXP nbDevDn,
       optInNbDevDn = v;
   }
 
-  optInMAType = parse_ma_type(maType);
+  optInMAType = map_moving_average(maType);
 
   // Compute lookback
   int lookback = TA_BBANDS_Lookback(optInTimePeriod, optInNbDevUp, optInNbDevDn,
@@ -162,6 +138,6 @@ SEXP c_bollinger_bands(SEXP x, SEXP timePeriod, SEXP nbDevUp, SEXP nbDevDn,
   SET_STRING_ELT(names, 4, mkChar("outNBElement"));
   setAttrib(res, R_NamesSymbol, names);
 
-  UNPROTECT(6); // upper,middle,lower + outBegIdx + outNBElement + res names
+  UNPROTECT(6);
   return res;
 }
