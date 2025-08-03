@@ -1,0 +1,89 @@
+*.o
+*.lo
+*.la
+*.pc
+*.m4
+Makefile
+Makefile.in
+.deps
+.libs
+.dirstamp
+config.*
+ta-lib.dpkg
+ta-lib.spec
+missing
+ltmain.sh
+libtool
+install-sh
+include/ta_config.*
+include/stamp-h1
+depcomp
+configure
+compile
+autom4te.cache
+ar-lib
+**/.history/
+
+# TA-Lib tools (must be built by devs on its own platform)
+src/tools/gen_code/gen_code
+src/tools/ta_regtest/ta_regtest
+bin/*.class
+bin/gen_code*
+bin/ta_*
+!bin/HOLDER
+
+## TA-Lib misc. build and packaging artifacts
+msbuild_path.txt
+lib/ta_*
+lib/ta-*
+build/ta-lib-*.tar.gz
+LICENSE.rtf
+
+## File system
+.DS_Store
+desktop.ini
+
+## User stuff...
+node_modules
+__pycache__
+venv
+.venv
+.env
+
+# Build files (from mkdocs)
+/site
+/build
+/MANIFEST
+
+## Temporary files
+*~
+\#*
+\#*\#
+.#
+TODO
+tmp
+temp/
+
+## Editors
+*.swp
+*.swo
+Session.vim
+.cproject
+.idea
+*.iml
+.project
+.favorites.json
+.settings/
+.vscode/ltex.disabledRules.en-US.txt
+.vscode/ltex.dictionary.en-US.txt
+
+# Visual Studio
+.vs/
+out/
+*.vcxproj.user
+
+## MSVC Windows builds (debug info)
+*.pdb
+
+# Never ignore .gitkeep files
+!**/.gitkeep
