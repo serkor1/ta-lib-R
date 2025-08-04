@@ -2,4 +2,7 @@
 
 export(average_price)
 export(bollinger_bands)
+export(commodity_channel_index)
+export(kaufman_adaptive_moving_average)
+export(weighted_moving_average)
 useDynLib(talib, .registration = TRUE)

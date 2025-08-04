@@ -9,5 +9,8 @@
 static const R_CallMethodDef CallEntries[] = {
   CALLDEF(c_average_price, 1),
   CALLDEF(c_bollinger_bands, 5),
+  CALLDEF(c_commodity_channel_index, 4),
+  CALLDEF(c_kaufman_adaptive_moving_average, 2),
+  CALLDEF(c_weighted_moving_average, 2),
   {NULL, NULL, 0}
 };
