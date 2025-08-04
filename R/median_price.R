@@ -3,21 +3,21 @@
 #' 
 #' @template description
 #'
-#' @templateVar .title Average Price
+#' @templateVar .title Median Price
 #' @templateVar .type multivariate
-#' @templateVar .fun average_price
+#' @templateVar .fun median_price
 #' @templateVar .author Serkan Korkmaz
 #'
 #' @returns Something
 #' @export
-average_price <- function(x, ...) {
+median_price <- function(x, ...) {
   UseMethod(
-    generic = "average_price"
+    generic = "median_price"
     )
 }
 
 #' @export
-average_price.default <- function(x, ...) {
+median_price.default <- function(x, ...) {
   ## default behaviour is to
   ## coerce to a `matrix` check that
   ## it is double and then pass to
@@ -29,5 +29,5 @@ average_price.default <- function(x, ...) {
   ##    met
   x <- as.matrix(x); assert(is.numeric(x))
 
-  .Call("c_average_price", x[,1:4])
+  .Call("c_median_price", x[,1:4])
 }
