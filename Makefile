@@ -11,8 +11,8 @@ help:
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "\033[1;34m%-15s\033[m \xE2\x80\x94 %s\n", $$1, $$2}'
 
 build: ## Build the R package
-	@Rscript -e "devtools::document()" > /dev/null 2>&1
 	@tools/generate_API.sh src/ src/api.h && tools/generate_FFI.sh src/api.h src/init.c
+	@Rscript -e "devtools::document()" > /dev/null 2>&1
 	@R CMD build . && R CMD INSTALL $(tarball_location)
 
 check:
