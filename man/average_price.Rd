@@ -2,13 +2,22 @@
 % Please edit documentation in R/average_price.R
 \name{average_price}
 \alias{average_price}
-\title{Average price}
+\title{Average Price}
 \usage{
-average_price(x)
+## Generic default S3 method
+## for Average Price
+average_price(...)
+}
+\value{
+Something
 }
 \description{
-Calculate the average price
+A generic S3 function to compute the average price. The function assumes that the input \link{matrix} \code{x} is Open (\code{x[,1]}), High (\code{x[,2]}), Low (\code{x[,3]}), Close (\code{x[,4]}) and Volume (\code{x[,5]}).
 }
 \author{
 Serkan Korkmaz
 }
+\concept{algorithmic trading}
+\concept{finance}
+\concept{technical analysis}
+\concept{trading}

@@ -15,7 +15,7 @@
 // Redifne integers to abvoid
 // R definition clashes
 #define Int32 TA_Lib_Int32
-  #include <ta-lib/ta_libc.h>
+#include <ta-lib/ta_libc.h>
 #undef Int32
 
 static void ensure_ta_initialized(void) {
@@ -29,7 +29,7 @@ static void ensure_ta_initialized(void) {
 }
 
 // maps strings to MA enums
-// 
+//
 // args
 // x: string, character
 static TA_MAType map_moving_average(const SEXP x) {
