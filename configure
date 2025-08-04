@@ -13,9 +13,14 @@ PKG_LIBS=""
 ## If TA-Lib provides a pkg-config file, use it for canonical flags.
 if command -v pkg-config >/dev/null 2>&1 && pkg-config --exists ta-lib; then
   PKG_CPPFLAGS="$(pkg-config --cflags ta-lib)"
+  LIBDIRS=$(pkg-config --libs-only-L ta-lib | sed 's/-L//g')
   PKG_LIBS="$(pkg-config --libs ta-lib)"
+  for d in $LIBDIRS; do
+    PKG_LIBS="$PKG_LIBS -Wl,-rpath,$d"
+  done
+
   USE_SYSTEM=1
-  echo "configure: using system TA-Lib via pkg-config"
+  echo "configure: using system TA-Lib via pkg-config with rpath to: $LIBDIRS"
 else
   ## 3) Probe system TA-Lib by compile/link test
   ## Fallback: compile a tiny program against -lta-lib to detect presence.
