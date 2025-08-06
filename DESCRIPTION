@@ -1,14 +1,23 @@
 Package: talib
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
-Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+Title: Bindings to the Technical Analysis Library (TA-lib)
+Version: 0.0-1
+Authors@R: c(
+    person(
+      given   = "Serkan", 
+      family  = "Korkmaz",
+      email   = "serkor1@duck.com", 
+      role    = c("cre", "aut", "cph"),
+      comment = c(ORCID = "0000-0002-5052-0982")
+      )
+  )
+Description: TA-lib offers 200+ technical trading indicators, including candlestick pattern recognition.
+License: BSD_3_Clause + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Depends: 
+    R (>= 3.5)
+LazyData: true
