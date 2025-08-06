@@ -23,8 +23,14 @@ SEXP impl_ta_RSI(SEXP inReal, SEXP optTimePeriod)
     double *rsi   = REAL(result);
 
     int outBeg, outNb;
-    TA_RetCode ret = TA_RSI(0, n-1, src,
-                             period, &outBeg, &outNb, rsi + outBeg);
+    TA_RetCode ret = TA_RSI(
+        0, 
+        n-1, 
+        src,
+        period,
+         &outBeg, 
+         &outNb, 
+         rsi);
 
     for(int i = 0; i < outBeg; ++i)
         rsi[i] = NA_REAL;

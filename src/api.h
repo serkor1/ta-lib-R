@@ -11,8 +11,13 @@ SEXP c_median_price(const SEXP x);
 SEXP c_moving_average_convergence_divergence(SEXP x, SEXP fastPeriod, SEXP slowPeriod, SEXP signalPeriod);
 SEXP c_weighted_moving_average(const SEXP x, const SEXP lag);
 SEXP impl_MIDPRICE(const SEXP x, const SEXP n);
+SEXP impl_ta_ACCBANDS(SEXP inHigh, SEXP inLow, SEXP inClose, SEXP optTimePeriod);
+SEXP impl_ta_APO(SEXP inRealSEXP, SEXP fastPeriodSEXP, SEXP slowPeriodSEXP, SEXP maTypeSEXP);
 SEXP impl_ta_AROONOSC(SEXP inHighSEXP, SEXP inLowSEXP, SEXP timePeriodSEXP);
 SEXP impl_ta_AROON(SEXP inHighSEXP, SEXP inLowSEXP, SEXP timePeriodSEXP);
 SEXP impl_TA_AVGPRICE(const SEXP x);
+SEXP impl_ta_BBANDS(SEXP inReal, SEXP optTimePeriod, SEXP optNbDevUp, SEXP optNbDevDn, SEXP optMAType);
+SEXP impl_ta_MACD(SEXP inReal, SEXP optFastPeriod, SEXP optSlowPeriod, SEXP optSignalPeriod);
+SEXP impl_ta_RSI(SEXP inReal, SEXP optTimePeriod);
 
 #endif

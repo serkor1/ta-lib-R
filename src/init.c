@@ -15,8 +15,13 @@ static const R_CallMethodDef CallEntries[] = {
   CALLDEF(c_moving_average_convergence_divergence, 4),
   CALLDEF(c_weighted_moving_average, 2),
   CALLDEF(impl_MIDPRICE, 2),
+  CALLDEF(impl_ta_ACCBANDS, 4),
+  CALLDEF(impl_ta_APO, 4),
   CALLDEF(impl_ta_AROONOSC, 3),
   CALLDEF(impl_ta_AROON, 3),
   CALLDEF(impl_TA_AVGPRICE, 1),
+  CALLDEF(impl_ta_BBANDS, 5),
+  CALLDEF(impl_ta_MACD, 4),
+  CALLDEF(impl_ta_RSI, 2),
   {NULL, NULL, 0}
 };
