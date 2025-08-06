@@ -48,3 +48,6 @@ po/*~
 # RStudio Connect folder
 rsconnect/
 .Rproj.user
+
+# Building nots
+NOTES.md

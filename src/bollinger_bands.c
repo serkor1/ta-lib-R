@@ -8,7 +8,6 @@
 SEXP c_bollinger_bands(const SEXP x, const SEXP timePeriod, const SEXP nbDevUp,
                        const SEXP nbDevDn, const SEXP maType) {
 
-
   static int ta_initialized = 0;
   if (!ta_initialized) {
     if (TA_Initialize() != TA_SUCCESS)
@@ -134,7 +133,6 @@ SEXP c_bollinger_bands(const SEXP x, const SEXP timePeriod, const SEXP nbDevUp,
   SET_STRING_ELT(names, 3, mkChar("outBegIdx"));
   SET_STRING_ELT(names, 4, mkChar("outNBElement"));
   setAttrib(res, R_NamesSymbol, names);
-  
 
   UNPROTECT(6);
   return res;

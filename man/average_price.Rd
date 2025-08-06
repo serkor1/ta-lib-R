@@ -8,11 +8,27 @@
 ## for Average Price
 average_price(...)
 }
+\arguments{
+\item{x}{An object coercible to \link{matrix}.}
+
+\item{...}{Arguments passed into other methods.
+\subsection{Title}{
+
+This function calculates the average price of
+of a financial asset
+}}
+}
 \value{
-Something
+A \link{double}-vector of \link{lenght} N of average prices.
 }
 \description{
 A generic S3 function to compute the average price. The function assumes that the input \link{matrix} \code{x} is Open (\code{x[,1]}), High (\code{x[,2]}), Low (\code{x[,3]}), Close (\code{x[,4]}) and Volume (\code{x[,5]}).
+}
+\examples{
+## calculate average
+## price
+average_price(BTC)
+
 }
 \author{
 Serkan Korkmaz
