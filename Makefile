@@ -15,7 +15,7 @@ build: ## Build the R package
 	@Rscript -e "devtools::document()" > /dev/null 2>&1
 	@R CMD build . && R CMD INSTALL $(tarball_location)
 
-check:
+check: ## Check the R package
 	@Rscript -e "devtools::document()" > /dev/null 2>&1
 	@R CMD build . && R CMD check $(tarball_location)
 
