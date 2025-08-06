@@ -12,7 +12,7 @@
 #include "ta_defs.h"
 #include "ta_func.h"
 
-SEXP c_average_price(const SEXP x) {
+SEXP impl_TA_AVGPRICE(const SEXP x) {
 
   // 1) extract dimensions
   //    form `x`
@@ -23,6 +23,7 @@ SEXP c_average_price(const SEXP x) {
   if (x_dimension == R_NilValue || LENGTH(x_dimension) < 2) {
     Rf_error("`x` must have dim attribute");
   }
+
   const int nrow = INTEGER(x_dimension)[0];
   const int ncol = INTEGER(x_dimension)[1];
 
@@ -37,7 +38,7 @@ SEXP c_average_price(const SEXP x) {
 
   const int startIdx = 0;
   const int endIdx = nrow - 1;
-  const int outBegIdx = 0, outNBElement = 0;
+  int outBegIdx = 0, outNBElement = 0;
   const int maxSize = endIdx - startIdx + 1;
   double *outReal = (double *)R_alloc((size_t)maxSize, sizeof(double));
 
