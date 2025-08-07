@@ -5,8 +5,9 @@
 
 #include "api.h"
 
-#define CALLDEF(name, n)                                                       \
-  { #name, (DL_FUNC)&name, n }
+// clang-format off
+#define CALLDEF(name, n)  {#name, (DL_FUNC) &name, n}
+// clang-format on
 
 static const R_CallMethodDef CallEntries[] = {
     CALLDEF(impl_ta_ACCBANDS, 4),
