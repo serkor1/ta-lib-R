@@ -1,14 +1,29 @@
+// shift_array
+//
+// Parameters
+// arr: the array to be shifted. Double or int pointer
+// len: the size of the input array. Int.
+// shift: the amount of shifting. Int.
+//
+// Description
+// This function shifts an array to the right, or down in memory, and adds
+// leading NAs from 0 to the shift value.
+//
+// Details
+// arr + shift advances pointer, ie. shifts
+// the entire array in memory. So an array of
+// {0,1,2} shifted with 1 does {garbage value, 1,
+// 2}, a shift by 0 just returns the {0,1,2} array
+//
+// Note
+// See: https://gist.github.com/barosl/e0af4a92b2b8cabd05a7
+// See:
+// https://stackoverflow.com/questions/479207/how-to-achieve-function-overloading-in-c
+// See:
+// https://stackoverflow.com/questions/479207/how-to-achieve-function-overloading-in-c/25026358#25026358
 #ifndef _SHIFT_H
 #define _SHIFT_H
-// Shift Arrays
-//
-// This program creates a generic function
-// that shifts an array. Its like function overloading
-// and templates, but with extra steps.
-//
-// See: https://gist.github.com/barosl/e0af4a92b2b8cabd05a7
-// See: https://stackoverflow.com/questions/479207/how-to-achieve-function-overloading-in-c
-// See: https://stackoverflow.com/questions/479207/how-to-achieve-function-overloading-in-c/25026358#25026358
+
 #include "R_ext/Arith.h"
 #include <string.h>
 
@@ -23,7 +38,7 @@ static void shift_double_array(double *arr, int len, int shift) {
   //
   //    It could probably be a better idea just
   //    terminate the function instead.
-  if (shift <= 0 || shift >= len) {
+  if (shift < 0 || shift >= len) {
     for (int i = 0; i < len; ++i) {
       arr[i] = NA_REAL;
     }
@@ -33,10 +48,7 @@ static void shift_double_array(double *arr, int len, int shift) {
   // 1) shift the arrayy
   //    in place
   memmove(
-      /*dest:*/ arr + shift, // NOTE: arr + shift advances pointer, ie. shifts
-                             // the entire array in memory. So an array of
-                             // {0,1,2} shifted with 1 does {garbage value, 1,
-                             // 2}, a shift by 0 just returns the {0,1,2} array
+      /*dest:*/ arr + shift,
       /*src*/ arr,
       /*n*/ (size_t)(len - shift) * sizeof(double));
 
@@ -59,7 +71,7 @@ static void shift_int_array(int *arr, int len, int shift) {
   //
   //    It could probably be a better idea just
   //    terminate the function instead.
-  if (shift < 0 || shift >= len) { // Possible bug: If there is no shift, then this would fill it with NAs. Same geos for the double versions
+  if (shift < 0 || shift >= len) {
     for (int i = 0; i < len; ++i) {
       arr[i] = NA_INTEGER;
     }
@@ -69,10 +81,7 @@ static void shift_int_array(int *arr, int len, int shift) {
   // 1) shift the arrayy
   //    in place
   memmove(
-      /*dest:*/ arr + shift, // NOTE: arr + shift advances pointer, ie. shifts
-                             // the entire array in memory. So an array of
-                             // {0,1,2} shifted with 1 does {garbage value, 1,
-                             // 2}, a shift by 0 just returns the {0,1,2} array
+      /*dest:*/ arr + shift,
       /*src*/ arr,
       /*n*/ (size_t)(len - shift) * sizeof(int));
 
@@ -84,6 +93,7 @@ static void shift_int_array(int *arr, int len, int shift) {
   }
 }
 
-#define shift_array(arr, len, shift) _Generic((arr), int*: shift_int_array, double*: shift_double_array)(arr, len, shift)
+#define shift_array(arr, len, shift)                                           \
+  _Generic((arr), int*: shift_int_array, double*: shift_double_array)(arr, len, shift)
 
 #endif // _SHIFT_H
