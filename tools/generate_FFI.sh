@@ -11,6 +11,7 @@ OUT_FILE="${2:-init.c}"
 
 print_header() {
   cat <<'EOF'
+// Generated from tools/generate_FFI.sh
 #include <R.h>
 #include <R_ext/Rdynload.h>
 #include <stdlib.h>

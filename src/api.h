@@ -1,9 +1,9 @@
+// Generated from tools/generate_API.sh
 #ifndef _API_H_
 #define _API_H_
 
 #include <Rinternals.h>
 
-SEXP c_weighted_moving_average(const SEXP x, const SEXP lag);
 SEXP impl_ta_ACCBANDS(SEXP inHigh, SEXP inLow, SEXP inClose, SEXP optTimePeriod);
 SEXP impl_ta_APO(SEXP inRealSEXP, SEXP fastPeriodSEXP, SEXP slowPeriodSEXP, SEXP maTypeSEXP);
 SEXP impl_ta_AROONOSC(SEXP inHighSEXP, SEXP inLowSEXP, SEXP timePeriodSEXP);
