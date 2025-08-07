@@ -9,6 +9,10 @@ SEXP impl_ta_APO(SEXP inRealSEXP, SEXP fastPeriodSEXP, SEXP slowPeriodSEXP, SEXP
 SEXP impl_ta_AROONOSC(SEXP inHighSEXP, SEXP inLowSEXP, SEXP timePeriodSEXP);
 SEXP impl_ta_AROON(SEXP inHighSEXP, SEXP inLowSEXP, SEXP timePeriodSEXP);
 SEXP impl_ta_BBANDS(SEXP inReal, SEXP optTimePeriod, SEXP optNbDevUp, SEXP optNbDevDn, SEXP optMAType);
+SEXP impl_ta_CDLDOJI(SEXP open, SEXP high, SEXP low, SEXP close);
+SEXP impl_ta_CDLDOJISTAR(SEXP open, SEXP high, SEXP low, SEXP close);
+SEXP impl_ta_CDLDRAGONFLYDOJI(SEXP open, SEXP high, SEXP low, SEXP close);
+SEXP impl_ta_CDLEVENINGDOJISTAR(SEXP open, SEXP high, SEXP low, SEXP close, SEXP penetration);
 SEXP impl_ta_MACD(SEXP inReal, SEXP optFastPeriod, SEXP optSlowPeriod, SEXP optSignalPeriod);
 SEXP impl_ta_MA(SEXP real, SEXP timeperiod, SEXP matype);
 SEXP impl_ta_RSI(SEXP inReal, SEXP optTimePeriod);
