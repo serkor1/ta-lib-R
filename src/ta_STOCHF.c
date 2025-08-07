@@ -54,11 +54,11 @@ SEXP impl_ta_STOCHF(SEXP high, SEXP low, SEXP close, SEXP fastk_period,
     UNPROTECT(pCount);
     error("TA_STOCHF failed: return code %d", ret);
   }
-  
+
   // shift array and pad
-    // with leading NAs
-    shift_array(outFastK, n, outBeg);
-    shift_array(outFastD, n, outBeg);
+  // with leading NAs
+  shift_array(outFastK, n, outBeg);
+  shift_array(outFastD, n, outBeg);
   SEXP colnames = PROTECT(allocVector(STRSXP, 2));
   pCount++;
   SET_STRING_ELT(colnames, 0, mkChar("fastk"));
