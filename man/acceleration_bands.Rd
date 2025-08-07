@@ -4,7 +4,7 @@
 \alias{acceleration_bands}
 \title{Acceleration Bands}
 \usage{
-acceleration_bands(x, n, ...)
+acceleration_bands(x, n = 10, ...)
 }
 \description{
 Acceleration Bands
