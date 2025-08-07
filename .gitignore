@@ -49,5 +49,8 @@ po/*~
 rsconnect/
 .Rproj.user
 
+# Makevars
+src/Makevars
+
 # Building nots
 NOTES.md
