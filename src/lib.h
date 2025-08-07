@@ -10,8 +10,8 @@
 #include <Rinternals.h>
 
 // C Headers
-#include <string.h>
 #include "shift.h"
+#include <string.h>
 
 // Redifne integers to abvoid
 // R definition clashes
@@ -70,6 +70,5 @@ static TA_MAType map_moving_average(const SEXP x) {
   // 3) fallback: simple moving average
   return TA_MAType_SMA;
 }
-
 
 #endif // _LIB_H_

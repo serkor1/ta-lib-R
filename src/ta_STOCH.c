@@ -23,7 +23,6 @@ SEXP impl_ta_STOCH(SEXP high, SEXP low, SEXP close, SEXP fastk_period,
                    SEXP slowk_period, SEXP slowk_matype, SEXP slowd_period,
                    SEXP slowd_matype) {
 
-                    
   int pCount = 0;
   high = PROTECT(coerceVector(high, REALSXP));
   pCount++;
