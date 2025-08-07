@@ -12,20 +12,21 @@ help:
 
 build: ## Build the R package
 	@tools/generate_API.sh src/ src/api.h && tools/generate_FFI.sh src/api.h src/init.c
-	@Rscript -e "devtools::document()" > /dev/null 2>&1
+	@Rscript --verbose -e "devtools::document()" > /dev/null 2>&1
 	@R CMD build . && R CMD INSTALL $(tarball_location)
 
 check: ## Check the R package
-	@Rscript -e "devtools::document()" > /dev/null 2>&1
+	@Rscript --verbose -e "devtools::document()" > /dev/null 2>&1
 	@R CMD build . && R CMD check $(tarball_location)
 
 test: ## Run tests
-	@Rscript -e "testthat::test_local()"
+	@Rscript --verbose -e "testthat::test_local()"
 
 clean: ## Remove artifacts
 	@rm -rf src/*.o
 	@rm -rf src/*.so
 	@rm -rf $(tarball_location)
+	@rm -rf src/Makevars
 
 fmt: ## Formate code (change -style=$1 for other styleguides)
 	@clang-format -style=LLVM -dump-config > .clang-format && clang-format -i src/*.c src/*.h
