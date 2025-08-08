@@ -93,7 +93,8 @@ static void shift_int_array(int *arr, int len, int shift) {
   }
 }
 
-#define shift_array(arr, len, shift)                                           \
-  _Generic((arr), int*: shift_int_array, double*: shift_double_array)(arr, len, shift)
+// clang-format off
+#define shift_array(arr, len, shift) _Generic((arr), int*: shift_int_array, double*: shift_double_array)(arr, len, shift)
+// clang-format on
 
 #endif // _SHIFT_H
