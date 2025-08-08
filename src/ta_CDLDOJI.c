@@ -13,11 +13,13 @@
 //   is detected (0 otherwise). Leading NA values are padded for periods before
 //   the first output can be computed (if any).
 #include "lib.h"
+#include "normalize.h"
 #include "shift.h"
 #include <limits.h>
 #include <ta_libc.h>
 
-SEXP impl_ta_CDLDOJI(SEXP open, SEXP high, SEXP low, SEXP close) {
+SEXP impl_ta_CDLDOJI(SEXP open, SEXP high, SEXP low, SEXP close,
+                     SEXP normalize_flag) {
 
   R_xlen_t n = XLENGTH(open);
   int protect_count = 0;
@@ -57,6 +59,12 @@ SEXP impl_ta_CDLDOJI(SEXP open, SEXP high, SEXP low, SEXP close) {
   }
 
   shift_array(out_ptr, n, out_beg_idx);
+  // the results are given in the range -100 and 100
+  // if normalized it returns -1 and 1
+  int is_true = Rf_asLogical(normalize_flag);
+  if (is_true == 1) {
+    normalize(out_ptr, n, 100, out_beg_idx);
+  }
 
   // Unprotect protected objects and return the result
   if (protect_count > 0)
