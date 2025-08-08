@@ -1,5 +1,5 @@
-#ifndef _LIB_H_
-#define _LIB_H_
+#ifndef _MATYPE_H
+#define _MATYPE_H
 // as_MAType
 //
 // Parameters:
@@ -15,4 +15,4 @@ static TA_MAType as_MAType(SEXP x) {
   return (TA_MAType)x_;
 }
 
-#endif // _LIB_H_
+#endif // _MATYPE_H

@@ -6,10 +6,13 @@
 #ifndef _LIB_H_
 #define _LIB_H_
 
+#define R_RANDOM_H
 // R Headers
 #include <R.h>
 #include <Rdefines.h>
 #include <Rinternals.h>
+
+#undef R_RANDOM_H
 
 // C Headers
 #include "shift.h"
