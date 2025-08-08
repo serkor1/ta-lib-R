@@ -41,3 +41,7 @@ map_maType_call <- function(call_expr) {
     maType = maType
   )
 }
+
+is.number <- function(x) {
+  is.numeric(x) || is.integer(x)
+}
