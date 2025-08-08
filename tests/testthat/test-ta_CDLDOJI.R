@@ -1,13 +1,13 @@
-## script: Doji Star
+## script: Doji
 ## author: Serkan Korkmaz
-testthat::test_that(desc = "Doji Star", code = {
+testthat::test_that(desc = "Doji", code = {
 
   ## 1) calculate values
   ##    with and without alias
   ##    without normalization
   options(talib.normalize = FALSE)
-  output <- doji_star(SPY)
-  alias  <- CDLDOJISTAR(SPY)
+  output <- doji(SPY)
+  alias  <- CDLDOJI(SPY)
 
   ## 1.1) check if the values
   ##      are equal
@@ -17,21 +17,21 @@ testthat::test_that(desc = "Doji Star", code = {
   )
 
   ## 1.2) check that the range
-  ##      is in [-100, 100]
+  ##      is in [0, 100]
   testthat::expect_true(
-    object = any(unique(output, na.rm = TRUE) %in% c(-100, 100))
+    object = any(unique(output, na.rm = TRUE) %in% c(100))
   )
 
   ## 1.3) recalculate with 
   ##      normalization and check
-  ##      range is in [-1, 1]
+  ##      range is in [0, 1]
   options(talib.normalize = TRUE)
-  output <- CDLDOJISTAR(SPY)
+  output <- CDLDOJI(SPY)
 
   ## 1.4) check that the range
   ##      is in [-1, 1]
   testthat::expect_true(
-    object = any(unique(output, na.rm = TRUE) %in% c(-1 ,1))
+    object = any(unique(output, na.rm = TRUE) %in% c(1))
   )
   
 })
