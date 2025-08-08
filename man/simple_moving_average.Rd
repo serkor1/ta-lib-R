@@ -4,7 +4,7 @@
 \alias{simple_moving_average}
 \title{Simple Moving Average (SMA)}
 \usage{
-simple_moving_average(x, n, ...)
+simple_moving_average(x, n = 10, ...)
 }
 \description{
 Simple Moving Average (SMA)

@@ -4,7 +4,7 @@
 \alias{kaufman_adaptive_moving_average}
 \title{Kaufman’s Adaptive Moving Average (KAMA)}
 \usage{
-kaufman_adaptive_moving_average(x, n, ...)
+kaufman_adaptive_moving_average(x, n = 10, ...)
 }
 \description{
 Kaufman’s Adaptive Moving Average (KAMA)

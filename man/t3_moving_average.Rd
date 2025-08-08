@@ -4,7 +4,7 @@
 \alias{t3_moving_average}
 \title{T3 Moving Average (T3)}
 \usage{
-t3_moving_average(x, n, ...)
+t3_moving_average(x, n = 10, ...)
 }
 \description{
 T3 Moving Average (T3)

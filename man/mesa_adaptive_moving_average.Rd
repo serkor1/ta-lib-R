@@ -4,7 +4,7 @@
 \alias{mesa_adaptive_moving_average}
 \title{Mesa Adaptive Moving Average (MAMA)}
 \usage{
-mesa_adaptive_moving_average(x, n, ...)
+mesa_adaptive_moving_average(x, n = 10, ...)
 }
 \description{
 Mesa Adaptive Moving Average (MAMA)

@@ -2,74 +2,59 @@
 //
 // Parameters
 //   real            – numeric vector of inputs
-//   timeperiod      – integer SEXP for MA period (1 to 100000)
+//   lag      – integer SEXP for MA period (1 to 100000)
 //   matype          – integer SEXP for MAType (0=SMA … 8=T3)
 //
 // Description
 //   Returns a numeric vector of the same length as `real`,
 //   with NA_REAL for the first lookback samples, then the
 //   moving‐average values thereafter.
+#include "MAType.h"
 #include "lib.h"
+#include "shift.h"
+#include "ta-lib/include/ta_defs.h"
 #include "ta_libc.h"
-#include <R.h>
 #include <Rinternals.h>
 
-SEXP impl_ta_MA(SEXP real, SEXP timeperiod, SEXP matype) {
-  int pc = 0;
-  real = PROTECT(coerceVector(real, REALSXP));
-  pc++;
-  timeperiod = PROTECT(coerceVector(timeperiod, INTSXP));
-  pc++;
-  matype = PROTECT(coerceVector(matype, INTSXP));
-  pc++;
+SEXP impl_ta_MA(SEXP x, SEXP lag, SEXP matype) {
+  // TODO: A robust input validation
+  //       of maType enums, and time periods
 
-  int n = length(real);
-  const double *__restrict__ in = REAL(real);
-  int tp = INTEGER(timeperiod)[0];
-  int mt_int = INTEGER(matype)[0];
+  // protection counter
+  int protection_count = 0;
 
-  // Validate inputs
-  if (tp < 1 || tp > 100000)
-    error("Invalid timeperiod %d; must be 1 to 100000", tp);
-  if (mt_int < TA_MAType_SMA || mt_int > TA_MAType_T3)
-    error("Invalid MAType %d; must be between %d (SMA) and %d (T3)", mt_int,
-          TA_MAType_SMA, TA_MAType_T3);
-  TA_MAType mt = (TA_MAType)mt_int;
+  // values
+  int n = length(x);
+  const double *__restrict__ x_ptr = REAL(x);
 
-  // Prepare R output vector, NA-fill
+  int timeperiod = INTEGER(lag)[0];
+  TA_MAType MA = as_MAType(matype);
+
   SEXP result = PROTECT(allocVector(REALSXP, n));
-  pc++;
-  double *__restrict__ out = REAL(result);
-  for (int i = 0; i < n; i++)
-    out[i] = NA_REAL;
+  protection_count++;
+  double *result_ptr = REAL(result);
 
-  // Temporary buffer for TA_MA output
-  double *temp = (double *)R_alloc(n, sizeof(double));
-
-  int outBeg, outNb;
   // clang-format off
-  TA_RetCode ret = TA_MA(
+    int outBeg, outNb;
+    TA_RetCode output = TA_MA(
     0, 
     n - 1, 
-    in, 
-    tp, 
-    mt, 
+    x_ptr, 
+    timeperiod, 
+    MA, 
     &outBeg, 
     &outNb, 
-    temp
+    result_ptr
   );
   // clang-format on
 
-  if (ret != TA_SUCCESS) {
-    UNPROTECT(pc);
-    error("TA_MA failed: return code %d", ret);
+  if (output != TA_SUCCESS) {
+    UNPROTECT(protection_count);
+    error("TA_MA failed: return code %d", output);
   }
 
-  // Copy the valid outputs into aligned positions
-  for (int i = 0; i < outNb; i++) {
-    out[outBeg + i] = temp[i];
-  }
+  shift_array(result_ptr, n, outBeg);
 
-  UNPROTECT(pc);
+  UNPROTECT(protection_count);
   return result;
 }

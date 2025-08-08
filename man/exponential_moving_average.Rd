@@ -4,7 +4,7 @@
 \alias{exponential_moving_average}
 \title{Exponential Moving Average (EMA)}
 \usage{
-exponential_moving_average(x, n, ...)
+exponential_moving_average(x, n = 10, ...)
 }
 \description{
 Exponential Moving Average (EMA)
