@@ -47,7 +47,19 @@ SEXP impl_ta_MA(SEXP real, SEXP timeperiod, SEXP matype) {
   double *temp = (double *)R_alloc(n, sizeof(double));
 
   int outBeg, outNb;
-  TA_RetCode ret = TA_MA(0, n - 1, in, tp, mt, &outBeg, &outNb, temp);
+  // clang-format off
+  TA_RetCode ret = TA_MA(
+    0, 
+    n - 1, 
+    in, 
+    tp, 
+    mt, 
+    &outBeg, 
+    &outNb, 
+    temp
+  );
+  // clang-format on
+
   if (ret != TA_SUCCESS) {
     UNPROTECT(pc);
     error("TA_MA failed: return code %d", ret);

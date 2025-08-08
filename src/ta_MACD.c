@@ -11,6 +11,7 @@
 //   Returns an n × 3 matrix with columns "macd","signal","histogram".
 
 #include "lib.h"
+#include "shift.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <ta_libc.h>
@@ -29,14 +30,26 @@ SEXP impl_ta_MACD(SEXP inReal, SEXP optFastPeriod, SEXP optSlowPeriod,
   double *histogram = macd + 2 * n;
 
   int outBeg, outNb;
-  TA_RetCode ret =
-      TA_MACD(0, n - 1, src, fastP, slowP, signalP, &outBeg, &outNb,
-              macd + outBeg, signal + outBeg, histogram + outBeg);
+  // clang-format off
+  TA_RetCode ret = TA_MACD(
+    0, 
+    n - 1,
+    src, 
+    fastP, 
+    slowP, 
+    signalP, 
+    &outBeg,
+    &outNb,
+    macd + outBeg, 
+    signal + outBeg, 
+    histogram + outBeg
+  );
+  // clang-format on
 
-  for (int i = 0; i < outBeg; ++i)
-    macd[i] = signal[i] = histogram[i] = NA_REAL;
-  for (int i = outBeg + outNb; i < n; ++i)
-    macd[i] = signal[i] = histogram[i] = NA_REAL;
+  // shift
+  shift_array(macd, n, outBeg);
+  shift_array(signal, n, outBeg);
+  shift_array(histogram, n, outBeg);
 
   SEXP dims = PROTECT(allocVector(VECSXP, 2));
   SEXP cnames = PROTECT(allocVector(STRSXP, 3));
