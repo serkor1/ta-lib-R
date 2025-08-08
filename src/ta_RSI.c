@@ -22,12 +22,20 @@ SEXP impl_ta_RSI(SEXP inReal, SEXP optTimePeriod) {
   double *rsi = REAL(result);
 
   int outBeg, outNb;
-  TA_RetCode ret = TA_RSI(0, n - 1, src, period, &outBeg, &outNb, rsi);
+  // clang-format off
+  TA_RetCode ret = TA_RSI(
+    0, 
+    n - 1, 
+    src, 
+    period, 
+    &outBeg, 
+    &outNb, 
+    rsi
+  );
+  // clang-format on
 
-  for (int i = 0; i < outBeg; ++i)
-    rsi[i] = NA_REAL;
-  for (int i = outBeg + outNb; i < n; ++i)
-    rsi[i] = NA_REAL;
+  // shift
+  shift_array(rsi, n, outBeg);
 
   UNPROTECT(1);
   return result;

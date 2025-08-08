@@ -10,6 +10,7 @@
 //   AroonDown). Returns a numeric vector of same length as input;
 //   positions before lookback are NA.
 #include "lib.h"
+#include "shift.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <ta_libc.h>
@@ -29,23 +30,26 @@ SEXP impl_ta_AROONOSC(SEXP inHighSEXP, SEXP inLowSEXP, SEXP timePeriodSEXP) {
 
   // Call TA-Lib
   int outBegIdx = 0, outNBElement = 0;
-  TA_RetCode ret = TA_AROONOSC(0, (int)n - 1, inHigh, inLow, timePeriod,
-                               &outBegIdx, &outNBElement, outOsc);
+  // clang-format off
+  TA_RetCode ret = TA_AROONOSC(
+    0, 
+    (int)n - 1, 
+    inHigh, 
+    inLow, 
+    timePeriod,
+    &outBegIdx, 
+    &outNBElement, 
+    outOsc
+  );
+  // clang-format on
+
   if (ret != TA_SUCCESS) {
     UNPROTECT(1);
     error("TA_AROONOSC failed with error code %d", ret);
   }
 
-  // Leading NAs
-  for (int i = 0; i < outBegIdx; ++i)
-    outOsc[i] = NA_REAL;
-
-  // Shift valid outputs
-  memmove(outOsc + outBegIdx, outOsc, (size_t)outNBElement * sizeof(double));
-
-  // Trailing NAs
-  for (int i = outBegIdx + outNBElement; i < n; ++i)
-    outOsc[i] = NA_REAL;
+  // shift
+  shift_array(outOsc, n, outBegIdx);
 
   UNPROTECT(1);
   return outOscSEXP;
