@@ -1,13 +1,13 @@
-## script: Doji Star
+## script: DRAGONFLYDOJI
 ## author: Serkan Korkmaz
-testthat::test_that(desc = "Doji Star", code = {
+testthat::test_that(desc = "Dragonfly Doji", code = {
 
   ## 1) calculate values
   ##    with and without alias
   ##    without normalization
   options(talib.normalize = FALSE)
-  output <- doji_star(SPY)
-  alias  <- CDLDOJISTAR(SPY)
+  output <- dragonfly_doji(SPY)
+  alias  <- CDLDRAGONFLYDOJI(SPY)
 
   ## 1.1) check if the values
   ##      are equal
@@ -26,7 +26,7 @@ testthat::test_that(desc = "Doji Star", code = {
   ##      normalization and check
   ##      range is in [-1, 1]
   options(talib.normalize = TRUE)
-  output <- CDLDOJISTAR(SPY)
+  output <- CDLDRAGONFLYDOJI(SPY)
 
   ## 1.4) check that the range
   ##      is in [-1, 1]
