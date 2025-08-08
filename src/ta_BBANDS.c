@@ -12,9 +12,10 @@
 //   series. Returns an n × 3 matrix (columns "upper","middle","lower")
 //   padded with NA_REAL for values where the bands are undefined.
 
+#include "MAType.h"
 #include "lib.h"
+#include "shift.h"
 #include "ta-lib/include/ta_defs.h"
-#include <R.h>
 #include <Rinternals.h>
 #include <ta_libc.h>
 
@@ -25,8 +26,7 @@ SEXP impl_ta_BBANDS(SEXP inReal, SEXP optTimePeriod, SEXP optNbDevUp,
   int period = INTEGER(optTimePeriod)[0]; // lookback
   double nbUp = REAL(optNbDevUp)[0];      // std dev up
   double nbDn = REAL(optNbDevDn)[0];      // std dev down
-  int maType = INTEGER(optMAType)[0];     // MA type enum
-  TA_MAType to_ma = (TA_MAType)maType;
+  TA_MAType maType = as_MAType(optMAType);
 
   // allocate result matrix n rows × 3 cols
   SEXP result = PROTECT(allocMatrix(REALSXP, n, 3));
@@ -44,7 +44,7 @@ SEXP impl_ta_BBANDS(SEXP inReal, SEXP optTimePeriod, SEXP optNbDevUp,
     period, 
     nbUp, 
     nbDn, 
-    to_ma, 
+    maType, 
     &outBeg, 
     &outNb,
     upper + outBeg, 
