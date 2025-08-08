@@ -16,7 +16,7 @@ static const R_CallMethodDef CallEntries[] = {
     CALLDEF(impl_ta_AROON, 3),
     CALLDEF(impl_ta_BBANDS, 5),
     CALLDEF(impl_ta_CDLDOJI, 4),
-    CALLDEF(impl_ta_CDLDOJISTAR, 4),
+    CALLDEF(impl_ta_CDLDOJISTAR, 5),
     CALLDEF(impl_ta_CDLDRAGONFLYDOJI, 4),
     CALLDEF(impl_ta_CDLEVENINGDOJISTAR, 5),
     CALLDEF(impl_ta_MACD, 4),

@@ -13,12 +13,15 @@
 //   bullish Doji Star pattern and -100 indicating a bearish Doji Star (0 if no
 //   pattern). Leading NA values are padded for periods before the first pattern
 //   can be detected.
+#include "R_ext/Boolean.h"
+#include "Rinternals.h"
 #include "lib.h"
 #include "normalize.h"
 #include <limits.h>
 #include <ta_libc.h>
 
-SEXP impl_ta_CDLDOJISTAR(SEXP open, SEXP high, SEXP low, SEXP close) {
+SEXP impl_ta_CDLDOJISTAR(SEXP open, SEXP high, SEXP low, SEXP close,
+                         SEXP normalize_flag) {
   int protect_count = 0;
 
   R_xlen_t n = XLENGTH(open);
@@ -49,8 +52,13 @@ SEXP impl_ta_CDLDOJISTAR(SEXP open, SEXP high, SEXP low, SEXP close) {
       UNPROTECT(protect_count);
     error("TA-Lib computation failed with error code %d", ret_code);
   }
+  
   shift_array(out_ptr, n, out_beg_idx);
-  normalize(out_ptr, n, 100, out_beg_idx);
+
+  int is_true = Rf_asLogical(normalize_flag);
+  if (is_true == 1) {
+    normalize(out_ptr, n, 100, out_beg_idx);
+  }
 
   if (protect_count > 0)
     UNPROTECT(protect_count);
