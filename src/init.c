@@ -6,7 +6,7 @@
 #include "api.h"
 
 // clang-format off
-#define CALLDEF(name, n)  {#name, (DL_FUNC) &name, n}
+#define CALLDEF(name, n) {#name, (DL_FUNC) &name, n}
 // clang-format on
 
 static const R_CallMethodDef CallEntries[] = {
