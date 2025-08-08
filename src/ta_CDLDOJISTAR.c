@@ -5,6 +5,7 @@
 //   high: numeric vector of high prices
 //   low:  numeric vector of low prices
 //   close: numeric vector of closing prices
+//   normalize_flag: Boolean. If TRUE normalize output by a factor
 //
 // Description
 //   Identifies the "Doji Star" candlestick pattern, which is a two-day pattern
@@ -22,15 +23,9 @@
 
 SEXP impl_ta_CDLDOJISTAR(SEXP open, SEXP high, SEXP low, SEXP close,
                          SEXP normalize_flag) {
+
   int protect_count = 0;
-
   R_xlen_t n = XLENGTH(open);
-
-  if (n > INT_MAX) {
-    if (protect_count > 0)
-      UNPROTECT(protect_count);
-    error("Number of observations exceeds maximum supported by TA-Lib");
-  }
   int len = (int)n;
 
   const double *restrict open_ptr = REAL(open);
@@ -44,23 +39,43 @@ SEXP impl_ta_CDLDOJISTAR(SEXP open, SEXP high, SEXP low, SEXP close,
 
   int out_beg_idx = 0;
   int out_nb_elem = 0;
-  TA_RetCode ret_code =
-      TA_CDLDOJISTAR(0, len - 1, open_ptr, high_ptr, low_ptr, close_ptr,
-                     &out_beg_idx, &out_nb_elem, out_ptr);
+  // clang-format off
+  TA_RetCode ret_code = TA_CDLDOJISTAR(
+    0, 
+    len - 1, 
+    open_ptr, 
+    high_ptr, 
+    low_ptr, 
+    close_ptr,
+    &out_beg_idx, 
+    &out_nb_elem, 
+    out_ptr
+  );
+  // clang-format on
+
+  // check if the returned
+  // value is sensible
   if (ret_code != TA_SUCCESS) {
-    if (protect_count > 0)
+    if (protect_count > 0) {
       UNPROTECT(protect_count);
+    }
     error("TA-Lib computation failed with error code %d", ret_code);
   }
-  
+
+  // shift the array and
+  // and by leading NAs
   shift_array(out_ptr, n, out_beg_idx);
 
+  // the results are given in the range -100 and 100
+  // if normalized it returns -1 and 1
   int is_true = Rf_asLogical(normalize_flag);
   if (is_true == 1) {
     normalize(out_ptr, n, 100, out_beg_idx);
   }
 
-  if (protect_count > 0)
+  if (protect_count > 0) {
     UNPROTECT(protect_count);
+  }
+
   return result;
 }
