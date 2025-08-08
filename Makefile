@@ -12,11 +12,11 @@ help:
 
 build: ## Build the R package
 	@tools/generate_API.sh src/ src/api.h && tools/generate_FFI.sh src/api.h src/init.c && $(MAKE) fmt
-	@Rscript --verbose -e "devtools::document()" > /dev/null 2>&1
+	@Rscript --verbose -e "devtools::document()"
 	@R CMD build . && R CMD INSTALL $(tarball_location)
 
 check: ## Check the R package
-	@Rscript --verbose -e "devtools::document()" > /dev/null 2>&1
+	@Rscript --verbose -e "devtools::document()"
 	@R CMD build . && R CMD check $(tarball_location)
 
 test: ## Run tests
