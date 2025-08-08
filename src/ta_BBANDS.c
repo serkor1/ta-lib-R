@@ -13,6 +13,7 @@
 //   padded with NA_REAL for values where the bands are undefined.
 
 #include "lib.h"
+#include "ta-lib/include/ta_defs.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <ta_libc.h>
@@ -25,6 +26,7 @@ SEXP impl_ta_BBANDS(SEXP inReal, SEXP optTimePeriod, SEXP optNbDevUp,
   double nbUp = REAL(optNbDevUp)[0];      // std dev up
   double nbDn = REAL(optNbDevDn)[0];      // std dev down
   int maType = INTEGER(optMAType)[0];     // MA type enum
+  TA_MAType to_ma = (TA_MAType)maType;
 
   // allocate result matrix n rows × 3 cols
   SEXP result = PROTECT(allocMatrix(REALSXP, n, 3));
@@ -34,15 +36,27 @@ SEXP impl_ta_BBANDS(SEXP inReal, SEXP optTimePeriod, SEXP optNbDevUp,
 
   // call TA-Lib function
   int outBeg, outNb;
-  TA_RetCode ret =
-      TA_BBANDS(0, n - 1, src, period, nbUp, nbDn, maType, &outBeg, &outNb,
-                upper + outBeg, middle + outBeg, lower + outBeg);
+  // clang-format off
+  TA_RetCode ret = TA_BBANDS(
+    0, 
+    n - 1, 
+    src, 
+    period, 
+    nbUp, 
+    nbDn, 
+    to_ma, 
+    &outBeg, 
+    &outNb,
+    upper + outBeg, 
+    middle + outBeg, 
+    lower + outBeg
+  );
+  // clang-format on
 
-  // fill leading/trailing NAs
-  for (int i = 0; i < outBeg; ++i)
-    upper[i] = middle[i] = lower[i] = NA_REAL;
-  for (int i = outBeg + outNb; i < n; ++i)
-    upper[i] = middle[i] = lower[i] = NA_REAL;
+  // shift arrays
+  shift_array(upper, n, outBeg);
+  shift_array(middle, n, outBeg);
+  shift_array(lower, n, outBeg);
 
   // set column names: c("upper","middle","lower")
   SEXP dims = PROTECT(allocVector(VECSXP, 2));
