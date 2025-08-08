@@ -20,7 +20,7 @@ check: ## Check the R package
 	@R CMD build . && R CMD check $(tarball_location)
 
 test: ## Run tests
-	@Rscript --verbose -e "testthat::test_local()"
+	@Rscript --verbose -e "library(talib); testthat::test_dir('tests/testthat')"
 
 clean: ## Remove artifacts
 	@rm -rf src/*.o
