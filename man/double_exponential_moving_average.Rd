@@ -4,7 +4,7 @@
 \alias{double_exponential_moving_average}
 \title{Double Exponential Moving Average (DEMA)}
 \usage{
-double_exponential_moving_average(x, n, ...)
+double_exponential_moving_average(x, n = 10, ...)
 }
 \description{
 Double Exponential Moving Average (DEMA)

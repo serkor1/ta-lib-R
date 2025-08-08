@@ -4,7 +4,7 @@
 \alias{triangular_moving_average}
 \title{Triangular Moving Average (TRIMA)}
 \usage{
-triangular_moving_average(x, n, ...)
+triangular_moving_average(x, n = 10, ...)
 }
 \description{
 Triangular Moving Average (TRIMA)

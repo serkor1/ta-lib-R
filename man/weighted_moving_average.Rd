@@ -4,7 +4,7 @@
 \alias{weighted_moving_average}
 \title{Weighted Moving Average (WMA)}
 \usage{
-weighted_moving_average(x, n, ...)
+weighted_moving_average(x, n = 10, ...)
 }
 \description{
 Weighted Moving Average (WMA)

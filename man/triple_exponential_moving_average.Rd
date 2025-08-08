@@ -4,7 +4,7 @@
 \alias{triple_exponential_moving_average}
 \title{Triple Exponential Moving Average (TEMA)}
 \usage{
-triple_exponential_moving_average(x, n, ...)
+triple_exponential_moving_average(x, n = 10, ...)
 }
 \description{
 Triple Exponential Moving Average (TEMA)
