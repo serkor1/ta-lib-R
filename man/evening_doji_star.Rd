@@ -4,7 +4,7 @@
 \alias{evening_doji_star}
 \title{Evening Doji Star}
 \usage{
-evening_doji_star(x, penetration, ...)
+evening_doji_star(x, penetration = 0.1, ...)
 }
 \description{
 Evening Doji Star

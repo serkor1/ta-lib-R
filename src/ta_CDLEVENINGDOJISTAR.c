@@ -19,12 +19,13 @@
 //   (e.g., 30 for 30%). Leading NA values are padded for the initial period
 //   before any pattern can occur.
 #include "lib.h"
+#include "normalize.h"
 #include "shift.h"
 #include <limits.h>
 #include <ta_libc.h>
 
 SEXP impl_ta_CDLEVENINGDOJISTAR(SEXP open, SEXP high, SEXP low, SEXP close,
-                                SEXP penetration) {
+                                SEXP penetration, SEXP normalize_flag) {
   int protect_count = 0;
 
   // Validate and extract the penetration parameter
@@ -60,6 +61,12 @@ SEXP impl_ta_CDLEVENINGDOJISTAR(SEXP open, SEXP high, SEXP low, SEXP close,
     error("TA-Lib computation failed with error code %d", ret_code);
   }
   shift_array(out_ptr, n, out_beg_idx);
+  // the results are given in the range -100 and 100
+  // if normalized it returns -1 and 1
+  int is_true = Rf_asLogical(normalize_flag);
+  if (is_true == 1) {
+    normalize(out_ptr, n, 100, out_beg_idx);
+  }
 
   if (protect_count > 0)
     UNPROTECT(protect_count);

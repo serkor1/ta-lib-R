@@ -16,6 +16,7 @@ doji.default <- function(x, ...) {
         .open(x),
         .high(x),
         .low(x),
-        .close(x)
+        .close(x),
+        as.logical(getOption("talib.normalize", TRUE))
     )
 }

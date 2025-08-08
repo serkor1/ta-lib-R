@@ -13,10 +13,12 @@
 //   Dragonfly Doji pattern is found (0 if no pattern). Leading NA values are
 //   padded for periods before the first pattern can be detected.
 #include "lib.h"
+#include "normalize.h"
 #include <limits.h>
 #include <ta_libc.h>
 
-SEXP impl_ta_CDLDRAGONFLYDOJI(SEXP open, SEXP high, SEXP low, SEXP close) {
+SEXP impl_ta_CDLDRAGONFLYDOJI(SEXP open, SEXP high, SEXP low, SEXP close,
+                              SEXP normalize_flag) {
   int protect_count = 0;
 
   R_xlen_t n = XLENGTH(open);
@@ -48,6 +50,13 @@ SEXP impl_ta_CDLDRAGONFLYDOJI(SEXP open, SEXP high, SEXP low, SEXP close) {
     error("TA-Lib computation failed with error code %d", ret_code);
   }
   shift_array(out_ptr, n, out_beg_idx);
+  // the results are given in the range -100 and 100
+  // if normalized it returns -1 and 1
+  int is_true = Rf_asLogical(normalize_flag);
+  if (is_true == 1) {
+    normalize(out_ptr, n, 100, out_beg_idx);
+  }
+
   if (protect_count > 0)
     UNPROTECT(protect_count);
   return result;
