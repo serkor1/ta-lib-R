@@ -1,10 +1,11 @@
 #' @title Acceleration Bands
 #' @export
 acceleration_bands <- function(x, n = 10, ...) {
-    UseMethod(
-        genberic = "acceleration_bands"
-    )
+    UseMethod("acceleration_bands")
 }
+
+#' @export
+ACCBANDS <- acceleration_bands
 
 #' @export
 acceleration_bands.default <- function(x, n = 10, ...) {
@@ -25,7 +26,7 @@ acceleration_bands.default <- function(x, n = 10, ...) {
     ## 1) pass `x` assuming that it 
     ##    follows OHLC-V structure 
     .Call(
-        .NAME = "impl_ta_ACCBANDS",
+        "impl_ta_ACCBANDS",
         .high(x), 
         .low(x), 
         .close(x), 
