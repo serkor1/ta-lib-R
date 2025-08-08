@@ -12,13 +12,15 @@
 //   with NA_REAL where the bands are undefined.
 
 #include "lib.h"
+#include "shift.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <ta_libc.h>
 
 SEXP impl_ta_ACCBANDS(SEXP inHigh, SEXP inLow, SEXP inClose,
                       SEXP optTimePeriod) {
-  int n = LENGTH(inHigh);                  // assume all three are same length
+
+  int n = LENGTH(inHigh);
   double *restrict highs = REAL(inHigh);   // pointer to high prices
   double *restrict lows = REAL(inLow);     // pointer to low prices
   double *restrict closes = REAL(inClose); // pointer to close prices
@@ -26,20 +28,41 @@ SEXP impl_ta_ACCBANDS(SEXP inHigh, SEXP inLow, SEXP inClose,
 
   // allocate result matrix: n rows × 3 cols
   SEXP result = PROTECT(allocMatrix(REALSXP, n, 3));
-  double *upper = REAL(result);  // col 1
-  double *middle = upper + n;    // col 2
-  double *lower = upper + 2 * n; // col 3
+  double *upper = REAL(result);
+  double *middle = upper + n;
+  double *lower = upper + 2 * n;
 
   int outBeg, outNb;
-  TA_RetCode ret =
-      TA_ACCBANDS(0, n - 1, highs, lows, closes, period, &outBeg, &outNb,
-                  upper + outBeg, middle + outBeg, lower + outBeg);
+  // clang-format off
+  TA_RetCode ret = TA_ACCBANDS(
+    0, 
+    n - 1, 
+    highs, 
+    lows, 
+    closes, 
+    period, 
+    &outBeg, 
+    &outNb,
+    upper + outBeg,
+    middle + outBeg,
+    lower + outBeg
+  );
+  // clang-format on
 
-  // fill leading/trailing NAs for undefined ranges
-  for (int i = 0; i < outBeg; ++i)
-    upper[i] = middle[i] = lower[i] = NA_REAL;
-  for (int i = outBeg + outNb; i < n; ++i)
-    upper[i] = middle[i] = lower[i] = NA_REAL;
+  // shift each array
+  //
+  // NOTE: There is most likely a better
+  //       way to do this. But as it is,
+  //       this move costs 3 x 5.33 ms for a
+  //       normally distributed double vector of
+  //       of length 1e7; the SMA costs 57ms
+  //       its 10% overhead, which is alot. But
+  //       if anyone is doing calculations on 1e7
+  //       they probably have bigger thing to worry
+  //       about.
+  shift_array(upper, n, outBeg);
+  shift_array(middle, n, outBeg);
+  shift_array(lower, n, outBeg);
 
   // set column names to lowercase as requested
   SEXP dims = PROTECT(allocVector(VECSXP, 2));
