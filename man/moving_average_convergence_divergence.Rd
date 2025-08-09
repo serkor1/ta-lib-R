@@ -2,22 +2,10 @@
 % Please edit documentation in R/ta_MACD.R
 \name{moving_average_convergence_divergence}
 \alias{moving_average_convergence_divergence}
-\title{Moving Average Convergence/Divergence}
+\title{Moving Average Convergence Divergence}
 \usage{
-## Generic default S3 method
-## for Moving Average Convergence/Divergence
-moving_average_convergence_divergence(...)
-}
-\value{
-Something
+moving_average_convergence_divergence(x, fast = 12, slow = 26, signal = 9, ...)
 }
 \description{
-A generic S3 function to compute the moving average convergence/divergence. The function assumes that the input \link{matrix} \code{x} is Open (\code{x[,1]}), High (\code{x[,2]}), Low (\code{x[,3]}), Close (\code{x[,4]}) and Volume (\code{x[,5]}).
+Moving Average Convergence Divergence
 }
-\author{
-Serkan Korkmaz
-}
-\concept{algorithmic trading}
-\concept{finance}
-\concept{technical analysis}
-\concept{trading}
