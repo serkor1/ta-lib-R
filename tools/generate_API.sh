@@ -26,6 +26,7 @@ print_header() {
 
 #include <Rinternals.h>
 
+// clang-format off
 EOF
 }
 
@@ -61,8 +62,9 @@ extract_signatures() {
 
 print_footer() {
   cat <<'EOF'
+// clang-format on
 
-#endif
+#endif //_API_H
 EOF
 }
 
