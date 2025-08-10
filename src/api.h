@@ -16,6 +16,12 @@ SEXP impl_ta_CDLDOJI(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_
 SEXP impl_ta_CDLDOJISTAR(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
 SEXP impl_ta_CDLDRAGONFLYDOJI(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
 SEXP impl_ta_CDLEVENINGDOJISTAR(SEXP open, SEXP high, SEXP low, SEXP close, SEXP penetration, SEXP normalize_flag);
+SEXP impl_ta_HT_DCPERIOD(SEXP inReal);
+SEXP impl_ta_HT_DCPHASE(SEXP inReal);
+SEXP impl_ta_HT_PHASOR(SEXP inReal);
+SEXP impl_ta_HT_SINE(SEXP inReal);
+SEXP impl_ta_HT_TRENDLINE(SEXP inReal);
+SEXP impl_ta_HT_TRENDMODE(SEXP inReal);
 SEXP impl_ta_MACDEXT(SEXP inReal, SEXP optFastPeriod, SEXP optFastMAType, SEXP optSlowPeriod, SEXP optSlowMAType, SEXP optSignalPeriod, SEXP optSignalMAType);
 SEXP impl_ta_MACDFIX(SEXP inReal, SEXP optSignalPeriod);
 SEXP impl_ta_MACD(SEXP inReal, SEXP optFastPeriod, SEXP optSlowPeriod, SEXP optSignalPeriod);
