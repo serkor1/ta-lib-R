@@ -3,7 +3,7 @@
 
 set -eu
 
-echo "configure.win: start"
+echo "configure.win: start!"
 
 # 1) Setup
 TA_LIB_SRC="src/ta-lib"
