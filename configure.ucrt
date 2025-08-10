@@ -1,0 +1,145 @@
+#!/usr/bin/env sh
+# configure.win — generate src/Makevars.win for TA-Lib on Windows (Rtools/MSYS2)
+
+set -eu
+
+echo "configure.win: start"
+
+# 1) Setup
+TA_LIB_SRC="src/ta-lib"
+USE_SYSTEM=0
+PKG_CPPFLAGS=""
+PKG_LIBS=""
+
+# Helper: query R toolchain (per R-exts)
+R_BIN="${R_HOME}/bin${R_ARCH_BIN:-}/R"
+[ -x "$R_BIN" ] || R_BIN="${R_HOME}/bin/R"
+CC_LINE="$("$R_BIN" CMD config CC 2>/dev/null || echo gcc)"
+CXX_LINE="$("$R_BIN" CMD config CXX17 2>/dev/null || "$R_BIN" CMD config CXX 2>/dev/null || echo g++)"
+CC_BIN="${CC_LINE%% *}";  CC_EXTRAS="${CC_LINE#"$CC_BIN"}";  [ "$CC_EXTRAS" = "$CC_LINE" ] && CC_EXTRAS=""
+CXX_BIN="${CXX_LINE%% *}"; CXX_EXTRAS="${CXX_LINE#"$CXX_BIN"}"; [ "$CXX_EXTRAS" = "$CXX_LINE" ] && CXX_EXTRAS=""
+CFLAGS_R="$("$R_BIN" CMD config CFLAGS 2>/dev/null || true)"
+CXXFLAGS_R="$("$R_BIN" CMD config CXXFLAGS 2>/dev/null || true)"
+CPPFLAGS_R="$("$R_BIN" CMD config CPPFLAGS 2>/dev/null || true)"
+LDFLAGS_R="$("$R_BIN" CMD config LDFLAGS 2>/dev/null || true)"
+
+add_quote_I() { printf '%s' "-I\"$1\""; }
+add_quote_L() { printf '%s' "-L\"$1\""; }
+
+# 2) Try system TA-Lib via pkg-config (MSYS2 provides pkgconf)
+if command -v pkg-config >/dev/null 2>&1 && pkg-config --exists ta-lib; then
+  PKG_CPPFLAGS="$(pkg-config --cflags ta-lib)"
+  PKG_LIBS="$(pkg-config --libs ta-lib)"
+  USE_SYSTEM=1
+  echo "configure.win: using TA-Lib via pkg-config"
+else
+  echo "configure.win: pkg-config not usable or ta-lib.pc not found; probing"
+fi
+
+# 3) Probe typical MSYS2 prefixes (ucrt64/mingw64/mingw32)
+if [ "$USE_SYSTEM" -eq 0 ]; then
+  CAND_PREFIXES=""
+  [ -n "${MINGW_PREFIX:-}" ] && CAND_PREFIXES="$MINGW_PREFIX"
+  CAND_PREFIXES="$CAND_PREFIXES /ucrt64 /mingw64 /mingw32"
+
+  for pfx in $CAND_PREFIXES; do
+    inc1="$pfx/include/ta-lib"     # canonical header dir
+    inc2="$pfx/include/ta-lib"     # fallback path check (same as inc1 for clarity)
+    libd="$pfx/lib"
+    if [ -f "$inc1/ta_libc.h" ] || [ -f "$inc2/ta_libc.h" ]; then
+      incroot="$inc1"; [ -f "$inc1/ta_libc.h" ] || incroot="$inc2"
+      echo 'int main(void){return 0;}' > conftest.c
+      if "$CC_BIN" $CFLAGS_R $CPPFLAGS_R $CC_EXTRAS conftest.c -o conftest $(add_quote_L "$libd") -lta_lib >/dev/null 2>&1; then
+        PKG_CPPFLAGS=$(add_quote_I "$incroot")
+        PKG_LIBS="$(add_quote_L "$libd") -lta_lib"
+        USE_SYSTEM=1
+        echo "configure.win: found TA-Lib under $pfx (link: -lta_lib; inc: $incroot)"
+      elif "$CC_BIN" $CFLAGS_R $CPPFLAGS_R $CC_EXTRAS conftest.c -o conftest $(add_quote_L "$libd") -lta-lib >/dev/null 2>&1; then
+        PKG_CPPFLAGS=$(add_quote_I "$incroot")
+        PKG_LIBS="$(add_quote_L "$libd") -lta-lib"
+        USE_SYSTEM=1
+        echo "configure.win: found TA-Lib under $pfx (link: -lta-lib; inc: $incroot)"
+      fi
+      rm -f conftest conftest.c
+      [ "$USE_SYSTEM" -eq 1 ] && break
+    fi
+  done
+fi
+
+# 4) Accept environment hints (TA_INCLUDE_PATH / TA_LIBRARY_PATH)
+if [ "$USE_SYSTEM" -eq 0 ] && [ -n "${TA_INCLUDE_PATH:-}" ] && [ -n "${TA_LIBRARY_PATH:-}" ]; then
+  echo "configure.win: using TA_INCLUDE_PATH/TA_LIBRARY_PATH"
+  incroot="$TA_INCLUDE_PATH"
+  if   [ -f "$incroot/ta_libc.h" ]; then
+    : # incroot is correct as-is
+  elif [ -f "$incroot/ta-lib/ta_libc.h" ]; then
+    incroot="$incroot/ta-lib"
+  else
+    echo "configure.win: warning: TA_INCLUDE_PATH does not contain ta_libc.h (or ta-lib/ta_libc.h)"
+  fi
+  PKG_CPPFLAGS=$(add_quote_I "$incroot")
+  echo 'int main(void){return 0;}' > conftest.c
+  if "$CC_BIN" $CFLAGS_R $CPPFLAGS_R $CC_EXTRAS conftest.c -o conftest $(add_quote_L "$TA_LIBRARY_PATH") -lta_lib >/dev/null 2>&1; then
+    PKG_LIBS="$(add_quote_L "$TA_LIBRARY_PATH") -lta_lib"; USE_SYSTEM=1
+  elif "$CC_BIN" $CFLAGS_R $CPPFLAGS_R $CC_EXTRAS conftest.c -o conftest $(add_quote_L "$TA_LIBRARY_PATH") -lta-lib >/dev/null 2>&1; then
+    PKG_LIBS="$(add_quote_L "$TA_LIBRARY_PATH") -lta-lib"; USE_SYSTEM=1
+  fi
+  rm -f conftest conftest.c
+fi
+
+# 5) Vendored build fallback via CMake+Ninja (no install; link from build dir)
+if [ "$USE_SYSTEM" -eq 0 ]; then
+  echo "configure.win: building vendored TA-Lib with CMake (Ninja) — no install"
+
+  # Ensure the MinGW toolchain bin is on PATH (ucrt64 by default on Rtools 4.5)
+  if [ -n "${MINGW_PREFIX:-}" ]; then
+    PATH="$MINGW_PREFIX/bin:/usr/bin:$PATH"
+  else
+    PATH="/ucrt64/bin:/usr/bin:$PATH"
+  fi
+
+  TA_LIB_SRC_ABS="$(cd "$TA_LIB_SRC" && pwd)"
+  BUILD_DIR="$TA_LIB_SRC_ABS/build"
+  SRC_INC="$TA_LIB_SRC_ABS/include"
+  rm -rf "$BUILD_DIR" && mkdir -p "$BUILD_DIR"
+
+  export Platform=x64  # silence TA-Lib MSVC-only check
+  cmake -S "$TA_LIB_SRC_ABS" -B "$BUILD_DIR" -G Ninja \
+        -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DBUILD_DEV_TOOLS=OFF \
+        -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+        -DCMAKE_C_COMPILER="$CC_BIN" -DCMAKE_CXX_COMPILER="$CXX_BIN" \
+        -DCMAKE_C_FLAGS="$CFLAGS_R $CPPFLAGS_R $CC_EXTRAS" \
+        -DCMAKE_CXX_FLAGS="$CXXFLAGS_R $CPPFLAGS_R $CXX_EXTRAS -Wno-extra-semi"
+
+  cmake --build "$BUILD_DIR" --target ta-lib-static -- -j2
+
+  # Find the produced static archive
+  TA_LIB_STATIC=""
+  for f in "$BUILD_DIR/libta-lib-static.a" "$BUILD_DIR/lib/libta-lib-static.a" "$BUILD_DIR"/*ta-lib-static*.a; do
+    [ -f "$f" ] && TA_LIB_STATIC="$f" && break
+  done
+  [ -n "$TA_LIB_STATIC" ] || { echo "ERROR: ta-lib static archive not found in $BUILD_DIR"; exit 1; }
+
+  # Create a minimal "install-like" include root: <shim>/ta-lib/*.h
+  SHIM_INC="$BUILD_DIR/include-compat"; mkdir -p "$SHIM_INC/ta-lib"
+  cp -f "$SRC_INC"/*.h "$SHIM_INC/ta-lib/"
+  [ -f "$SHIM_INC/ta-lib/ta_libc.h" ] || { echo "ERROR: shim header missing"; exit 1; }
+
+  # Add BOTH include roots so either <ta_libc.h> or <ta-lib/ta_libc.h> works
+  PKG_CPPFLAGS="$(add_quote_I "$SHIM_INC") $(add_quote_I "$SHIM_INC/ta-lib")"
+  PKG_LIBS="\"$TA_LIB_STATIC\""
+
+  echo "configure.win: PKG_CPPFLAGS=$PKG_CPPFLAGS"
+  echo "configure.win: PKG_LIBS=$PKG_LIBS"
+fi
+
+# 6) Emit src/Makevars.win
+echo "configure.win: writing src/Makevars.win"
+mkdir -p src
+cat <<EOF > src/Makevars.win
+# autogenerated by configure.win
+PKG_CPPFLAGS = $PKG_CPPFLAGS
+PKG_LIBS = $PKG_LIBS
+EOF
+
+echo "configure.win: done."
