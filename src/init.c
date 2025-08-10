@@ -11,6 +11,8 @@
 
 static const R_CallMethodDef CallEntries[] = {
     CALLDEF(impl_ta_ACCBANDS, 4),
+    CALLDEF(impl_ta_ADOSC, 6),
+    CALLDEF(impl_ta_AD, 4),
     CALLDEF(impl_ta_APO, 4),
     CALLDEF(impl_ta_AROONOSC, 3),
     CALLDEF(impl_ta_AROON, 3),
