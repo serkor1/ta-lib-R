@@ -6,6 +6,8 @@
 
 // clang-format off
 SEXP impl_ta_ACCBANDS(SEXP inHigh, SEXP inLow, SEXP inClose, SEXP optTimePeriod);
+SEXP impl_ta_ADOSC(SEXP inHigh, SEXP inLow, SEXP inClose, SEXP inVolume, SEXP optFastPeriod, SEXP optSlowPeriod);
+SEXP impl_ta_AD(SEXP inHigh, SEXP inLow, SEXP inClose, SEXP inVolume);
 SEXP impl_ta_APO(SEXP inRealSEXP, SEXP fastPeriodSEXP, SEXP slowPeriodSEXP, SEXP maTypeSEXP);
 SEXP impl_ta_AROONOSC(SEXP inHighSEXP, SEXP inLowSEXP, SEXP timePeriodSEXP);
 SEXP impl_ta_AROON(SEXP inHighSEXP, SEXP inLowSEXP, SEXP timePeriodSEXP);
