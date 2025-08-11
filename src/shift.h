@@ -21,6 +21,19 @@
 // https://stackoverflow.com/questions/479207/how-to-achieve-function-overloading-in-c
 // See:
 // https://stackoverflow.com/questions/479207/how-to-achieve-function-overloading-in-c/25026358#25026358
+//
+//
+// shift each array
+//
+// NOTE: There is most likely a better
+//       way to do this. But as it is,
+//       this move costs 3 x 5.33 ms for a
+//       normally distributed double vector of
+//       of length 1e7; the SMA costs 57ms
+//       its 10% overhead, which is alot. But
+//       if anyone is doing calculations on 1e7
+//       they probably have bigger thing to worry
+//       about.
 #ifndef _SHIFT_H
 #define _SHIFT_H
 

@@ -24,51 +24,77 @@
 #include <limits.h>
 #include <ta_libc.h>
 
-SEXP impl_ta_CDLEVENINGDOJISTAR(SEXP open, SEXP high, SEXP low, SEXP close,
-                                SEXP penetration, SEXP normalize_flag) {
+// clang-format off
+SEXP impl_ta_CDLEVENINGDOJISTAR(
+  SEXP open, 
+  SEXP high, 
+  SEXP low, 
+  SEXP close,
+  SEXP penetration, 
+  SEXP normalize_flag) {
+  // clang-format on
   int protect_count = 0;
 
-  // Validate and extract the penetration parameter
-  double pen = REAL(penetration)[0];
-
-  R_xlen_t n = XLENGTH(open);
-
-  if (n > INT_MAX) {
-    if (protect_count > 0)
-      UNPROTECT(protect_count);
-    error("Number of observations exceeds maximum supported by TA-Lib");
-  }
-  int len = (int)n;
-
+  // data
   const double *restrict open_ptr = REAL(open);
   const double *restrict high_ptr = REAL(high);
   const double *restrict low_ptr = REAL(low);
   const double *restrict close_ptr = REAL(close);
+  double penetration_ptr = REAL(penetration)[0];
 
-  SEXP result = PROTECT(allocVector(INTSXP, n));
-  protect_count++;
+  int n = LENGTH(open);
+
+  // clang-format off
+  SEXP result = PROTECT(
+    allocVector(INTSXP, n)
+  ); protect_count++;
   int *restrict out_ptr = INTEGER(result);
+  // clang-format on
 
-  int out_beg_idx = 0;
-  int out_nb_elem = 0;
-  TA_RetCode ret_code = TA_CDLEVENINGDOJISTAR(
-      0, len - 1, open_ptr, high_ptr, low_ptr, close_ptr,
-      pen, // penetration percentage for pattern confirmation
-      &out_beg_idx, &out_nb_elem, out_ptr);
-  if (ret_code != TA_SUCCESS) {
-    if (protect_count > 0)
+  // clang-format off
+  const int minimum_lookback = TA_CDLEVENINGDOJISTAR_Lookback(penetration_ptr);
+  // clang-format on
+
+  if (n < minimum_lookback) {
+    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
+               minimum_lookback);
+
+    for (size_t i = 0; i < n; ++i) {
+      out_ptr[i] = NA_INTEGER;
+    }
+
+  } else {
+
+    int outBeg = 0, outNb = 0;
+    // clang-format off
+    TA_RetCode return_code = TA_CDLEVENINGDOJISTAR(
+      0, 
+      n - 1, 
+      open_ptr, 
+      high_ptr, 
+      low_ptr, 
+      close_ptr,
+      penetration_ptr,
+      &outBeg,
+      &outNb,
+      out_ptr
+    );
+    // clang-format on
+
+    if (return_code != TA_SUCCESS) {
       UNPROTECT(protect_count);
-    error("TA-Lib computation failed with error code %d", ret_code);
-  }
-  shift_array(out_ptr, n, out_beg_idx);
-  // the results are given in the range -100 and 100
-  // if normalized it returns -1 and 1
-  int is_true = Rf_asLogical(normalize_flag);
-  if (is_true == 1) {
-    normalize(out_ptr, n, 100, out_beg_idx);
+      Rf_error("Failed with error code %d", return_code);
+    }
+
+    // shift array
+    shift_array(out_ptr, n, outBeg);
+
+    bool do_normalize = LOGICAL_VALUE(normalize_flag);
+    if (do_normalize) {
+      normalize(out_ptr, n, 100, outBeg);
+    }
   }
 
-  if (protect_count > 0)
-    UNPROTECT(protect_count);
+  UNPROTECT(protect_count);
   return result;
 }

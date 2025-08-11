@@ -1,40 +1,30 @@
-// Interface to TA_MA (moving average)
+// ta_CMO.c
+//
+// Interface to ta_CMO (Chande Momentum Oscillator)
 //
 // Parameters
-//   real            – numeric vector of inputs
-//   lag      – integer SEXP for MA period (1 to 100000)
-//   matype          – integer SEXP for MAType (0=SMA … 8=T3)
+//   x            : numeric vector (double).
+//   optTimePeriod: integer, period (default 14 in TA-Lib).
 //
 // Description
-//   Returns a numeric vector of the same length as `real`,
-//   with NA_REAL for the first lookback samples, then the
-//   moving‐average values thereafter.
-#include "MAType.h"
-#include "R_ext/Error.h"
+//   Computes CMO on a single price stream. Returns a double vector of length n
+//   (unnamed), with the first lookback elements padded by NA using
+//   shift_array().
+
 #include "lib.h"
 #include "shift.h"
-#include "ta-lib/include/ta_defs.h"
-#include "ta_defs.h"
 #include "ta_func.h"
-#include "ta_libc.h"
+#include <R.h>
 #include <Rinternals.h>
+#include <ta_libc.h>
 
-// clang-format off
-SEXP impl_ta_MA(
-  SEXP x, 
-  SEXP period, 
-  SEXP matype) {
-  // clang-format on
-
+SEXP impl_ta_CMO(SEXP x, SEXP optTimePeriod) {
   // protection counter
   int protection_count = 0;
 
-  // moving average
-  TA_MAType MAType = as_MAType(matype);
-
   // values
   int n = length(x);
-  int lag = INTEGER(period)[0];
+  int lag = INTEGER(optTimePeriod)[0];
   int outBeg = 0, outNb = 0;
 
   // data
@@ -49,9 +39,8 @@ SEXP impl_ta_MA(
   // clang-format on
 
   // clang-format off
-  const int minimum_lookback = TA_MA_Lookback(
-    lag, 
-    MAType
+  const int minimum_lookback = TA_CMO_Lookback(
+    lag
   );
   // clang-format on
 
@@ -65,22 +54,22 @@ SEXP impl_ta_MA(
 
   } else {
 
+    int outBeg = 0, outNb = 0;
     // clang-format off
-    TA_RetCode return_code = TA_MA(
-      0, 
-      n - 1, 
-      x_ptr, 
-      lag, 
-      MAType, 
-      &outBeg, 
-      &outNb, 
-      output_ptr
+    TA_RetCode return_code = TA_CMO(
+        0, 
+        n-1, 
+        x_ptr, 
+        lag, 
+        &outBeg, 
+        &outNb, 
+        output_ptr
     );
     // clang-format on
 
     if (return_code != TA_SUCCESS) {
       UNPROTECT(protection_count);
-      Rf_error("TA_MA failed: return code %d", return_code);
+      Rf_error("ta_CMO failed: return code %d", return_code);
     }
 
     // shift values

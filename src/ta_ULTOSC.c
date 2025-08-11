@@ -12,53 +12,86 @@
 //   Returns a numeric vector of the same length as inputs containing
 //   the Ultimate Oscillator, with NA for indices before the lookback.
 #include "lib.h"
+#include "shift.h"
+#include "ta_func.h"
 #include "ta_libc.h"
 #include <R.h>
 #include <Rinternals.h>
 
-SEXP impl_ta_ULTOSC(SEXP high, SEXP low, SEXP close, SEXP timeperiod1,
-                    SEXP timeperiod2, SEXP timeperiod3) {
-  int pCount = 0;
-  // Coerce inputs to REALSXP/INTSXP and protect
-  high = PROTECT(coerceVector(high, REALSXP));
-  pCount++;
-  low = PROTECT(coerceVector(low, REALSXP));
-  pCount++;
-  close = PROTECT(coerceVector(close, REALSXP));
-  pCount++;
-  timeperiod1 = PROTECT(coerceVector(timeperiod1, INTSXP));
-  pCount++;
-  timeperiod2 = PROTECT(coerceVector(timeperiod2, INTSXP));
-  pCount++;
-  timeperiod3 = PROTECT(coerceVector(timeperiod3, INTSXP));
-  pCount++;
+// clang-format off
+SEXP impl_ta_ULTOSC(
+  SEXP high, 
+  SEXP low, 
+  SEXP close, 
+  SEXP timeperiod1,
+  SEXP timeperiod2, 
+  SEXP timeperiod3) {
+  // clang-format on
 
-  int n = length(high);
-  // Extract C pointers with restrict qualifier for speed
-  const double *__restrict__ inHigh = REAL(high);
-  const double *__restrict__ inLow = REAL(low);
-  const double *__restrict__ inClose = REAL(close);
+  int protect_count = 0;
+
+  // periods
   int p1 = INTEGER(timeperiod1)[0];
   int p2 = INTEGER(timeperiod2)[0];
   int p3 = INTEGER(timeperiod3)[0];
 
+  // data
+  int n = length(high);
+  const double *__restrict__ high_ptr = REAL(high);
+  const double *__restrict__ low_ptr = REAL(low);
+  const double *__restrict__ close_ptr = REAL(close);
+
   int outBeg, outNB;
-  // Allocate output vector of full length
-  SEXP result = PROTECT(allocVector(REALSXP, n));
-  pCount++;
-  double *__restrict__ out = REAL(result);
+  // clang-format off
+  SEXP output = PROTECT(
+    allocVector(REALSXP, n)
+  ); protect_count++;
+  double *__restrict__ output_ptr = REAL(output);
+  // clang-format on
 
-  // Call TA-Lib function
-  TA_RetCode ret = TA_ULTOSC(0, n - 1, inHigh, inLow, inClose, p1, p2, p3,
-                             &outBeg, &outNB, out + outBeg);
-  if (ret != TA_SUCCESS) {
-    UNPROTECT(pCount);
-    error("TA_ULTOSC failed: return code %d", ret);
+  // clang-format off
+  int minimum_lookback = TA_ULTOSC_Lookback(
+    p1,
+    p2,
+    p3
+  );
+  // clang-format on
+
+  if (n < minimum_lookback) {
+    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
+               minimum_lookback);
+
+    for (size_t i = 0; i < n; ++i) {
+      output_ptr[i] = NA_REAL;
+    }
+
+  } else {
+
+    // clang-format off
+    TA_RetCode ret = TA_ULTOSC(
+      0, 
+      n - 1, 
+      high_ptr , 
+      low_ptr,   
+      close_ptr, 
+      p1, 
+      p2, 
+      p3,
+      &outBeg, 
+      &outNB, 
+      output_ptr + outBeg
+    );
+    // clang-format on
+
+    if (ret != TA_SUCCESS) {
+      UNPROTECT(protect_count);
+      error("TA_ULTOSC failed: return code %d", ret);
+    }
+
+    // shift
+    shift_array(output_ptr, n, outBeg);
   }
-  // Fill initial lookback positions with NA
-  for (register int i = 0; i < outBeg; ++i)
-    out[i] = NA_REAL;
 
-  UNPROTECT(pCount);
-  return result;
+  UNPROTECT(protect_count);
+  return output;
 }

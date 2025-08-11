@@ -13,90 +13,111 @@
 // Description
 //   Returns an N×2 matrix with columns 'slowk' and 'slowd', NA-filled
 //   for initial lookback.
+#include "MAType.h"
 #include "lib.h"
+#include "names.h"
 #include "ta_defs.h"
+#include "ta_func.h"
 #include "ta_libc.h"
 #include <R.h>
 #include <Rinternals.h>
 
-SEXP impl_ta_STOCH(SEXP high, SEXP low, SEXP close, SEXP fastk_period,
-                   SEXP slowk_period, SEXP slowk_matype, SEXP slowd_period,
-                   SEXP slowd_matype) {
+// clang-format off
+SEXP impl_ta_STOCH(
+    SEXP high,
+    SEXP low, 
+    SEXP close, 
+    SEXP fastk_period,
+    SEXP slowk_period, 
+    SEXP slowk_matype, 
+    SEXP slowd_period,
+    SEXP slowd_matype) {
+  // clang-format on
 
-  int pCount = 0;
-  high = PROTECT(coerceVector(high, REALSXP));
-  pCount++;
-  low = PROTECT(coerceVector(low, REALSXP));
-  pCount++;
-  close = PROTECT(coerceVector(close, REALSXP));
-  pCount++;
-  fastk_period = PROTECT(coerceVector(fastk_period, INTSXP));
-  pCount++;
-  slowk_period = PROTECT(coerceVector(slowk_period, INTSXP));
-  pCount++;
-  slowk_matype = PROTECT(coerceVector(slowk_matype, INTSXP));
-  pCount++;
-  slowd_period = PROTECT(coerceVector(slowd_period, INTSXP));
-  pCount++;
-  slowd_matype = PROTECT(coerceVector(slowd_matype, INTSXP));
-  pCount++;
+  int protect_count = 0;
+  // Determine MAs
+  TA_MAType k_MA = as_MAType(slowk_matype);
+  TA_MAType d_MA = as_MAType(slowd_matype);
+
+  // periods
+  const int fastk = INTEGER(fastk_period)[0];
+  const int slowk = INTEGER(slowk_period)[0];
+  const int slowd = INTEGER(slowd_period)[0];
+
+  // data
+  const double *restrict high_ptr = REAL(high);
+  const double *restrict low_ptr = REAL(low);
+  const double *restrict close_ptr = REAL(close);
 
   int n = length(high);
-  const double *__restrict__ inHigh = REAL(high);
-  const double *__restrict__ inLow = REAL(low);
-  const double *__restrict__ inClose = REAL(close);
-  int kP = INTEGER(fastk_period)[0];
-  int sk = INTEGER(slowk_period)[0];
-  int sm = INTEGER(slowk_matype)[0];
-  TA_MAType sm_ma = (TA_MAType)sm;
-  int dP = INTEGER(slowd_period)[0];
-  int dm = INTEGER(slowd_matype)[0];
-  TA_MAType dm_ma = (TA_MAType)dm;
 
-  int outBeg, outNB;
-  SEXP result = PROTECT(allocMatrix(REALSXP, n, 2));
-  pCount++;
+  // clang-format off
+  SEXP result = PROTECT(
+    allocMatrix(REALSXP, n, 2)
+  ); protect_count++;
   double *__restrict__ mat = REAL(result);
   double *__restrict__ outSlowK = mat;
   double *__restrict__ outSlowD = mat + n;
+  // clang-format on
 
   // clang-format off
-TA_RetCode ret = TA_STOCH(
-    0,
-    n - 1,
-    inHigh,
-    inLow,
-    inClose,                             
-    kP,
-    sk,
-    sm_ma,
-    dP,
-    dm_ma,
-    &outBeg,
-    &outNB, 
-    outSlowK + outBeg,
-    outSlowD + outBeg
-);
-// clang-format off
+  const int minimum_lookback = TA_STOCH_Lookback(
+    fastk, 
+    slowk, 
+    k_MA, 
+    slowd, 
+    d_MA
+    );
+  // clang-format on
+  if (n < minimum_lookback) {
+    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
+               minimum_lookback);
 
-    if (ret != TA_SUCCESS) {
-        UNPROTECT(pCount);
-        error("TA_STOCH failed: return code %d", ret);
+    for (size_t i = 0; i < n; ++i) {
+      outSlowK[i] = outSlowK[i] = NA_REAL;
+    }
+
+  } else {
+    int outBeg = 0, outNB = 0;
+    // clang-format off
+    TA_RetCode return_code = TA_STOCH(
+        0,
+        n - 1,
+        high_ptr,
+        low_ptr,
+        close_ptr,                             
+        fastk,
+        slowk,
+        k_MA,
+        slowd,
+        d_MA,
+        &outBeg,
+        &outNB, 
+        outSlowK + outBeg,
+        outSlowD + outBeg
+    );
+    // clang-format on
+
+    if (return_code != TA_SUCCESS) {
+      UNPROTECT(protect_count);
+      error("TA_STOCH failed: return code %d", return_code);
     }
 
     // shift array and pad
     // with leading NAs
     shift_array(outSlowK, n, outBeg);
     shift_array(outSlowD, n, outBeg);
+  }
 
-    SEXP colnames  = PROTECT(allocVector(STRSXP, 2)); pCount++;
-    SET_STRING_ELT(colnames, 0, mkChar("slowk"));
-    SET_STRING_ELT(colnames, 1, mkChar("slowd"));
-    SEXP dimnames  = PROTECT(allocVector(VECSXP, 2)); pCount++;
-    SET_VECTOR_ELT(dimnames, 0, R_NilValue);
-    SET_VECTOR_ELT(dimnames, 1, colnames);
-    setAttrib(result, R_DimNamesSymbol, dimnames);
+  // set column names
+  // clang-format off
+  set_colnames(
+    result, 
+    "slowk", 
+    "slowd"
+  );
+  // clang-format on
 
-    UNPROTECT(pCount);
-    return result;
+  UNPROTECT(protect_count);
+  return result;
 }

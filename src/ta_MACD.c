@@ -1,7 +1,7 @@
 // Interface to ta_MACD (Moving Average Convergence/Divergence)
 //
 // Parameters
-//   inReal         : numeric vector of source prices.
+//   x         : numeric vector of source prices.
 //   optFastPeriod  : integer, fast EMA period.
 //   optSlowPeriod  : integer, slow EMA period.
 //   optSignalPeriod: integer, signal‐line EMA period.
@@ -11,55 +11,95 @@
 //   Returns an n × 3 matrix with columns "macd","signal","histogram".
 
 #include "lib.h"
+#include "names.h"
 #include "shift.h"
+#include "ta_func.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <ta_libc.h>
 
-SEXP impl_ta_MACD(SEXP inReal, SEXP optFastPeriod, SEXP optSlowPeriod,
-                  SEXP optSignalPeriod) {
-  int n = LENGTH(inReal);
-  double *restrict src = REAL(inReal);
+// clang-format off
+SEXP impl_ta_MACD(
+  SEXP x, 
+  SEXP optFastPeriod, 
+  SEXP optSlowPeriod,
+  SEXP optSignalPeriod) {
+  // clang-format on
+
+  int protect_count = 0;
+  // periods
   int fastP = INTEGER(optFastPeriod)[0];
   int slowP = INTEGER(optSlowPeriod)[0];
   int signalP = INTEGER(optSignalPeriod)[0];
 
-  SEXP result = PROTECT(allocMatrix(REALSXP, n, 3));
-  double *macd = REAL(result);
+  // data
+  int n = LENGTH(x);
+  double *restrict series = REAL(x);
+
+  // clang-format off
+  SEXP output = PROTECT(
+    allocMatrix(REALSXP, n, 3)
+  ); protect_count++;
+  double *macd = REAL(output);
   double *signal = macd + n;
   double *histogram = macd + 2 * n;
+  // clang-format on
 
-  int outBeg, outNb;
   // clang-format off
-  TA_RetCode ret = TA_MACD(
-    0, 
-    n - 1,
-    src, 
+  const int minimum_lookback = TA_MACD_Lookback(
     fastP, 
     slowP, 
-    signalP, 
-    &outBeg,
-    &outNb,
-    macd + outBeg, 
-    signal + outBeg, 
-    histogram + outBeg
+    signalP
   );
   // clang-format on
 
-  // shift
-  shift_array(macd, n, outBeg);
-  shift_array(signal, n, outBeg);
-  shift_array(histogram, n, outBeg);
+  if (n < minimum_lookback) {
+    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
+               minimum_lookback);
 
-  SEXP dims = PROTECT(allocVector(VECSXP, 2));
-  SEXP cnames = PROTECT(allocVector(STRSXP, 3));
-  SET_STRING_ELT(cnames, 0, mkChar("macd"));
-  SET_STRING_ELT(cnames, 1, mkChar("signal"));
-  SET_STRING_ELT(cnames, 2, mkChar("histogram"));
-  SET_VECTOR_ELT(dims, 0, R_NilValue);
-  SET_VECTOR_ELT(dims, 1, cnames);
-  setAttrib(result, R_DimNamesSymbol, dims);
+    for (size_t i = 0; i < n; ++i) {
+      macd[i] = signal[i] = histogram[i] = NA_REAL;
+    }
 
-  UNPROTECT(3);
-  return result;
+  } else {
+    int outBeg = 0, outNb = 0;
+    // clang-format off
+    TA_RetCode return_code = TA_MACD(
+      0, 
+      n - 1,
+      series, 
+      fastP, 
+      slowP, 
+      signalP, 
+      &outBeg,
+      &outNb,
+      macd + outBeg, 
+      signal + outBeg, 
+      histogram + outBeg
+    );
+    // clang-format on
+
+    if (return_code != TA_SUCCESS) {
+      UNPROTECT(protect_count);
+      Rf_error("Failed with error code %d", return_code);
+    }
+
+    // shift
+    shift_array(macd, n, outBeg);
+    shift_array(signal, n, outBeg);
+    shift_array(histogram, n, outBeg);
+  }
+
+  // set column names
+  // clang-format off
+  set_colnames(
+    output, 
+    "macd", 
+    "signal", 
+    "histogram"
+  );
+  // clang-format on
+
+  UNPROTECT(protect_count);
+  return output;
 }

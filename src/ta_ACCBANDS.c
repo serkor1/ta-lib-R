@@ -10,9 +10,21 @@
 //   Computes acceleration bands (upper, middle, lower) over the input series.
 //   Returns an n × 3 matrix with columns "upper","middle","lower", padded
 //   with NA_REAL where the bands are undefined.
+//
+// Implementation
+//
+// The function does not check for equal size of the
+// of the input vectors. This is on the user.
+//
+// It uses lookback function to verify the validity
+// of input vs lookback. If its invalid, it returns
+// a warning with a NA_REAL padded matrix.
 
+#include "R_ext/Error.h"
 #include "lib.h"
+#include "names.h"
 #include "shift.h"
+#include "ta_func.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <ta_libc.h>
@@ -20,60 +32,68 @@
 SEXP impl_ta_ACCBANDS(SEXP inHigh, SEXP inLow, SEXP inClose,
                       SEXP optTimePeriod) {
 
+  int protect_count = 0;
   int n = LENGTH(inHigh);
-  double *restrict highs = REAL(inHigh);   // pointer to high prices
-  double *restrict lows = REAL(inLow);     // pointer to low prices
-  double *restrict closes = REAL(inClose); // pointer to close prices
-  int period = INTEGER(optTimePeriod)[0];  // lookback period
+  double *restrict highs = REAL(inHigh);
+  double *restrict lows = REAL(inLow);
+  double *restrict closes = REAL(inClose);
+  int period = INTEGER(optTimePeriod)[0];
 
-  // allocate result matrix: n rows × 3 cols
   SEXP result = PROTECT(allocMatrix(REALSXP, n, 3));
   double *upper = REAL(result);
   double *middle = upper + n;
   double *lower = upper + 2 * n;
+  protect_count++;
 
-  int outBeg, outNb;
+  // check minimum lookback
+  const int minimum_lookback = TA_ACCBANDS_Lookback(period);
+  if (n < minimum_lookback) {
+    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
+               minimum_lookback);
+
+    for (size_t i = 0; i < n; ++i) {
+      upper[i] = middle[i] = lower[i] = NA_REAL;
+    }
+
+  } else {
+
+    int outBeg = 0, outNb = 0;
+    // clang-format off
+    TA_RetCode return_code = TA_ACCBANDS(
+      0, 
+      n - 1, 
+      highs, 
+      lows, 
+      closes, 
+      period, 
+      &outBeg, 
+      &outNb,
+      upper + outBeg,
+      middle + outBeg,
+      lower + outBeg
+    );
+    // clang-format on
+
+    if (return_code != TA_SUCCESS) {
+      UNPROTECT(protect_count);
+      Rf_error("Failed with error code %d", return_code);
+    }
+
+    shift_array(upper, n, outBeg);
+    shift_array(middle, n, outBeg);
+    shift_array(lower, n, outBeg);
+  }
+
+  // set column names
   // clang-format off
-  TA_RetCode ret = TA_ACCBANDS(
-    0, 
-    n - 1, 
-    highs, 
-    lows, 
-    closes, 
-    period, 
-    &outBeg, 
-    &outNb,
-    upper + outBeg,
-    middle + outBeg,
-    lower + outBeg
+  set_colnames(
+    result, 
+    "upper", 
+    "middle", 
+    "lower"
   );
   // clang-format on
 
-  // shift each array
-  //
-  // NOTE: There is most likely a better
-  //       way to do this. But as it is,
-  //       this move costs 3 x 5.33 ms for a
-  //       normally distributed double vector of
-  //       of length 1e7; the SMA costs 57ms
-  //       its 10% overhead, which is alot. But
-  //       if anyone is doing calculations on 1e7
-  //       they probably have bigger thing to worry
-  //       about.
-  shift_array(upper, n, outBeg);
-  shift_array(middle, n, outBeg);
-  shift_array(lower, n, outBeg);
-
-  // set column names to lowercase as requested
-  SEXP dims = PROTECT(allocVector(VECSXP, 2));
-  SEXP cnames = PROTECT(allocVector(STRSXP, 3));
-  SET_STRING_ELT(cnames, 0, mkChar("upper"));
-  SET_STRING_ELT(cnames, 1, mkChar("middle"));
-  SET_STRING_ELT(cnames, 2, mkChar("lower"));
-  SET_VECTOR_ELT(dims, 0, R_NilValue);
-  SET_VECTOR_ELT(dims, 1, cnames);
-  setAttrib(result, R_DimNamesSymbol, dims);
-
-  UNPROTECT(3);
+  UNPROTECT(protect_count);
   return result;
 }

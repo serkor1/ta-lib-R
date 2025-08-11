@@ -1,27 +1,33 @@
-// Interface to TA_CDLDRAGONFLYDOJI
+// Interface to TA_CDL3BLACKCROWS
 //
 // Parameters
-//   open: numeric vector of opening prices
-//   high: numeric vector of high prices
-//   low:  numeric vector of low prices
+//   open:  numeric vector of opening prices
+//   high:  numeric vector of high prices
+//   low:   numeric vector of low prices
 //   close: numeric vector of closing prices
+//   normalize_flag: logical; if TRUE, scale outputs to +/-100 consistently
 //
 // Description
-//   Identifies the "Dragonfly Doji" candlestick pattern, characterized by a
-//   Doji with a long lower shadow and virtually no upper shadow. Returns an
-//   integer vector of the same length, with 100 for each index where a
-//   Dragonfly Doji pattern is found (0 if no pattern). Leading NA values are
-//   padded for periods before the first pattern can be detected.
+//   Identifies the bearish "Three Black Crows" pattern. Returns an integer
+//   vector the same length as inputs with -100 at indices where the pattern
+//   is detected (0 otherwise). Leading NA values are padded so the output
+//   length matches the input length.
+#include "R_ext/Arith.h"
+#include "Rdefines.h"
+#include "Rinternals.h"
 #include "lib.h"
 #include "normalize.h"
+#include "shift.h"
+#include "ta_func.h"
 #include <limits.h>
+#include <stdbool.h>
 #include <ta_libc.h>
 
 // clang-format off
-SEXP impl_ta_CDLDRAGONFLYDOJI(
-  SEXP open, 
-  SEXP high, 
-  SEXP low, 
+SEXP impl_ta_CDL3BLACKCROWS(
+  SEXP open,
+  SEXP high,
+  SEXP low,
   SEXP close,
   SEXP normalize_flag) {
   // clang-format on
@@ -34,7 +40,8 @@ SEXP impl_ta_CDLDRAGONFLYDOJI(
   const double *restrict low_ptr = REAL(low);
   const double *restrict close_ptr = REAL(close);
 
-  int n = LENGTH(open);
+  // 2) Series length (assumed equal across OHLC)
+  const int n = LENGTH(open);
 
   // clang-format off
   SEXP result = PROTECT(
@@ -43,41 +50,38 @@ SEXP impl_ta_CDLDRAGONFLYDOJI(
   int *restrict out_ptr = INTEGER(result);
   // clang-format on
 
-  // clang-format off
-  const int minimum_lookback = TA_CDLDRAGONFLYDOJI_Lookback();
-  // clang-format on
+  const int minimum_lookback = TA_CDL3BLACKCROWS_Lookback();
 
   if (n < minimum_lookback) {
     Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
                minimum_lookback);
 
-    for (size_t i = 0; i < n; ++i) {
+    for (int i = 0; i < n; ++i) {
       out_ptr[i] = NA_INTEGER;
     }
-
   } else {
 
     int outBeg = 0, outNb = 0;
     // clang-format off
-    TA_RetCode return_code = TA_CDLDRAGONFLYDOJI(
-      0, 
-      n - 1, 
+    TA_RetCode return_code = TA_CDL3BLACKCROWS(
+      0,
+      n - 1,
       open_ptr, 
       high_ptr, 
       low_ptr, 
       close_ptr,
       &outBeg, 
-      &outNb, 
+      &outNb,
       out_ptr
     );
     // clang-format on
 
     if (return_code != TA_SUCCESS) {
       UNPROTECT(protect_count);
-      Rf_error("Failed with error code %d", return_code);
+      Rf_error("TA_CDL3BLACKCROWS failed with error code %d", return_code);
     }
 
-    // shift array
+    // shift
     shift_array(out_ptr, n, outBeg);
 
     bool do_normalize = LOGICAL_VALUE(normalize_flag);
