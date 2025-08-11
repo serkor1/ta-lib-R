@@ -1,4 +1,4 @@
-// Interface to TA_CDLDOJISTAR
+// Interface to TA_CDLDOJISTARSTAR
 //
 // Parameters
 //   open: numeric vector of opening prices
@@ -21,61 +21,69 @@
 #include <limits.h>
 #include <ta_libc.h>
 
-SEXP impl_ta_CDLDOJISTAR(SEXP open, SEXP high, SEXP low, SEXP close,
-                         SEXP normalize_flag) {
+SEXP impl_ta_CDLDOJISTARSTAR(SEXP open, SEXP high, SEXP low, SEXP close,
+                             SEXP normalize_flag) {
 
   int protect_count = 0;
-  R_xlen_t n = XLENGTH(open);
-  int len = (int)n;
 
+  // data
   const double *restrict open_ptr = REAL(open);
   const double *restrict high_ptr = REAL(high);
   const double *restrict low_ptr = REAL(low);
   const double *restrict close_ptr = REAL(close);
 
-  SEXP result = PROTECT(allocVector(INTSXP, n));
-  protect_count++;
-  int *restrict out_ptr = INTEGER(result);
+  int n = LENGTH(open);
 
-  int out_beg_idx = 0;
-  int out_nb_elem = 0;
   // clang-format off
-  TA_RetCode ret_code = TA_CDLDOJISTAR(
-    0, 
-    len - 1, 
-    open_ptr, 
-    high_ptr, 
-    low_ptr, 
-    close_ptr,
-    &out_beg_idx, 
-    &out_nb_elem, 
-    out_ptr
-  );
+  SEXP result = PROTECT(
+    allocVector(INTSXP, n)
+  ); protect_count++;
+  int *restrict out_ptr = INTEGER(result);
   // clang-format on
 
-  // check if the returned
-  // value is sensible
-  if (ret_code != TA_SUCCESS) {
-    if (protect_count > 0) {
-      UNPROTECT(protect_count);
+  // clang-format off
+  const int minimum_lookback = TA_CDLDOJISTAR_Lookback();
+  // clang-format on
+
+  if (n < minimum_lookback) {
+    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
+               minimum_lookback);
+
+    for (size_t i = 0; i < n; ++i) {
+      out_ptr[i] = NA_INTEGER;
     }
-    error("TA-Lib computation failed with error code %d", ret_code);
+
+  } else {
+
+    int outBeg = 0, outNb = 0;
+    // clang-format off
+    TA_RetCode return_code = TA_CDLDOJISTAR(
+      0, 
+      n - 1, 
+      open_ptr, 
+      high_ptr, 
+      low_ptr, 
+      close_ptr,
+      &outBeg, 
+      &outNb, 
+      out_ptr
+    );
+    // clang-format on
+
+    if (return_code != TA_SUCCESS) {
+      UNPROTECT(protect_count);
+      Rf_error("Failed with error code %d", return_code);
+    }
+
+    // shift array
+    shift_array(out_ptr, n, outBeg);
+
+    bool do_normalize = LOGICAL_VALUE(normalize_flag);
+    if (do_normalize) {
+      normalize(out_ptr, n, 100, outBeg);
+    }
   }
 
-  // shift the array and
-  // and by leading NAs
-  shift_array(out_ptr, n, out_beg_idx);
-
-  // the results are given in the range -100 and 100
-  // if normalized it returns -1 and 1
-  int is_true = Rf_asLogical(normalize_flag);
-  if (is_true == 1) {
-    normalize(out_ptr, n, 100, out_beg_idx);
-  }
-
-  if (protect_count > 0) {
-    UNPROTECT(protect_count);
-  }
-
+  UNPROTECT(protect_count);
   return result;
 }

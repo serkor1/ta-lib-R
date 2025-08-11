@@ -1,17 +1,17 @@
-// Interface to TA_CDLDOJI
+// Interface to TA_CDL2CROWS
 //
 // Parameters
-//   open: numeric vector of opening prices
-//   high: numeric vector of high prices
-//   low:  numeric vector of low prices
+//   open:  numeric vector of opening prices
+//   high:  numeric vector of high prices
+//   low:   numeric vector of low prices
 //   close: numeric vector of closing prices
+//   normalize_flag: logical; if TRUE, scale outputs to +/-100 consistently
 //
 // Description
-//   Identifies "Doji" candlestick patterns, where the open and close prices are
-//   nearly equal, indicating market indecision. Returns an integer vector of
-//   the same length as the inputs, with 100 for each index where a Doji pattern
-//   is detected (0 otherwise). Leading NA values are padded for periods before
-//   the first output can be computed (if any).
+//   Identifies the bearish "Two Crows" pattern. Returns an integer vector
+//   the same length as inputs with -100 at indices where the pattern is
+//   detected (0 otherwise). Leading NA values are padded so the output
+//   length matches the input length.
 #include "R_ext/Arith.h"
 #include "Rdefines.h"
 #include "Rinternals.h"
@@ -24,10 +24,10 @@
 #include <ta_libc.h>
 
 // clang-format off
-SEXP impl_ta_CDLDOJI(
-  SEXP open, 
-  SEXP high, 
-  SEXP low, 
+SEXP impl_ta_CDL2CROWS(
+  SEXP open,
+  SEXP high,
+  SEXP low,
   SEXP close,
   SEXP normalize_flag) {
   // clang-format on
@@ -40,7 +40,7 @@ SEXP impl_ta_CDLDOJI(
   const double *restrict low_ptr = REAL(low);
   const double *restrict close_ptr = REAL(close);
 
-  int n = LENGTH(open);
+  const int n = LENGTH(open);
 
   // clang-format off
   SEXP result = PROTECT(
@@ -49,45 +49,44 @@ SEXP impl_ta_CDLDOJI(
   int *restrict out_ptr = INTEGER(result);
   // clang-format on
 
-  // clang-format off
-  const int minimum_lookback = TA_CDLDOJI_Lookback();
-  // clang-format on
+  const int minimum_lookback = TA_CDL2CROWS_Lookback();
 
   if (n < minimum_lookback) {
     Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
                minimum_lookback);
 
-    for (size_t i = 0; i < n; ++i) {
+    for (int i = 0; i < n; ++i) {
       out_ptr[i] = NA_INTEGER;
     }
-
   } else {
 
     int outBeg = 0, outNb = 0;
     // clang-format off
-    TA_RetCode return_code = TA_CDLDOJI(
-      0, 
-      n - 1, 
+    TA_RetCode return_code = TA_CDL2CROWS(
+      0,
+      n - 1,
       open_ptr, 
       high_ptr, 
       low_ptr, 
       close_ptr,
       &outBeg, 
-      &outNb, 
+      &outNb,
       out_ptr
     );
     // clang-format on
 
+    // 6) Validate execution; bubble up TA-Lib error codes
     if (return_code != TA_SUCCESS) {
       UNPROTECT(protect_count);
-      Rf_error("Failed with error code %d", return_code);
+      Rf_error("TA_CDL2CROWS failed with error code %d", return_code);
     }
 
-    // shift array
+    // 7) Right-shift results in-place so length matches inputs and leading
+    //    slots (before outBeg) are NA (R-friendly)
     shift_array(out_ptr, n, outBeg);
 
-    bool do_normalize = LOGICAL_VALUE(normalize_flag);
-    if (do_normalize) {
+    // 8) Optional normalization to +/-100 domain (preserves zero + sign)
+    if (LOGICAL_VALUE(normalize_flag)) {
       normalize(out_ptr, n, 100, outBeg);
     }
   }

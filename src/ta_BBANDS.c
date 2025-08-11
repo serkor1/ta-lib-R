@@ -14,60 +14,103 @@
 
 #include "MAType.h"
 #include "lib.h"
+#include "names.h"
 #include "shift.h"
 #include "ta-lib/include/ta_defs.h"
+#include "ta_func.h"
 #include <Rinternals.h>
 #include <ta_libc.h>
 
-SEXP impl_ta_BBANDS(SEXP inReal, SEXP optTimePeriod, SEXP optNbDevUp,
-                    SEXP optNbDevDn, SEXP optMAType) {
-  int n = LENGTH(inReal);                 // input length
-  double *restrict src = REAL(inReal);    // pointer to input data
-  int period = INTEGER(optTimePeriod)[0]; // lookback
-  double nbUp = REAL(optNbDevUp)[0];      // std dev up
-  double nbDn = REAL(optNbDevDn)[0];      // std dev down
+// clang-format off
+SEXP impl_ta_BBANDS(
+  SEXP inReal, 
+  SEXP optTimePeriod, 
+  SEXP optNbDevUp,
+  SEXP optNbDevDn, 
+  SEXP optMAType) {
+// clang-format on 
+
+  int protect_count = 0;
+  // determine MAs
   TA_MAType maType = as_MAType(optMAType);
 
-  // allocate result matrix n rows × 3 cols
-  SEXP result = PROTECT(allocMatrix(REALSXP, n, 3));
-  double *upper = REAL(result);  // column 1
-  double *middle = upper + n;    // column 2
-  double *lower = upper + 2 * n; // column 3
+  // periods and standard
+  // deviations
+  int period = INTEGER(optTimePeriod)[0];
+  double nbUp = REAL(optNbDevUp)[0];
+  double nbDn = REAL(optNbDevDn)[0];
 
-  // call TA-Lib function
-  int outBeg, outNb;
+  // data
+  int n = LENGTH(inReal);
+  double *restrict src = REAL(inReal);
+  
   // clang-format off
-  TA_RetCode ret = TA_BBANDS(
-    0, 
-    n - 1, 
-    src, 
+  SEXP result = PROTECT(
+    allocMatrix(REALSXP, n, 3)
+  ); protect_count++;
+  double *upper  = REAL(result);
+  double *middle = upper + n;
+  double *lower  = upper + 2 * n;
+  // clang-format on
+
+  // clang-format off
+  const int minimum_lookback = TA_BBANDS_Lookback(
     period, 
     nbUp, 
     nbDn, 
-    maType, 
-    &outBeg, 
-    &outNb,
-    upper + outBeg, 
-    middle + outBeg, 
-    lower + outBeg
+    maType
   );
   // clang-format on
 
-  // shift arrays
-  shift_array(upper, n, outBeg);
-  shift_array(middle, n, outBeg);
-  shift_array(lower, n, outBeg);
+  if (n < minimum_lookback) {
+    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
+               minimum_lookback);
 
-  // set column names: c("upper","middle","lower")
-  SEXP dims = PROTECT(allocVector(VECSXP, 2));
-  SEXP cnames = PROTECT(allocVector(STRSXP, 3));
-  SET_STRING_ELT(cnames, 0, mkChar("upper"));
-  SET_STRING_ELT(cnames, 1, mkChar("middle"));
-  SET_STRING_ELT(cnames, 2, mkChar("lower"));
-  SET_VECTOR_ELT(dims, 0, R_NilValue);
-  SET_VECTOR_ELT(dims, 1, cnames);
-  setAttrib(result, R_DimNamesSymbol, dims);
+    for (size_t i = 0; i < n; ++i) {
+      upper[i] = middle[i] = lower[i] = NA_REAL;
+    }
 
-  UNPROTECT(3);
+  } else {
+
+    int outBeg = 0, outNb = 0;
+    // clang-format off
+    TA_RetCode return_code = TA_BBANDS(
+      0, 
+      n - 1, 
+      src, 
+      period, 
+      nbUp, 
+      nbDn, 
+      maType, 
+      &outBeg, 
+      &outNb,
+      upper + outBeg, 
+      middle + outBeg, 
+      lower + outBeg
+    );
+    // clang-format on
+
+    if (return_code != TA_SUCCESS) {
+      UNPROTECT(protect_count);
+      Rf_error("Failed with error code %d", return_code);
+    }
+
+    // shift arrays
+    shift_array(upper, n, outBeg);
+    shift_array(middle, n, outBeg);
+    shift_array(lower, n, outBeg);
+  }
+
+  // set column names
+  // clang-format off
+  set_colnames(
+    result, 
+    "upper", 
+    "middle", 
+    "lower"
+  );
+  // clang-format on
+
+  UNPROTECT(protect_count);
   return result;
 }

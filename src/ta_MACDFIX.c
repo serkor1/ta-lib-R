@@ -9,14 +9,16 @@
 //   Computes MACD line (EMA12–EMA26), its signal line, and the histogram
 //   using the fixed 12/26 EMA and user-specified signal period. Returns
 //   an n×3 matrix with columns "macd", "signal", "histogram".
-#include "MAType.h"
 #include "lib.h"
+#include "names.h"
 #include "shift.h"
+#include "ta_func.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <ta_libc.h>
 
 SEXP impl_ta_MACDFIX(SEXP inReal, SEXP optSignalPeriod) {
+  int protect_count = 0;
   // 1) Prepare inputs
   int n = LENGTH(inReal);
   const double *restrict src = REAL(inReal);
@@ -28,9 +30,18 @@ SEXP impl_ta_MACDFIX(SEXP inReal, SEXP optSignalPeriod) {
   double *restrict signal = macd + n;
   double *restrict histogram = macd + 2 * n;
 
-  // 3) Call underlying TA function
-  int outBeg, outNb;
-  // clang-format off
+  const int minimum_lookback = TA_MACDFIX_Lookback(signalP);
+  if (n < minimum_lookback) {
+    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
+               minimum_lookback);
+
+    for (size_t i = 0; i < n; ++i) {
+      macd[i] = signal[i] = histogram[i] = NA_REAL;
+    }
+  } else {
+    // 3) Call underlying TA function
+    int outBeg = 0, outNb = 0;
+    // clang-format off
   TA_RetCode ret = TA_MACDFIX(
     0,
     n - 1,
@@ -42,28 +53,29 @@ SEXP impl_ta_MACDFIX(SEXP inReal, SEXP optSignalPeriod) {
     signal + outBeg,
     histogram + outBeg
   );
-  // clang-format on
+    // clang-format on
 
-  if (ret != TA_SUCCESS) {
-    UNPROTECT(1);
-    error("TA_MACDFIX failed with code %d", ret);
+    if (ret != TA_SUCCESS) {
+      UNPROTECT(1);
+      error("TA_MACDFIX failed with code %d", ret);
+    }
+
+    // 4) Shift each output down by outBeg, padding with NA
+    shift_array(macd, n, outBeg);
+    shift_array(signal, n, outBeg);
+    shift_array(histogram, n, outBeg);
   }
 
-  // 4) Shift each output down by outBeg, padding with NA
-  shift_array(macd, n, outBeg);
-  shift_array(signal, n, outBeg);
-  shift_array(histogram, n, outBeg);
+  // set column names
+  // clang-format off
+  set_colnames(
+    result, 
+    "macd", 
+    "signal", 
+    "histogram"
+  );
+  // clang-format on
 
-  // 5) Attach column names
-  SEXP dimnames = PROTECT(allocVector(VECSXP, 2));
-  SEXP cnames = PROTECT(allocVector(STRSXP, 3));
-  SET_STRING_ELT(cnames, 0, mkChar("macd"));
-  SET_STRING_ELT(cnames, 1, mkChar("signal"));
-  SET_STRING_ELT(cnames, 2, mkChar("histogram"));
-  SET_VECTOR_ELT(dimnames, 0, R_NilValue);
-  SET_VECTOR_ELT(dimnames, 1, cnames);
-  setAttrib(result, R_DimNamesSymbol, dimnames);
-
-  UNPROTECT(3);
+  UNPROTECT(protect_count);
   return result;
 }
