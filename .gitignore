@@ -52,6 +52,9 @@ rsconnect/
 # Makevars
 src/Makevars
 
-# Building nots
+# Building notes
 NOTES.md
-using_call.R
+
+# sandbox
+sandbox/**
+
