@@ -37,3 +37,69 @@ bollinger_bands.default <- function(x, ma = SMA(n = 10), up = 2, down = 2,  ...)
         as.integer(ma$maType)
     )
 }
+
+#' @export
+bollinger_bands.plotly <- function(
+    x, 
+    ma = SMA(n = 10), 
+    up = 2, 
+    down = 2,  
+    ...) {
+    
+    ma <- map_maType_call(substitute(ma))
+     ## extract arguments
+    ## from ellipsis
+    dots <- list(...)
+    series <- dots$.series
+
+    ## extract chart objects
+    .chart <- .plotting_environment$price_chart
+    .value <- .Call(  
+        "impl_ta_BBANDS",
+        series,
+        ma$n,
+        as.numeric(up),
+        as.numeric(down),
+        as.integer(ma$maType)
+    )
+
+    ## constuct chart 
+    ## element
+    for (i in seq_len(ncol(.value))) local({
+        j <- i
+
+        .plotting_environment$price_chart <- plotly::add_lines(
+            .plotting_environment$price_chart,
+            x = ~seq_len(nrow(.value)),
+            y = ~.value[, j],
+            inherit = FALSE,line = list(
+                color = '#4682b4'
+            ),
+            showlegend = FALSE,
+            legendgroup = 'bollinger_band',
+            name = c("Upper Band", "Middle Band", "Lower Band")[j],
+        )
+    })
+
+    .plotting_environment$price_chart <- plotly::add_ribbons(
+        p = .plotting_environment$price_chart,
+        inherit = FALSE,
+        x = ~seq_len(nrow(.value)),
+        ymin = ~.value[,3],
+        ymax = ~.value[,1],
+        fillcolor = plotly::toRGB("#4682b4", alpha = 0.2),
+        line = list(
+          color = "transparent"
+        ),
+        showlegend = TRUE,
+        legendgroup = 'bollinger_band',
+        name = paste0(
+            "BBand"
+        )
+      )
+    
+    .plotting_environment$price_chart
+
+    
+}
+

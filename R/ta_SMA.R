@@ -62,27 +62,32 @@ simple_moving_average.plotly <- function(
     n = 10, 
     ...) {
 
-    ## generate SMA values
-    ## from C as all values
-    ## are pre-validated
-    .output <- .Call(
-        "impl_ta_MA",
-        x,
-        as.integer(n),
-        0L
-    )
-    
-    ## update the price chart
-    ## inside the plotting environment
-    ## if not set, the plots do not --well-- update
-    .plotting_environment$price_chart <- plotly::add_lines(
-        .plotting_environment$price_chart,
-        x = ~1:length(.output),
-        y = ~.output,
-        name = paste0("SMA(", n, ")"),
-        inherit = FALSE
-    )
+        ## extract arguments
+        ## from ellipsis
+        dots <- list(...)
+        series <- dots$.series
 
-    .plotting_environment$price_chart
+        ## generate SMA values
+        ## from C as all values
+        ## are pre-validated
+        .output <- .Call(
+            "impl_ta_MA",
+            series,
+            as.integer(n),
+            0L
+        )
+        
+        ## update the price chart
+        ## inside the plotting environment
+        ## if not set, the plots do not --well-- update
+        .plotting_environment$price_chart <- plotly::add_lines(
+            x,
+            x = ~1:length(.output),
+            y = ~.output,
+            name = paste0("SMA(", n, ")"),
+            inherit = FALSE
+        )
+
+        .plotting_environment$price_chart
 }
 
