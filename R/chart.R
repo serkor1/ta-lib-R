@@ -160,7 +160,7 @@ if (inherits(.output, "plotly")) {
     shareX = TRUE,
     margin = 0.02,
     heights = heights
-  )  # `subplot()` accepts a list of plotly objects directly. :contentReference[oaicite:1]{index=1}
+  )
 
   .plotting_environment$chart <- fig
   return(fig)
