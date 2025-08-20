@@ -4,7 +4,7 @@
 \alias{relative_strength_index}
 \title{Relative Strength Index}
 \usage{
-relative_strength_index(x, n, ...)
+relative_strength_index(x, n = 10, ...)
 }
 \description{
 Relative Strength Index

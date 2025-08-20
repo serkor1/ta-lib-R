@@ -34,7 +34,7 @@ chart.default <- function(x, ...) {
   
   ## 2) store in environment
   ##    to enable chart() call
-  .plotting_environment$price_chart <- .chart_layout(
+  .plotting_environment$main <- .chart_layout(
     x = kline_chart,
     title_text = sprintf(
       "<b>Ticker:</b> %s <br><sub><b>Period:</b> %s</sub>",
@@ -43,8 +43,17 @@ chart.default <- function(x, ...) {
     )
   )
 
+  ## subplot list
+  .plotting_environment$sub <- list()  # list(), not a plotly or other type
+.plotting_environment$chart <- NULL
 
-  .plotting_environment$price_chart
+
+  ## 3) add plot counter
+  ##    for subplots
+  .plotting_environment$plot_counter <- 1
+
+
+  .plotting_environment$main 
   
 }
 
@@ -119,23 +128,43 @@ indicator <- function(
 
     ## 6) fetch active plotly object (first arg for S3)
     .plotting_environment <- get0(".plotting_environment", inherits = TRUE)
-    if (is.null(.plotting_environment) || is.null(.plotting_environment$price_chart)) {
+    if (is.null(.plotting_environment) || is.null(.plotting_environment$main)) {
        stop("No active plotly chart. Call chart(...) first.", call. = FALSE)
     }
      
-    .plot <- .plotting_environment$price_chart
+    .plot <- .plotting_environment$main
 
-    ## 7) call worker: plotly object first; TA params; series through ... as `.series`
-    .output <- do.call(
-      what = f, 
-      args = c(list(.plot), pre_args, list(.series = series)), 
-      envir = parent_frame
-    )
+    .output <- do.call(f, c(list(.plot), pre_args, list(.series = series)), envir = parent_frame)
 
-    ## keep env chart in sync if a plotly is returned
-    if (inherits(.output, "plotly")) {
-      .output <- .plotting_environment$price_chart 
-    }
-  
-    .output
+if (inherits(.output, "plotly")) {
+  # Build a flat panel list
+  panels <- c(list(.plotting_environment$main), .plotting_environment$sub)
+
+  # HARD CHECKS: every element must be a plotly htmlwidget
+  is_plotly <- vapply(panels, function(p) inherits(p, "plotly"), logical(1))
+  if (!all(is_plotly)) {
+    bad <- which(!is_plotly)
+    stop(sprintf("Non-plotly passed to subplot at index/indices: %s",
+                 paste(bad, collapse = ", ")), call. = FALSE)
+  }
+
+  k <- length(panels)
+  h_main  <- 0.70
+  heights <- if (k > 1) c(h_main, rep((1 - h_main)/(k - 1), k - 1)) else 1
+
+  # IMPORTANT: pass ONLY the panels as the first argument;
+  # layout args follow, so none of them can be mis-parsed as plots
+  fig <- plotly::subplot(
+    panels,
+    nrows  = k,
+    shareX = TRUE,
+    margin = 0.02,
+    heights = heights
+  )  # `subplot()` accepts a list of plotly objects directly. :contentReference[oaicite:1]{index=1}
+
+  .plotting_environment$chart <- fig
+  return(fig)
+}
+
+.output
 }
