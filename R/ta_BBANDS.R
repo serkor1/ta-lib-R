@@ -68,8 +68,8 @@ bollinger_bands.plotly <- function(
     for (i in seq_len(ncol(.value))) local({
         j <- i
 
-        .plotting_environment$price_chart <- plotly::add_lines(
-            .plotting_environment$price_chart,
+        .plotting_environment$main <- plotly::add_lines(
+            .plotting_environment$main,
             x = ~seq_len(nrow(.value)),
             y = ~.value[, j],
             inherit = FALSE,line = list(
@@ -81,8 +81,8 @@ bollinger_bands.plotly <- function(
         )
     })
 
-    .plotting_environment$price_chart <- plotly::add_ribbons(
-        p = .plotting_environment$price_chart,
+    .plotting_environment$main <- plotly::add_ribbons(
+        p = .plotting_environment$main,
         inherit = FALSE,
         x = ~seq_len(nrow(.value)),
         ymin = ~.value[,3],
@@ -98,7 +98,7 @@ bollinger_bands.plotly <- function(
         )
       )
     
-    .plotting_environment$price_chart
+    .plotting_environment$main
 
     
 }

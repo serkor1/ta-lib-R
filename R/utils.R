@@ -5,6 +5,14 @@ assert <- function(exprs) {
         )
     }
 
+flatten <- function(x) {
+
+  if (!inherits(x, "list"))
+    list(x)
+  else
+    unlist(c(lapply(x, flatten)), recursive = FALSE)
+}
+
 
 ## extractors
 .open <- function(x) {x[,1]}
@@ -86,4 +94,9 @@ is.number <- function(x) {
   if (!is.number(v) || length(v) != 1L || !is.finite(v))
     stop("fast/slow/signal must be finite numeric scalars.", call. = FALSE)
   as.integer(v)
+}
+
+
+reclass <- function(x, ...) {
+  class(x) <- c(class(x), ...)
 }

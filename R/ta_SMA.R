@@ -57,37 +57,28 @@ SMA <- simple_moving_average
 #' A short description...
 #' 
 #' @export
-simple_moving_average.plotly <- function(
+simple_moving_average.plotly <- function(x, n = 10, ...) {
+  dots   <- list(...)
+  series <- dots$.series
+
+  sma <- .Call("impl_ta_MA", series, as.integer(n), 0L)
+
+  df <- data.frame(
+    idx = seq_along(sma),
+    sma = as.numeric(sma)
+  )
+
+  .plotting_environment$main <- plotly::add_trace(
     x,
-    n = 10, 
-    ...) {
+    data = df,                # bind data here (creates/sets cur_data)
+    x = ~idx, y = ~sma,       # refer to columns, not objects in caller env
+    type = "scatter", mode = "lines",
+    name = sprintf("SMA(%d)", n),
+    inherit = FALSE,
+    xaxis = "x", yaxis = "y"  # ensure it lands on the main panel
+  )
 
-        ## extract arguments
-        ## from ellipsis
-        dots <- list(...)
-        series <- dots$.series
-
-        ## generate SMA values
-        ## from C as all values
-        ## are pre-validated
-        .output <- .Call(
-            "impl_ta_MA",
-            series,
-            as.integer(n),
-            0L
-        )
-        
-        ## update the price chart
-        ## inside the plotting environment
-        ## if not set, the plots do not --well-- update
-        .plotting_environment$price_chart <- plotly::add_lines(
-            x,
-            x = ~1:length(.output),
-            y = ~.output,
-            name = paste0("SMA(", n, ")"),
-            inherit = FALSE
-        )
-
-        .plotting_environment$price_chart
+  .plotting_environment$main
 }
+
 
