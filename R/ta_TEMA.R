@@ -1,12 +1,14 @@
 #' @title Triple Exponential Moving Average (TEMA)
 #' @family Overlap Study
 #' @export
-triple_exponential_moving_average <- function(x, n = 10, ...) {
-    UseMethod("triple_exponential_moving_average")
+TEMA <- function(x, n = 10, ...) {
+    UseMethod("TEMA")
 }
 
+#' @rdname TEMA
+#' @usage NULL
 #' @export
-triple_exponential_moving_average.default <- function(x, n = 10, ...) {
+TEMA.default <- function(x, n = 10, ...) {
     ## default behaviour is to
     ## check if its a numeric vector
     ##
@@ -32,5 +34,37 @@ triple_exponential_moving_average.default <- function(x, n = 10, ...) {
     )
 }
 
+#' @rdname TEMA
+#' @usage NULL
 #' @export
-TEMA <- triple_exponential_moving_average
+TEMA.plotly <- function(x, n = 10, ...) {
+    dots <- list(...)
+    series <- dots$.series
+
+    tema <- .Call(
+        "impl_ta_MA",
+        .univariate_series(series),
+        as.integer(n),
+        4L
+    )
+
+    df <- data.frame(
+        idx = seq_along(tema),
+        tema = as.numeric(tema)
+    )
+
+    .plotting_environment$main <- plotly::add_trace(
+        x,
+        data = df, # bind data here (creates/sets cur_data)
+        x = ~idx,
+        y = ~tema, # refer to columns, not objects in caller env
+        type = "scatter",
+        mode = "lines",
+        name = sprintf("TEMA(%d)", n),
+        inherit = FALSE,
+        xaxis = "x",
+        yaxis = "y" # ensure it lands on the main panel
+    )
+
+    .plotting_environment$main
+}

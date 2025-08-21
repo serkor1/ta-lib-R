@@ -1,12 +1,14 @@
 #' @title Triangular Moving Average (TRIMA)
 #' @family Overlap Study
 #' @export
-triangular_moving_average <- function(x, n = 10, ...) {
-    UseMethod("triangular_moving_average")
+TRIMA <- function(x, n = 10, ...) {
+    UseMethod("TRIMA")
 }
 
+#' @rdname TRIMA
+#' @usage NULL
 #' @export
-triangular_moving_average.default <- function(x, n = 10, ...) {
+TRIMA.default <- function(x, n = 10, ...) {
     ## default behaviour is to
     ## check if its a numeric vector
     ##
@@ -32,5 +34,38 @@ triangular_moving_average.default <- function(x, n = 10, ...) {
     )
 }
 
+
+#' @rdname TRIMA
+#' @usage NULL
 #' @export
-TRIMA <- triangular_moving_average
+TRIMA.plotly <- function(x, n = 10, ...) {
+    dots <- list(...)
+    series <- dots$.series
+
+    trima <- .Call(
+        "impl_ta_MA",
+        .univariate_series(series),
+        as.integer(n),
+        6L
+    )
+
+    df <- data.frame(
+        idx = seq_along(trima),
+        trima = as.numeric(trima)
+    )
+
+    .plotting_environment$main <- plotly::add_trace(
+        x,
+        data = df, # bind data here (creates/sets cur_data)
+        x = ~idx,
+        y = ~trima, # refer to columns, not objects in caller env
+        type = "scatter",
+        mode = "lines",
+        name = sprintf("TRIMA(%d)", n),
+        inherit = FALSE,
+        xaxis = "x",
+        yaxis = "y" # ensure it lands on the main panel
+    )
+
+    .plotting_environment$main
+}

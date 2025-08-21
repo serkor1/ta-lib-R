@@ -2,12 +2,14 @@
 #'
 #' @family Overlap Study
 #' @export
-mesa_adaptive_moving_average <- function(x, n = 10, ...) {
-    UseMethod("mesa_adaptive_moving_average")
+MAMA <- function(x, n = 10, ...) {
+    UseMethod("MAMA")
 }
 
+#' @rdname MAMA
+#' @usage NULL
 #' @export
-mesa_adaptive_moving_average.default <- function(x, n = 10, ...) {
+MAMA.default <- function(x, n = 10, ...) {
     ## default behaviour is to
     ## check if its a numeric vector
     ##
@@ -33,5 +35,37 @@ mesa_adaptive_moving_average.default <- function(x, n = 10, ...) {
     )
 }
 
+#' @rdname MAMA
+#' @usage NULL
 #' @export
-MAMA <- mesa_adaptive_moving_average
+MAMA.plotly <- function(x, n = 10, ...) {
+    dots <- list(...)
+    series <- dots$.series
+
+    mama <- .Call(
+        "impl_ta_MA",
+        .univariate_series(series),
+        as.integer(n),
+        7L
+    )
+
+    df <- data.frame(
+        idx = seq_along(mama),
+        mama = as.numeric(mama)
+    )
+
+    .plotting_environment$main <- plotly::add_trace(
+        x,
+        data = df, # bind data here (creates/sets cur_data)
+        x = ~idx,
+        y = ~mama, # refer to columns, not objects in caller env
+        type = "scatter",
+        mode = "lines",
+        name = sprintf("MAMA(%d)", n),
+        inherit = FALSE,
+        xaxis = "x",
+        yaxis = "y" # ensure it lands on the main panel
+    )
+
+    .plotting_environment$main
+}

@@ -1,3 +1,4 @@
+#' @title indicator
 #' @export
 indicator <- function(
   .f,

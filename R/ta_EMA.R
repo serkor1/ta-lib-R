@@ -1,14 +1,20 @@
 #' @title Exponential Moving Average (EMA)
 #' @family Overlap Study
+#'
+#' @templateVar .FUN DEMA
+#' @template univariate_example
+#'
 #' @export
-exponential_moving_average <- function(x, n = 10, ...) {
+EMA <- function(x, n = 10, ...) {
     UseMethod(
-        "exponential_moving_average"
+        "EMA"
     )
 }
 
+#' @rdname EMA
+#' @usage NULL
 #' @export
-exponential_moving_average.default <- function(x, n = 10, ...) {
+EMA.default <- function(x, n = 10, ...) {
     ## default behaviour is to
     ## check if its a numeric vector
     ##
@@ -34,5 +40,37 @@ exponential_moving_average.default <- function(x, n = 10, ...) {
     )
 }
 
+#' @rdname EMA
+#' @usage NULL
 #' @export
-EMA <- exponential_moving_average
+EMA.plotly <- function(x, n = 10, ...) {
+    dots <- list(...)
+    series <- dots$.series
+
+    ema <- .Call(
+        "impl_ta_MA",
+        .univariate_series(series),
+        as.integer(n),
+        1L
+    )
+
+    df <- data.frame(
+        idx = seq_along(ema),
+        ema = as.numeric(ema)
+    )
+
+    .plotting_environment$main <- plotly::add_trace(
+        x,
+        data = df, # bind data here (creates/sets cur_data)
+        x = ~idx,
+        y = ~ema, # refer to columns, not objects in caller env
+        type = "scatter",
+        mode = "lines",
+        name = sprintf("EMA(%d)", n),
+        inherit = FALSE,
+        xaxis = "x",
+        yaxis = "y" # ensure it lands on the main panel
+    )
+
+    .plotting_environment$main
+}

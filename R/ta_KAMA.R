@@ -1,12 +1,14 @@
 #' @title Kaufman’s Adaptive Moving Average (KAMA)
 #' @family Overlap Study
 #' @export
-kaufman_adaptive_moving_average <- function(x, n = 10, ...) {
-    UseMethod("kaufman_adaptive_moving_average")
+KAMA <- function(x, n = 10, ...) {
+    UseMethod("KAMA")
 }
 
+#' @rdname KAMA
+#' @usage NULL
 #' @export
-kaufman_adaptive_moving_average.default <- function(x, n = 10, ...) {
+KAMA.default <- function(x, n = 10, ...) {
     ## default behaviour is to
     ## check if its a numeric vector
     ##
@@ -32,5 +34,37 @@ kaufman_adaptive_moving_average.default <- function(x, n = 10, ...) {
     )
 }
 
+#' @rdname KAMA
+#' @usage NULL
 #' @export
-KAMA <- kaufman_adaptive_moving_average
+KAMA.plotly <- function(x, n = 10, ...) {
+    dots <- list(...)
+    series <- dots$.series
+
+    kama <- .Call(
+        "impl_ta_MA",
+        .univariate_series(series),
+        as.integer(n),
+        6L
+    )
+
+    df <- data.frame(
+        idx = seq_along(kama),
+        kama = as.numeric(kama)
+    )
+
+    .plotting_environment$main <- plotly::add_trace(
+        x,
+        data = df, # bind data here (creates/sets cur_data)
+        x = ~idx,
+        y = ~kama, # refer to columns, not objects in caller env
+        type = "scatter",
+        mode = "lines",
+        name = sprintf("KAMA(%d)", n),
+        inherit = FALSE,
+        xaxis = "x",
+        yaxis = "y" # ensure it lands on the main panel
+    )
+
+    .plotting_environment$main
+}

@@ -1,14 +1,16 @@
 #' @title Weighted Moving Average (WMA)
 #' @family Overlap Study
 #' @export
-weighted_moving_average <- function(x, n = 10, ...) {
+WMA <- function(x, n = 10, ...) {
     UseMethod(
-        "weighted_moving_average"
+        "WMA"
     )
 }
 
+#' @rdname WMA
+#' @usage NULL
 #' @export
-weighted_moving_average.default <- function(x, n = 10, ...) {
+WMA.default <- function(x, n = 10, ...) {
     ## default behaviour is to
     ## check if its a numeric vector
     ##
@@ -34,5 +36,38 @@ weighted_moving_average.default <- function(x, n = 10, ...) {
     )
 }
 
+
+#' @rdname WMA
+#' @usage NULL
 #' @export
-WMA <- weighted_moving_average
+WMA.plotly <- function(x, n = 10, ...) {
+    dots <- list(...)
+    series <- dots$.series
+
+    wma <- .Call(
+        "impl_ta_MA",
+        .univariate_series(series),
+        as.integer(n),
+        6L
+    )
+
+    df <- data.frame(
+        idx = seq_along(wma),
+        wma = as.numeric(wma)
+    )
+
+    .plotting_environment$main <- plotly::add_trace(
+        x,
+        data = df, # bind data here (creates/sets cur_data)
+        x = ~idx,
+        y = ~wma, # refer to columns, not objects in caller env
+        type = "scatter",
+        mode = "lines",
+        name = sprintf("TRIMA(%d)", n),
+        inherit = FALSE,
+        xaxis = "x",
+        yaxis = "y" # ensure it lands on the main panel
+    )
+
+    .plotting_environment$main
+}

@@ -131,3 +131,11 @@ is.number <- function(x) {
 reclass <- function(x, ...) {
   class(x) <- c(class(x), ...)
 }
+
+
+## series
+.univariate_series <- function(x) {
+  as.double(
+    x[, 1L]
+  )
+}

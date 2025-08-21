@@ -1,3 +1,5 @@
+#' @title Chart
+#'
 #' @export
 chart <- function(
   x,
