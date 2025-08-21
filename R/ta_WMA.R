@@ -1,4 +1,5 @@
 #' @title Weighted Moving Average (WMA)
+#' @family Overlap Study
 #' @export
 weighted_moving_average <- function(x, n = 10, ...) {
     UseMethod(
@@ -10,7 +11,7 @@ weighted_moving_average <- function(x, n = 10, ...) {
 weighted_moving_average.default <- function(x, n = 10, ...) {
     ## default behaviour is to
     ## check if its a numeric vector
-    ## 
+    ##
     ## No coercing here as it might
     ## lead to overflow
 
@@ -21,12 +22,13 @@ weighted_moving_average.default <- function(x, n = 10, ...) {
     if (!is.null(dim(x))) {
         stop("`x` has to be a double vector")
     }
-    assert(is.numeric(x)); assert(n >= 2)
+    assert(is.numeric(x))
+    assert(n >= 2)
 
-    ## 1) pass `x` to C 
+    ## 1) pass `x` to C
     .Call(
-        "impl_ta_MA", 
-        x, 
+        "impl_ta_MA",
+        x,
         as.integer(n),
         2L
     )

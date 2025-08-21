@@ -1,4 +1,5 @@
 #' @title Triple Exponential Moving Average (TEMA)
+#' @family Overlap Study
 #' @export
 triple_exponential_moving_average <- function(x, n = 10, ...) {
     UseMethod("triple_exponential_moving_average")
@@ -8,7 +9,7 @@ triple_exponential_moving_average <- function(x, n = 10, ...) {
 triple_exponential_moving_average.default <- function(x, n = 10, ...) {
     ## default behaviour is to
     ## check if its a numeric vector
-    ## 
+    ##
     ## No coercing here as it might
     ## lead to overflow
 
@@ -19,13 +20,14 @@ triple_exponential_moving_average.default <- function(x, n = 10, ...) {
     if (!is.null(dim(x))) {
         stop("`x` must be a numeric vector")
     }
-    assert(is.numeric(x)); assert(n >= 2)
+    assert(is.numeric(x))
+    assert(n >= 2)
 
-    ## 1) pass `x` to C 
+    ## 1) pass `x` to C
     .Call(
-        "impl_ta_MA", 
-        x, 
-        as.integer(n), 
+        "impl_ta_MA",
+        x,
+        as.integer(n),
         4L
     )
 }

@@ -1,5 +1,5 @@
-
 #' @title Hilbert Transform - Instantaneous Trendline
+#' @family Cycle Indicator
 #' @export
 ht_trendline <- function(x, ...) {
     UseMethod("ht_trendline")

@@ -1,4 +1,7 @@
 #' @title Acceleration Bands
+#'
+#' @family Overlap Study
+#'
 #' @export
 acceleration_bands <- function(x, n = 10, ...) {
     UseMethod("acceleration_bands")
@@ -21,15 +24,16 @@ acceleration_bands.default <- function(x, n = 10, ...) {
     if (!is.matrix(x)) {
         x <- as.matrix(x)
     }
-    assert(is.numeric(x)); assert(n >= 2);
+    assert(is.numeric(x))
+    assert(n >= 2)
 
-    ## 1) pass `x` assuming that it 
-    ##    follows OHLC-V structure 
+    ## 1) pass `x` assuming that it
+    ##    follows OHLC-V structure
     .Call(
         "impl_ta_ACCBANDS",
-        .high(x), 
-        .low(x), 
-        .close(x), 
+        .high(x),
+        .low(x),
+        .close(x),
         as.integer(n)
     )
 }
