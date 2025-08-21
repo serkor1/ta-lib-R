@@ -46,7 +46,7 @@ library(talib)
 
 ## calculate bollinger
 ## bands
-x <- talib::SPY
+x <- talib::BTC
 
 ## calculate bollinger
 ## bands
@@ -64,7 +64,7 @@ library(talib)
 
 ## calculate bollinger
 ## bands
-x <- talib::SPY
+x <- talib::BTC
 
 {
   ## calculate bollinger
