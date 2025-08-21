@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# {talib}: R bindings for [TA-Lib](https://github.com/TA-Lib/ta-lib)
+# {talib}: R bindings for [TA-Lib](https://github.com/TA-Lib/ta-lib) <img src="man/figures/candlestick.png" align="right" height="150" alt="" />
 
 <!-- badges: start -->
 <!-- badges: end -->
