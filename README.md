@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# {talib}: R bindings for TA-lib
+# {talib}: R bindings for [TA-Lib](https://github.com/TA-Lib/ta-lib)
 
 <!-- badges: start -->
 
@@ -25,14 +25,14 @@ pak::pak("serkor1/curly-giggle")
 
 This is a basic example which shows you how to solve a common problem:
 
-    #>      upper middle lower
-    #> [1,]    NA     NA    NA
-    #> [2,]    NA     NA    NA
-    #> [3,]    NA     NA    NA
-    #> [4,]    NA     NA    NA
-    #> [5,]    NA     NA    NA
-    #> [6,]    NA     NA    NA
+    #>            upper  middle    lower
+    #> [4671,] 638.7501 630.155 621.5599
+    #> [4672,] 640.8957 631.238 621.5803
+    #> [4673,] 641.0360 632.456 623.8760
+    #> [4674,] 641.5914 633.962 626.3326
+    #> [4675,] 642.1847 633.662 625.1393
+    #> [4676,] 642.7450 633.352 623.9590
 
 ### Charting
 
-![](man/figures/README-charting-1.png)<!-- -->
+<img src="man/figures/README-charting-1.png" style="display: block; margin: auto;" />
