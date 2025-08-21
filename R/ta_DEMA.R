@@ -1,4 +1,7 @@
 #' @title Double Exponential Moving Average (DEMA)
+#'
+#' @family Overlap Study
+#'
 #' @export
 double_exponential_moving_average <- function(x, n = 10, ...) {
     UseMethod("double_exponential_moving_average")
@@ -8,7 +11,7 @@ double_exponential_moving_average <- function(x, n = 10, ...) {
 double_exponential_moving_average.default <- function(x, n = 10, ...) {
     ## default behaviour is to
     ## check if its a numeric vector
-    ## 
+    ##
     ## No coercing here as it might
     ## lead to overflow
 
@@ -19,9 +22,10 @@ double_exponential_moving_average.default <- function(x, n = 10, ...) {
     if (!is.null(dim(x))) {
         stop("`x` must be a numeric vector")
     }
-    assert(is.numeric(x)); assert(n >= 2)
+    assert(is.numeric(x))
+    assert(n >= 2)
 
-    ## 1) pass `x` to C 
+    ## 1) pass `x` to C
     .Call(
         "impl_ta_MA",
         x,

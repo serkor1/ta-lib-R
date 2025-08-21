@@ -1,4 +1,5 @@
 #' @title Dragonfly Doji
+#' @family Pattern Recognition
 #' @export
 dragonfly_doji <- function(x, ...) {
     UseMethod(

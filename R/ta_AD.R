@@ -1,4 +1,8 @@
 #' @title Chaikin A/D Line
+#'
+#'
+#' @family Volume Indicator
+#'
 #' @export
 chaikin_AD_line <- function(x, ...) {
     UseMethod(

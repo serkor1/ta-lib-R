@@ -7,6 +7,8 @@
 #' @param n An [integer] of [length] 1. The window size of the rolling average.
 #' @param ... Parameters passed to and from other methods.
 #'
+#' @family Overlap Study
+#'
 #' @export
 SMA <- function(x, n = 10, ...) {
   UseMethod(

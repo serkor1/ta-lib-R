@@ -1,4 +1,7 @@
 #' @title Chaikin A/D Oscillator
+#'
+#' @family Volume Indicator
+#'
 #' @export
 chaikin_AD_oscillator <- function(x, fast = 3, slow = 10, ...) {
     UseMethod(

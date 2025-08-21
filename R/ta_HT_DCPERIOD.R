@@ -1,4 +1,5 @@
 #' @title Hilbert Transform - Dominant Cycle Period
+#' @family Cycle Indicator
 #' @export
 ht_dcperiod <- function(x, ...) {
     UseMethod("ht_dcperiod")

@@ -1,4 +1,5 @@
 #' @title Doji Star
+#' @family Pattern Recognition
 #' @export
 doji_star <- function(x, ...) {
     UseMethod(

@@ -1,4 +1,5 @@
 #' @title Hilbert Transform - SineWave
+#' @family Cycle Indicator
 #' @export
 ht_sine <- function(x, ...) {
     UseMethod("ht_sine")

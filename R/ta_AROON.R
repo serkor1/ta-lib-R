@@ -1,4 +1,9 @@
 #' @title Aroon
+#'
+#' @description
+#'
+#' @family Momentum Indicator
+#'
 #' @export
 aroon <- function(x, n, ...) {
     UseMethod(
@@ -24,7 +29,6 @@ aroon.default <- function(x, n, ...) {
 
     ## 1) pass `x` assuming that
     ##    it follows Open (x[,1]), High (x[,2])
-    ##    Low (x[,3]) and Close (x[,4]) 
-    .Call("impl_ta_AROON",.high(x), .low(x), as.integer(n))
-} 
-
+    ##    Low (x[,3]) and Close (x[,4])
+    .Call("impl_ta_AROON", .high(x), .low(x), as.integer(n))
+}

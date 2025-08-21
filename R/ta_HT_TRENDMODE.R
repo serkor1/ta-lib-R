@@ -1,5 +1,5 @@
-
 #' @title Hilbert Transform - Trend vs Cycle Mode
+#' @family Cycle Indicator
 #' @export
 ht_trendmode <- function(x, ...) {
     UseMethod("ht_trendmode")

@@ -1,4 +1,5 @@
 #' @title Evening Doji Star
+#' @family Pattern Recognition
 #' @export
 evening_doji_star <- function(x, penetration = 0.1, ...) {
     UseMethod(
