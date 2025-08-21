@@ -59,9 +59,9 @@ SMA <- simple_moving_average
 #' @export
 simple_moving_average.plotly <- function(x, n = 10, ...) {
   dots   <- list(...)
-  series <- dots$.series
+  series <- dots$.series[,1L]
 
-  sma <- .Call("impl_ta_MA", series, as.integer(n), 0L)
+  sma <- .Call("impl_ta_MA", as.double(series), as.integer(n), 0L)
 
   df <- data.frame(
     idx = seq_along(sma),
