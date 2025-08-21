@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# {talib}: R bindings for [TA-Lib](https://github.com/TA-Lib/ta-lib)
+# {talib}: R bindings for [TA-Lib](https://github.com/TA-Lib/ta-lib) <img src="man/figures/candlestick.png" align="right" height="150" alt="" />
 
 <!-- badges: start -->
 
