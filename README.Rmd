@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# {talib}: R bindings for TA-lib
+# {talib}: R bindings for [TA-Lib](https://github.com/TA-Lib/ta-lib)
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -48,7 +48,7 @@ x <- talib::SPY
 
 ## calculate bollinger
 ## bands
-head(
+tail(
   talib::bollinger_bands(
     x[,1]
   )
@@ -56,7 +56,8 @@ head(
 ```
 
 ### Charting
-```{r charting}
+
+```{r charting, fig.align='center',fig.dpi=180}
 library(talib)
 
 ## calculate bollinger
