@@ -6,6 +6,13 @@
 \usage{
 SMA(x, n = 10, ...)
 }
+\arguments{
+\item{x}{A univariate series.}
+
+\item{n}{An \link{integer} of \link{length} 1. The window size of the rolling average.}
+
+\item{...}{Parameters passed to and from other methods.}
+}
 \description{
 A short description...
 }
