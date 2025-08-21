@@ -1,50 +1,71 @@
 ## script: utilities
-assert <- function(exprs) {
-    eval.parent(
-        substitute(stopifnot(exprs = exprs))
-        )
+assert <- function(x, ...) {
+  ## Assert truthfulness
+  ## of x
+  condition <- x
+  if (!condition) {
+    if (...length() == 0) {
+      stop("Assertion failed", call. = FALSE)
+    } else {
+      stop(..., call. = FALSE)
     }
+  }
+
+  return(
+    invisible(TRUE)
+  )
+}
 
 flatten <- function(x) {
-
-  if (!inherits(x, "list"))
+  if (!inherits(x, "list")) {
     list(x)
-  else
+  } else {
     unlist(c(lapply(x, flatten)), recursive = FALSE)
+  }
 }
 
 
 ## extractors
-.open <- function(x) {x[,1]}
-.high <- function(x) {x[,2]}
-.low <- function(x) {x[,3]}
-.close <- function(x) {x[,4]}
-.volume <- function(x) {x[,5]}
+.open <- function(x) {
+  x[, 1]
+}
+.high <- function(x) {
+  x[, 2]
+}
+.low <- function(x) {
+  x[, 3]
+}
+.close <- function(x) {
+  x[, 4]
+}
+.volume <- function(x) {
+  x[, 5]
+}
 
 ## map MAs
 map_maType_call <- function(call_expr) {
-  args      <- as.list(call_expr)[-1L]
-  head_chr  <- as.character(call_expr[[1L]])
-  fun_name  <- tail(head_chr, 1L)
+  args <- as.list(call_expr)[-1L]
+  head_chr <- as.character(call_expr[[1L]])
+  fun_name <- tail(head_chr, 1L)
 
   maType <- switch(
     fun_name,
-      SMA   = 0L,
-      EMA   = 1L,
-      WMA   = 2L,
-      DEMA  = 3L,
-      TEMA  = 4L,
-      TRIMA = 5L,
-      KAMA  = 6L,
-      MAMA  = 7L,
-      T3    = 8L,
+    SMA = 0L,
+    EMA = 1L,
+    WMA = 2L,
+    DEMA = 3L,
+    TEMA = 4L,
+    TRIMA = 5L,
+    KAMA = 6L,
+    MAMA = 7L,
+    T3 = 8L,
     stop(sprintf("Unknown MA type: %s", fun_name))
   )
 
   n_val <- args[["n"]]
 
   list(
-    n      = as.integer(n_val),
+    n = as.integer(n_val),
     maType = maType
   )
 }
@@ -55,7 +76,9 @@ is.number <- function(x) {
 
 .unwrap_meta <- function(expr, env) {
   repeat {
-    if (!is.call(expr)) break
+    if (!is.call(expr)) {
+      break
+    }
     head <- expr[[1L]]
     if (is.symbol(head) && as.character(head) %in% c("substitute", "quote")) {
       expr <- eval(expr, envir = env, enclos = env)
@@ -68,9 +91,14 @@ is.number <- function(x) {
 
 .is_ma_spec <- function(expr, env) {
   expr1 <- .unwrap_meta(expr, env)
-  if (is.call(expr1)) return(TRUE)
+  if (is.call(expr1)) {
+    return(TRUE)
+  }
   if (is.symbol(expr1)) {
-    v <- try(get(as.character(expr1), envir = env, inherits = TRUE), silent = TRUE)
+    v <- try(
+      get(as.character(expr1), envir = env, inherits = TRUE),
+      silent = TRUE
+    )
     return(!inherits(v, "try-error") && is.language(v))
   }
   FALSE
@@ -79,7 +107,9 @@ is.number <- function(x) {
 # Normalize one MA argument to a CALL, without forcing promises.
 .normalize_ma_arg_expr <- function(expr, env) {
   expr1 <- .unwrap_meta(expr, env)
-  if (is.call(expr1)) return(expr1)
+  if (is.call(expr1)) {
+    return(expr1)
+  }
   if (is.symbol(expr1)) {
     v <- get(as.character(expr1), envir = env, inherits = TRUE)
     if (is.language(v)) return(v)
@@ -91,8 +121,9 @@ is.number <- function(x) {
 .eval_int <- function(expr, env) {
   expr1 <- .unwrap_meta(expr, env)
   v <- eval(expr1, envir = env, enclos = env)
-  if (!is.number(v) || length(v) != 1L || !is.finite(v))
+  if (!is.number(v) || length(v) != 1L || !is.finite(v)) {
     stop("fast/slow/signal must be finite numeric scalars.", call. = FALSE)
+  }
   as.integer(v)
 }
 
