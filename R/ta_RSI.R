@@ -8,6 +8,9 @@ relative_strength_index <- function(x, n = 10, ...) {
 }
 
 #' @export
+RSI <- relative_strength_index
+
+#' @export
 relative_strength_index.default <- function(x, n = 10, ...) {
     ## default behaviour is to
     ## check if its a numeric vector
@@ -42,8 +45,8 @@ relative_strength_index.plotly <- function(
     ...
 ) {
     dots <- list(...)
-    series <- dots$.series
-    rsi <- .Call("impl_ta_RSI", series, as.integer(n))
+    series <- dots$.series[, 1L]
+    rsi <- .Call("impl_ta_RSI", as.double(series), as.integer(n))
     df <- data.frame(idx = seq_along(rsi), value = rsi)
 
     rsi_plot <- plotly::plot_ly(
@@ -63,7 +66,7 @@ relative_strength_index.plotly <- function(
         fillcolor = "rgba(160,160,160,0.20)"
     )
 
-    # SAFE append even when `.plotting_environment$sub` is NULL
     .plotting_environment$sub <- c(.plotting_environment$sub, list(rsi_plot))
+
     rsi_plot
 }

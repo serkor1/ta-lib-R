@@ -7,7 +7,11 @@
 
 <!-- badges: end -->
 
-The goal of talib is to …
+{talib} provides R bindings for
+[TA-Lib](https://github.com/TA-Lib/ta-lib), a C-library for Technical
+Analysis indicators and Candlestick patterns.
+
+{talib} also provides interactive financial charts based on {plotly}.
 
 ## Installation
 
@@ -25,6 +29,22 @@ pak::pak("serkor1/curly-giggle")
 
 This is a basic example which shows you how to solve a common problem:
 
+``` r
+library(talib)
+
+## calculate bollinger
+## bands
+x <- talib::SPY
+
+## calculate bollinger
+## bands
+tail(
+  talib::bollinger_bands(
+    x[,1]
+  )
+)
+```
+
     #>            upper  middle    lower
     #> [4671,] 638.7501 630.155 621.5599
     #> [4672,] 640.8957 631.238 621.5803
@@ -34,5 +54,35 @@ This is a basic example which shows you how to solve a common problem:
     #> [4676,] 642.7450 633.352 623.9590
 
 ### Charting
+
+``` r
+library(talib)
+
+## calculate bollinger
+## bands
+x <- talib::SPY
+
+{
+  ## calculate bollinger
+  ## bands
+  talib::chart(
+    x = x
+  )
+
+  ## add bollinger bands
+  ## to the chart
+  talib::indicator(
+    .f = talib::SMA(),
+    .var = ~close
+  )
+
+  ## add bollinger bands
+  ## to the chart
+  talib::indicator(
+    .f = talib::RSI(),
+    .var = ~close
+  )
+}
+```
 
 <img src="man/figures/README-charting-1.png" style="display: block; margin: auto;" />
