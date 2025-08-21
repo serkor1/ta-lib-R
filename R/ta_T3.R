@@ -1,12 +1,14 @@
 #' @title T3 Moving Average (T3)
 #' @family Overlap Study
 #' @export
-t3_moving_average <- function(x, n = 10, ...) {
-    UseMethod("t3_moving_average")
+T3 <- function(x, n = 10, ...) {
+    UseMethod("T3")
 }
 
+#' @rdname T3
+#' @usage NULL
 #' @export
-t3_moving_average.default <- function(x, n = 10, ...) {
+T3.default <- function(x, n = 10, ...) {
     ## default behaviour is to
     ## check if its a numeric vector
     ##
@@ -32,5 +34,37 @@ t3_moving_average.default <- function(x, n = 10, ...) {
     )
 }
 
+#' @rdname T3
+#' @usage NULL
 #' @export
-T3 <- t3_moving_average
+T3.plotly <- function(x, n = 10, ...) {
+    dots <- list(...)
+    series <- dots$.series
+
+    t3 <- .Call(
+        "impl_ta_MA",
+        .univariate_series(series),
+        as.integer(n),
+        8L
+    )
+
+    df <- data.frame(
+        idx = seq_along(t3),
+        t3 = as.numeric(t3)
+    )
+
+    .plotting_environment$main <- plotly::add_trace(
+        x,
+        data = df, # bind data here (creates/sets cur_data)
+        x = ~idx,
+        y = ~t3, # refer to columns, not objects in caller env
+        type = "scatter",
+        mode = "lines",
+        name = sprintf("T3(%d)", n),
+        inherit = FALSE,
+        xaxis = "x",
+        yaxis = "y" # ensure it lands on the main panel
+    )
+
+    .plotting_environment$main
+}

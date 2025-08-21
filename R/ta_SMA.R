@@ -16,6 +16,8 @@ SMA <- function(x, n = 10, ...) {
   )
 }
 
+#' @rdname SMA
+#' @usage NULL
 #' @export
 SMA.default <- function(x, n = 10, ...) {
   ## default behaviour is to
@@ -43,19 +45,16 @@ SMA.default <- function(x, n = 10, ...) {
   )
 }
 
-#' @title Simple Moving Average (SMA)
-#'
-#' @description
-#' A short description...
-#'
+#' @rdname SMA
+#' @usage NULL
 #' @export
 SMA.plotly <- function(x, n = 10, ...) {
   dots <- list(...)
-  series <- dots$.series[, 1L]
+  series <- dots$.series
 
   sma <- .Call(
     "impl_ta_MA",
-    as.double(series),
+    .univariate_series(series),
     as.integer(n),
     0L
   )

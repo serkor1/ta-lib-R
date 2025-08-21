@@ -2,13 +2,18 @@
 #'
 #' @family Overlap Study
 #'
+#' @templateVar .FUN DEMA
+#' @template univariate_example
+#'
 #' @export
-double_exponential_moving_average <- function(x, n = 10, ...) {
-    UseMethod("double_exponential_moving_average")
+DEMA <- function(x, n = 10, ...) {
+    UseMethod("DEMA")
 }
 
+#' @rdname DEMA
+#' @usage NULL
 #' @export
-double_exponential_moving_average.default <- function(x, n = 10, ...) {
+DEMA.default <- function(x, n = 10, ...) {
     ## default behaviour is to
     ## check if its a numeric vector
     ##
@@ -34,5 +39,37 @@ double_exponential_moving_average.default <- function(x, n = 10, ...) {
     )
 }
 
+#' @rdname DEMA
+#' @usage NULL
 #' @export
-DEMA <- double_exponential_moving_average
+DEMA.plotly <- function(x, n = 10, ...) {
+    dots <- list(...)
+    series <- dots$.series
+
+    dema <- .Call(
+        "impl_ta_MA",
+        .univariate_series(series),
+        as.integer(n),
+        3L
+    )
+
+    df <- data.frame(
+        idx = seq_along(dema),
+        dema = as.numeric(dema)
+    )
+
+    .plotting_environment$main <- plotly::add_trace(
+        x,
+        data = df, # bind data here (creates/sets cur_data)
+        x = ~idx,
+        y = ~dema, # refer to columns, not objects in caller env
+        type = "scatter",
+        mode = "lines",
+        name = sprintf("DEMA(%d)", n),
+        inherit = FALSE,
+        xaxis = "x",
+        yaxis = "y" # ensure it lands on the main panel
+    )
+
+    .plotting_environment$main
+}
