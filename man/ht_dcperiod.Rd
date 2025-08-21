@@ -9,3 +9,12 @@ ht_dcperiod(x, ...)
 \description{
 Hilbert Transform - Dominant Cycle Period
 }
+\seealso{
+Other Cycle Indicator: 
+\code{\link{ht_dcphase}()},
+\code{\link{ht_phasor}()},
+\code{\link{ht_sine}()},
+\code{\link{ht_trendline}()},
+\code{\link{ht_trendmode}()}
+}
+\concept{Cycle Indicator}

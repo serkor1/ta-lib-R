@@ -9,3 +9,14 @@ aroon_oscillator(x, n, ...)
 \description{
 Aroon Oscillator
 }
+\seealso{
+Other Momentum Indicator: 
+\code{\link{aroon}()},
+\code{\link{fast_stochastic}()},
+\code{\link{moving_average_convergence_divergence}()},
+\code{\link{relative_strength_index}()},
+\code{\link{stochastic}()},
+\code{\link{stochastic_relative_strength_index}()},
+\code{\link{ultimate_oscillator}()}
+}
+\concept{Momentum Indicator}

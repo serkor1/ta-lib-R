@@ -14,6 +14,7 @@ build: ## Build the R package
 	@tools/generate_API.sh src/ src/api.h && tools/generate_FFI.sh src/api.h src/init.c && $(MAKE) fmt
 	@Rscript --verbose -e "devtools::document()"
 	@R CMD build . && R CMD INSTALL $(tarball_location)
+	@Rscript -e "rmarkdown::render('README.Rmd', output_format = rmarkdown::github_document(html_preview = FALSE), clean = TRUE)"
 
 check: ## Check the R package
 	@Rscript --verbose -e "devtools::document()"
@@ -31,3 +32,11 @@ clean: ## Remove artifacts
 fmt: ## Format code
 	@clang-format -style=LLVM -dump-config > .clang-format && clang-format -i src/*.c src/*.h
 	@rm -rf ./.clang-format
+
+pkgdown-build: ## Build {pkgdown} documentation
+	@Rscript -e "pkgdown::clean_site()"
+	@Rscript -e "pkgdown::init_site()"
+	@Rscript -e "pkgdown::build_site()"
+
+pkgdown-preview: ## Preview {pkgdown} documetation
+	@Rscript -e "pkgdown::preview_site()"

@@ -9,3 +9,14 @@ moving_average_convergence_divergence(x, fast = 12, slow = 26, signal = 9, ...)
 \description{
 Moving Average Convergence Divergence
 }
+\seealso{
+Other Momentum Indicator: 
+\code{\link{aroon}()},
+\code{\link{aroon_oscillator}()},
+\code{\link{fast_stochastic}()},
+\code{\link{relative_strength_index}()},
+\code{\link{stochastic}()},
+\code{\link{stochastic_relative_strength_index}()},
+\code{\link{ultimate_oscillator}()}
+}
+\concept{Momentum Indicator}

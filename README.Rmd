@@ -1,0 +1,80 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r setup, include = FALSE}
+# set options
+Sys.setenv(OPENSSL_CONF="/dev/null")
+
+knitr::opts_chunk$set(
+  collapse = FALSE,
+  comment  = "#>",
+  fig.path = "man/figures/README-",
+  message  = FALSE,
+  warning  = FALSE,
+  echo     = FALSE 
+)
+```
+
+# {talib}: R bindings for TA-lib
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of talib is to ...
+
+## Installation
+
+You can install the development version of talib from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("pak")
+pak::pak("serkor1/curly-giggle")
+```
+
+## Example
+
+### Indicators
+This is a basic example which shows you how to solve a common problem:
+
+```{r indicator}
+library(talib)
+
+## calculate bollinger
+## bands
+x <- talib::SPY
+
+## calculate bollinger
+## bands
+head(
+  talib::bollinger_bands(
+    x[,1]
+  )
+)
+```
+
+### Charting
+```{r charting}
+library(talib)
+
+## calculate bollinger
+## bands
+x <- talib::SPY
+
+{
+  ## calculate bollinger
+  ## bands
+  talib::chart(
+    x = x
+  )
+
+  ## add bollinger bands
+  ## to the chart
+  talib::indicator(
+    .f = talib::SMA(),
+    .var = ~close
+  )
+}
+```

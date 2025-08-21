@@ -9,3 +9,12 @@ ht_trendline(x, ...)
 \description{
 Hilbert Transform - Instantaneous Trendline
 }
+\seealso{
+Other Cycle Indicator: 
+\code{\link{ht_dcperiod}()},
+\code{\link{ht_dcphase}()},
+\code{\link{ht_phasor}()},
+\code{\link{ht_sine}()},
+\code{\link{ht_trendmode}()}
+}
+\concept{Cycle Indicator}

@@ -9,3 +9,8 @@ chaikin_AD_oscillator(x, fast = 3, slow = 10, ...)
 \description{
 Chaikin A/D Oscillator
 }
+\seealso{
+Other Volume Indicator: 
+\code{\link{chaikin_AD_line}()}
+}
+\concept{Volume Indicator}

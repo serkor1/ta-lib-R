@@ -9,3 +9,17 @@ triple_exponential_moving_average(x, n = 10, ...)
 \description{
 Triple Exponential Moving Average (TEMA)
 }
+\seealso{
+Other Overlap Study: 
+\code{\link{SMA}()},
+\code{\link{acceleration_bands}()},
+\code{\link{bollinger_bands}()},
+\code{\link{double_exponential_moving_average}()},
+\code{\link{exponential_moving_average}()},
+\code{\link{kaufman_adaptive_moving_average}()},
+\code{\link{mesa_adaptive_moving_average}()},
+\code{\link{t3_moving_average}()},
+\code{\link{triangular_moving_average}()},
+\code{\link{weighted_moving_average}()}
+}
+\concept{Overlap Study}

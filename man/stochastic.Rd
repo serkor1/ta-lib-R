@@ -9,3 +9,14 @@ stochastic(x, fastk, slowk = SMA(n = 10), slowd = SMA(n = 8), ...)
 \description{
 Stochastic
 }
+\seealso{
+Other Momentum Indicator: 
+\code{\link{aroon}()},
+\code{\link{aroon_oscillator}()},
+\code{\link{fast_stochastic}()},
+\code{\link{moving_average_convergence_divergence}()},
+\code{\link{relative_strength_index}()},
+\code{\link{stochastic_relative_strength_index}()},
+\code{\link{ultimate_oscillator}()}
+}
+\concept{Momentum Indicator}

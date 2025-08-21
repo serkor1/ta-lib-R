@@ -9,3 +9,14 @@ ultimate_oscillator(x, n = c(7, 14, 28), ...)
 \description{
 Ultimate Oscillator
 }
+\seealso{
+Other Momentum Indicator: 
+\code{\link{aroon}()},
+\code{\link{aroon_oscillator}()},
+\code{\link{fast_stochastic}()},
+\code{\link{moving_average_convergence_divergence}()},
+\code{\link{relative_strength_index}()},
+\code{\link{stochastic}()},
+\code{\link{stochastic_relative_strength_index}()}
+}
+\concept{Momentum Indicator}
