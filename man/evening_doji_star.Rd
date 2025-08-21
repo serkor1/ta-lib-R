@@ -9,3 +9,10 @@ evening_doji_star(x, penetration = 0.1, ...)
 \description{
 Evening Doji Star
 }
+\seealso{
+Other Pattern Recognition: 
+\code{\link{doji}()},
+\code{\link{doji_star}()},
+\code{\link{dragonfly_doji}()}
+}
+\concept{Pattern Recognition}

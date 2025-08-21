@@ -9,3 +9,8 @@ chaikin_AD_line(x, ...)
 \description{
 Chaikin A/D Line
 }
+\seealso{
+Other Volume Indicator: 
+\code{\link{chaikin_AD_oscillator}()}
+}
+\concept{Volume Indicator}

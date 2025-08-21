@@ -9,3 +9,10 @@ doji(x, ...)
 \description{
 Doji
 }
+\seealso{
+Other Pattern Recognition: 
+\code{\link{doji_star}()},
+\code{\link{dragonfly_doji}()},
+\code{\link{evening_doji_star}()}
+}
+\concept{Pattern Recognition}

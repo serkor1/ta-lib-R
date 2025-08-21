@@ -231,7 +231,7 @@ indicator <- function(
     ##       here
     fig <- plotly::subplot(
       panels,
-      nrows = k,
+      nrows = number_of_panels,
       shareX = TRUE,
       margin = 0.02,
       heights = heights
