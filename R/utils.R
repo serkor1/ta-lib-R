@@ -24,22 +24,29 @@ flatten <- function(x) {
   }
 }
 
-
-## extractors
-.open <- function(x) {
-  x[, 1]
+## extract open, high, low, close
+## and volume by position
+##
+## offset if idx is present
+##
+## NOTE: Offset is like scratching your
+##       left ear with your right arm
+##       only added for backwards compatibility
+##       - should remove it.
+.open <- function(x, offset = FALSE) {
+  x[, 1L + as.integer(offset)]
 }
-.high <- function(x) {
-  x[, 2]
+.high <- function(x, offset = FALSE) {
+  x[, 2L + as.integer(offset)]
 }
-.low <- function(x) {
-  x[, 3]
+.low <- function(x), offset = FALSE {
+  x[, 3L + as.integer(offset)]
 }
-.close <- function(x) {
-  x[, 4]
+.close <- function(x, offset = FALSE) {
+  x[, 4L + as.integer(offset)]
 }
-.volume <- function(x) {
-  x[, 5]
+.volume <- function(x, offset = FALSE) {
+  x[, 5L + as.integer(offset)]
 }
 
 ## map MAs
