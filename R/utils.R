@@ -39,7 +39,7 @@ flatten <- function(x) {
 .high <- function(x, offset = FALSE) {
   x[, 2L + as.integer(offset)]
 }
-.low <- function(x), offset = FALSE {
+.low <- function(x, offset = FALSE) {
   x[, 3L + as.integer(offset)]
 }
 .close <- function(x, offset = FALSE) {
