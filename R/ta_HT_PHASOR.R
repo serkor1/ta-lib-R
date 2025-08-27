@@ -2,13 +2,13 @@
 #' @family Cycle Indicator
 #' @export
 ht_phasor <- function(x, ...) {
-    UseMethod("ht_phasor")
+  UseMethod("ht_phasor")
 }
 
 #' @export
 ht_phasor.default <- function(x, ...) {
-    .Call(
-        "impl_ta_HT_PHASOR",
-        as.numeric(x)
-    )
+  .Call(
+    "impl_ta_HT_PHASOR",
+    as.numeric(x)
+  )
 }

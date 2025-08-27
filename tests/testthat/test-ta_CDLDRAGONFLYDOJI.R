@@ -1,19 +1,18 @@
 ## script: DRAGONFLYDOJI
 ## author: Serkan Korkmaz
 testthat::test_that(desc = "Dragonfly Doji", code = {
-
   ## 1) calculate values
   ##    with and without alias
   ##    without normalization
   options(talib.normalize = FALSE)
   output <- dragonfly_doji(SPY)
-  alias  <- CDLDRAGONFLYDOJI(SPY)
+  alias <- CDLDRAGONFLYDOJI(SPY)
 
   ## 1.1) check if the values
   ##      are equal
   testthat::expect_equal(
-    object    = output,
-    expected  = alias
+    object = output,
+    expected = alias
   )
 
   ## 1.2) check that the range
@@ -22,7 +21,7 @@ testthat::test_that(desc = "Dragonfly Doji", code = {
     object = any(unique(output, na.rm = TRUE) %in% c(-100, 100))
   )
 
-  ## 1.3) recalculate with 
+  ## 1.3) recalculate with
   ##      normalization and check
   ##      range is in [-1, 1]
   options(talib.normalize = TRUE)
@@ -31,7 +30,6 @@ testthat::test_that(desc = "Dragonfly Doji", code = {
   ## 1.4) check that the range
   ##      is in [-1, 1]
   testthat::expect_true(
-    object = any(unique(output, na.rm = TRUE) %in% c(-1 ,1))
+    object = any(unique(output, na.rm = TRUE) %in% c(-1, 1))
   )
-  
 })

@@ -5,14 +5,14 @@
 ##
 ## 0) load data
 BTC <- cryptoQuotes::get_quote(
-    ticker = "BTCUSDC", 
-    futures = FALSE, 
-    interval = "15m"
+  ticker = "BTCUSDC",
+  futures = FALSE,
+  interval = "15m"
 )
 
 ## 1) convert to matrix
 BTC <- matrix(
-  data = BTC[,1:5],
+  data = BTC[, 1:5],
   ncol = 5,
   dimnames = list(
     rownames(BTC),
@@ -22,8 +22,6 @@ BTC <- matrix(
 
 ## 2) store data
 usethis::use_data(
-    BTC, 
-    overwrite = TRUE
+  BTC,
+  overwrite = TRUE
 )
-
-
