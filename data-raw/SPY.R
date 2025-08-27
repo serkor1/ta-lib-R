@@ -5,22 +5,22 @@
 ##
 ## 0) load data
 SPY <- quantmod::getSymbols(
-    Symbols = "SPY",
-    auto.assign = FALSE
-)[,1:5]
+  Symbols = "SPY",
+  auto.assign = FALSE
+)[, 1:5]
 
 ## 1) rename columns
 colnames(SPY) <- c(
-    "open", 
-    "high" , 
-    "low", 
-    "close", 
-    "volume"
+  "open",
+  "high",
+  "low",
+  "close",
+  "volume"
 )
 
 ## 2) convert to matrix
 SPY <- matrix(
-  data = SPY[,1:5],
+  data = SPY[, 1:5],
   ncol = 5,
   dimnames = list(
     rownames(SPY),
@@ -30,8 +30,6 @@ SPY <- matrix(
 
 ## 3) store data
 usethis::use_data(
-    SPY, 
-    overwrite = TRUE
+  SPY,
+  overwrite = TRUE
 )
-
-

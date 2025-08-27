@@ -1,4 +1,4 @@
-  ## usethis namespace: start
-  #' @useDynLib talib, .registration = TRUE
-  ## usethis namespace: end
-  NULL
+## usethis namespace: start
+#' @useDynLib talib, .registration = TRUE
+## usethis namespace: end
+NULL

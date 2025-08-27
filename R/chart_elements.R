@@ -8,7 +8,7 @@
   plotly::layout(
     p = x,
     paper_bgcolor = chart_theme$paper_bgcolor,
-    plot_bgcolor  = chart_theme$plot_bgcolor,
+    plot_bgcolor = chart_theme$plot_bgcolor,
     font = list(
       size = 14 * getOption("talib.chart.scale", default = 1),
       color = chart_theme$font_color
@@ -21,7 +21,6 @@
       rangeslider = list(
         visible = getOption("talib.chart.slider", default = FALSE),
         thickness = getOption("talib.chart.slider.size", default = 0.05)
-    
       )
     ),
 
@@ -31,7 +30,7 @@
       orientation = 'h',
       x = 0,
       y = 100,
-      yref="container",
+      yref = "container",
       title = list(
         text = "<b>Indicators:</b>",
         font = list(
@@ -52,8 +51,7 @@
       xanchor = "right"
     ),
     ## title end
-    
+
     ...
   )
-
 }

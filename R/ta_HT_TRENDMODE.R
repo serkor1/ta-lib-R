@@ -2,13 +2,13 @@
 #' @family Cycle Indicator
 #' @export
 ht_trendmode <- function(x, ...) {
-    UseMethod("ht_trendmode")
+  UseMethod("ht_trendmode")
 }
 
 #' @export
 ht_trendmode.default <- function(x, ...) {
-    .Call(
-        "impl_ta_HT_TRENDMODE",
-        as.numeric(x)
-    )
+  .Call(
+    "impl_ta_HT_TRENDMODE",
+    as.numeric(x)
+  )
 }
