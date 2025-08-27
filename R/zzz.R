@@ -9,17 +9,14 @@
 )
 
 .onAttach <- function(
-    libname,
-    pkgname,
-    ...) {
-
-}
+  libname,
+  pkgname,
+  ...
+) {}
 
 .onDetach <- function(
-    libpath,
-    ...) {
-  
-
-}
+  libpath,
+  ...
+) {}
 
 # script end;
