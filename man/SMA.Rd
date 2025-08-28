@@ -2,7 +2,6 @@
 % Please edit documentation in R/ta_SMA.R
 \name{SMA}
 \alias{SMA}
-\alias{SMA.default}
 \alias{SMA.plotly}
 \title{Simple Moving Average (SMA)}
 \usage{

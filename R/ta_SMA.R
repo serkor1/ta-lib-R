@@ -10,39 +10,112 @@
 #' @family Overlap Study
 #'
 #' @export
-SMA <- function(x, n = 10, ...) {
+SMA <- function(
+  x,
+  n = 10,
+  ...
+) {
   UseMethod(
     "SMA"
   )
 }
 
-#' @rdname SMA
-#' @usage NULL
 #' @export
-SMA.default <- function(x, n = 10, ...) {
-  ## default behaviour is to
-  ## check if its a numeric vector
-  ##
-  ## No coercing here as it might
-  ## lead to overflow
-
-  ## 0) validate input
-  ##    and stop the script
-  ##    if conditions are not
-  ##    met
-  if (!is.null(dim(x))) {
-    stop("`x` has to be a <double> vector")
-  }
-  assert(is.number(x))
-  assert(n >= 2)
-
-  ## 1) pass `x` to C
+SMA.numeric <- function(
+  x,
+  n = 10,
+  ...
+) {
   .Call(
     "impl_ta_MA",
-    x,
+    as.double(x),
     as.integer(n),
     0L
   )
+}
+
+#' @export
+SMA.data.frame <- function(
+  x,
+  n = 10,
+  cols,
+  ...
+) {
+  ## extract series
+  ## as and convert to list
+  ## for vapply
+  if (missing(cols)) {
+    cols <- ~open
+  }
+
+  x <- series(
+    x = cols,
+    default = ~open,
+    data = x,
+    ...
+  )
+  ## calculate output
+  ## using vapply
+  x <- as.data.frame(vapply(
+    as.list(x),
+    FUN = function(x) {
+      ## 1) pass `x` to C
+      .Call(
+        "impl_ta_MA",
+        x,
+        as.integer(n),
+        0L
+      )
+    },
+    FUN.VALUE = double(nrow(x)),
+    USE.NAMES = TRUE
+  ))
+
+  colnames(x) <- paste0("sma_", colnames(x))
+
+  x
+}
+
+#' @export
+SMA.matrix <- function(
+  x,
+  n = 10,
+  cols,
+  ...
+) {
+  ## extract series
+  ## as and convert to list
+  ## for vapply
+  if (missing(cols)) {
+    cols <- ~open
+  }
+
+  x <- series(
+    x = cols,
+    default = ~open,
+    data = x,
+    ...
+  )
+  ## calculate output
+  ## using vapply
+  x <- as.matrix(vapply(
+    as.list(x),
+    FUN = function(x) {
+      ## 1) pass `x` to C
+      .Call(
+        "impl_ta_MA",
+        x,
+        as.integer(n),
+        0L
+      )
+    },
+    FUN.VALUE = double(nrow(x)),
+    USE.NAMES = TRUE
+  ))
+
+  colnames(x) <- paste0("sma_", colnames(x))
+
+  x
 }
 
 #' @rdname SMA
