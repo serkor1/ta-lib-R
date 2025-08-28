@@ -48,8 +48,8 @@ acceleration_bands.default <- function(
   }
 
   HLC <- series(
-    formula = cols,
-    formula_default = ~ open + high + close,
+    x = cols,
+    default = ~ open + high + close,
     data = x,
     ...
   )
@@ -73,22 +73,34 @@ acceleration_bands.default <- function(
 #' @export
 acceleration_bands.plotly <- function(
   x,
+  cols,
   n = 10,
+  data,
   ...
 ) {
-  ## This function
-  passed_arguments <- list(
+  ## prepare series
+  ## from
+  HLC <- series(
+    x = x,
+    formula = cols,
+    default = ~ open + high + close,
+    data = data,
     ...
   )
 
-  ## extract data
-  HLC <- passed_arguments$.series
+  # ## This function
+  # passed_arguments <- list(
+  #   ...
+  # )
 
-  assert(
-    ncol(HLC) == 3,
-    "Acceleration bands uses 3 columns. Found ",
-    ncol(HLC)
-  )
+  # ## extract data
+  # HLC <- passed_arguments$.series
+
+  # assert(
+  #   ncol(HLC) == 3,
+  #   "Acceleration bands uses 3 columns. Found ",
+  #   ncol(HLC)
+  # )
 
   ## calculate acceleration
   ## bands and return as
