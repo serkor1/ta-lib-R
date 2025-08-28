@@ -15,6 +15,7 @@ chart <- function(
 chart.default <- function(
   x,
   type = "candlestick",
+  idx = NULL,
   ...
 ) {
   ## default chart function
@@ -41,7 +42,9 @@ chart.default <- function(
   ##
   ## NOTE: it is also a hard requirement on
   ##       {plotly} side
-  .plotting_environment$x <- data_frame <- as.data.frame(x)
+  x <- as.data.frame(x)
+  x$idx <- if (is.null(idx)) 1:nrow(x) else idx
+  .plotting_environment$x <- data_frame <- x
 
   ## generate price chart
   ## based on type. can be either
@@ -55,6 +58,7 @@ chart.default <- function(
   price_chart <- plotly::plot_ly(
     data = data_frame,
     type = type,
+    x = ~idx,
     open = ~open,
     close = ~close,
     high = ~high,
