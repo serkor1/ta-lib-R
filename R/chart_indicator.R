@@ -1,19 +1,22 @@
 #' @export
-indicator <- function(.f, .var, ...) {
+indicator <- function(
+  FUN,
+  cols,
+  ...
+) {
   parent_frame <- parent.frame()
 
-  has_var <- !missing(.var)
+  has_var <- !missing(cols)
   if (has_var) {
-    var_expr <- eval.parent(substitute(.var))
+    var_expr <- eval.parent(substitute(cols))
     stopifnot(inherits(var_expr, "formula"))
     environment(var_expr) <- parent_frame
   }
 
-  # Resolve .f (supports bare name, pkg::fun(), etc.)
-  f_call <- substitute(.f)
+  f_call <- substitute(FUN)
   pre_args <- list()
   if (!is.call(f_call)) {
-    f <- match.fun(eval.parent(substitute(.f)))
+    f <- match.fun(eval.parent(substitute(FUN)))
   } else {
     head <- f_call[[1L]]
     if (is.symbol(head)) {
@@ -40,6 +43,7 @@ indicator <- function(.f, .var, ...) {
       title_text = "fisk"
     )
   }
+
   .plot <- .plotting_environment$main
 
   # Build call
@@ -56,8 +60,8 @@ indicator <- function(.f, .var, ...) {
       "cols"
     } else if ("formula" %in% f_formals) {
       "formula"
-    } else if (".var" %in% f_formals) {
-      ".var"
+    } else if ("cols" %in% f_formals) {
+      "cols"
     } else {
       "cols"
     }
