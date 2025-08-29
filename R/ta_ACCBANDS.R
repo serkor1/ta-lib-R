@@ -80,6 +80,34 @@ acceleration_bands.default <- function(
 #' @usage NULL
 #' @aliases acceleration_bands
 #' @export
+acceleration_bands.data.frame <- function(
+  x,
+  cols,
+  n = 10,
+  ...
+) {
+  as.data.frame(
+    NextMethod()
+  )
+}
+
+#' @usage NULL
+#' @aliases acceleration_bands
+#' @export
+acceleration_bands.matrix <- function(
+  x,
+  cols,
+  n = 10,
+  ...
+) {
+  as.matrix(
+    NextMethod()
+  )
+}
+
+#' @usage NULL
+#' @aliases acceleration_bands
+#' @export
 acceleration_bands.plotly <- function(
   x,
   cols,
@@ -96,20 +124,6 @@ acceleration_bands.plotly <- function(
     data = data,
     ...
   )
-
-  # ## This function
-  # passed_arguments <- list(
-  #   ...
-  # )
-
-  # ## extract data
-  # HLC <- passed_arguments$.series
-
-  # assert(
-  #   ncol(HLC) == 3,
-  #   "Acceleration bands uses 3 columns. Found ",
-  #   ncol(HLC)
-  # )
 
   ## calculate acceleration
   ## bands and return as

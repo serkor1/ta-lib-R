@@ -9,7 +9,8 @@ series <- function(
     data,
     ...
 ) {
-    UseMethod("series")
+    target <- if (!missing(x)) x else default
+    UseMethod("series", target)
 }
 
 ## plotly series
@@ -39,6 +40,21 @@ series.plotly <- function(
         ...
     )
 }
+
+# #' @export
+# series.data.frame <- function(
+#     x,
+#     default,
+#     data,
+#     ...
+# ) {
+#     series.formula(
+#         x = x,
+#         default = default,
+#         data = data,
+#         ...
+#     )
+# }
 
 ## formula series
 #' @export
