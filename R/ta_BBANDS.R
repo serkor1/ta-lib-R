@@ -3,7 +3,14 @@
 #' @family Overlap Study
 #'
 #' @export
-bollinger_bands <- function(x, ma = SMA(n = 10), up = 2, down = 2, ...) {
+bollinger_bands <- function(
+  x,
+  cols,
+  ma = SMA(n = 10),
+  up = 2,
+  down = 2,
+  ...
+) {
   UseMethod(
     generic = "bollinger_bands"
   )
@@ -20,31 +27,102 @@ bollinger_bands.default <- function(
   down = 2,
   ...
 ) {
+  ## check input
+  ## cols if passed
+  if (!missing(cols)) {
+    assert(
+      is.formula(cols),
+      paste0(
+        "'cols' has to be <",
+        class(~s),
+        ">. ",
+        "Got <",
+        class(cols),
+        ">."
+      )
+    )
+    assert(
+      length(all.vars(cols)) == 1,
+      paste0(
+        "'cols' has to be length 1. ",
+        "Got length ",
+        length(all.vars(cols))
+      )
+    )
+  }
+
   ## default behaviour is to
   ## coerce to a `matrix` check that
   ## it is double and then pass to
   ## C-side.
   ma <- map_maType_call(substitute(ma))
 
-  ## 0) validate input
-  ##    and stop the script
-  ##    if conditions are not
-  ##    met
-  if (!is.matrix(x)) {
-    x <- as.matrix(x)
-  }
-  assert(is.numeric(x))
-  assert(ma$n >= 2)
+  x <- series(
+    x = cols,
+    default = ~open,
+    data = x,
+    ...
+  )
 
   ## 1) pass `x` assuming that it
   ##    follows OHLC-V structure
+  as.data.frame(
+    .Call(
+      "impl_ta_BBANDS",
+      as.double(x[[1]]),
+      ma$n,
+      as.numeric(up),
+      as.numeric(down),
+      as.integer(ma$maType)
+    )
+  )
+}
+
+#' @export
+bollinger_bands.numeric <- function(
+  x,
+  ma = SMA(n = 10),
+  up = 2,
+  down = 2,
+  ...
+) {
+  ma <- map_maType_call(substitute(ma))
+
   .Call(
     "impl_ta_BBANDS",
-    x,
+    as.double(x),
     ma$n,
     as.numeric(up),
     as.numeric(down),
     as.integer(ma$maType)
+  )
+}
+
+#' @export
+bollinger_bands.data.frame <- function(
+  x,
+  cols,
+  ma = SMA(n = 10),
+  up = 2,
+  down = 2,
+  ...
+) {
+  as.data.frame(
+    NextMethod()
+  )
+}
+
+#' @export
+bollinger_bands.matrix <- function(
+  x,
+  cols,
+  ma = SMA(n = 10),
+  up = 2,
+  down = 2,
+  ...
+) {
+  as.data.frame(
+    NextMethod()
   )
 }
 

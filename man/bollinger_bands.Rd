@@ -4,7 +4,7 @@
 \alias{bollinger_bands}
 \title{Bollinger Bands}
 \usage{
-bollinger_bands(x, ma = SMA(n = 10), up = 2, down = 2, ...)
+bollinger_bands(x, cols, ma = SMA(n = 10), up = 2, down = 2, ...)
 }
 \description{
 Bollinger Bands

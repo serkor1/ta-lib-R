@@ -5,7 +5,7 @@
 \alias{SMA.plotly}
 \title{Simple Moving Average (SMA)}
 \usage{
-SMA(x, n = 10, ...)
+SMA(x, n = 10, cols, ...)
 }
 \arguments{
 \item{x}{A univariate series.}

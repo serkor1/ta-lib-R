@@ -1,3 +1,4 @@
+#' @title Chart indicators
 #' @export
 indicator <- function(
   FUN,

@@ -13,6 +13,7 @@
 SMA <- function(
   x,
   n = 10,
+  cols,
   ...
 ) {
   UseMethod(
@@ -21,11 +22,48 @@ SMA <- function(
 }
 
 #' @export
+SMA.default <- function(x, n = 10, cols, ...) {
+  if (missing(cols)) {
+    cols <- ~open
+  }
+
+  x <- series(
+    x = cols,
+    default = ~open,
+    data = x,
+    ...
+  )
+
+  x <- vapply(
+    as.list(x),
+    FUN = function(x) {
+      .Call(
+        "impl_ta_MA",
+        x,
+        as.integer(n),
+        0L
+      )
+    },
+    FUN.VALUE = double(nrow(x)),
+    USE.NAMES = TRUE
+  )
+
+  colnames(x) <- paste0("sma_", colnames(x))
+
+  x
+}
+
+#' @export
 SMA.numeric <- function(
   x,
   n = 10,
+  cols,
   ...
 ) {
+  if (!is.missing(cols)) {
+    warning("'cols' have been passed but is unused in for vectors")
+  }
+
   .Call(
     "impl_ta_MA",
     as.double(x),
@@ -41,39 +79,9 @@ SMA.data.frame <- function(
   cols,
   ...
 ) {
-  ## extract series
-  ## as and convert to list
-  ## for vapply
-  if (missing(cols)) {
-    cols <- ~open
-  }
-
-  x <- series(
-    x = cols,
-    default = ~open,
-    data = x,
-    ...
+  as.data.frame(
+    NextMethod()
   )
-  ## calculate output
-  ## using vapply
-  x <- as.data.frame(vapply(
-    as.list(x),
-    FUN = function(x) {
-      ## 1) pass `x` to C
-      .Call(
-        "impl_ta_MA",
-        x,
-        as.integer(n),
-        0L
-      )
-    },
-    FUN.VALUE = double(nrow(x)),
-    USE.NAMES = TRUE
-  ))
-
-  colnames(x) <- paste0("sma_", colnames(x))
-
-  x
 }
 
 #' @export
@@ -83,72 +91,46 @@ SMA.matrix <- function(
   cols,
   ...
 ) {
-  ## extract series
-  ## as and convert to list
-  ## for vapply
-  if (missing(cols)) {
-    cols <- ~open
-  }
-
-  x <- series(
-    x = cols,
-    default = ~open,
-    data = x,
-    ...
+  as.matrix(
+    NextMethod()
   )
-  ## calculate output
-  ## using vapply
-  x <- as.matrix(vapply(
-    as.list(x),
-    FUN = function(x) {
-      ## 1) pass `x` to C
-      .Call(
-        "impl_ta_MA",
-        x,
-        as.integer(n),
-        0L
-      )
-    },
-    FUN.VALUE = double(nrow(x)),
-    USE.NAMES = TRUE
-  ))
-
-  colnames(x) <- paste0("sma_", colnames(x))
-
-  x
 }
 
 #' @rdname SMA
 #' @usage NULL
 #' @export
-SMA.plotly <- function(x, n = 10, ...) {
-  dots <- list(...)
-  series <- dots$.series
-
-  sma <- .Call(
-    "impl_ta_MA",
-    .univariate_series(series),
-    as.integer(n),
-    0L
+SMA.plotly <- function(x, cols, n = 10, data, ...) {
+  ## prepare series
+  ## from
+  x <- as.data.frame(
+    series(
+      x = x,
+      formula = cols,
+      default = ~open,
+      data = data,
+      ...
+    )
   )
 
-  df <- data.frame(
-    idx = seq_along(sma),
-    sma = as.numeric(sma)
-  )
+  ## indicator
+  .indicator <- as.data.frame(NextMethod())
+  .indicator$idx <- 1:nrow(.indicator)
 
-  .plotting_environment$main <- plotly::add_trace(
-    x,
-    data = df, # bind data here (creates/sets cur_data)
-    x = ~idx,
-    y = ~sma, # refer to columns, not objects in caller env
-    type = "scatter",
-    mode = "lines",
-    name = sprintf("SMA(%d)", n),
-    inherit = FALSE,
-    xaxis = "x",
-    yaxis = "y" # ensure it lands on the main panel
-  )
+  for (i in 1:ncol(x)) {
+    local({
+      j <- i
+      .plotting_environment$main <- plotly::add_trace(
+        .plotting_environment$main,
+        data = .indicator,
+        x = ~idx,
+        y = ~ .indicator[, j],
+        type = "scatter",
+        mode = "lines",
+        name = sprintf("SMA(%d)", n),
+        inherit = FALSE
+      )
+    })
+  }
 
   .plotting_environment$main
 }
