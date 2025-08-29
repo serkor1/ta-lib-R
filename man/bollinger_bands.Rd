@@ -29,8 +29,8 @@ columns in a custom order. Refer to the details-section for more on the calculat
 ## series
 data(BTC, package = "talib")
 
-## calculate bollinger bands
-## using BTC
+## calculate the indicator
+## for Bitcoin (BTC)
 output <- talib::bollinger_bands(BTC)
 
 ## display the results

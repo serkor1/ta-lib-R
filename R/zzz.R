@@ -5,18 +5,18 @@
 # script start;
 
 .plotting_environment <- new.env(
-  parent = emptyenv()
+	parent = emptyenv()
 )
 
 .onAttach <- function(
-  libname,
-  pkgname,
-  ...
+	libname,
+	pkgname,
+	...
 ) {}
 
 .onDetach <- function(
-  libpath,
-  ...
+	libpath,
+	...
 ) {}
 
 # script end;

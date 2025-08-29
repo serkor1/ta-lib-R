@@ -2,9 +2,9 @@
 #' @family Pattern Recognition
 #' @export
 doji <- function(x, ...) {
-  UseMethod(
-    "doji"
-  )
+	UseMethod(
+		"doji"
+	)
 }
 
 #' @export
@@ -12,12 +12,12 @@ CDLDOJI <- doji
 
 #' @export
 doji.default <- function(x, ...) {
-  .Call(
-    "impl_ta_CDLDOJI",
-    .open(x),
-    .high(x),
-    .low(x),
-    .close(x),
-    as.logical(getOption("talib.normalize", TRUE))
-  )
+	.Call(
+		"impl_ta_CDLDOJI",
+		.open(x),
+		.high(x),
+		.low(x),
+		.close(x),
+		as.logical(getOption("talib.normalize", TRUE))
+	)
 }
