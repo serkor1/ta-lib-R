@@ -52,7 +52,7 @@ x <- talib::BTC
 ## bands
 tail(
   talib::bollinger_bands(
-    x[,1]
+    x
   )
 )
 ```
@@ -76,15 +76,15 @@ x <- talib::BTC
   ## add bollinger bands
   ## to the chart
   talib::indicator(
-    .f = talib::SMA(),
-    .var = ~close
+    FUN = talib::SMA(),
+    cols = ~close
   )
 
   ## add bollinger bands
   ## to the chart
   talib::indicator(
-    .f = talib::RSI(),
-    .var = ~close
+    FUN = talib::RSI(),
+    cols = ~close
   )
 }
 ```

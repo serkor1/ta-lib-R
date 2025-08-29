@@ -1,0 +1,87 @@
+---
+title: "{talib}: R bindings to TA-Lib"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{talib}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+## set chart options
+options(talib.chart.dark = FALSE)
+
+knitr::opts_chunk$set(
+  collapse      = TRUE,
+  comment       = "#>",
+  out.width     = "100%",
+  out.height    = "680",
+  fig.align     = "center"
+)
+```
+
+```{r setup}
+library(talib)
+```
+
+[{talib}](https://github.com/serkor1/curly-giggle) is wrapper of the 'C' library [TA-Lib](https://github.com/TA-Lib/ta-lib). 
+The library supports indicators for Technical Analysis, including algorithmic candlestick pattern recognition.
+
+The implementation has been extended to include interactive financial charts with a [{plotly}](https://github.com/plotly)-backend. All indicators in [{talib}](https://github.com/serkor1/curly-giggle)
+are soft-wrappers of `model.frame` for added flexibility.
+
+## Basic usage
+
+### Simple Moving Averages
+
+Below is an example on calculating the simple moving average of the Bitcoin (BTC):
+
+```{r SMA(simple)}
+tail(
+  talib::SMA(
+    x = talib::BTC
+  )
+)
+```
+
+The simple moving average can be calculated over a specified range via `...` which gets forwarded to `model.frame`, and calculated for multiple prices, as follows:
+
+```{r SMA(flexible)}
+tail(
+  talib::SMA(
+    x = talib::BTC,
+    cols = ~low + high,
+    ## calculate simple moving average
+    ## up and until the 100th indices
+    subset = 1:nrow(talib::BTC) <= 100
+  )
+)
+```
+
+### Charting indicators
+
+> **Information:** Please refer to the `charting` vignette
+> for a more detailed description of the charting.
+
+The charting functionality mimicks the behaviour of `plot()` and `lines()` where each is called separately. 
+
+```{r chart(basic)}
+{
+  ## candlestick chart
+  talib::chart(
+    talib::BTC
+  )
+
+  ## add SMA
+  talib::indicator(
+  talib::SMA(),
+  cols = ~high + low
+  )
+
+  ## add acceleration bands
+  talib::indicator(
+    talib::ACCBANDS()
+  )
+}
+
+```
