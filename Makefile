@@ -28,6 +28,8 @@ clean: ## Remove artifacts
 	@rm -rf src/*.so
 	@rm -rf $(tarball_location)
 	@rm -rf src/Makevars
+	@rm -rf $(package_name).Rcheck
+	@rm -rf docs
 	@Rscript -e "remove.packages('$(package_name)')"
 
 fmt: ## Format code
