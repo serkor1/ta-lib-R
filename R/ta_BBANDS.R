@@ -1,8 +1,13 @@
-#' @title Bollinger Bands
-#'
+#' @export
 #' @family Overlap Study
 #'
-#' @export
+#' @title Bollinger Bands
+#'
+#' @templateVar .title Bollinger Bands
+#' @templateVar .author Serkan Korkmaz
+#' @templateVar .fun bollinger_bands
+#'
+#' @template description
 bollinger_bands <- function(
   x,
   cols,
@@ -16,12 +21,17 @@ bollinger_bands <- function(
   )
 }
 
+#' @usage NULL
+#' @aliases bollinger_bands
 #' @export
 BBANDS <- bollinger_bands
 
+#' @usage NULL
+#' @aliases bollinger_bands
 #' @export
 bollinger_bands.default <- function(
   x,
+  cols,
   ma = SMA(n = 10),
   up = 2,
   down = 2,
@@ -78,6 +88,8 @@ bollinger_bands.default <- function(
   )
 }
 
+#' @usage NULL
+#' @aliases bollinger_bands
 #' @export
 bollinger_bands.numeric <- function(
   x,
@@ -98,6 +110,8 @@ bollinger_bands.numeric <- function(
   )
 }
 
+#' @usage NULL
+#' @aliases bollinger_bands
 #' @export
 bollinger_bands.data.frame <- function(
   x,
@@ -112,6 +126,8 @@ bollinger_bands.data.frame <- function(
   )
 }
 
+#' @usage NULL
+#' @aliases bollinger_bands
 #' @export
 bollinger_bands.matrix <- function(
   x,
@@ -126,9 +142,12 @@ bollinger_bands.matrix <- function(
   )
 }
 
+#' @usage NULL
+#' @aliases bollinger_bands
 #' @export
 bollinger_bands.plotly <- function(
   x,
+  cols,
   ma = SMA(n = 10),
   up = 2,
   down = 2,

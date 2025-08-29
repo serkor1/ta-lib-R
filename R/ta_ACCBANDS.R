@@ -1,21 +1,29 @@
-#' @title Acceleration Bands
-#'
+#' @export
 #' @family Overlap Study
 #'
-#' @export
+#' @title Acceleration Bands
+#'
+#' @templateVar .title Acceleration Bands
+#' @templateVar .author Serkan Korkmaz
+#' @templateVar .fun acceleration_bands
+#'
+#' @template description
 acceleration_bands <- function(
   x,
-  n = 10,
   cols,
+  n = 10,
   ...
 ) {
   UseMethod("acceleration_bands")
 }
 
+#' @usage NULL
 #' @aliases acceleration_bands
 #' @export
 ACCBANDS <- acceleration_bands
 
+#' @usage NULL
+#' @aliases acceleration_bands
 #' @export
 acceleration_bands.default <- function(
   x,
@@ -69,6 +77,7 @@ acceleration_bands.default <- function(
   )
 }
 
+#' @usage NULL
 #' @aliases acceleration_bands
 #' @export
 acceleration_bands.plotly <- function(
