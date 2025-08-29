@@ -28,12 +28,14 @@ clean: ## Remove artifacts
 	@rm -rf src/*.so
 	@rm -rf $(tarball_location)
 	@rm -rf src/Makevars
+	@Rscript -e "remove.packages('$(package_name)')"
 
 fmt: ## Format code
 	@clang-format -style=LLVM -dump-config > .clang-format && clang-format -i src/*.c src/*.h
 	@rm -rf ./.clang-format
 
 pkgdown-build: ## Build {pkgdown} documentation
+	@Rscript --verbose -e "devtools::document()"
 	@Rscript -e "pkgdown::clean_site()"
 	@Rscript -e "pkgdown::init_site()"
 	@Rscript -e "pkgdown::build_site()"
