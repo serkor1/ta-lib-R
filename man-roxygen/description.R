@@ -1,12 +1,16 @@
-#' @title <%= tools::toTitleCase(.title) %>
-#'
 #' @description
-#' A generic S3 function to compute the <%= tolower(.title) %>. The function assumes that <%= if(.type == "multivariate") "the input [matrix] `x` is Open (`x[,1]`), High (`x[,2]`), Low (`x[,3]`), Close (`x[,4]`) and Volume (`x[,5]`)" else "the input [vector] `x` is [double]" %>.
+#' The `<%= tolower(.fun) %>()` is a generic S3 function that builds upon 'type-safe'-esque workflows limited to classes in in base `R`, and the package-wide
+#' dependencies. Ie. [class] in, [class] out. Each method is a soft wrapper of [model.frame] and therefore the OHLC-V series must be coercible to a [data.frame].
+#' This rule does not transfer to indicators that uses univariate series, unless passed as a 1-column [data.frame] or [matrix]. In such cases, if univariate series
+#' is passed as a [vector] the function calculates the indicator 'as is', and returns a [data.frame] if the indicator itself is also a univariate series.
 #'
-#' @usage
-#' ## Generic default S3 method
-#' ## for <%= tools::toTitleCase(.title) %>
-#' <%= .fun %>(...)
+#' The indicator, by default, follows its mathematical definition. However, the `cols` argument allows for simple rearrangement of the definition by passing relevant
+#' columns in a custom order. Refer to the details-section for more on the calculation of the indicators.
+#'
+#' @param x An OHLC-V series that is coercible to a [data.frame].
+#' @param cols A [formula]
+#' @param n Window
+#' @param ... additional parameters passed into [model.frame].
 #'
 #' @author <%= .author %>
 #'
@@ -14,3 +18,32 @@
 #' @concept technical analysis
 #' @concept trading
 #' @concept algorithmic trading
+#'
+#' @examples
+#' ## load Bitcoin (BTC)
+#' ## series
+#' data(BTC, package = "talib")
+#'
+#' ## calculate <%= tolower(.title) %>
+#' ## using BTC
+#' output <- talib::<%= tolower(.fun) %>(BTC)
+#'
+#' ## display the results
+#' tail(output)
+#'
+#' ## visualize the indicator
+#' ## with candlesticks
+#' ##
+#' ## see ?talib::chart or ?talib::indicator
+#' ## for more details
+#' {
+#'  ## chart OHLC-V
+#'  ## series with candlesticks
+#'  talib::chart(BTC)
+#'
+#'  ## chart indicator
+#'  ## with default values
+#'  talib::indicator(
+#'      talib::<%= tolower(.fun) %>()
+#'  )
+#' }
