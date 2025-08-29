@@ -6,7 +6,9 @@
 ## 0) load data
 SPY <- quantmod::getSymbols(
   Symbols = "SPY",
-  auto.assign = FALSE
+  auto.assign = FALSE,
+  from = as.Date("2023-01-01"),
+  to = as.Date("2024-12-31")
 )[, 1:5]
 
 ## 1) rename columns
