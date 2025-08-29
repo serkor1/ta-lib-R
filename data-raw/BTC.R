@@ -7,17 +7,14 @@
 BTC <- cryptoQuotes::get_quote(
   ticker = "BTCUSDC",
   futures = FALSE,
-  interval = "15m"
+  interval = "1d",
+  from = as.Date("2024-01-01"),
+  to = as.Date("2024-12-31")
 )
 
 ## 1) convert to matrix
-BTC <- matrix(
-  data = BTC[, 1:5],
-  ncol = 5,
-  dimnames = list(
-    rownames(BTC),
-    colnames(BTC)
-  )
+BTC <- as.data.frame(
+  BTC
 )
 
 ## 2) store data

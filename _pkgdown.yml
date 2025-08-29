@@ -48,3 +48,10 @@ reference:
   contents:
   - chart
   - indicator
+
+- title: Financial Data
+  desc: >
+    Preloaded financial data
+  contents:
+  - BTC
+  - SPY
