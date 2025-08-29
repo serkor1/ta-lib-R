@@ -24,9 +24,9 @@
 #' ## series
 #' data(BTC, package = "talib")
 #'
-#' ## calculate <%= tolower(.title) %>
-#' ## using BTC
-#' output <- talib::<%= tolower(.fun) %>(BTC)
+#' ## calculate the indicator
+#' ## for Bitcoin (BTC)
+#' output <- talib::<%= .fun %>(BTC)
 #'
 #' ## display the results
 #' tail(output)
@@ -44,6 +44,6 @@
 #'  ## chart indicator
 #'  ## with default values
 #'  talib::indicator(
-#'      talib::<%= tolower(.fun) %>()
+#'      talib::<%= .fun %>()
 #'  )
 #' }

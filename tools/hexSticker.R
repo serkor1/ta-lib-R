@@ -61,122 +61,122 @@ grid_minor_col <- "#14222D"
 w <- 0.34
 
 p_candles <- ggplot2::ggplot(OHLC, ggplot2::aes(x = x)) +
-    ggplot2::geom_hline(
-        yintercept = y_major,
-        color = grid_major_col,
-        linewidth = 0.28,
-        alpha = 0.55
-    ) +
-    ggplot2::geom_hline(
-        yintercept = y_minor,
-        color = grid_minor_col,
-        linewidth = 0.22,
-        alpha = 0.35
-    ) +
-    ggplot2::geom_vline(
-        xintercept = x_major,
-        color = grid_major_col,
-        linewidth = 0.26,
-        alpha = 0.55
-    ) +
-    ggplot2::geom_vline(
-        xintercept = x_minor,
-        color = grid_minor_col,
-        linewidth = 0.20,
-        alpha = 0.35
-    ) +
-    ## candle wicks
-    ggplot2::geom_segment(
-        ggplot2::aes(xend = x, y = low, yend = high),
-        linewidth = 0.45,
-        color = "#B3C2D1"
-    ) +
-    ## candle body
-    ggplot2::geom_rect(
-        ggplot2::aes(
-            xmin = x - w,
-            xmax = x + w,
-            ymin = pmin(open, close),
-            ymax = pmax(open, close),
-            fill = up,
-            color = up
-        ),
-        linewidth = 0.25
-    ) +
-    ## moving averages
-    ggplot2::geom_line(
-        ggplot2::aes(y = ma_long),
-        color = "#00BFA6",
-        linewidth = 0.8,
-        na.rm = TRUE
-    ) +
-    ggplot2::geom_line(
-        ggplot2::aes(y = ma_short),
-        color = accent,
-        linewidth = 1.0,
-        na.rm = TRUE
-    ) +
-    ggplot2::scale_fill_manual(values = c(`TRUE` = up, `FALSE` = down)) +
-    ggplot2::scale_color_manual(values = c(`TRUE` = up, `FALSE` = down)) +
-    ggplot2::coord_cartesian(expand = FALSE) +
-    ggplot2::theme_void() +
-    hexSticker::theme_transparent() +
-    ggplot2::theme(legend.position = "none")
+	ggplot2::geom_hline(
+		yintercept = y_major,
+		color = grid_major_col,
+		linewidth = 0.28,
+		alpha = 0.55
+	) +
+	ggplot2::geom_hline(
+		yintercept = y_minor,
+		color = grid_minor_col,
+		linewidth = 0.22,
+		alpha = 0.35
+	) +
+	ggplot2::geom_vline(
+		xintercept = x_major,
+		color = grid_major_col,
+		linewidth = 0.26,
+		alpha = 0.55
+	) +
+	ggplot2::geom_vline(
+		xintercept = x_minor,
+		color = grid_minor_col,
+		linewidth = 0.20,
+		alpha = 0.35
+	) +
+	## candle wicks
+	ggplot2::geom_segment(
+		ggplot2::aes(xend = x, y = low, yend = high),
+		linewidth = 0.45,
+		color = "#B3C2D1"
+	) +
+	## candle body
+	ggplot2::geom_rect(
+		ggplot2::aes(
+			xmin = x - w,
+			xmax = x + w,
+			ymin = pmin(open, close),
+			ymax = pmax(open, close),
+			fill = up,
+			color = up
+		),
+		linewidth = 0.25
+	) +
+	## moving averages
+	ggplot2::geom_line(
+		ggplot2::aes(y = ma_long),
+		color = "#00BFA6",
+		linewidth = 0.8,
+		na.rm = TRUE
+	) +
+	ggplot2::geom_line(
+		ggplot2::aes(y = ma_short),
+		color = accent,
+		linewidth = 1.0,
+		na.rm = TRUE
+	) +
+	ggplot2::scale_fill_manual(values = c(`TRUE` = up, `FALSE` = down)) +
+	ggplot2::scale_color_manual(values = c(`TRUE` = up, `FALSE` = down)) +
+	ggplot2::coord_cartesian(expand = FALSE) +
+	ggplot2::theme_void() +
+	hexSticker::theme_transparent() +
+	ggplot2::theme(legend.position = "none")
 
 ## construct stricker and
 ## store locally
 hexSticker::sticker(
-    p_candles,
-    package = "",
-    p_family = "jbmono",
-    p_size = 33,
-    p_color = ink,
-    p_y = 1.44,
-    s_x = 1,
-    s_y = 1,
-    s_width = 2,
-    s_height = 2,
-    h_fill = bg,
-    h_color = accent,
-    h_size = 1,
-    url = "{talib}",
-    u_color = accent,
-    u_size = 33,
-    u_x = 0.4,
-    u_y = 1.5,
-    u_angle = 30,
-    filename = raw_file,
-    dpi = 600,
-    device = ragg::agg_png,
-    bg = "transparent",
-    white_around_sticker = FALSE
+	p_candles,
+	package = "",
+	p_family = "jbmono",
+	p_size = 33,
+	p_color = ink,
+	p_y = 1.44,
+	s_x = 1,
+	s_y = 1,
+	s_width = 2,
+	s_height = 2,
+	h_fill = bg,
+	h_color = accent,
+	h_size = 1,
+	url = "{talib}",
+	u_color = accent,
+	u_size = 33,
+	u_x = 0.4,
+	u_y = 1.5,
+	u_angle = 30,
+	filename = raw_file,
+	dpi = 600,
+	device = ragg::agg_png,
+	bg = "transparent",
+	white_around_sticker = FALSE
 )
 
 ## construct an additional
 ## hexsticker to crop figures outside
 ## the hex
 p_blank <- ggplot2::ggplot() +
-    ggplot2::theme_void() +
-    hexSticker::theme_transparent()
+	ggplot2::theme_void() +
+	hexSticker::theme_transparent()
 
 hexSticker::sticker(
-    p_blank,
-    package = "",
-    p_size = 1,
-    p_color = "white",
-    s_x = 1,
-    s_y = 1,
-    s_width = 1,
-    s_height = 1,
-    h_fill = "white",
-    h_color = "white",
-    h_size = 0.001, # solid white hex
-    url = "",
-    filename = mask_file,
-    dpi = 600,
-    device = ragg::agg_png,
-    bg = "black", # black corners outside hex
-    white_around_sticker = FALSE
+	p_blank,
+	package = "",
+	p_size = 1,
+	p_color = "white",
+	s_x = 1,
+	s_y = 1,
+	s_width = 1,
+	s_height = 1,
+	h_fill = "white",
+	h_color = "white",
+	h_size = 0.001, # solid white hex
+	url = "",
+	filename = mask_file,
+	dpi = 600,
+	device = ragg::agg_png,
+	bg = "black", # black corners outside hex
+	white_around_sticker = FALSE
 )
 
 ## apply the mask
@@ -191,5 +191,5 @@ out <- magick::image_composite(img, mask, operator = "CopyOpacity")
 magick::image_write(out, final_file)
 
 if (clean) {
-    base::unlink(c(mask_file, raw_file))
+	base::unlink(c(mask_file, raw_file))
 }
