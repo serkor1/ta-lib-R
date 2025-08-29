@@ -151,35 +151,45 @@ bollinger_bands.plotly <- function(
   ma = SMA(n = 10),
   up = 2,
   down = 2,
+  data,
   ...
 ) {
   ma <- map_maType_call(substitute(ma))
-  ## extract arguments
-  ## from ellipsis
-  dots <- list(...)
-  series <- dots$.series
 
-  ## extract chart objects
-  .chart <- .plotting_environment$price_chart
-  .value <- .Call(
-    "impl_ta_BBANDS",
-    series,
-    ma$n,
-    as.numeric(up),
-    as.numeric(down),
-    as.integer(ma$maType)
+  ## prepare series
+  ## from
+  x <- series(
+    x = x,
+    formula = cols,
+    default = ~open,
+    data = data,
+    ...
   )
+
+  .indicator <- as.data.frame(
+    .Call(
+      "impl_ta_BBANDS",
+      as.double(x[[1]]),
+      ma$n,
+      as.numeric(up),
+      as.numeric(down),
+      as.integer(ma$maType)
+    )
+  )
+
+  .indicator$idx <- 1:nrow(.indicator)
 
   ## constuct chart
   ## element
-  for (i in seq_len(ncol(.value))) {
+  for (i in seq_len(ncol(.indicator) - 1)) {
     local({
       j <- i
 
       .plotting_environment$main <- plotly::add_lines(
         .plotting_environment$main,
-        x = ~ seq_len(nrow(.value)),
-        y = ~ .value[, j],
+        data = .indicator,
+        x = ~idx,
+        y = ~ .indicator[, j],
         inherit = FALSE,
         line = list(
           color = '#4682b4'
@@ -194,9 +204,10 @@ bollinger_bands.plotly <- function(
   .plotting_environment$main <- plotly::add_ribbons(
     p = .plotting_environment$main,
     inherit = FALSE,
-    x = ~ seq_len(nrow(.value)),
-    ymin = ~ .value[, 3],
-    ymax = ~ .value[, 1],
+    data = .indicator,
+    x = ~idx,
+    ymin = ~ .indicator[, 3],
+    ymax = ~ .indicator[, 1],
     fillcolor = plotly::toRGB("#4682b4", alpha = 0.2),
     line = list(
       color = "transparent"
