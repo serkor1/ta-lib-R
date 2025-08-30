@@ -2,7 +2,7 @@
 #' @family Momentum Indicator
 #'
 #' @title Aroon
-#' @templateVar .title Chaikin A/D Oscillator
+#' @templateVar .title Aroon
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun aroon
 #'
