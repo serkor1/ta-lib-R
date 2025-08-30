@@ -137,7 +137,7 @@ bollinger_bands.matrix <- function(
 	down = 2,
 	...
 ) {
-	as.data.frame(
+	as.matrix(
 		NextMethod()
 	)
 }
