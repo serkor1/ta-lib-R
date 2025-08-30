@@ -14,6 +14,7 @@ build: clean ## Build the R package
 	@tools/generate_API.sh src/ src/api.h && tools/generate_FFI.sh src/api.h src/init.c && $(MAKE) fmt
 	@Rscript --verbose -e "devtools::document()"
 	@R CMD build . && R CMD INSTALL $(tarball_location)
+	@rm -rf README.md
 	@Rscript -e "rmarkdown::render('README.Rmd', output_format = rmarkdown::github_document(html_preview = FALSE), clean = TRUE)"
 
 check: ## Check the R package
@@ -30,7 +31,6 @@ clean: ## Remove artifacts
 	@rm -rf src/Makevars
 	@rm -rf $(package_name).Rcheck
 	@rm -rf docs
-	@rm -rf README.md
 	@Rscript -e "try(remove.packages('$(package_name)'))"
 
 purge: clean ## Remove TA-Lib arifacts
