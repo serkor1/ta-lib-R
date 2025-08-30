@@ -2,20 +2,62 @@
 % Please edit documentation in R/ta_SMA.R
 \name{SMA}
 \alias{SMA}
+\alias{simple_moving_average}
+\alias{SMA.default}
+\alias{SMA.numeric}
+\alias{SMA.data.frame}
+\alias{SMA.matrix}
 \alias{SMA.plotly}
 \title{Simple Moving Average (SMA)}
 \usage{
-SMA(x, n = 10, cols, ...)
+SMA(x, cols, n = 10, ...)
 }
 \arguments{
-\item{x}{A univariate series.}
+\item{x}{An OHLC-V series that is coercible to a \link{data.frame}.}
 
-\item{n}{An \link{integer} of \link{length} 1. The window size of the rolling average.}
+\item{cols}{A \link{formula}}
 
-\item{...}{Parameters passed to and from other methods.}
+\item{n}{Window}
+
+\item{...}{additional parameters passed into \link{model.frame}.}
 }
 \description{
-A short description...
+The \code{sma()} is a generic S3 function that builds upon 'type-safe'-esque workflows limited to classes in in base \code{R}, and the package-wide
+dependencies. Ie. \link{class} in, \link{class} out. Each method is a soft wrapper of \link{model.frame} and therefore the OHLC-V series must be coercible to a \link{data.frame}.
+This rule does not transfer to indicators that uses univariate series, unless passed as a 1-column \link{data.frame} or \link{matrix}. In such cases, if univariate series
+is passed as a \link{vector} the function calculates the indicator 'as is', and returns a \link{data.frame} if the indicator itself is also a univariate series.
+
+The indicator, by default, follows its mathematical definition. However, the \code{cols} argument allows for simple rearrangement of the definition by passing relevant
+columns in a custom order. Refer to the details-section for more on the calculation of the indicators.
+}
+\examples{
+## load Bitcoin (BTC)
+## series
+data(BTC, package = "talib")
+
+## calculate the indicator
+## for Bitcoin (BTC)
+output <- talib::SMA(BTC)
+
+## display the results
+tail(output)
+
+## visualize the indicator
+## with candlesticks
+##
+## see ?talib::chart or ?talib::indicator
+## for more details
+{
+ ## chart OHLC-V
+ ## series with candlesticks
+ talib::chart(BTC)
+
+ ## chart indicator
+ ## with default values
+ talib::indicator(
+     talib::SMA()
+ )
+}
 }
 \seealso{
 Other Overlap Study: 
@@ -30,4 +72,11 @@ Other Overlap Study:
 \code{\link{acceleration_bands}()},
 \code{\link{bollinger_bands}()}
 }
+\author{
+Serkan Korkmaz
+}
 \concept{Overlap Study}
+\concept{algorithmic trading}
+\concept{finance}
+\concept{technical analysis}
+\concept{trading}

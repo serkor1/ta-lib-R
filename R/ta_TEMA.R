@@ -1,70 +1,163 @@
-#' @title Triple Exponential Moving Average (TEMA)
-#' @family Overlap Study
 #' @export
-TEMA <- function(x, n = 10, ...) {
+#' @family Overlap Study
+#' @title Triple Exponential Moving Average (TEMA)
+#'
+#' @templateVar .title Triple Exponential Moving Average (TEMA)
+#' @templateVar .author Serkan Korkmaz
+#' @templateVar .fun TEMA
+#'
+#' @template description
+TEMA <- function(
+	x,
+	cols,
+	n = 10,
+	...
+) {
 	UseMethod("TEMA")
 }
 
 #' @rdname TEMA
 #' @usage NULL
 #' @export
-TEMA.default <- function(x, n = 10, ...) {
+triple_exponential_moving_average <- TEMA
+
+#' @rdname TEMA
+#' @usage NULL
+#' @export
+TEMA.default <- function(
+	x,
+	cols,
+	n = 10,
+	...
+) {
 	## default behaviour is to
 	## check if its a numeric vector
 	##
 	## No coercing here as it might
 	## lead to overflow
+	x <- series(
+		x = cols,
+		default = ~open,
+		data = x,
+		...
+	)
 
 	## 0) validate input
 	##    and stop the script
 	##    if conditions are not
 	##    met
-	if (!is.null(dim(x))) {
-		stop("`x` must be a numeric vector")
-	}
-	assert(is.numeric(x))
-	assert(n >= 2)
+	x <- vapply(
+		as.list(x),
+		FUN = function(x) {
+			.Call(
+				"impl_ta_MA",
+				x,
+				as.integer(n),
+				4L
+			)
+		},
+		FUN.VALUE = double(nrow(x)),
+		USE.NAMES = TRUE
+	)
 
-	## 1) pass `x` to C
+	colnames(x) <- paste0("tema_", colnames(x))
+
+	x
+}
+
+#' @rdname TEMA
+#' @usage NULL
+#' @export
+TEMA.numeric <- function(
+	x,
+	cols,
+	n = 10,
+	...
+) {
+	if (!missing(cols)) {
+		warning(
+			"'cols' have been passed but is unused in for vectors"
+		)
+	}
+
 	.Call(
 		"impl_ta_MA",
-		x,
+		as.double(x),
 		as.integer(n),
 		4L
+	)
+}
+
+
+#' @rdname TEMA
+#' @usage NULL
+#' @export
+TEMA.data.frame <- function(
+	x,
+	n = 10,
+	cols,
+	...
+) {
+	as.data.frame(
+		NextMethod()
 	)
 }
 
 #' @rdname TEMA
 #' @usage NULL
 #' @export
-TEMA.plotly <- function(x, n = 10, ...) {
-	dots <- list(...)
-	series <- dots$.series
+TEMA.matrix <- function(
+	x,
+	n = 10,
+	cols,
+	...
+) {
+	as.matrix(
+		NextMethod()
+	)
+}
 
-	tema <- .Call(
-		"impl_ta_MA",
-		.univariate_series(series),
-		as.integer(n),
-		4L
+#' @rdname TEMA
+#' @usage NULL
+#' @export
+TEMA.plotly <- function(
+	x,
+	cols,
+	n = 10,
+	data,
+	...
+) {
+	## prepare series
+	## from
+	x <- as.data.frame(
+		series(
+			x = x,
+			formula = cols,
+			default = ~open,
+			data = data,
+			...
+		)
 	)
 
-	df <- data.frame(
-		idx = seq_along(tema),
-		tema = as.numeric(tema)
-	)
+	## indicator
+	.indicator <- as.data.frame(NextMethod())
+	.indicator$idx <- 1:nrow(.indicator)
 
-	.plotting_environment$main <- plotly::add_trace(
-		x,
-		data = df, # bind data here (creates/sets cur_data)
-		x = ~idx,
-		y = ~tema, # refer to columns, not objects in caller env
-		type = "scatter",
-		mode = "lines",
-		name = sprintf("TEMA(%d)", n),
-		inherit = FALSE,
-		xaxis = "x",
-		yaxis = "y" # ensure it lands on the main panel
-	)
+	for (i in 1:ncol(x)) {
+		local({
+			j <- i
+			.plotting_environment$main <- plotly::add_trace(
+				.plotting_environment$main,
+				data = .indicator,
+				x = ~idx,
+				y = ~ .indicator[, j],
+				type = "scatter",
+				mode = "lines",
+				name = sprintf("TEMA(%d)", n),
+				inherit = FALSE
+			)
+		})
+	}
 
 	.plotting_environment$main
 }

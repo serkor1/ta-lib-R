@@ -2,32 +2,60 @@
 % Please edit documentation in R/ta_EMA.R
 \name{EMA}
 \alias{EMA}
+\alias{exponential_moving_average}
 \alias{EMA.default}
+\alias{EMA.numeric}
+\alias{EMA.data.frame}
+\alias{EMA.matrix}
 \alias{EMA.plotly}
 \title{Exponential Moving Average (EMA)}
 \usage{
-EMA(x, n = 10, ...)
+EMA(x, cols, n = 10, ...)
+}
+\arguments{
+\item{x}{An OHLC-V series that is coercible to a \link{data.frame}.}
+
+\item{cols}{A \link{formula}}
+
+\item{n}{Window}
+
+\item{...}{additional parameters passed into \link{model.frame}.}
 }
 \description{
-Exponential Moving Average (EMA)
+The \code{ema()} is a generic S3 function that builds upon 'type-safe'-esque workflows limited to classes in in base \code{R}, and the package-wide
+dependencies. Ie. \link{class} in, \link{class} out. Each method is a soft wrapper of \link{model.frame} and therefore the OHLC-V series must be coercible to a \link{data.frame}.
+This rule does not transfer to indicators that uses univariate series, unless passed as a 1-column \link{data.frame} or \link{matrix}. In such cases, if univariate series
+is passed as a \link{vector} the function calculates the indicator 'as is', and returns a \link{data.frame} if the indicator itself is also a univariate series.
+
+The indicator, by default, follows its mathematical definition. However, the \code{cols} argument allows for simple rearrangement of the definition by passing relevant
+columns in a custom order. Refer to the details-section for more on the calculation of the indicators.
 }
 \examples{
-## calculate values
-result <- talib::DEMA(
-     x = talib::BTC[,1L]
-)
+## load Bitcoin (BTC)
+## series
+data(BTC, package = "talib")
 
-tail(result)
+## calculate the indicator
+## for Bitcoin (BTC)
+output <- talib::EMA(BTC)
 
-## charting the indicator
+## display the results
+tail(output)
+
+## visualize the indicator
+## with candlesticks
+##
+## see ?talib::chart or ?talib::indicator
+## for more details
 {
- ## main chart
- talib::chart(talib::BTC)
+ ## chart OHLC-V
+ ## series with candlesticks
+ talib::chart(BTC)
 
- ## indicator
+ ## chart indicator
+ ## with default values
  talib::indicator(
-  .f   = talib::DEMA(),
-  .var = ~close
+     talib::EMA()
  )
 }
 }
@@ -44,4 +72,11 @@ Other Overlap Study:
 \code{\link{acceleration_bands}()},
 \code{\link{bollinger_bands}()}
 }
+\author{
+Serkan Korkmaz
+}
 \concept{Overlap Study}
+\concept{algorithmic trading}
+\concept{finance}
+\concept{technical analysis}
+\concept{trading}

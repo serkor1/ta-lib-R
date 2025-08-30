@@ -1,75 +1,164 @@
+#' @export
+#' @family Overlap Study
 #' @title Double Exponential Moving Average (DEMA)
 #'
-#' @family Overlap Study
+#' @templateVar .title Double Exponential Moving Average (DEMA)
+#' @templateVar .author Serkan Korkmaz
+#' @templateVar .fun DEMA
 #'
-#' @templateVar .FUN DEMA
-#' @template univariate_example
-#'
-#' @export
-DEMA <- function(x, n = 10, ...) {
+#' @template description
+DEMA <- function(
+	x,
+	cols,
+	n = 10,
+	...
+) {
 	UseMethod("DEMA")
 }
 
 #' @rdname DEMA
 #' @usage NULL
 #' @export
-DEMA.default <- function(x, n = 10, ...) {
+double_exponential_moving_average <- DEMA
+
+#' @rdname DEMA
+#' @usage NULL
+#' @export
+DEMA.default <- function(
+	x,
+	cols,
+	n = 10,
+	...
+) {
 	## default behaviour is to
 	## check if its a numeric vector
 	##
 	## No coercing here as it might
 	## lead to overflow
+	x <- series(
+		x = cols,
+		default = ~open,
+		data = x,
+		...
+	)
 
 	## 0) validate input
 	##    and stop the script
 	##    if conditions are not
 	##    met
-	if (!is.null(dim(x))) {
-		stop("`x` must be a numeric vector")
-	}
-	assert(is.numeric(x))
-	assert(n >= 2)
 
-	## 1) pass `x` to C
+	x <- vapply(
+		as.list(x),
+		FUN = function(x) {
+			.Call(
+				"impl_ta_MA",
+				x,
+				as.integer(n),
+				3L
+			)
+		},
+		FUN.VALUE = double(nrow(x)),
+		USE.NAMES = TRUE
+	)
+
+	colnames(x) <- paste0("dema_", colnames(x))
+
+	x
+}
+
+#' @rdname DEMA
+#' @usage NULL
+#' @export
+DEMA.numeric <- function(
+	x,
+	cols,
+	n = 10,
+	...
+) {
+	if (!missing(cols)) {
+		warning(
+			"'cols' have been passed but is unused in for vectors"
+		)
+	}
+
 	.Call(
 		"impl_ta_MA",
-		x,
+		as.double(x),
 		as.integer(n),
 		3L
+	)
+}
+
+
+#' @rdname DEMA
+#' @usage NULL
+#' @export
+DEMA.data.frame <- function(
+	x,
+	n = 10,
+	cols,
+	...
+) {
+	as.data.frame(
+		NextMethod()
 	)
 }
 
 #' @rdname DEMA
 #' @usage NULL
 #' @export
-DEMA.plotly <- function(x, n = 10, ...) {
-	dots <- list(...)
-	series <- dots$.series
+DEMA.matrix <- function(
+	x,
+	n = 10,
+	cols,
+	...
+) {
+	as.matrix(
+		NextMethod()
+	)
+}
 
-	dema <- .Call(
-		"impl_ta_MA",
-		.univariate_series(series),
-		as.integer(n),
-		3L
+#' @rdname DEMA
+#' @usage NULL
+#' @export
+DEMA.plotly <- function(
+	x,
+	cols,
+	n = 10,
+	data,
+	...
+) {
+	## prepare series
+	## from
+	x <- as.data.frame(
+		series(
+			x = x,
+			formula = cols,
+			default = ~open,
+			data = data,
+			...
+		)
 	)
 
-	df <- data.frame(
-		idx = seq_along(dema),
-		dema = as.numeric(dema)
-	)
+	## indicator
+	.indicator <- as.data.frame(NextMethod())
+	.indicator$idx <- 1:nrow(.indicator)
 
-	.plotting_environment$main <- plotly::add_trace(
-		x,
-		data = df, # bind data here (creates/sets cur_data)
-		x = ~idx,
-		y = ~dema, # refer to columns, not objects in caller env
-		type = "scatter",
-		mode = "lines",
-		name = sprintf("DEMA(%d)", n),
-		inherit = FALSE,
-		xaxis = "x",
-		yaxis = "y" # ensure it lands on the main panel
-	)
+	for (i in 1:ncol(x)) {
+		local({
+			j <- i
+			.plotting_environment$main <- plotly::add_trace(
+				.plotting_environment$main,
+				data = .indicator,
+				x = ~idx,
+				y = ~ .indicator[, j],
+				type = "scatter",
+				mode = "lines",
+				name = sprintf("DEMA(%d)", n),
+				inherit = FALSE
+			)
+		})
+	}
 
 	.plotting_environment$main
 }
