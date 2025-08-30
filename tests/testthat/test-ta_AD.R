@@ -1,10 +1,10 @@
-## script: ACCBANDS
+## script: AD
 ## author: Serkan Korkmaz
-testthat::test_that(desc = "Bollinger Bands", code = {
+testthat::test_that(desc = "Chaikin A/D Line", code = {
 	## 1) calculate values
 	##    with and without alias
-	output <- bollinger_bands(SPY)
-	alias <- BBANDS(SPY)
+	output <- chaikin_AD_line(SPY)
+	alias <- AD(SPY)
 
 	## 1.1) check if the values
 	##      are equal
@@ -18,7 +18,7 @@ testthat::test_that(desc = "Bollinger Bands", code = {
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(bollinger_bands())
+			indicator(chaikin_AD_line())
 		}
 	)
 
@@ -33,23 +33,23 @@ testthat::test_that(desc = "Bollinger Bands", code = {
 
 	## 3.1) matrix
 	testthat::expect_true(
-		inherits(bollinger_bands(SPY), class(SPY))
+		inherits(chaikin_AD_line(SPY), class(SPY))
 	)
 
 	## 3.2) data.frame
 	testthat::expect_true(
-		inherits(bollinger_bands(BTC), class(BTC))
+		inherits(chaikin_AD_line(BTC), class(BTC))
 	)
 
 	## 4) test that default
 	##    values equals
 	testthat::expect_equal(
-		object = bollinger_bands(
+		object = chaikin_AD_line(
 			BTC
 		),
-		expected = bollinger_bands(
+		expected = chaikin_AD_line(
 			BTC,
-			cols = ~open
+			cols = ~ high + low + close + volume
 		)
 	)
 })

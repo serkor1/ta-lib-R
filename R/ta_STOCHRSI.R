@@ -1,11 +1,18 @@
+#' @export
+#' @family Momentum Indicator
+#'
 #' @title Stochastic Relative Strength Index
 #'
-#' @family Momentum Indicator
-#' @export
+#' @templateVar .title Stochastic Relative Strength Index
+#' @templateVar .author Serkan Korkmaz
+#' @templateVar .fun acceleration_bands
+#'
+#' @template description
 stochastic_relative_strength_index <- function(
 	x,
-	n,
-	fast_k,
+	cols,
+	n = 10,
+	fast_k = 5,
 	fast_d_MAtype = SMA(n = 10),
 	...
 ) {
