@@ -1,19 +1,16 @@
+#' @export
+#' @family Overlap Study
 #' @title Simple Moving Average (SMA)
 #'
-#' @description
-#' A short description...
+#' @templateVar .title Simple Moving Average (SMA)
+#' @templateVar .author Serkan Korkmaz
+#' @templateVar .fun SMA
 #'
-#' @param x A univariate series.
-#' @param n An [integer] of [length] 1. The window size of the rolling average.
-#' @param ... Parameters passed to and from other methods.
-#'
-#' @family Overlap Study
-#'
-#' @export
+#' @template description
 SMA <- function(
 	x,
-	n = 10,
 	cols,
+	n = 10,
 	...
 ) {
 	UseMethod(
@@ -21,12 +18,20 @@ SMA <- function(
 	)
 }
 
+#' @rdname SMA
+#' @usage NULL
 #' @export
-SMA.default <- function(x, n = 10, cols, ...) {
-	if (missing(cols)) {
-		cols <- ~open
-	}
+simple_moving_average <- SMA
 
+#' @rdname SMA
+#' @usage NULL
+#' @export
+SMA.default <- function(
+	x,
+	cols,
+	n = 10,
+	...
+) {
 	x <- series(
 		x = cols,
 		default = ~open,
@@ -53,14 +58,16 @@ SMA.default <- function(x, n = 10, cols, ...) {
 	x
 }
 
+#' @rdname SMA
+#' @usage NULL
 #' @export
 SMA.numeric <- function(
 	x,
-	n = 10,
 	cols,
+	n = 10,
 	...
 ) {
-	if (!is.missing(cols)) {
+	if (!missing(cols)) {
 		warning(
 			"'cols' have been passed but is unused in for vectors"
 		)
@@ -74,11 +81,13 @@ SMA.numeric <- function(
 	)
 }
 
+#' @rdname SMA
+#' @usage NULL
 #' @export
 SMA.data.frame <- function(
 	x,
-	n = 10,
 	cols,
+	n = 10,
 	...
 ) {
 	as.data.frame(
@@ -86,11 +95,13 @@ SMA.data.frame <- function(
 	)
 }
 
+#' @rdname SMA
+#' @usage NULL
 #' @export
 SMA.matrix <- function(
 	x,
-	n = 10,
 	cols,
+	n = 10,
 	...
 ) {
 	as.matrix(
@@ -101,7 +112,13 @@ SMA.matrix <- function(
 #' @rdname SMA
 #' @usage NULL
 #' @export
-SMA.plotly <- function(x, cols, n = 10, data, ...) {
+SMA.plotly <- function(
+	x,
+	cols,
+	n = 10,
+	data,
+	...
+) {
 	## prepare series
 	## from
 	x <- as.data.frame(
