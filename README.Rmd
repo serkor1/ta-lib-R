@@ -78,14 +78,13 @@ x <- talib::BTC
   ## to the chart
   talib::indicator(
     FUN = talib::SMA(),
-    cols = ~close
+    cols = ~close + open
   )
 
   ## add bollinger bands
   ## to the chart
-  # talib::indicator(
-  #   FUN = talib::RSI(),
-  #   cols = ~close
-  # )
+  talib::indicator(
+    FUN = talib::stochastic()
+  )
 }
 ```
