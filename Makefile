@@ -10,7 +10,7 @@ help:
 		| sed -E 's/^[[:space:]]*//' \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "\033[1;34m%-15s\033[m \xE2\x80\x94 %s\n", $$1, $$2}'
 
-build: ## Build the R package
+build: clean ## Build the R package
 	@tools/generate_API.sh src/ src/api.h && tools/generate_FFI.sh src/api.h src/init.c && $(MAKE) fmt
 	@Rscript --verbose -e "devtools::document()"
 	@R CMD build . && R CMD INSTALL $(tarball_location)
@@ -30,7 +30,8 @@ clean: ## Remove artifacts
 	@rm -rf src/Makevars
 	@rm -rf $(package_name).Rcheck
 	@rm -rf docs
-	@Rscript -e "remove.packages('$(package_name)')"
+	@rm -rf README.md
+	@Rscript -e "try(remove.packages('$(package_name)'))"
 
 fmt: ## Format code
 	@clang-format -style=LLVM -dump-config > .clang-format && clang-format -i src/*.c src/*.h
