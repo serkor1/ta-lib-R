@@ -1,10 +1,10 @@
-## script: ACCBANDS
+## script: AD
 ## author: Serkan Korkmaz
-testthat::test_that(desc = "Bollinger Bands", code = {
+testthat::test_that(desc = "Fast Stochastic", code = {
 	## 1) calculate values
 	##    with and without alias
-	output <- bollinger_bands(SPY)
-	alias <- BBANDS(SPY)
+	output <- fast_stochastic(SPY)
+	alias <- STOCHF(SPY)
 
 	## 1.1) check if the values
 	##      are equal
@@ -18,7 +18,7 @@ testthat::test_that(desc = "Bollinger Bands", code = {
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(bollinger_bands())
+			indicator(fast_stochastic())
 		}
 	)
 
@@ -33,23 +33,23 @@ testthat::test_that(desc = "Bollinger Bands", code = {
 
 	## 3.1) matrix
 	testthat::expect_true(
-		inherits(bollinger_bands(SPY), class(SPY))
+		inherits(fast_stochastic(SPY), class(SPY))
 	)
 
 	## 3.2) data.frame
 	testthat::expect_true(
-		inherits(bollinger_bands(BTC), class(BTC))
+		inherits(fast_stochastic(BTC), class(BTC))
 	)
 
 	## 4) test that default
 	##    values equals
 	testthat::expect_equal(
-		object = bollinger_bands(
+		object = fast_stochastic(
 			BTC
 		),
-		expected = bollinger_bands(
+		expected = fast_stochastic(
 			BTC,
-			cols = ~open
+			cols = ~ high + low + close
 		)
 	)
 })

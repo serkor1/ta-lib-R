@@ -66,7 +66,7 @@ indicator <- function(
 	## with argument and let the
 	## the dispatcher handle the rest
 	dots <- as.list(substitute(list(...)))[-1L]
-	args <- c(list(.plot), pre_args)
+	args <- c(list(x = .plot), pre_args)
 
 	if (has_var) {
 		f_formals <- tryCatch(
@@ -79,7 +79,7 @@ indicator <- function(
 		if (!is.na(name)) args[[name]] <- var_expr
 	}
 
-	output <- do.call(f, c(args, dots), envir = parent_frame)
+	output <- do.call(f, c(args, dots), envir = parent_frame, quote = TRUE)
 
 	## construct plotly object
 	## if based off of the char

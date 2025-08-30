@@ -1,7 +1,11 @@
 #' @title Relative Strength Index
 #' @family Momentum Indicator
 #' @export
-relative_strength_index <- function(x, n = 10, ...) {
+relative_strength_index <- function(
+	x,
+	n = 10,
+	...
+) {
 	UseMethod(
 		"relative_strength_index"
 	)
@@ -11,7 +15,11 @@ relative_strength_index <- function(x, n = 10, ...) {
 RSI <- relative_strength_index
 
 #' @export
-relative_strength_index.default <- function(x, n = 10, ...) {
+relative_strength_index.default <- function(
+	x,
+	n = 10,
+	...
+) {
 	## default behaviour is to
 	## check if its a numeric vector
 	##
