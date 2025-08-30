@@ -94,7 +94,7 @@ if [ "$USE_SYSTEM" -eq 0 ]; then
     fi
   fi
 
-  CFLAGS="${CFLAGS:+$CFLAGS }-fPIC" ./configure --prefix="$TA_LIB_PREFIX"
+  CFLAGS="${CFLAGS:+$CFLAGS }-O3 -march=native -fPIC" ./configure --prefix="$TA_LIB_PREFIX"
   make -j2
   make install
 
