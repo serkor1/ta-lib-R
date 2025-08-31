@@ -23,7 +23,7 @@ stochastic_relative_strength_index(
 \item{...}{additional parameters passed into \link{model.frame}.}
 }
 \description{
-The \code{acceleration_bands()} is a generic S3 function that builds upon 'type-safe'-esque workflows limited to classes in in base \code{R}, and the package-wide
+The \code{stochastic_relative_strength_index()} is a generic S3 function that builds upon 'type-safe'-esque workflows limited to classes in in base \code{R}, and the package-wide
 dependencies. Ie. \link{class} in, \link{class} out. Each method is a soft wrapper of \link{model.frame} and therefore the OHLC-V series must be coercible to a \link{data.frame}.
 This rule does not transfer to indicators that uses univariate series, unless passed as a 1-column \link{data.frame} or \link{matrix}. In such cases, if univariate series
 is passed as a \link{vector} the function calculates the indicator 'as is', and returns a \link{data.frame} if the indicator itself is also a univariate series.
@@ -38,7 +38,7 @@ data(BTC, package = "talib")
 
 ## calculate the indicator
 ## for Bitcoin (BTC)
-output <- talib::acceleration_bands(BTC)
+output <- talib::stochastic_relative_strength_index(BTC)
 
 ## display the results
 tail(output)
@@ -56,7 +56,7 @@ tail(output)
  ## chart indicator
  ## with default values
  talib::indicator(
-     talib::acceleration_bands()
+     talib::stochastic_relative_strength_index()
  )
 }
 }
