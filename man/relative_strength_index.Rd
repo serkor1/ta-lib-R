@@ -4,10 +4,54 @@
 \alias{relative_strength_index}
 \title{Relative Strength Index}
 \usage{
-relative_strength_index(x, n = 10, ...)
+relative_strength_index(x, cols, n = 10, ...)
+}
+\arguments{
+\item{x}{An OHLC-V series that is coercible to a \link{data.frame}.}
+
+\item{cols}{A \link{formula}}
+
+\item{n}{Window}
+
+\item{...}{additional parameters passed into \link{model.frame}.}
 }
 \description{
-Relative Strength Index
+The \code{relative_strength_index()} is a generic S3 function that builds upon 'type-safe'-esque workflows limited to classes in in base \code{R}, and the package-wide
+dependencies. Ie. \link{class} in, \link{class} out. Each method is a soft wrapper of \link{model.frame} and therefore the OHLC-V series must be coercible to a \link{data.frame}.
+This rule does not transfer to indicators that uses univariate series, unless passed as a 1-column \link{data.frame} or \link{matrix}. In such cases, if univariate series
+is passed as a \link{vector} the function calculates the indicator 'as is', and returns a \link{data.frame} if the indicator itself is also a univariate series.
+
+The indicator, by default, follows its mathematical definition. However, the \code{cols} argument allows for simple rearrangement of the definition by passing relevant
+columns in a custom order. Refer to the details-section for more on the calculation of the indicators.
+}
+\examples{
+## load Bitcoin (BTC)
+## series
+data(BTC, package = "talib")
+
+## calculate the indicator
+## for Bitcoin (BTC)
+output <- talib::relative_strength_index(BTC)
+
+## display the results
+tail(output)
+
+## visualize the indicator
+## with candlesticks
+##
+## see ?talib::chart or ?talib::indicator
+## for more details
+{
+ ## chart OHLC-V
+ ## series with candlesticks
+ talib::chart(BTC)
+
+ ## chart indicator
+ ## with default values
+ talib::indicator(
+     talib::relative_strength_index()
+ )
+}
 }
 \seealso{
 Other Momentum Indicator: 
@@ -19,4 +63,11 @@ Other Momentum Indicator:
 \code{\link{stochastic_relative_strength_index}()},
 \code{\link{ultimate_oscillator}()}
 }
+\author{
+Serkan Korkmaz
+}
 \concept{Momentum Indicator}
+\concept{algorithmic trading}
+\concept{finance}
+\concept{technical analysis}
+\concept{trading}
