@@ -120,7 +120,6 @@ stochastic_relative_strength_index.plotly <- function(
 	n = 10,
 	fast_k = 5,
 	fast_d_MAtype = SMA(n = 10),
-	data,
 	...
 ) {
 	## prepare series
@@ -129,8 +128,7 @@ stochastic_relative_strength_index.plotly <- function(
 		series(
 			x = x,
 			formula = cols,
-			default = ~open,
-			data = data,
+			default = ~RSI,
 			...
 		)
 	)

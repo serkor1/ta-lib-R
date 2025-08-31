@@ -131,7 +131,6 @@ stochastic.plotly <- function(
 	fastk = 5,
 	slowk = SMA(n = 10),
 	slowd = SMA(n = 8),
-	data,
 	...
 ) {
 	# slowk_ma <- map_maType_call(substitute(slowk))
@@ -145,7 +144,6 @@ stochastic.plotly <- function(
 		x = x,
 		formula = cols,
 		default = ~ high + low + close,
-		data = data,
 		...
 	))
 

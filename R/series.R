@@ -6,96 +6,92 @@
 series <- function(
 	x,
 	default,
-	data,
 	...
 ) {
 	target <- if (!missing(x)) x else default
 	UseMethod("series", target)
 }
 
-## plotly series
 #' @export
 series.plotly <- function(
 	x,
 	formula,
 	default,
-	data,
 	...
 ) {
-	## if the data is not provided
-	## extract the data from the plotly
-	## object
-	##
-	## NOTE: If volume is missing
-	##       there might be an issue
-	if (missing(data)) {
-		## extract data
-		data <- .plotting_environment$x
+	if (missing(formula)) {
+		formula <- default
 	}
 
-	series.formula(
-		x = formula,
-		default = default,
-		data = data,
-		...
+	dotsQ <- as.list(substitute(list(...)))[-1L]
+	dn <- ...names()
+	if (length(dotsQ)) {
+		if (is.null(dn)) {
+			dn <- rep("", length(dotsQ))
+		}
+		names(dotsQ) <- dn
+	} else {
+		dotsQ <- list()
+		dn <- character()
+	}
+
+	# If caller didn't provide data=..., default to the chart's data
+	if (!("data" %in% dn)) {
+		dotsQ$data <- quote(.plotting_environment$x)
+	}
+
+	do.call(
+		series.formula,
+		c(list(x = formula, default = default), dotsQ),
+		quote = FALSE
 	)
 }
 
-# #' @export
-# series.data.frame <- function(
-#     x,
-#     default,
-#     data,
-#     ...
-# ) {
-#     series.formula(
-#         x = x,
-#         default = default,
-#         data = data,
-#         ...
-#     )
-# }
-
-## formula series
 #' @export
 series.formula <- function(
 	x,
 	default,
-	data,
 	...
 ) {
-	## coerce to data.frame
-	## for downstream compatibility
-	if (!is.data.frame(data)) {
-		data <- as.data.frame(
-			data
-		)
+	# Capture quoted dots; preserve laziness
+	dotsQ <- as.list(substitute(list(...)))[-1L]
+	dn <- ...names()
+	if (length(dotsQ)) {
+		names(dotsQ) <- if (is.null(dn)) rep("", length(dotsQ)) else dn
 	}
 
-	## if the formula is missing
-	## replace with the default
-	## value
+	# Extract 'data' from dots (last-wins if repeated), then remove from dots
+	data_expr <- NULL
+	if (length(dotsQ)) {
+		idx <- which(names(dotsQ) == "data")
+		if (length(idx)) {
+			data_expr <- dotsQ[[idx[length(idx)]]]
+			dotsQ <- dotsQ[-idx] # avoid passing data twice
+		}
+	}
+	if (is.null(data_expr)) {
+		stop("series(): 'data' must be supplied via '...'.", call. = FALSE)
+	}
+	data <- eval(data_expr, envir = parent.frame())
+	if (!is.data.frame(data)) {
+		data <- as.data.frame(data)
+	}
+
+	# Use default formula if missing
 	if (missing(x)) {
 		x <- default
 	}
 
-	## if additional arguments are
-	## not passed we extract the data
-	## by name to avoid the additional
-	## cost of model.frame
-	if (...length() == 0) {
-		output <- data[,
-			all.vars(x),
-			drop = FALSE
-		]
+	# Fast path: no extra args -> select columns directly
+	if (length(dotsQ) == 0) {
+		out <- data[, all.vars(x), drop = FALSE]
 	} else {
-		## return data.frame
-		output <- model.frame(
-			formula = x,
-			data = data,
-			...
+		# Model frame with exactly one 'data'
+		out <- do.call(
+			model.frame,
+			c(list(formula = x, data = data), dotsQ),
+			quote = FALSE
 		)
 	}
-
-	return(output)
+	out
 }

@@ -112,7 +112,6 @@ acceleration_bands.plotly <- function(
 	x,
 	cols,
 	n = 10,
-	data,
 	...
 ) {
 	## prepare series
@@ -121,7 +120,6 @@ acceleration_bands.plotly <- function(
 		x = x,
 		formula = cols,
 		default = ~ open + high + close,
-		data = data,
 		...
 	)
 

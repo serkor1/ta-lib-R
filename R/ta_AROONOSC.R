@@ -97,7 +97,6 @@ aroon_oscillator.matrix <- function(
 aroon_oscillator.plotly <- function(
 	x,
 	cols,
-	data,
 	n = 10,
 	...
 ) {
@@ -105,7 +104,6 @@ aroon_oscillator.plotly <- function(
 		x = x,
 		formula = cols,
 		default = ~ high + low,
-		data = data,
 		...
 	)
 

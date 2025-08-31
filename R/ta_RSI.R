@@ -140,7 +140,6 @@ relative_strength_index.plotly <- function(
 	n = 10,
 	lower_band = 20,
 	upper_band = 80,
-	data,
 	...
 ) {
 	## prepare series
@@ -150,7 +149,6 @@ relative_strength_index.plotly <- function(
 			x = x,
 			formula = cols,
 			default = ~open,
-			data = data,
 			...
 		)
 	)

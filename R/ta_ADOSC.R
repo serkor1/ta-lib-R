@@ -102,7 +102,6 @@ chaikin_AD_oscillator.matrix <- function(
 chaikin_AD_oscillator.plotly <- function(
 	x,
 	cols,
-	data,
 	fast = 3,
 	slow = 10,
 	...
@@ -112,7 +111,6 @@ chaikin_AD_oscillator.plotly <- function(
 		x = x,
 		formula = cols,
 		default = ~ high + low + close + volume,
-		data = data,
 		...
 	)
 
