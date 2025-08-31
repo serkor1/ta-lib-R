@@ -124,7 +124,6 @@ WMA.plotly <- function(
 	x,
 	cols,
 	n = 10,
-	data,
 	...
 ) {
 	## prepare series
@@ -134,7 +133,6 @@ WMA.plotly <- function(
 			x = x,
 			formula = cols,
 			default = ~open,
-			data = data,
 			...
 		)
 	)

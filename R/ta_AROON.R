@@ -107,7 +107,6 @@ aroon.matrix <- function(
 aroon.plotly <- function(
 	x,
 	cols,
-	data,
 	n = 10,
 	...
 ) {
@@ -115,7 +114,6 @@ aroon.plotly <- function(
 		x = x,
 		formula = cols,
 		default = ~ high + low,
-		data = data,
 		...
 	)
 

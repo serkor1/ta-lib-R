@@ -122,7 +122,6 @@ fast_stochastic.plotly <- function(
 	cols,
 	fast_k = 5,
 	fast_d_MAtype = SMA(n = 10),
-	data,
 	...
 ) {
 	fast_d_MAtype <- substitute(fast_d_MAtype)
@@ -133,7 +132,6 @@ fast_stochastic.plotly <- function(
 		x = x,
 		formula = cols,
 		default = ~ high + low + close,
-		data = data,
 		...
 	))
 

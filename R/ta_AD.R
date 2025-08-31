@@ -108,7 +108,6 @@ chaikin_AD_line.matrix <- function(
 chaikin_AD_line.plotly <- function(
 	x,
 	cols,
-	data,
 	...
 ) {
 	## prepare HLCV series
@@ -116,7 +115,6 @@ chaikin_AD_line.plotly <- function(
 		x = x,
 		formula = cols,
 		default = ~ high + low + close + volume,
-		data = data,
 		...
 	)
 

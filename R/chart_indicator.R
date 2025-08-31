@@ -1,22 +1,8 @@
-#' @title Chart indicators
 #' @export
-indicator <- function(
-	FUN,
-	cols,
-	...
-) {
-	## indicator
-	##
-	## description:
-	## the indicator function builds upon existing
-	## {plotly} objects if it has been defined, otherwise
-	## it will create a standalone chart with the indicator
-	## only
+indicator <- function(FUN, cols, ...) {
 	parent_frame <- parent.frame()
 
-	## resolve passed formula
-	## via 'cols' and store in the
-	## parent_frame
+	## resolve 'cols'
 	has_var <- !missing(cols)
 	if (has_var) {
 		var_expr <- eval.parent(substitute(cols))
@@ -24,8 +10,7 @@ indicator <- function(
 		environment(var_expr) <- parent_frame
 	}
 
-	## resolve the call
-	## passed via FUN
+	## resolve FUN (unchanged)
 	f_call <- substitute(FUN)
 	pre_args <- list()
 	if (is.call(f_call)) {
@@ -35,65 +20,48 @@ indicator <- function(
 		f <- match.fun(eval.parent(f_call))
 	}
 
-	## resolve plotting
-	## environment; if it exists
-	## it means talib::chart has been called
-	## otherwise generate a new environment and
-	## work off of that
-	.plotting_environment <- get0(
-		".plotting_environment",
-		inherits = TRUE
-	)
+	## plotting env (unchanged)
+	.plotting_environment <- get0(".plotting_environment", inherits = TRUE)
 	if (is.null(.plotting_environment)) {
 		.plotting_environment <- new.env(parent = emptyenv())
-		assign(
-			".plotting_environment",
-			.plotting_environment,
-			inherits = TRUE
-		)
+		assign(".plotting_environment", .plotting_environment, inherits = TRUE)
 	}
-
 	if (is.null(.plotting_environment$main)) {
 		.plotting_environment$main <- .chart_layout(
 			x = plotly::plotly_empty(),
 			title_text = "fisk"
 		)
 	}
-
 	.plot <- .plotting_environment$main
 
-	## build the FUN call
-	## with argument and let the
-	## the dispatcher handle the rest
-	dots <- as.list(substitute(list(...)))[-1L]
+	## base args
 	args <- c(list(x = .plot), pre_args)
-
 	if (has_var) {
-		f_formals <- tryCatch(
-			names(formals(f)),
-			error = function(e) {
-				character()
-			}
-		)
+		f_formals <- tryCatch(names(formals(f)), error = function(e) {
+			character()
+		})
 		name <- intersect(c("cols", "formula"), f_formals)[1]
 		if (!is.na(name)) args[[name]] <- var_expr
 	}
 
-	output <- do.call(f, c(args, dots), envir = parent_frame, quote = TRUE)
+	## --- enforce NAME-ONLY dots using ...names() (no evaluation) ---
+	dotsQ <- as.list(substitute(list(...)))[-1L] # quoted dots
+	if (length(dotsQ)) {
+		dn <- ...names()
+		if (is.null(dn) || any(!nzchar(dn))) {
+			stop(
+				"All arguments in '...' must be named; positional dots are not supported."
+			)
+		}
+		names(dotsQ) <- dn
+	}
+	## ---------------------------------------------------------------
 
-	## construct plotly object
-	## if based off of the char
+	output <- do.call(f, c(args, dotsQ), envir = parent_frame, quote = FALSE)
+
 	if (inherits(output, "plotly")) {
-		panels <- c(
-			list(.plotting_environment$main),
-			.plotting_environment$sub
-		)
-		stopifnot(all(vapply(
-			panels,
-			inherits,
-			logical(1),
-			what = "plotly"
-		)))
+		panels <- c(list(.plotting_environment$main), .plotting_environment$sub)
+		stopifnot(all(vapply(panels, inherits, logical(1), what = "plotly")))
 		n <- length(panels)
 		main_h <- getOption("talib.chart.main", 0.7)
 		heights <- if (n > 1) {
@@ -109,16 +77,10 @@ indicator <- function(
 				margin = 0.02,
 				heights = heights
 			),
-
-			## this part is necessary
-			## to avoid local subplots
-			## to interfere with the main
-			## plot
 			showlegend = TRUE
 		)
 		.plotting_environment$chart <- fig
 		return(fig)
 	}
-
 	output
 }

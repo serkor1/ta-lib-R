@@ -151,7 +151,6 @@ bollinger_bands.plotly <- function(
 	ma = SMA(n = 10),
 	up = 2,
 	down = 2,
-	data,
 	...
 ) {
 	ma <- map_maType_call(substitute(ma))
@@ -162,7 +161,6 @@ bollinger_bands.plotly <- function(
 		x = x,
 		formula = cols,
 		default = ~open,
-		data = data,
 		...
 	)
 
