@@ -1,5 +1,21 @@
 #' @export
-indicator <- function(FUN, cols, ...) {
+#' @family Charting
+#' @author Serkan Korkmaz
+#'
+#' @title Indicator
+#'
+#' @param FUN An indicator function
+#' @param cols A formula of variables.
+#' @param ... Arguments passed into [model.frame]
+#'
+#' @description
+#' Add an indicator to t
+#'
+indicator <- function(
+	FUN,
+	cols,
+	...
+) {
 	parent_frame <- parent.frame()
 
 	## resolve 'cols'

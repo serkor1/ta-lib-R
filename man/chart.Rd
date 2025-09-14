@@ -6,6 +6,22 @@
 \usage{
 chart(x, type = "candlestick", ...)
 }
+\arguments{
+\item{x}{An OHLC-V object.}
+
+\item{type}{A \link{character}.}
+
+\item{...}{Parameters passed into \link[plotly:plot_ly]{plotly::plot_ly}}
+}
 \description{
 Chart
 }
+\seealso{
+Other Charting: 
+\code{\link{indicator}()}
+}
+\author{
+Serkan Korkmaz
+}
+\concept{Charting}
+\concept{charting}
