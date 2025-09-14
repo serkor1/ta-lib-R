@@ -1,6 +1,14 @@
+#' @export
+#' @family Charting
+#' @author Serkan Korkmaz
+#'
 #' @title Chart
 #'
-#' @export
+#' @param x An OHLC-V object.
+#' @param type A [character].
+#' @param ... Parameters passed into [plotly::plot_ly]
+#'
+#' @family charting
 chart <- function(
 	x,
 	type = "candlestick",
