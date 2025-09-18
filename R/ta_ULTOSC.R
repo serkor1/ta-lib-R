@@ -1,14 +1,37 @@
-#' @title Ultimate Oscillator
-#' @family Momentum Indicator
 #' @export
-ultimate_oscillator <- function(x, n = c(7, 14, 28), ...) {
+#' @family Momentum Indicator
+#' @title Ultimate Oscillator
+#'
+#' @templateVar .title Ultimate Oscillator
+#' @templateVar .author Serkan Korkmaz
+#' @templateVar .fun ultimate_oscillator
+#'
+#' @template description
+ultimate_oscillator <- function(
+	x,
+	cols,
+	n = c(7, 14, 28),
+	...
+) {
 	UseMethod(
 		"ultimate_oscillator"
 	)
 }
 
+#' @rdname ultimate_oscillator
+#' @usage NULL
 #' @export
-ultimate_oscillator.default <- function(x, n = c(7, 14, 28), ...) {
+ULTOSC <- ultimate_oscillator
+
+#' @rdname ultimate_oscillator
+#' @usage NULL
+#' @export
+ultimate_oscillator.default <- function(
+	x,
+	cols,
+	n = c(7, 14, 28),
+	...
+) {
 	## default behaviour is to
 	## coerce to a `matrix` check that
 	## it is double and then pass to
@@ -18,24 +41,109 @@ ultimate_oscillator.default <- function(x, n = c(7, 14, 28), ...) {
 	##    and stop the script
 	##    if conditions are not
 	##    met
-	if (!is.matrix(x)) {
-		x <- as.matrix(x)
-	}
-	if (!length(n) < 3) {
+	if (!length(n) == 3) {
 		stop("`n` has to be a vector of length 3")
 	}
-	assert(is.numeric(x))
-	assert(all(n >= 1))
+
+	HLC <- series(
+		x = cols,
+		default = ~ high + low + close,
+		data = x,
+		...
+	)
 
 	## 1) pass `x` assuming that it
 	##    follows OHLC-V structure
-	.Call(
-		.NAME = "impl_ta_ULTOSC",
-		.high(x),
-		.low(x),
-		.close(x),
-		as.integer(n[1]),
-		as.integer(n[2]),
-		as.integer(n[3]),
+	x <- as.data.frame(
+		.Call(
+			"impl_ta_ULTOSC",
+			x[[1]],
+			x[[2]],
+			x[[3]],
+			as.integer(n[1]),
+			as.integer(n[2]),
+			as.integer(n[3])
+		)
 	)
+
+	colnames(x) <- "utimate_oscillator"
+
+	return(x)
+}
+
+#' @rdname ultimate_oscillator
+#' @usage NULL
+#' @export
+ultimate_oscillator.data.frame <- function(
+	x,
+	cols,
+	n = c(7, 14, 28),
+	...
+) {
+	as.data.frame(
+		NextMethod()
+	)
+}
+
+#' @rdname ultimate_oscillator
+#' @usage NULL
+#' @export
+ultimate_oscillator.matrix <- function(
+	x,
+	cols,
+	n = c(7, 14, 28),
+	...
+) {
+	as.matrix(
+		NextMethod()
+	)
+}
+
+#' @rdname ultimate_oscillator
+#' @usage NULL
+#' @export
+ultimate_oscillator.plotly <- function(
+	x,
+	cols,
+	n = c(7, 14, 28),
+	...
+) {
+	## prepare series
+	## from
+	x <- as.data.frame(
+		series(
+			x = x,
+			formula = cols,
+			default = ~ high + low + close,
+			...
+		)
+	)
+
+	## indicator
+	.indicator <- as.data.frame(NextMethod())
+	.indicator$idx <- 1:nrow(.indicator)
+
+	# plot
+	output <- plotly::plot_ly(
+		data = .indicator,
+		x = ~idx,
+		y = ~utimate_oscillator,
+		type = "scatter",
+		mode = "lines",
+		name = "StochRSI %K",
+		legendgroup = "ultimate_oscillator",
+		showlegend = TRUE
+	)
+
+	output <- add_title(
+		x = output,
+		text = "Ultimate Oscillator"
+	)
+
+	.plotting_environment$sub <- c(
+		.plotting_environment$sub,
+		list(output)
+	)
+
+	output
 }
