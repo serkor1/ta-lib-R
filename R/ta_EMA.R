@@ -94,8 +94,8 @@ EMA.numeric <- function(
 #' @export
 EMA.data.frame <- function(
 	x,
-	n = 10,
 	cols,
+	n = 10,
 	...
 ) {
 	as.data.frame(
@@ -108,8 +108,8 @@ EMA.data.frame <- function(
 #' @export
 EMA.matrix <- function(
 	x,
-	n = 10,
 	cols,
+	n = 10,
 	...
 ) {
 	as.matrix(

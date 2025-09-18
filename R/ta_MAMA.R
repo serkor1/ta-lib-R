@@ -41,12 +41,6 @@ MAMA.default <- function(
 	##    and stop the script
 	##    if conditions are not
 	##    met
-	if (!is.null(dim(x))) {
-		stop("`x` must be a numeric vector")
-	}
-	assert(is.numeric(x))
-	assert(n >= 2)
-
 	x <- vapply(
 		as.list(x),
 		FUN = function(x) {
@@ -95,8 +89,8 @@ MAMA.numeric <- function(
 #' @export
 MAMA.data.frame <- function(
 	x,
-	n = 10,
 	cols,
+	n = 10,
 	...
 ) {
 	as.data.frame(
@@ -109,8 +103,8 @@ MAMA.data.frame <- function(
 #' @export
 MAMA.matrix <- function(
 	x,
-	n = 10,
 	cols,
+	n = 10,
 	...
 ) {
 	as.matrix(
@@ -125,7 +119,6 @@ MAMA.plotly <- function(
 	x,
 	cols,
 	n = 10,
-	data,
 	...
 ) {
 	## prepare series
@@ -135,7 +128,6 @@ MAMA.plotly <- function(
 			x = x,
 			formula = cols,
 			default = ~open,
-			data = data,
 			...
 		)
 	)

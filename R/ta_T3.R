@@ -94,8 +94,8 @@ T3.numeric <- function(
 #' @export
 T3.data.frame <- function(
 	x,
-	n = 10,
 	cols,
+	n = 10,
 	...
 ) {
 	as.data.frame(
@@ -108,8 +108,8 @@ T3.data.frame <- function(
 #' @export
 T3.matrix <- function(
 	x,
-	n = 10,
 	cols,
+	n = 10,
 	...
 ) {
 	as.matrix(

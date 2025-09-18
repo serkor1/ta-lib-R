@@ -21,9 +21,13 @@ stochastic_relative_strength_index <- function(
 	)
 }
 
+#' @usage NULL
+#' @aliases stochastic_relative_strength_index
 #' @export
 STOCHRSI <- stochastic_relative_strength_index
 
+#' @usage NULL
+#' @aliases stochastic_relative_strength_index
 #' @export
 stochastic_relative_strength_index.default <- function(
 	x,
@@ -31,6 +35,7 @@ stochastic_relative_strength_index.default <- function(
 	n = 10,
 	fast_k = 5,
 	fast_d_MAtype = SMA(n = 10),
+	na.rm = TRUE,
 	...
 ) {
 	fast_d_MAtype <- map_maType_call(substitute(fast_d_MAtype))
@@ -62,7 +67,7 @@ stochastic_relative_strength_index.default <- function(
 	x <- series(
 		x = cols,
 		default = ~RSI,
-		data = x,
+		data = if (na.rm) na.omit(x) else x,
 		...
 	)
 
@@ -77,7 +82,6 @@ stochastic_relative_strength_index.default <- function(
 		)
 	)
 }
-
 
 #' @usage NULL
 #' @aliases stochastic_relative_strength_index
@@ -122,6 +126,11 @@ stochastic_relative_strength_index.plotly <- function(
 	fast_d_MAtype = SMA(n = 10),
 	...
 ) {
+	## input arguments
+	fast_d_MAtype <- map_maType_call(
+		substitute(fast_d_MAtype)
+	)
+
 	## prepare series
 	## from
 	x <- as.data.frame(
@@ -135,29 +144,48 @@ stochastic_relative_strength_index.plotly <- function(
 
 	## indicator
 	.indicator <- as.data.frame(
-		NextMethod()
+		.Call(
+			"impl_ta_STOCHRSI",
+			x[[1]],
+			as.integer(n),
+			as.integer(fast_k),
+			fast_d_MAtype$n,
+			fast_d_MAtype$maType
+		)
 	)
+
 	.indicator$idx <- 1:nrow(.indicator)
 
-	rsi_plot <- plotly::plot_ly(
-		.indicator,
+	# plot
+	output <- plotly::plot_ly(
+		data = .indicator,
 		x = ~idx,
 		y = ~fastk,
 		type = "scatter",
 		mode = "lines",
-		showlegend = FALSE
+		name = "StochRSI %K",
+		legendgroup = "stochrsi",
+		showlegend = TRUE
 	)
-	rsi_plot <- plotly::add_lines(
-		.indicator,
+
+	output <- plotly::add_lines(
+		output,
 		x = ~idx,
-		y = ~fastk,
-		showlegend = FALSE
+		y = ~fastd,
+		name = "StochRSI %D",
+		legendgroup = "stochrsi",
+		showlegend = TRUE
+	)
+
+	output <- add_title(
+		x = output,
+		text = "StochRSI"
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
-		list(rsi_plot)
+		list(output)
 	)
 
-	rsi_plot
+	output
 }
