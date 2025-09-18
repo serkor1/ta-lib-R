@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_MAMA.R
 \name{MAMA}
 \alias{MAMA}
+\alias{mesa_adaptive_moving_average}
 \alias{MAMA.default}
 \alias{MAMA.numeric}
 \alias{MAMA.data.frame}

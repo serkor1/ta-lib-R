@@ -19,6 +19,11 @@ MAMA <- function(
 #' @rdname MAMA
 #' @usage NULL
 #' @export
+mesa_adaptive_moving_average <- MAMA
+
+#' @rdname MAMA
+#' @usage NULL
+#' @export
 MAMA.default <- function(
 	x,
 	cols,
@@ -69,7 +74,7 @@ MAMA.numeric <- function(
 	n = 10,
 	...
 ) {
-	if (!is.missing(cols)) {
+	if (!missing(cols)) {
 		warning(
 			"'cols' have been passed but is unused in for vectors"
 		)
