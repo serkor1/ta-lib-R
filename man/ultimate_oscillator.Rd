@@ -2,12 +2,61 @@
 % Please edit documentation in R/ta_ULTOSC.R
 \name{ultimate_oscillator}
 \alias{ultimate_oscillator}
+\alias{ULTOSC}
+\alias{ultimate_oscillator.default}
+\alias{ultimate_oscillator.data.frame}
+\alias{ultimate_oscillator.matrix}
+\alias{ultimate_oscillator.plotly}
 \title{Ultimate Oscillator}
 \usage{
-ultimate_oscillator(x, n = c(7, 14, 28), ...)
+ultimate_oscillator(x, cols, n = c(7, 14, 28), ...)
+}
+\arguments{
+\item{x}{An OHLC-V series that is coercible to a \link{data.frame}.}
+
+\item{cols}{A \link{formula}}
+
+\item{n}{Window}
+
+\item{...}{additional parameters passed into \link{model.frame}.}
 }
 \description{
-Ultimate Oscillator
+The \code{ultimate_oscillator()} is a generic S3 function that builds upon 'type-safe'-esque workflows limited to classes in in base \code{R}, and the package-wide
+dependencies. Ie. \link{class} in, \link{class} out. Each method is a soft wrapper of \link{model.frame} and therefore the OHLC-V series must be coercible to a \link{data.frame}.
+This rule does not transfer to indicators that uses univariate series, unless passed as a 1-column \link{data.frame} or \link{matrix}. In such cases, if univariate series
+is passed as a \link{vector} the function calculates the indicator 'as is', and returns a \link{data.frame} if the indicator itself is also a univariate series.
+
+The indicator, by default, follows its mathematical definition. However, the \code{cols} argument allows for simple rearrangement of the definition by passing relevant
+columns in a custom order. Refer to the details-section for more on the calculation of the indicators.
+}
+\examples{
+## load Bitcoin (BTC)
+## series
+data(BTC, package = "talib")
+
+## calculate the indicator
+## for Bitcoin (BTC)
+output <- talib::ultimate_oscillator(BTC)
+
+## display the results
+tail(output)
+
+## visualize the indicator
+## with candlesticks
+##
+## see ?talib::chart or ?talib::indicator
+## for more details
+{
+ ## chart OHLC-V
+ ## series with candlesticks
+ talib::chart(BTC)
+
+ ## chart indicator
+ ## with default values
+ talib::indicator(
+     talib::ultimate_oscillator()
+ )
+}
 }
 \seealso{
 Other Momentum Indicator: 
@@ -19,4 +68,11 @@ Other Momentum Indicator:
 \code{\link{stochastic}()},
 \code{\link{stochastic_relative_strength_index}()}
 }
+\author{
+Serkan Korkmaz
+}
 \concept{Momentum Indicator}
+\concept{algorithmic trading}
+\concept{finance}
+\concept{technical analysis}
+\concept{trading}
