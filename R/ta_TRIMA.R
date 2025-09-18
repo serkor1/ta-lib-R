@@ -94,8 +94,8 @@ TRIMA.numeric <- function(
 #' @export
 TRIMA.data.frame <- function(
 	x,
-	n = 10,
 	cols,
+	n = 10,
 	...
 ) {
 	as.data.frame(
@@ -108,8 +108,8 @@ TRIMA.data.frame <- function(
 #' @export
 TRIMA.matrix <- function(
 	x,
-	n = 10,
 	cols,
+	n = 10,
 	...
 ) {
 	as.matrix(

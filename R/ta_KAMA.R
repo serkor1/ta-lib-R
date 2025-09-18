@@ -94,8 +94,8 @@ KAMA.numeric <- function(
 #' @export
 KAMA.data.frame <- function(
 	x,
-	n = 10,
 	cols,
+	n = 10,
 	...
 ) {
 	as.data.frame(
@@ -108,8 +108,8 @@ KAMA.data.frame <- function(
 #' @export
 KAMA.matrix <- function(
 	x,
-	n = 10,
 	cols,
+	n = 10,
 	...
 ) {
 	as.matrix(

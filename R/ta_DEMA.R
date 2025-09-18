@@ -95,8 +95,8 @@ DEMA.numeric <- function(
 #' @export
 DEMA.data.frame <- function(
 	x,
-	n = 10,
 	cols,
+	n = 10,
 	...
 ) {
 	as.data.frame(
@@ -109,8 +109,8 @@ DEMA.data.frame <- function(
 #' @export
 DEMA.matrix <- function(
 	x,
-	n = 10,
 	cols,
+	n = 10,
 	...
 ) {
 	as.matrix(

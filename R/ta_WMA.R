@@ -94,8 +94,8 @@ WMA.numeric <- function(
 #' @export
 WMA.data.frame <- function(
 	x,
-	n = 10,
 	cols,
+	n = 10,
 	...
 ) {
 	as.data.frame(
@@ -108,8 +108,8 @@ WMA.data.frame <- function(
 #' @export
 WMA.matrix <- function(
 	x,
-	n = 10,
 	cols,
+	n = 10,
 	...
 ) {
 	as.matrix(

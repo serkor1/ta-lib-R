@@ -94,8 +94,8 @@ TEMA.numeric <- function(
 #' @export
 TEMA.data.frame <- function(
 	x,
-	n = 10,
 	cols,
+	n = 10,
 	...
 ) {
 	as.data.frame(
@@ -108,8 +108,8 @@ TEMA.data.frame <- function(
 #' @export
 TEMA.matrix <- function(
 	x,
-	n = 10,
 	cols,
+	n = 10,
 	...
 ) {
 	as.matrix(

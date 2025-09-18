@@ -21,12 +21,10 @@ stochastic <- function(
 	)
 }
 
-
 #' @usage NULL
 #' @aliases stochastic
 #' @export
 STOCH <- stochastic
-
 
 #' @usage NULL
 #' @aliases stochastic
@@ -121,7 +119,6 @@ stochastic.matrix <- function(
 	)
 }
 
-
 #' @usage NULL
 #' @aliases stochastic
 #' @export
@@ -140,12 +137,14 @@ stochastic.plotly <- function(
 	slowk_ma <- map_maType_call(slowk)
 	slowd_ma <- map_maType_call(slowd)
 	## construct HLC series
-	HLC <- as.data.frame(series(
-		x = x,
-		formula = cols,
-		default = ~ high + low + close,
-		...
-	))
+	HLC <- as.data.frame(
+		series(
+			x = x,
+			formula = cols,
+			default = ~ high + low + close,
+			...
+		)
+	)
 
 	.indicator <- as.data.frame(
 		.Call(
