@@ -13,7 +13,7 @@ CDLDOJISTAR <- doji_star
 #' @export
 doji_star.default <- function(x, ...) {
 	.Call(
-		"impl_ta_CDLDOJISTAR",
+		"impl_ta_CDLDOJISTARSTAR",
 		.open(x),
 		.high(x),
 		.low(x),
