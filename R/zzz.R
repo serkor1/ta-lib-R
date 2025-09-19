@@ -19,7 +19,28 @@
 	)
 }
 
+.onLoad <- function(
+	libname,
+	pkgname,
+	...
+) {
+	.Call(
+		"initialize_ta_lib",
+		PACKAGE = pkgname
+	)
+}
+
 .onDetach <- function(
+	libpath,
+	...
+) {
+	.Call(
+		"shutdown_ta_lib",
+		PACKAGE = "talib"
+	)
+}
+
+.onUnload <- function(
 	libpath,
 	...
 ) {
