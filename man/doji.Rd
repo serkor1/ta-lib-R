@@ -4,10 +4,59 @@
 \alias{doji}
 \title{Doji}
 \usage{
-doji(x, ...)
+doji(x, cols, ...)
+}
+\arguments{
+\item{x}{An OHLC-V series that is coercible to a \link{data.frame}.}
+
+\item{cols}{A \link{formula}}
+
+\item{...}{additional parameters passed into \link{model.frame}.}
+
+\item{n}{Window}
+}
+\value{
+\describe{
+\item{doji}{1 for bullish, -1 for bearish and 0 for no pattern}
+}
 }
 \description{
-Doji
+The \code{doji()} is a generic S3 function that builds upon 'type-safe'-esque workflows limited to classes in in base \code{R}, and the package-wide
+dependencies. Ie. \link{class} in, \link{class} out. Each method is a soft wrapper of \link{model.frame} and therefore the OHLC-V series must be coercible to a \link{data.frame}.
+This rule does not transfer to indicators that uses univariate series, unless passed as a 1-column \link{data.frame} or \link{matrix}. In such cases, if univariate series
+is passed as a \link{vector} the function calculates the indicator 'as is', and returns a \link{data.frame} if the indicator itself is also a univariate series.
+
+The indicator, by default, follows its mathematical definition. However, the \code{cols} argument allows for simple rearrangement of the definition by passing relevant
+columns in a custom order. Refer to the details-section for more on the calculation of the indicators.
+}
+\examples{
+## load Bitcoin (BTC)
+## series
+data(BTC, package = "talib")
+
+## calculate the indicator
+## for Bitcoin (BTC)
+output <- talib::doji(BTC)
+
+## display the results
+tail(output)
+
+## visualize the indicator
+## with candlesticks
+##
+## see ?talib::chart or ?talib::indicator
+## for more details
+{
+ ## chart OHLC-V
+ ## series with candlesticks
+ talib::chart(BTC)
+
+ ## chart indicator
+ ## with default values
+ talib::indicator(
+     talib::doji()
+ )
+}
 }
 \seealso{
 Other Pattern Recognition: 
@@ -15,4 +64,11 @@ Other Pattern Recognition:
 \code{\link{dragonfly_doji}()},
 \code{\link{evening_doji_star}()}
 }
+\author{
+Serkan Korkmaz
+}
 \concept{Pattern Recognition}
+\concept{algorithmic trading}
+\concept{finance}
+\concept{technical analysis}
+\concept{trading}
