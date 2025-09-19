@@ -62,7 +62,10 @@ tail(output)
 Other Pattern Recognition: 
 \code{\link{doji_star}()},
 \code{\link{dragonfly_doji}()},
-\code{\link{evening_doji_star}()}
+\code{\link{evening_doji_star}()},
+\code{\link{three_black_crows}()},
+\code{\link{three_inside}()},
+\code{\link{two_crows}()}
 }
 \author{
 Serkan Korkmaz
