@@ -44,4 +44,5 @@ static const R_CallMethodDef CallEntries[] = {
     CALLDEF(impl_ta_STOCH, 8),
     CALLDEF(impl_ta_ULTOSC, 6),
     CALLDEF(initialize_ta_lib, 1),
+    CALLDEF(shutdown_ta_lib, 1),
     {NULL, NULL, 0}};
