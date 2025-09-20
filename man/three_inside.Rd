@@ -60,11 +60,17 @@ tail(output)
 }
 \seealso{
 Other Pattern Recognition: 
+\code{\link{abandoned_baby}()},
+\code{\link{advance_block}()},
 \code{\link{doji}()},
 \code{\link{doji_star}()},
 \code{\link{dragonfly_doji}()},
 \code{\link{evening_doji_star}()},
 \code{\link{three_black_crows}()},
+\code{\link{three_line_strike}()},
+\code{\link{three_outside}()},
+\code{\link{three_stars_in_the_south}()},
+\code{\link{three_white_soldiers}()},
 \code{\link{two_crows}()}
 }
 \author{
