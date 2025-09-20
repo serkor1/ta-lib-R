@@ -39,6 +39,8 @@ SEXP impl_ta_MACDEXT(SEXP inReal, SEXP optFastPeriod, SEXP optFastMAType, SEXP o
 SEXP impl_ta_MACDFIX(SEXP inReal, SEXP optSignalPeriod);
 SEXP impl_ta_MACD(SEXP x, SEXP optFastPeriod, SEXP optSlowPeriod, SEXP optSignalPeriod);
 SEXP impl_ta_MA(SEXP x, SEXP period, SEXP matype);
+SEXP impl_ta_MFI(SEXP high, SEXP low, SEXP close, SEXP volume, SEXP timeperiod);
+SEXP impl_ta_OBV(SEXP close, SEXP volume);
 SEXP impl_ta_RSI(SEXP inReal, SEXP optTimePeriod);
 SEXP impl_ta_STOCHF(SEXP high, SEXP low, SEXP close, SEXP fastk_period, SEXP fastd_period, SEXP fastd_matype);
 SEXP impl_ta_STOCHRSI(SEXP real, SEXP timeperiod, SEXP fastk_period, SEXP fastd_period, SEXP fastd_matype);

@@ -60,6 +60,7 @@ Other Momentum Indicator:
 \code{\link{chande_momentum_oscillator}()},
 \code{\link{commodity_channel_index}()},
 \code{\link{fast_stochastic}()},
+\code{\link{money_flow_index}()},
 \code{\link{moving_average_convergence_divergence}()},
 \code{\link{stochastic}()},
 \code{\link{stochastic_relative_strength_index}()},
