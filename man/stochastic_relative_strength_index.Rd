@@ -64,6 +64,8 @@ tail(output)
 Other Momentum Indicator: 
 \code{\link{aroon}()},
 \code{\link{aroon_oscillator}()},
+\code{\link{chande_momentum_oscillator}()},
+\code{\link{commodity_channel_index}()},
 \code{\link{fast_stochastic}()},
 \code{\link{moving_average_convergence_divergence}()},
 \code{\link{relative_strength_index}()},

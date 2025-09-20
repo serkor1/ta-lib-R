@@ -13,6 +13,8 @@ Moving Average Convergence Divergence
 Other Momentum Indicator: 
 \code{\link{aroon}()},
 \code{\link{aroon_oscillator}()},
+\code{\link{chande_momentum_oscillator}()},
+\code{\link{commodity_channel_index}()},
 \code{\link{fast_stochastic}()},
 \code{\link{relative_strength_index}()},
 \code{\link{stochastic}()},
