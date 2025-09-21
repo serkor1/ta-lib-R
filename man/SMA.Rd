@@ -13,13 +13,13 @@
 SMA(x, cols, n = 10, ...)
 }
 \arguments{
-\item{x}{An OHLC-V series that is coercible to a \link{data.frame}.}
+\item{x}{An OHLC-V series that is coercible to \link{data.frame}. The function assumes that all columns are named in lowercase and order invariant.}
 
-\item{cols}{A \link{formula}}
+\item{cols}{An optional \link{formula} passed into \link{model.frame}. If passed into indicators based on univariate series, the function calculates indicators for each element in 'cols'. For indicators based on multivariate series, it will alter the calculation itself. See \code{vignette("talib")} for more details.}
 
-\item{n}{Window}
+\item{n}{An \link{integer} of \link{length} 1.}
 
-\item{...}{additional parameters passed into \link{model.frame}.}
+\item{...}{Additional parameters passed into \link{model.frame}}
 }
 \description{
 The \code{sma()} is a generic S3 function that builds upon 'type-safe'-esque workflows limited to classes in in base \code{R}, and the package-wide
@@ -70,7 +70,8 @@ Other Overlap Study:
 \code{\link{TRIMA}()},
 \code{\link{WMA}()},
 \code{\link{acceleration_bands}()},
-\code{\link{bollinger_bands}()}
+\code{\link{bollinger_bands}()},
+\code{\link{ht_trendline}()}
 }
 \author{
 Serkan Korkmaz
