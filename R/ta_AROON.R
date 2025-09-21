@@ -6,6 +6,14 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun aroon
 #'
+#' @returns
+#' A [data.frame]- or [matrix]-object:
+#'
+#' \describe{
+#'  \item{aroon_up <[double]>}{}
+#'  \item{aroon_down <[double]>}{}
+#' }
+#'
 #' @template description
 aroon <- function(
 	x,
@@ -131,7 +139,7 @@ aroon.plotly <- function(
 	ad_plot <- plotly::plot_ly(
 		data = .indicator,
 		x = ~idx,
-		y = ~aroondown,
+		y = ~aroon_down,
 		type = "scatter",
 		mode = "lines",
 		# line = list(color = ad_col),
@@ -144,7 +152,7 @@ aroon.plotly <- function(
 	ad_plot <- plotly::add_lines(
 		p = ad_plot,
 		x = .indicator$idx,
-		y = ~aroonup,
+		y = ~aroon_up,
 		# line = list(color = ad_col, dash = "dash"),
 		showlegend = FALSE,
 		hoverinfo = "skip",
