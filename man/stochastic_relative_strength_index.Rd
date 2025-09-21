@@ -20,6 +20,10 @@ stochastic_relative_strength_index(
 
 \item{n}{An \link{integer} of \link{length} 1.}
 
+\item{fast_k}{Time period for building the Fast-K line.}
+
+\item{fast_d_MAtype}{Smoothing for making the Fast-D line.}
+
 \item{...}{Additional parameters passed into \link{model.frame}}
 }
 \description{

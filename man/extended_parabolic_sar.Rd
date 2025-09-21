@@ -8,7 +8,7 @@ extended_parabolic_sar(
   x,
   cols,
   start_value = 0,
-  offeset_on_reverse = 0,
+  offset_on_reverse = 0,
   acceleration_init_long = 0,
   acceleration_long = 0,
   acceleration_max_long = 0,
@@ -23,11 +23,23 @@ extended_parabolic_sar(
 
 \item{cols}{An optional \link{formula} passed into \link{model.frame}. If passed into indicators based on univariate series, the function calculates indicators for each element in 'cols'. For indicators based on multivariate series, it will alter the calculation itself. See \code{vignette("talib")} for more details.}
 
+\item{start_value}{Start value and direction. 0 for Auto, >0 for Long, <0 for Short.}
+
+\item{offset_on_reverse}{Percent offset added/removed to initial stop on short/long reversal}
+
+\item{acceleration_init_long}{Acceleration Factor initial value for the Long direction}
+
+\item{acceleration_long}{Acceleration Factor for the Long direction}
+
+\item{acceleration_max_long}{Acceleration Factor maximum value for the Long direction}
+
+\item{accelration_init_short}{Acceleration Factor initial value for the Short direction}
+
+\item{acceleration_short}{Acceleration Factor for the Short direction}
+
+\item{acceleration_max_short}{Acceleration Factor maximum value for the Short direction}
+
 \item{...}{Additional parameters passed into \link{model.frame}}
-
-\item{acceleration}{A function call to a moving average function.}
-
-\item{maximum}{A pair of \link{double} for upper and lower standard deviations.}
 }
 \value{
 A \link{data.frame}- or \link{matrix}-object with the format:

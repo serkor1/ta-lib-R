@@ -7,6 +7,13 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun chaikin_AD_line
 #'
+#' @returns
+#' A [data.frame]- or [matrix]-object:
+#'
+#' \describe{
+#'  \item{AD_line <[double]>}{Chaikin A/D Line}
+#' }
+#'
 #' @template description
 chaikin_AD_line <- function(
 	x,

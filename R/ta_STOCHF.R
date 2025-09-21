@@ -7,6 +7,9 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun fast_stochastic
 #'
+#' @param fast_k Time period for building the Fast-K line.
+#' @param fast_d_MAtype Smoothing for making the Fast-D line.
+#'
 #' @template description
 fast_stochastic <- function(
 	x,

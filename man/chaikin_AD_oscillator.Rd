@@ -11,7 +11,18 @@ chaikin_AD_oscillator(x, cols, fast = 3, slow = 10, ...)
 
 \item{cols}{An optional \link{formula} passed into \link{model.frame}. If passed into indicators based on univariate series, the function calculates indicators for each element in 'cols'. For indicators based on multivariate series, it will alter the calculation itself. See \code{vignette("talib")} for more details.}
 
+\item{fast}{An <\link{integer}> of \link{length} 1. The window size passed into the fast moving average (MA).}
+
+\item{slow}{An <\link{integer}> of \link{length} 1. The window size passed into the slow moving average (MA).}
+
 \item{...}{Additional parameters passed into \link{model.frame}}
+}
+\value{
+A \link{data.frame}- or \link{matrix}-object:
+
+\describe{
+\item{AD_oscillator <\link{double}>}{Chaikin A/D Oscillator}
+}
 }
 \description{
 The \code{chaikin_ad_oscillator()} is a generic S3 function that builds upon 'type-safe'-esque workflows limited to classes in in base \code{R}, and the package-wide

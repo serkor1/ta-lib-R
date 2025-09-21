@@ -4,12 +4,14 @@
 \alias{evening_doji_star}
 \title{Evening Doji Star}
 \usage{
-evening_doji_star(x, cols, penetration = 0.1, ...)
+evening_doji_star(x, cols, eps = 0.1, ...)
 }
 \arguments{
 \item{x}{An OHLC-V series that is coercible to \link{data.frame}. The function assumes that all columns are named in lowercase and order invariant.}
 
 \item{cols}{An optional \link{formula} passed into \link{model.frame}. If passed into indicators based on univariate series, the function calculates indicators for each element in 'cols'. For indicators based on multivariate series, it will alter the calculation itself. See \code{vignette("talib")} for more details.}
+
+\item{eps}{A \link{double} of \link{length} 1. Percentage of penetration of a candle within another candle.}
 
 \item{...}{Additional parameters passed into \link{model.frame}}
 }

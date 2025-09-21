@@ -7,8 +7,24 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun chaikin_AD_oscillator
 #'
+#' @param fast An <[integer]> of [length] 1. The window size passed into the fast moving average (MA).
+#' @param slow An <[integer]> of [length] 1. The window size passed into the slow moving average (MA).
+#'
+#' @returns
+#' A [data.frame]- or [matrix]-object:
+#'
+#' \describe{
+#'  \item{AD_oscillator <[double]>}{Chaikin A/D Oscillator}
+#' }
+#'
 #' @template description
-chaikin_AD_oscillator <- function(x, cols, fast = 3, slow = 10, ...) {
+chaikin_AD_oscillator <- function(
+	x,
+	cols,
+	fast = 3,
+	slow = 10,
+	...
+) {
 	UseMethod(
 		"chaikin_AD_oscillator"
 	)
@@ -20,7 +36,13 @@ chaikin_AD_oscillator <- function(x, cols, fast = 3, slow = 10, ...) {
 ADOSC <- chaikin_AD_oscillator
 
 #' @export
-chaikin_AD_oscillator.default <- function(x, cols, fast = 3, slow = 10, ...) {
+chaikin_AD_oscillator.default <- function(
+	x,
+	cols,
+	fast = 3,
+	slow = 10,
+	...
+) {
 	## check input
 	## cols if passed
 	if (!missing(cols)) {

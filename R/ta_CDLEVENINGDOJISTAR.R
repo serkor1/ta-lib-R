@@ -16,7 +16,7 @@
 evening_doji_star <- function(
 	x,
 	cols,
-	penetration = 0.1,
+	eps = 0.1,
 	...
 ) {
 	UseMethod(
@@ -35,7 +35,7 @@ CDLEVENINGDOJISTAR <- evening_doji_star
 evening_doji_star.default <- function(
 	x,
 	cols,
-	penetration = 0.1,
+	eps = 0.1,
 	...
 ) {
 	## validate input
@@ -85,7 +85,7 @@ evening_doji_star.default <- function(
 			x[[2]],
 			x[[3]],
 			x[[4]],
-			penetration,
+			eps,
 			as.logical(
 				getOption("talib.normalize", TRUE)
 			)
@@ -105,7 +105,7 @@ evening_doji_star.default <- function(
 evening_doji_star.data.frame <- function(
 	x,
 	cols,
-	penetration = 0.1,
+	eps = 0.1,
 	...
 ) {
 	as.data.frame(
@@ -119,7 +119,7 @@ evening_doji_star.data.frame <- function(
 evening_doji_star.matrix <- function(
 	x,
 	cols,
-	penetration = 0.1,
+	eps = 0.1,
 	...
 ) {
 	as.matrix(

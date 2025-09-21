@@ -7,6 +7,8 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun stochastic_relative_strength_index
 #'
+#' @param fast_k Time period for building the Fast-K line.
+#' @param fast_d_MAtype Smoothing for making the Fast-D line.
 #' @template description
 stochastic_relative_strength_index <- function(
 	x,

@@ -11,9 +11,9 @@ parabolic_sar(x, cols, acceleration = 0.02, maximum = 0.2, ...)
 
 \item{cols}{An optional \link{formula} passed into \link{model.frame}. If passed into indicators based on univariate series, the function calculates indicators for each element in 'cols'. For indicators based on multivariate series, it will alter the calculation itself. See \code{vignette("talib")} for more details.}
 
-\item{acceleration}{A function call to a moving average function.}
+\item{acceleration}{Acceleration Factor used up to the Maximum value}
 
-\item{maximum}{A pair of \link{double} for upper and lower standard deviations.}
+\item{maximum}{Acceleration Factor Maximum value}
 
 \item{...}{Additional parameters passed into \link{model.frame}}
 }
