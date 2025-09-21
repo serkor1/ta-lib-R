@@ -7,10 +7,7 @@
 #' The indicator, by default, follows its mathematical definition. However, the `cols` argument allows for simple rearrangement of the definition by passing relevant
 #' columns in a custom order. Refer to the details-section for more on the calculation of the indicators.
 #'
-#' @param x An OHLC-V series that is coercible to a [data.frame].
-#' @param cols A [formula]
-#' @param n Window
-#' @param ... additional parameters passed into [model.frame].
+#' @inheritParams generic_documentation
 #'
 #' @author <%= .author %>
 #'
