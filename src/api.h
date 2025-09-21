@@ -42,6 +42,8 @@ SEXP impl_ta_MA(SEXP x, SEXP period, SEXP matype);
 SEXP impl_ta_MFI(SEXP high, SEXP low, SEXP close, SEXP volume, SEXP timeperiod);
 SEXP impl_ta_OBV(SEXP close, SEXP volume);
 SEXP impl_ta_RSI(SEXP inReal, SEXP optTimePeriod);
+SEXP impl_ta_SAREXT(SEXP high, SEXP low, SEXP start_value, SEXP offset_on_reverse, SEXP accel_init_long, SEXP accel_long, SEXP accel_max_long, SEXP accel_init_short, SEXP accel_short, SEXP accel_max_short);
+SEXP impl_ta_SAR(SEXP high, SEXP low, SEXP acceleration, SEXP maximum);
 SEXP impl_ta_STOCHF(SEXP high, SEXP low, SEXP close, SEXP fastk_period, SEXP fastd_period, SEXP fastd_matype);
 SEXP impl_ta_STOCHRSI(SEXP real, SEXP timeperiod, SEXP fastk_period, SEXP fastd_period, SEXP fastd_matype);
 SEXP impl_ta_STOCH(SEXP high, SEXP low, SEXP close, SEXP fastk_period, SEXP slowk_period, SEXP slowk_matype, SEXP slowd_period, SEXP slowd_matype);

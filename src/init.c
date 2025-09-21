@@ -47,6 +47,8 @@ static const R_CallMethodDef CallEntries[] = {
     CALLDEF(impl_ta_MFI, 5),
     CALLDEF(impl_ta_OBV, 2),
     CALLDEF(impl_ta_RSI, 2),
+    CALLDEF(impl_ta_SAREXT, 10),
+    CALLDEF(impl_ta_SAR, 4),
     CALLDEF(impl_ta_STOCHF, 6),
     CALLDEF(impl_ta_STOCHRSI, 5),
     CALLDEF(impl_ta_STOCH, 8),
