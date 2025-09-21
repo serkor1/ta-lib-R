@@ -13,6 +13,13 @@ chaikin_AD_line(x, cols, ...)
 
 \item{...}{Additional parameters passed into \link{model.frame}}
 }
+\value{
+A \link{data.frame}- or \link{matrix}-object:
+
+\describe{
+\item{AD_line <\link{double}>}{Chaikin A/D Line}
+}
+}
 \description{
 The \code{chaikin_ad_line()} is a generic S3 function that builds upon 'type-safe'-esque workflows limited to classes in in base \code{R}, and the package-wide
 dependencies. Ie. \link{class} in, \link{class} out. Each method is a soft wrapper of \link{model.frame} and therefore the OHLC-V series must be coercible to a \link{data.frame}.

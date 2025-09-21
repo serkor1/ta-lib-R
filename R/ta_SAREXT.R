@@ -7,8 +7,14 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun extended_parabolic_sar
 #'
-#' @param acceleration A function call to a moving average function.
-#' @param maximum A pair of [double] for upper and lower standard deviations.
+#' @param start_value Start value and direction. 0 for Auto, >0 for Long, <0 for Short.
+#' @param offset_on_reverse Percent offset added/removed to initial stop on short/long reversal
+#' @param acceleration_init_long Acceleration Factor initial value for the Long direction
+#' @param acceleration_long Acceleration Factor for the Long direction
+#' @param acceleration_max_long Acceleration Factor maximum value for the Long direction
+#' @param accelration_init_short Acceleration Factor initial value for the Short direction
+#' @param acceleration_short Acceleration Factor for the Short direction
+#' @param acceleration_max_short Acceleration Factor maximum value for the Short direction
 #'
 #' @returns
 #' A [data.frame]- or [matrix]-object with the format:
@@ -24,7 +30,7 @@ extended_parabolic_sar <- function(
 	x,
 	cols,
 	start_value = 0,
-	offeset_on_reverse = 0,
+	offset_on_reverse = 0,
 	acceleration_init_long = 0,
 	acceleration_long = 0,
 	acceleration_max_long = 0,
@@ -50,7 +56,7 @@ extended_parabolic_sar.default <- function(
 	x,
 	cols,
 	start_value = 0,
-	offeset_on_reverse = 0,
+	offset_on_reverse = 0,
 	acceleration_init_long = 0,
 	acceleration_long = 0,
 	acceleration_max_long = 0,
@@ -102,7 +108,7 @@ extended_parabolic_sar.default <- function(
 			HL[[1]],
 			HL[[2]],
 			start_value,
-			offeset_on_reverse,
+			offset_on_reverse,
 			acceleration_init_long,
 			acceleration_long,
 			acceleration_max_long,
@@ -124,7 +130,7 @@ extended_parabolic_sar.data.frame <- function(
 	x,
 	cols,
 	start_value = 0,
-	offeset_on_reverse = 0,
+	offset_on_reverse = 0,
 	acceleration_init_long = 0,
 	acceleration_long = 0,
 	acceleration_max_long = 0,
@@ -145,7 +151,7 @@ extended_parabolic_sar.matrix <- function(
 	x,
 	cols,
 	start_value = 0,
-	offeset_on_reverse = 0,
+	offset_on_reverse = 0,
 	acceleration_init_long = 0,
 	acceleration_long = 0,
 	acceleration_max_long = 0,
@@ -166,7 +172,7 @@ extended_parabolic_sar.plotly <- function(
 	x,
 	cols,
 	start_value = 0,
-	offeset_on_reverse = 0,
+	offset_on_reverse = 0,
 	acceleration_init_long = 0,
 	acceleration_long = 0,
 	acceleration_max_long = 0,
@@ -190,7 +196,7 @@ extended_parabolic_sar.plotly <- function(
 			HL[[1]],
 			HL[[2]],
 			start_value,
-			offeset_on_reverse,
+			offset_on_reverse,
 			acceleration_init_long,
 			acceleration_long,
 			acceleration_max_long,

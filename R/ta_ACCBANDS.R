@@ -7,6 +7,15 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun acceleration_bands
 #'
+#' @returns
+#' A [data.frame]- or [matrix]-object:
+#'
+#' \describe{
+#'  \item{upper <[double]>}{The lower band.}
+#'  \item{middle <[double]>}{The middle band.}
+#'  \item{lower <[double]>}{The upper band.}
+#' }
+#'
 #' @template description
 acceleration_bands <- function(
 	x,

@@ -10,6 +10,8 @@
 
 \item{n}{An \link{integer} of \link{length} 1.}
 
+\item{eps}{A \link{double} of \link{length} 1. Percentage of penetration of a candle within another candle.}
+
 \item{...}{Additional parameters passed into \link{model.frame}}
 }
 \description{

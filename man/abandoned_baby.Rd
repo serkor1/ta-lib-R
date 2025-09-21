@@ -11,6 +11,8 @@ abandoned_baby(x, cols, eps = 0, ...)
 
 \item{cols}{An optional \link{formula} passed into \link{model.frame}. If passed into indicators based on univariate series, the function calculates indicators for each element in 'cols'. For indicators based on multivariate series, it will alter the calculation itself. See \code{vignette("talib")} for more details.}
 
+\item{eps}{A \link{double} of \link{length} 1. Percentage of penetration of a candle within another candle.}
+
 \item{...}{Additional parameters passed into \link{model.frame}}
 }
 \value{

@@ -7,8 +7,8 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun parabolic_sar
 #'
-#' @param acceleration A function call to a moving average function.
-#' @param maximum A pair of [double] for upper and lower standard deviations.
+#' @param acceleration Acceleration Factor used up to the Maximum value
+#' @param maximum Acceleration Factor Maximum value
 #'
 #' @returns
 #' A [data.frame]- or [matrix]-object with the format:
