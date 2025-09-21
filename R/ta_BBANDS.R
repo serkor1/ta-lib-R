@@ -7,6 +7,18 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun bollinger_bands
 #'
+#' @param ma A function call to a moving average function.
+#' @param up,down A pair of [double] for upper and lower standard deviations.
+#'
+#' @returns
+#' A [data.frame]- or [matrix]-object with the format:
+#'
+#' \describe{
+#'  \item{upper}{[double]. The lower band.}
+#'  \item{middle}{[double]. The middle band.}
+#'  \item{lower}{[double]. The upper band.}
+#' }
+#'
 #' @template description
 bollinger_bands <- function(
 	x,
@@ -93,6 +105,7 @@ bollinger_bands.default <- function(
 #' @export
 bollinger_bands.numeric <- function(
 	x,
+	cols,
 	ma = SMA(n = 10),
 	up = 2,
 	down = 2,
@@ -100,13 +113,35 @@ bollinger_bands.numeric <- function(
 ) {
 	ma <- map_maType_call(substitute(ma))
 
-	.Call(
-		"impl_ta_BBANDS",
-		as.double(x),
-		ma$n,
-		as.numeric(up),
-		as.numeric(down),
-		as.integer(ma$maType)
+	## determine branch
+	## if its a matrix call
+	## matrix method and end the function
+	##
+	## NOTE: this is necessary as matrix are
+	##       internally doubles
+	if (is.matrix(x)) {
+		output <- NextMethod()
+
+		return(output)
+	}
+
+	## treat 'x' as a vector
+	##
+	if (!missing(cols)) {
+		warning(
+			"'cols' have been passed but is unused in for vectors"
+		)
+	}
+
+	as.data.frame(
+		.Call(
+			"impl_ta_BBANDS",
+			as.double(x),
+			ma$n,
+			as.numeric(up),
+			as.numeric(down),
+			as.integer(ma$maType)
+		)
 	)
 }
 

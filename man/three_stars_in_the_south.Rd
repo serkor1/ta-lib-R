@@ -7,13 +7,11 @@
 three_stars_in_the_south(x, cols, ...)
 }
 \arguments{
-\item{x}{An OHLC-V series that is coercible to a \link{data.frame}.}
+\item{x}{An OHLC-V series that is coercible to \link{data.frame}. The function assumes that all columns are named in lowercase and order invariant.}
 
-\item{cols}{A \link{formula}}
+\item{cols}{An optional \link{formula} passed into \link{model.frame}. If passed into indicators based on univariate series, the function calculates indicators for each element in 'cols'. For indicators based on multivariate series, it will alter the calculation itself. See \code{vignette("talib")} for more details.}
 
-\item{...}{additional parameters passed into \link{model.frame}.}
-
-\item{n}{Window}
+\item{...}{Additional parameters passed into \link{model.frame}}
 }
 \value{
 \describe{

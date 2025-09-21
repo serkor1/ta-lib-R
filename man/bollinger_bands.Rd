@@ -7,13 +7,24 @@
 bollinger_bands(x, cols, ma = SMA(n = 10), up = 2, down = 2, ...)
 }
 \arguments{
-\item{x}{An OHLC-V series that is coercible to a \link{data.frame}.}
+\item{x}{An OHLC-V series that is coercible to \link{data.frame}. The function assumes that all columns are named in lowercase and order invariant.}
 
-\item{cols}{A \link{formula}}
+\item{cols}{An optional \link{formula} passed into \link{model.frame}. If passed into indicators based on univariate series, the function calculates indicators for each element in 'cols'. For indicators based on multivariate series, it will alter the calculation itself. See \code{vignette("talib")} for more details.}
 
-\item{...}{additional parameters passed into \link{model.frame}.}
+\item{ma}{A function call to a moving average function.}
 
-\item{n}{Window}
+\item{up, down}{A pair of \link{double} for upper and lower standard deviations.}
+
+\item{...}{Additional parameters passed into \link{model.frame}}
+}
+\value{
+A \link{data.frame}- or \link{matrix}-object with the format:
+
+\describe{
+\item{upper}{\link{double}. The lower band.}
+\item{middle}{\link{double}. The middle band.}
+\item{lower}{\link{double}. The upper band.}
+}
 }
 \description{
 The \code{bollinger_bands()} is a generic S3 function that builds upon 'type-safe'-esque workflows limited to classes in in base \code{R}, and the package-wide
@@ -64,7 +75,8 @@ Other Overlap Study:
 \code{\link{TEMA}()},
 \code{\link{TRIMA}()},
 \code{\link{WMA}()},
-\code{\link{acceleration_bands}()}
+\code{\link{acceleration_bands}()},
+\code{\link{ht_trendline}()}
 }
 \author{
 Serkan Korkmaz

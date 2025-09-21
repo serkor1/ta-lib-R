@@ -41,7 +41,7 @@ doji.default <- function(
 	## is numerical values
 	if (!missing(cols)) {
 		## check if formula
-		asset(
+		assert(
 			is.formula(cols),
 			paste0(
 				"'cols' has to be <",
