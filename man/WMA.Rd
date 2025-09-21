@@ -71,7 +71,9 @@ Other Overlap Study:
 \code{\link{TRIMA}()},
 \code{\link{acceleration_bands}()},
 \code{\link{bollinger_bands}()},
-\code{\link{ht_trendline}()}
+\code{\link{extended_parabolic_sar}()},
+\code{\link{ht_trendline}()},
+\code{\link{parabolic_sar}()}
 }
 \author{
 Serkan Korkmaz

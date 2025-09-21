@@ -61,7 +61,9 @@ Other Overlap Study:
 \code{\link{TRIMA}()},
 \code{\link{WMA}()},
 \code{\link{acceleration_bands}()},
-\code{\link{bollinger_bands}()}
+\code{\link{bollinger_bands}()},
+\code{\link{extended_parabolic_sar}()},
+\code{\link{parabolic_sar}()}
 }
 \author{
 Serkan Korkmaz
