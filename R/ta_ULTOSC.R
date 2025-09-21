@@ -57,9 +57,9 @@ ultimate_oscillator.default <- function(
 	x <- as.data.frame(
 		.Call(
 			"impl_ta_ULTOSC",
-			x[[1]],
-			x[[2]],
-			x[[3]],
+			HLC[[1]],
+			HLC[[2]],
+			HLC[[3]],
 			as.integer(n[1]),
 			as.integer(n[2]),
 			as.integer(n[3])
@@ -130,7 +130,7 @@ ultimate_oscillator.plotly <- function(
 		y = ~utimate_oscillator,
 		type = "scatter",
 		mode = "lines",
-		name = "StochRSI %K",
+		name = "Ultimate Oscillator",
 		legendgroup = "ultimate_oscillator",
 		showlegend = TRUE
 	)
