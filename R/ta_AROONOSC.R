@@ -6,8 +6,20 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun aroon_oscillator
 #'
+#' @returns
+#' A [data.frame]- or [matrix]-object:
+#'
+#' \describe{
+#'  \item{aroon_oscillator <[double]>}{}
+#' }
+#'
 #' @template description
-aroon_oscillator <- function(x, cols, n = 10, ...) {
+aroon_oscillator <- function(
+	x,
+	cols,
+	n = 10,
+	...
+) {
 	UseMethod(
 		generic = "aroon_oscillator"
 	)
@@ -19,7 +31,12 @@ aroon_oscillator <- function(x, cols, n = 10, ...) {
 AROONOSC <- aroon_oscillator
 
 #' @export
-aroon_oscillator.default <- function(x, cols, n = 10, ...) {
+aroon_oscillator.default <- function(
+	x,
+	cols,
+	n = 10,
+	...
+) {
 	## check input
 	## cols if passed
 	if (!missing(cols)) {
