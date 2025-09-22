@@ -35,7 +35,7 @@ SEXP impl_ta_HT_PHASOR(SEXP inReal);
 SEXP impl_ta_HT_SINE(SEXP inReal);
 SEXP impl_ta_HT_TRENDLINE(SEXP inReal);
 SEXP impl_ta_HT_TRENDMODE(SEXP inReal);
-SEXP impl_ta_MACDEXT(SEXP inReal, SEXP optFastPeriod, SEXP optFastMAType, SEXP optSlowPeriod, SEXP optSlowMAType, SEXP optSignalPeriod, SEXP optSignalMAType);
+SEXP impl_ta_MACDEXT(SEXP x, SEXP fast_period, SEXP fast_matype, SEXP slow_period, SEXP slow_matype, SEXP signal_period, SEXP signal_matype);
 SEXP impl_ta_MACDFIX(SEXP inReal, SEXP optSignalPeriod);
 SEXP impl_ta_MACD(SEXP x, SEXP optFastPeriod, SEXP optSlowPeriod, SEXP optSignalPeriod);
 SEXP impl_ta_MA(SEXP x, SEXP period, SEXP matype);
