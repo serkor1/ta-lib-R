@@ -1,67 +1,68 @@
-// ta_MACDEXT.c
-// Interface to TA-Lib’s TA_MACDEXT (MACD with controllable MA types)
+// Interface to TA_MACDEXT (MACD with controllable MA types)
 //
 // Parameters
-//   inReal          : numeric vector of source prices (length n).
-//   optFastPeriod   : integer, fast MA period.
-//   optFastMAType   : integer MAType code for fast MA.
-//   optSlowPeriod   : integer, slow MA period.
-//   optSlowMAType   : integer MAType code for slow MA.
-//   optSignalPeriod : integer, signal MA period.
-//   optSignalMAType : integer MAType code for signal MA.
+//   x               : numeric vector
+//   fast_period     : integer (>= 2)
+//   fast_matype     : integer MAType
+//   slow_period     : integer (>= 2)
+//   slow_matype     : integer MAType
+//   signal_period   : integer (>= 1)
+//   signal_matype   : integer MAType
 //
 // Description
-//   Computes MACD line, its signal line, and the MACD histogram
-//   with user-specified moving average types. Returns an n×3 matrix
-//   with columns "macd", "signal", "histogram" (all lower-case).
+//   Computes MACD, signal, and histogram using configurable MA types.
+//   Returns an n × 3 REAL matrix with columns "macd","signal","hist",
+//   padded with NA_REAL up to the first valid output (lookback).
+//
+// Notes
+//   - Input validation beyond lookback is handled on the R side.
+//   - Uses in-place shifting to align outputs to length n.
 
 #include "MAType.h"
+#include "R_ext/Arith.h"
+#include "R_ext/Error.h"
+#include "Rinternals.h"
 #include "lib.h"
 #include "names.h"
 #include "shift.h"
 #include "ta_func.h"
-#include <Rinternals.h>
 #include <ta_libc.h>
 
 // clang-format off
 SEXP impl_ta_MACDEXT(
-  SEXP inReal, 
-  SEXP optFastPeriod, 
-  SEXP optFastMAType,
-  SEXP optSlowPeriod, 
-  SEXP optSlowMAType,
-  SEXP optSignalPeriod, 
-  SEXP optSignalMAType) {
+  SEXP x,
+  SEXP fast_period,
+  SEXP fast_matype,
+  SEXP slow_period,
+  SEXP slow_matype,
+  SEXP signal_period,
+  SEXP signal_matype) {
   // clang-format on
 
   int protect_count = 0;
 
-  // determine MAs
-  TA_MAType fastT = as_MAType(optFastMAType);
-  TA_MAType slowT = as_MAType(optSlowMAType);
-  TA_MAType signalT = as_MAType(optSignalMAType);
+  // input
+  const int n = LENGTH(x);
+  const double *restrict x_ptr = REAL(x);
 
-  // periods
-  int fastP = INTEGER(optFastPeriod)[0];
-  int slowP = INTEGER(optSlowPeriod)[0];
-  int signalP = INTEGER(optSignalPeriod)[0];
+  const int fastP = INTEGER(fast_period)[0];
+  const int slowP = INTEGER(slow_period)[0];
+  const int signalP = INTEGER(signal_period)[0];
 
-  // data
-  int n = LENGTH(inReal);
-  const double *restrict src = REAL(inReal);
+  const TA_MAType fastT = as_MAType(fast_matype);
+  const TA_MAType slowT = as_MAType(slow_matype);
+  const TA_MAType signalT = as_MAType(signal_matype);
 
-  // clang-format off
-  SEXP result = PROTECT(
-    allocMatrix(REALSXP, n, 3)
-  ); protect_count++;
-  double *restrict macd = REAL(result);
+  // output matrix: n x 3 (macd, signal, hist)
+  SEXP res = PROTECT(allocMatrix(REALSXP, n, 3));
+  protect_count++;
+  double *restrict macd = REAL(res);
   double *restrict signal = macd + n;
-  double *restrict histogram = macd + 2 * n;
-  // clang-format on
+  double *restrict hist = macd + 2 * n;
 
   // clang-format off
   const int minimum_lookback = TA_MACDEXT_Lookback(
-    fastP, 
+    fastP,
     fastT, 
     slowP, 
     slowT, 
@@ -73,54 +74,44 @@ SEXP impl_ta_MACDEXT(
   if (n < minimum_lookback) {
     Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
                minimum_lookback);
-
-    for (size_t i = 0; i < n; ++i) {
-      macd[i] = signal[i] = histogram[i] = NA_REAL;
+    for (int i = 0; i < n; ++i) {
+      macd[i] = signal[i] = hist[i] = NA_REAL;
     }
-
   } else {
-
-    int outBeg, outNb;
+    int outBeg = 0, outNb = 0;
     // clang-format off
     TA_RetCode return_code = TA_MACDEXT(
-      0,  
-      n - 1,
-      src,
-      fastP, 
-      fastT,
-      slowP, 
-      slowT, 
-      signalP, 
-      signalT, 
-      &outBeg, 
-      &outNb, 
-      macd + outBeg,
-      signal + outBeg, 
-      histogram + outBeg
+      /*startIdx*/ 0,
+      /*endIdx  */ n - 1,
+      /*inReal  */ x_ptr,
+      /*fast    */ fastP, fastT,
+      /*slow    */ slowP, slowT,
+      /*signal  */ signalP, signalT,
+      /*out     */ &outBeg, &outNb, macd, signal, hist
     );
     // clang-format on
 
     if (return_code != TA_SUCCESS) {
-      UNPROTECT(1);
-      error("TA_MACDEXT failed with code %d", return_code);
+      UNPROTECT(protect_count);
+      Rf_error("TA_MACDEXT failed: return code %d", return_code);
     }
 
-    // 4) Shift each output down by outBeg, padding with NA
+    // align to length n
     shift_array(macd, n, outBeg);
     shift_array(signal, n, outBeg);
-    shift_array(histogram, n, outBeg);
+    shift_array(hist, n, outBeg);
   }
 
   // set column names
   // clang-format off
   set_colnames(
-    result, 
+    res, 
     "macd", 
-    "signal", 
+    "signal",
     "histogram"
   );
   // clang-format on
 
   UNPROTECT(protect_count);
-  return result;
+  return res;
 }
