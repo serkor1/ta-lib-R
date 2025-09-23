@@ -296,10 +296,9 @@ moving_average_convergence_divergence.plotly <- function(
 	.indicator <- moving_average_convergence_divergence.default(
 		x = x,
 		cols = cols,
-		fast = 12,
-		slow = 26,
-		signal = 9,
-		...
+		fast = fast,
+		slow = slow,
+		signal = signal
 	)
 
 	.indicator$idx <- 1:nrow(.indicator)
