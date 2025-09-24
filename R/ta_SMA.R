@@ -13,6 +13,30 @@ SMA <- function(
 	n = 10,
 	...
 ) {
+	## if 'x' is missing
+	## its safe to assume that
+	## the user is calling via
+	## indicator()
+	if (missing(x)) {
+		## construct the
+		## call
+		call <- match.call(expand.dots = FALSE)
+		call$n <- n
+
+		## construct ma specification
+		## class
+		x <- structure(
+			{
+				map_maType_call(
+					call
+				)
+			},
+			class = c("ma_specification")
+		)
+
+		return(x)
+	}
+
 	UseMethod(
 		"SMA"
 	)
