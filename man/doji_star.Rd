@@ -52,7 +52,7 @@ tail(output)
  ## chart indicator
  ## with default values
  talib::indicator(
-     talib::doji_star()
+     talib::doji_star
  )
 }
 }

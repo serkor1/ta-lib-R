@@ -73,8 +73,8 @@ stochastic.default <- function(
 		...
 	)
 
-	slowk_ma <- map_maType_call(substitute(slowk))
-	slowd_ma <- map_maType_call(substitute(slowd))
+	# slowk <- map_maType_call(substitute(slowk))
+	# slowd <- map_maType_call(substitute(slowd))
 
 	as.data.frame(
 		.Call(
@@ -83,10 +83,10 @@ stochastic.default <- function(
 			HLC[[2]],
 			HLC[[3]],
 			as.integer(fastk),
-			as.integer(slowk_ma$n),
-			as.integer(slowk_ma$maType),
-			as.integer(slowd_ma$n),
-			as.integer(slowd_ma$maType)
+			as.integer(slowk$n),
+			as.integer(slowk$maType),
+			as.integer(slowd$n),
+			as.integer(slowd$maType)
 		)
 	)
 }
@@ -134,12 +134,12 @@ stochastic.plotly <- function(
 	slowd = SMA(n = 8),
 	...
 ) {
-	# slowk_ma <- map_maType_call(substitute(slowk))
-	# slowd_ma <- map_maType_call(substitute(slowd))
-	slowk <- substitute(slowk)
-	slowd <- substitute(slowd)
-	slowk_ma <- map_maType_call(slowk)
-	slowd_ma <- map_maType_call(slowd)
+	# slowk <- map_maType_call(substitute(slowk))
+	# slowd <- map_maType_call(substitute(slowd))
+	# slowk <- substitute(slowk)
+	# slowd <- substitute(slowd)
+	# slowk <- map_maType_call(slowk)
+	# slowd <- map_maType_call(slowd)
 	## construct HLC series
 	HLC <- as.data.frame(
 		series(
@@ -157,10 +157,10 @@ stochastic.plotly <- function(
 			HLC[[2]],
 			HLC[[3]],
 			as.integer(fastk),
-			as.integer(slowk_ma$n),
-			as.integer(slowk_ma$maType),
-			as.integer(slowd_ma$n),
-			as.integer(slowd_ma$maType)
+			as.integer(slowk$n),
+			as.integer(slowk$maType),
+			as.integer(slowd$n),
+			as.integer(slowd$maType)
 		)
 	)
 

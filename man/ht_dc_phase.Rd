@@ -45,7 +45,7 @@ tail(output)
  ## chart indicator
  ## with default values
  talib::indicator(
-     talib::ht_dc_phase()
+     talib::ht_dc_phase
  )
 }
 }

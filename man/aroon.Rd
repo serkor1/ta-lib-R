@@ -57,7 +57,7 @@ tail(output)
  ## chart indicator
  ## with default values
  talib::indicator(
-     talib::aroon()
+     talib::aroon
  )
 }
 }

@@ -58,7 +58,7 @@ tail(output)
  ## chart indicator
  ## with default values
  talib::indicator(
-     talib::acceleration_bands()
+     talib::acceleration_bands
  )
 }
 }

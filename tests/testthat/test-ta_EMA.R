@@ -18,7 +18,7 @@ testthat::test_that(desc = "Exponential Moving Average (EMA)", code = {
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(exponential_moving_average())
+			indicator(exponential_moving_average)
 		}
 	)
 

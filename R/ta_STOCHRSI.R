@@ -40,7 +40,7 @@ stochastic_relative_strength_index.default <- function(
 	na.rm = TRUE,
 	...
 ) {
-	fast_d_MAtype <- map_maType_call(substitute(fast_d_MAtype))
+	fast_d_MAtype <- fast_d_MAtype
 
 	## check input
 	## cols if passed
@@ -129,9 +129,7 @@ stochastic_relative_strength_index.plotly <- function(
 	...
 ) {
 	## input arguments
-	fast_d_MAtype <- map_maType_call(
-		substitute(fast_d_MAtype)
-	)
+	fast_d_MAtype <- fast_d_MAtype
 
 	## prepare series
 	## from

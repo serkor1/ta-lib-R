@@ -45,7 +45,7 @@ tail(output)
  ## chart indicator
  ## with default values
  talib::indicator(
-     talib::ht_trendmode()
+     talib::ht_trendmode
  )
 }
 }

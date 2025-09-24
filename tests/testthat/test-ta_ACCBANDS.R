@@ -18,7 +18,7 @@ testthat::test_that(desc = "Acceleration Bands", code = {
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(acceleration_bands())
+			indicator(acceleration_bands)
 		}
 	)
 

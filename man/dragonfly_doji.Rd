@@ -52,7 +52,7 @@ tail(output)
  ## chart indicator
  ## with default values
  talib::indicator(
-     talib::dragonfly_doji()
+     talib::dragonfly_doji
  )
 }
 }

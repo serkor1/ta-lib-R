@@ -18,7 +18,7 @@ testthat::test_that(desc = "Weighted Moving Average", code = {
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(weighted_moving_average())
+			indicator(weighted_moving_average)
 		}
 	)
 

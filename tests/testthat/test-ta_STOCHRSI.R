@@ -18,7 +18,7 @@ testthat::test_that(desc = "Stochastic Relative Strength Index", code = {
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(stochastic_relative_strength_index(), data = RSI(BTC))
+			indicator(stochastic_relative_strength_index, data = RSI(BTC))
 		}
 	)
 

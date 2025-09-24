@@ -18,7 +18,7 @@ testthat::test_that(desc = "Triangular Moving Average (TRIMA)", code = {
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(triangular_moving_average())
+			indicator(triangular_moving_average)
 		}
 	)
 

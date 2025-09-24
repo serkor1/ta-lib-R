@@ -18,7 +18,7 @@ testthat::test_that(desc = "T3 Moving Average (T3)", code = {
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(T3_moving_average())
+			indicator(T3_moving_average)
 		}
 	)
 

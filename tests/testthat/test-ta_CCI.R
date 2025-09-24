@@ -18,7 +18,7 @@ testthat::test_that(desc = "Commodity Channel Index", code = {
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(commodity_channel_index())
+			indicator(commodity_channel_index)
 		}
 	)
 

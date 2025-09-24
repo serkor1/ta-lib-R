@@ -49,7 +49,7 @@ tail(output)
  ## chart indicator
  ## with default values
  talib::indicator(
-     talib::on_balance_volume()
+     talib::on_balance_volume
  )
 }
 }

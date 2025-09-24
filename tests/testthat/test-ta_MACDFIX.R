@@ -20,11 +20,12 @@ testthat::test_that(desc = "Moving Average Convergence Divergence (Fixed)", code
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(moving_average_convergence_divergence(
+			indicator(
+				moving_average_convergence_divergence,
 				fast = EMA(n = 12),
 				slow = EMA(n = 26),
-				signal = EMA(n = 9),
-			))
+				signal = EMA(n = 9)
+			)
 		}
 	)
 

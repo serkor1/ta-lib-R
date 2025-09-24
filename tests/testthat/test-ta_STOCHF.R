@@ -18,7 +18,7 @@ testthat::test_that(desc = "Fast Stochastic", code = {
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(fast_stochastic())
+			indicator(fast_stochastic)
 		}
 	)
 

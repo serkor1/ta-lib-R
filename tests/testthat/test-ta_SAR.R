@@ -18,7 +18,7 @@ testthat::test_that(desc = "Parabolic SAR", code = {
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(parabolic_sar())
+			indicator(parabolic_sar)
 		}
 	)
 

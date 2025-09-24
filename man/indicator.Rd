@@ -4,14 +4,14 @@
 \alias{indicator}
 \title{Indicator}
 \usage{
-indicator(FUN, cols, ...)
+indicator(FUN, ...)
 }
 \arguments{
 \item{FUN}{An indicator function}
 
-\item{cols}{A formula of variables.}
-
 \item{...}{Arguments passed into \link{model.frame}}
+
+\item{cols}{A formula of variables.}
 }
 \description{
 Add an indicator to t

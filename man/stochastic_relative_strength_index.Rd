@@ -60,7 +60,7 @@ tail(output)
  ## chart indicator
  ## with default values
  talib::indicator(
-     talib::stochastic_relative_strength_index()
+     talib::stochastic_relative_strength_index
  )
 }
 }

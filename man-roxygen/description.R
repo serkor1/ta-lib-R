@@ -41,6 +41,6 @@
 #'  ## chart indicator
 #'  ## with default values
 #'  talib::indicator(
-#'      talib::<%= .fun %>()
+#'      talib::<%= .fun %>
 #'  )
 #' }

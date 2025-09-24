@@ -18,7 +18,7 @@ testthat::test_that(desc = "Relative Strength Index", code = {
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(relative_strength_index())
+			indicator(relative_strength_index)
 		}
 	)
 

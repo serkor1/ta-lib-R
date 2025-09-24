@@ -55,7 +55,7 @@ tail(output)
  ## chart indicator
  ## with default values
  talib::indicator(
-     talib::KAMA()
+     talib::KAMA
  )
 }
 }

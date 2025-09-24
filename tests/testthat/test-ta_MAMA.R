@@ -18,7 +18,7 @@ testthat::test_that(desc = "Mesa Adaptive Moving Average (MAMA)", code = {
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(mesa_adaptive_moving_average())
+			indicator(mesa_adaptive_moving_average)
 		}
 	)
 

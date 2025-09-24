@@ -18,7 +18,7 @@ testthat::test_that(desc = "Aroon Oscillator", code = {
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(aroon_oscillator())
+			indicator(aroon_oscillator)
 		}
 	)
 

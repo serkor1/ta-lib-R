@@ -60,7 +60,7 @@ tail(output)
  ## chart indicator
  ## with default values
  talib::indicator(
-     talib::parabolic_sar()
+     talib::parabolic_sar
  )
 }
 }

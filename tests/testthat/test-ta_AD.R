@@ -18,7 +18,7 @@ testthat::test_that(desc = "Chaikin A/D Line", code = {
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(chaikin_AD_line())
+			indicator(chaikin_AD_line)
 		}
 	)
 

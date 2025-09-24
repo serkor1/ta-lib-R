@@ -54,7 +54,7 @@ tail(output)
  ## chart indicator
  ## with default values
  talib::indicator(
-     talib::ultimate_oscillator()
+     talib::ultimate_oscillator
  )
 }
 }
