@@ -52,7 +52,7 @@ tail(output)
  ## chart indicator
  ## with default values
  talib::indicator(
-     talib::two_crows()
+     talib::two_crows
  )
 }
 }

@@ -70,7 +70,7 @@ fast_stochastic.default <- function(
 		...
 	)
 
-	slowk_ma <- map_maType_call(substitute(fast_d_MAtype))
+	slowk_ma <- fast_d_MAtype
 
 	as.data.frame(
 		.Call(
@@ -127,8 +127,7 @@ fast_stochastic.plotly <- function(
 	fast_d_MAtype = SMA(n = 10),
 	...
 ) {
-	fast_d_MAtype <- substitute(fast_d_MAtype)
-	slowk_ma <- map_maType_call(fast_d_MAtype)
+	slowk_ma <- fast_d_MAtype
 
 	## construct HLC series
 	HLC <- as.data.frame(series(

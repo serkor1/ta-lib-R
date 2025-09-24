@@ -49,7 +49,7 @@ tail(output)
  ## chart indicator
  ## with default values
  talib::indicator(
-     talib::money_flow_index()
+     talib::money_flow_index
  )
 }
 }

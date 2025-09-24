@@ -18,7 +18,7 @@ testthat::test_that(desc = "Money Flow Index", code = {
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(money_flow_index())
+			indicator(money_flow_index)
 		}
 	)
 

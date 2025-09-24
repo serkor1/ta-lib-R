@@ -18,7 +18,7 @@ testthat::test_that(desc = "Ultimate Oscillator", code = {
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(ultimate_oscillator())
+			indicator(ultimate_oscillator)
 		}
 	)
 

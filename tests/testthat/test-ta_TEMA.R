@@ -18,7 +18,7 @@ testthat::test_that(desc = "Triple Exponential Moving Average (TEMA)", code = {
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(triple_exponential_moving_average())
+			indicator(triple_exponential_moving_average)
 		}
 	)
 

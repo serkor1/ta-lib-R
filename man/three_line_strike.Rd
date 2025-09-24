@@ -52,7 +52,7 @@ tail(output)
  ## chart indicator
  ## with default values
  talib::indicator(
-     talib::three_line_strike()
+     talib::three_line_strike
  )
 }
 }

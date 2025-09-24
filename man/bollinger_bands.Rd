@@ -60,7 +60,7 @@ tail(output)
  ## chart indicator
  ## with default values
  talib::indicator(
-     talib::bollinger_bands()
+     talib::bollinger_bands
  )
 }
 }

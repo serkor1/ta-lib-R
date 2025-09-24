@@ -18,7 +18,7 @@ testthat::test_that(desc = "Kaufman’s Adaptive Moving Average (KAMA)", code = 
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(kaufmans_adaptive_moving_average())
+			indicator(kaufmans_adaptive_moving_average)
 		}
 	)
 

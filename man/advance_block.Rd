@@ -52,7 +52,7 @@ tail(output)
  ## chart indicator
  ## with default values
  talib::indicator(
-     talib::advance_block()
+     talib::advance_block
  )
 }
 }

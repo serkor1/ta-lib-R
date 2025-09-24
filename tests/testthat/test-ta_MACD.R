@@ -18,7 +18,7 @@ testthat::test_that(desc = "Moving Average Convergence Divergence", code = {
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(moving_average_convergence_divergence())
+			indicator(moving_average_convergence_divergence)
 		}
 	)
 

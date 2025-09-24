@@ -18,7 +18,7 @@ testthat::test_that(desc = "Bollinger Bands", code = {
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(bollinger_bands())
+			indicator(bollinger_bands)
 		}
 	)
 

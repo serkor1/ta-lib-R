@@ -54,7 +54,7 @@ tail(output)
  ## chart indicator
  ## with default values
  talib::indicator(
-     talib::chaikin_AD_line()
+     talib::chaikin_AD_line
  )
 }
 }

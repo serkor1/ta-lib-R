@@ -49,7 +49,7 @@ tail(output)
  ## chart indicator
  ## with default values
  talib::indicator(
-     talib::commodity_channel_index()
+     talib::commodity_channel_index
  )
 }
 }

@@ -18,7 +18,7 @@ testthat::test_that(desc = "On-Balance Volume", code = {
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(on_balance_volume())
+			indicator(on_balance_volume)
 		}
 	)
 

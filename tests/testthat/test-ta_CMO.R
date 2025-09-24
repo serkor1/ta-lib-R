@@ -18,7 +18,7 @@ testthat::test_that(desc = "Chande Momentum Indicator", code = {
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(chande_momentum_oscillator())
+			indicator(chande_momentum_oscillator)
 		}
 	)
 

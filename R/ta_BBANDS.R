@@ -77,8 +77,6 @@ bollinger_bands.default <- function(
 	## coerce to a `matrix` check that
 	## it is double and then pass to
 	## C-side.
-	ma <- map_maType_call(substitute(ma))
-
 	x <- series(
 		x = cols,
 		default = ~open,
@@ -111,8 +109,6 @@ bollinger_bands.numeric <- function(
 	down = 2,
 	...
 ) {
-	ma <- map_maType_call(substitute(ma))
-
 	## determine branch
 	## if its a matrix call
 	## matrix method and end the function
@@ -188,8 +184,6 @@ bollinger_bands.plotly <- function(
 	down = 2,
 	...
 ) {
-	ma <- map_maType_call(substitute(ma))
-
 	## prepare series
 	## from
 	x <- series(

@@ -49,7 +49,7 @@ tail(output)
  ## chart indicator
  ## with default values
  talib::indicator(
-     talib::chande_momentum_oscillator()
+     talib::chande_momentum_oscillator
  )
 }
 }

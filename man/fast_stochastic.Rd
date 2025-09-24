@@ -51,7 +51,7 @@ tail(output)
  ## chart indicator
  ## with default values
  talib::indicator(
-     talib::fast_stochastic()
+     talib::fast_stochastic
  )
 }
 }

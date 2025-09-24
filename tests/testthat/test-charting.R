@@ -25,7 +25,7 @@ testthat::test_that(desc = "Charting", code = {
 		{
 			chart(SPY)
 			indicator(
-				FUN = SMA(),
+				FUN = SMA,
 				cols = ~open,
 				data = BTC
 			)

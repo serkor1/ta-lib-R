@@ -54,7 +54,7 @@ tail(output)
  ## chart indicator
  ## with default values
  talib::indicator(
-     talib::evening_doji_star()
+     talib::evening_doji_star
  )
 }
 }

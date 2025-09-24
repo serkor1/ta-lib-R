@@ -74,13 +74,13 @@ The charting functionality mimicks the behaviour of `plot()` and `lines()` where
 
   ## add SMA
   talib::indicator(
-  talib::SMA(),
-  cols = ~high + low
+    talib::SMA,
+    cols = ~high + low
   )
 
   ## add acceleration bands
   talib::indicator(
-    talib::ACCBANDS()
+    talib::ACCBANDS
   )
 }
 

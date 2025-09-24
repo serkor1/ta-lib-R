@@ -69,7 +69,7 @@ tail(output)
  ## chart indicator
  ## with default values
  talib::indicator(
-     talib::moving_average_convergence_divergence()
+     talib::moving_average_convergence_divergence
  )
 }
 }

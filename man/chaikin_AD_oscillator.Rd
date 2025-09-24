@@ -58,7 +58,7 @@ tail(output)
  ## chart indicator
  ## with default values
  talib::indicator(
-     talib::chaikin_AD_oscillator()
+     talib::chaikin_AD_oscillator
  )
 }
 }

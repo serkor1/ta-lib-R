@@ -52,7 +52,7 @@ tail(output)
  ## chart indicator
  ## with default values
  talib::indicator(
-     talib::three_stars_in_the_south()
+     talib::three_stars_in_the_south
  )
 }
 }

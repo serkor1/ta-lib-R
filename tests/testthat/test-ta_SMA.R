@@ -18,7 +18,7 @@ testthat::test_that(desc = "Simple Moving Average", code = {
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(simple_moving_average())
+			indicator(simple_moving_average)
 		}
 	)
 

@@ -49,7 +49,7 @@ tail(output)
  ## chart indicator
  ## with default values
  talib::indicator(
-     talib::relative_strength_index()
+     talib::relative_strength_index
  )
 }
 }
