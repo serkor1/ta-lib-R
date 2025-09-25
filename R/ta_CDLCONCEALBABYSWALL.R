@@ -78,7 +78,7 @@ concealing_baby_swallow.default <- function(
 	## from source
 	x <- as.data.frame(
 		.Call(
-			"impl_ta_CDLBABYSWALL",
+			"impl_ta_CDLCONCEALBABYSWALL",
 			x[[1]],
 			x[[2]],
 			x[[3]],
@@ -120,4 +120,41 @@ concealing_baby_swallow.matrix <- function(
 	as.matrix(
 		NextMethod()
 	)
+}
+
+#' @usage NULL
+#' @aliases concealing_baby_swallow
+#' @export
+concealing_baby_swallow.plotly <- function(
+	x,
+	cols,
+	...
+) {
+	## prepare OHLC series
+	OHLC <- series(
+		x = x,
+		formula = cols,
+		default = ~ open + high + low + close,
+		...
+	)
+
+	## calculate pattern
+	## indicators
+	.indicator <- concealing_baby_swallow.default(
+		x = OHLC,
+		cols = ~ open + high + low + close
+	)
+
+	.indicator$idx <- 1:nrow(.indicator)
+
+	## chart patterns
+	.plotting_environment$main <- pattern(
+		p = .plotting_environment$main,
+		x = .indicator,
+		high = OHLC[[2]],
+		low = OHLC[[3]],
+		pattern_name = "Concealing Baby Swallow"
+	)
+
+	.plotting_environment$main
 }

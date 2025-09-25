@@ -126,3 +126,40 @@ dark_cloud_cover.matrix <- function(
 		NextMethod()
 	)
 }
+
+#' @usage NULL
+#' @aliases dark_cloud_cover
+#' @export
+dark_cloud_cover.plotly <- function(
+	x,
+	cols,
+	...
+) {
+	## prepare OHLC series
+	OHLC <- series(
+		x = x,
+		formula = cols,
+		default = ~ open + high + low + close,
+		...
+	)
+
+	## calculate pattern
+	## indicators
+	.indicator <- dark_cloud_cover.default(
+		x = OHLC,
+		cols = ~ open + high + low + close
+	)
+
+	.indicator$idx <- 1:nrow(.indicator)
+
+	## chart patterns
+	.plotting_environment$main <- pattern(
+		p = .plotting_environment$main,
+		x = .indicator,
+		high = OHLC[[2]],
+		low = OHLC[[3]],
+		pattern_name = "Dark Cloud Cover"
+	)
+
+	.plotting_environment$main
+}

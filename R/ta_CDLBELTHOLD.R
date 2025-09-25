@@ -121,3 +121,40 @@ belt_hold.matrix <- function(
 		NextMethod()
 	)
 }
+
+#' @usage NULL
+#' @aliases belt_hold
+#' @export
+belt_hold.plotly <- function(
+	x,
+	cols,
+	...
+) {
+	## prepare OHLC series
+	OHLC <- series(
+		x = x,
+		formula = cols,
+		default = ~ open + high + low + close,
+		...
+	)
+
+	## calculate pattern
+	## indicators
+	.indicator <- belt_hold.default(
+		x = OHLC,
+		cols = ~ open + high + low + close
+	)
+
+	.indicator$idx <- 1:nrow(.indicator)
+
+	## chart patterns
+	.plotting_environment$main <- pattern(
+		p = .plotting_environment$main,
+		x = .indicator,
+		high = OHLC[[2]],
+		low = OHLC[[3]],
+		pattern_name = "Belt Hold"
+	)
+
+	.plotting_environment$main
+}
