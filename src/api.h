@@ -31,7 +31,7 @@ SEXP impl_ta_CDLCONCEALBABYSWALL(SEXP open, SEXP high, SEXP low, SEXP close, SEX
 SEXP impl_ta_CDLCOUNTERATTACK(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
 SEXP impl_ta_CDLDARKCLOUDCOVER(SEXP open, SEXP high, SEXP low, SEXP close, SEXP penetration, SEXP normalize_flag);
 SEXP impl_ta_CDLDOJI(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
-SEXP impl_ta_CDLDOJISTARSTAR(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
+SEXP impl_ta_CDLDOJISTAR(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
 SEXP impl_ta_CDLDRAGONFLYDOJI(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
 SEXP impl_ta_CDLEVENINGDOJISTAR(SEXP open, SEXP high, SEXP low, SEXP close, SEXP penetration, SEXP normalize_flag);
 SEXP impl_ta_CMO(SEXP x, SEXP optTimePeriod);

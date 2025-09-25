@@ -36,7 +36,7 @@ static const R_CallMethodDef CallEntries[] = {
     CALLDEF(impl_ta_CDLCOUNTERATTACK, 5),
     CALLDEF(impl_ta_CDLDARKCLOUDCOVER, 6),
     CALLDEF(impl_ta_CDLDOJI, 5),
-    CALLDEF(impl_ta_CDLDOJISTARSTAR, 5),
+    CALLDEF(impl_ta_CDLDOJISTAR, 5),
     CALLDEF(impl_ta_CDLDRAGONFLYDOJI, 5),
     CALLDEF(impl_ta_CDLEVENINGDOJISTAR, 6),
     CALLDEF(impl_ta_CMO, 2),
