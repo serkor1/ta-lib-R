@@ -121,3 +121,40 @@ counter_attack.matrix <- function(
 		NextMethod()
 	)
 }
+
+#' @usage NULL
+#' @aliases counter_attack
+#' @export
+counter_attack.plotly <- function(
+	x,
+	cols,
+	...
+) {
+	## prepare OHLC series
+	OHLC <- series(
+		x = x,
+		formula = cols,
+		default = ~ open + high + low + close,
+		...
+	)
+
+	## calculate pattern
+	## indicators
+	.indicator <- counter_attack.default(
+		x = OHLC,
+		cols = ~ open + high + low + close
+	)
+
+	.indicator$idx <- 1:nrow(.indicator)
+
+	## chart patterns
+	.plotting_environment$main <- pattern(
+		p = .plotting_environment$main,
+		x = .indicator,
+		high = OHLC[[2]],
+		low = OHLC[[3]],
+		pattern_name = "Counter Attack"
+	)
+
+	.plotting_environment$main
+}

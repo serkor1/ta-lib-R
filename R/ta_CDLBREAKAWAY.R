@@ -121,3 +121,40 @@ break_away.matrix <- function(
 		NextMethod()
 	)
 }
+
+#' @usage NULL
+#' @aliases break_away
+#' @export
+break_away.plotly <- function(
+	x,
+	cols,
+	...
+) {
+	## prepare OHLC series
+	OHLC <- series(
+		x = x,
+		formula = cols,
+		default = ~ open + high + low + close,
+		...
+	)
+
+	## calculate pattern
+	## indicators
+	.indicator <- break_away.default(
+		x = OHLC,
+		cols = ~ open + high + low + close
+	)
+
+	.indicator$idx <- 1:nrow(.indicator)
+
+	## chart patterns
+	.plotting_environment$main <- pattern(
+		p = .plotting_environment$main,
+		x = .indicator,
+		high = OHLC[[2]],
+		low = OHLC[[3]],
+		pattern_name = "Break Away"
+	)
+
+	.plotting_environment$main
+}

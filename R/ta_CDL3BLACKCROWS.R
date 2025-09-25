@@ -121,3 +121,40 @@ three_black_crows.matrix <- function(
 		NextMethod()
 	)
 }
+
+#' @usage NULL
+#' @aliases three_black_crows
+#' @export
+three_black_crows.plotly <- function(
+	x,
+	cols,
+	...
+) {
+	## prepare OHLC series
+	OHLC <- series(
+		x = x,
+		formula = cols,
+		default = ~ open + high + low + close,
+		...
+	)
+
+	## calculate pattern
+	## indicators
+	.indicator <- three_black_crows.default(
+		x = OHLC,
+		cols = ~ open + high + low + close
+	)
+
+	.indicator$idx <- 1:nrow(.indicator)
+
+	## chart patterns
+	.plotting_environment$main <- pattern(
+		p = .plotting_environment$main,
+		x = .indicator,
+		high = OHLC[[2]],
+		low = OHLC[[3]],
+		pattern_name = "Three Black Crows"
+	)
+
+	.plotting_environment$main
+}

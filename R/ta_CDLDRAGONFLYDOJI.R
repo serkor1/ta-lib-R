@@ -121,3 +121,40 @@ dragonfly_doji.matrix <- function(
 		NextMethod()
 	)
 }
+
+#' @usage NULL
+#' @aliases dragonfly_doji
+#' @export
+dragonfly_doji.plotly <- function(
+	x,
+	cols,
+	...
+) {
+	## prepare OHLC series
+	OHLC <- series(
+		x = x,
+		formula = cols,
+		default = ~ open + high + low + close,
+		...
+	)
+
+	## calculate pattern
+	## indicators
+	.indicator <- dragonfly_doji.default(
+		x = OHLC,
+		cols = ~ open + high + low + close
+	)
+
+	.indicator$idx <- 1:nrow(.indicator)
+
+	## chart patterns
+	.plotting_environment$main <- pattern(
+		p = .plotting_environment$main,
+		x = .indicator,
+		high = OHLC[[2]],
+		low = OHLC[[3]],
+		pattern_name = "Dragonfly Doji"
+	)
+
+	.plotting_environment$main
+}
