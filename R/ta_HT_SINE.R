@@ -10,6 +10,7 @@
 #' @template description
 ht_sine_wave <- function(
 	x,
+	cols,
 	...
 ) {
 	UseMethod("ht_sine_wave")
@@ -66,8 +67,6 @@ ht_sine_wave.default <- function(
 			x[[1]]
 		)
 	)
-
-	colnames(x)[1] <- "dominant_cycle_period"
 
 	return(x)
 }
@@ -131,4 +130,57 @@ ht_sine_wave.matrix <- function(
 	as.matrix(
 		NextMethod()
 	)
+}
+
+
+#' @usage NULL
+#' @aliases ht_sine_wave
+#' @export
+ht_sine_wave.plotly <- function(
+	x,
+	cols,
+	...
+) {
+	## prepare series
+	## from
+	x <- as.data.frame(
+		series(
+			x = x,
+			formula = cols,
+			default = ~open,
+			...
+		)
+	)
+
+	## construct indicator
+	##
+	.indicator <- ht_sine_wave.default(
+		x = x,
+		cols = cols,
+		...
+	)
+
+	.indicator$idx <- 1:nrow(.indicator)
+
+	output <- plotly::plot_ly(
+		data = .indicator,
+		name = "Sine Wave",
+		x = ~idx,
+		y = ~sine
+	)
+
+	output <- plotly::add_lines(
+		p = output,
+		x = ~idx,
+		y = ~leadsine,
+		data = .indicator,
+		inherit = FALSE
+	)
+
+	.plotting_environment$sub <- c(
+		.plotting_environment$sub,
+		list(output)
+	)
+
+	output
 }

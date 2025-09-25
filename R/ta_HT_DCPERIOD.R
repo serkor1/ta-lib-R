@@ -10,6 +10,7 @@
 #' @template description
 ht_dcperiod <- function(
 	x,
+	cols,
 	...
 ) {
 	UseMethod("ht_dcperiod")
@@ -131,4 +132,47 @@ ht_dcperiod.matrix <- function(
 	as.matrix(
 		NextMethod()
 	)
+}
+
+#' @usage NULL
+#' @aliases ht_dcperiod
+#' @export
+ht_dcperiod.plotly <- function(
+	x,
+	cols,
+	...
+) {
+	## prepare series
+	## from
+	x <- as.data.frame(
+		series(
+			x = x,
+			formula = cols,
+			default = ~open,
+			...
+		)
+	)
+
+	## construct indicator
+	##
+	.indicator <- ht_dcperiod.default(
+		x = x,
+		cols = cols
+	)
+
+	.indicator$idx <- 1:nrow(.indicator)
+
+	output <- plotly::plot_ly(
+		data = .indicator,
+		name = "Dominant Cycle Period",
+		x = ~idx,
+		y = ~dominant_cycle_period
+	)
+
+	.plotting_environment$sub <- c(
+		.plotting_environment$sub,
+		list(output)
+	)
+
+	output
 }
