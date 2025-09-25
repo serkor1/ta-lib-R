@@ -26,14 +26,4 @@
 #undef Int32
 // clang-format on
 
-static void ensure_ta_initialized(void) {
-  static int inited = 0;
-  if (!inited) {
-    if (TA_Initialize() != TA_SUCCESS) {
-      Rf_error("TA-Lib initialization failed.");
-    }
-    inited = 1;
-  }
-}
-
 #endif // _LIB_H_
