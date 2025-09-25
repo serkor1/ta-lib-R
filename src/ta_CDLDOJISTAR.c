@@ -1,4 +1,4 @@
-// Interface to TA_CDLDOJISTARSTAR
+// Interface to TA_CDLDOJISTAR
 //
 // Parameters
 //   open: numeric vector of opening prices
@@ -21,8 +21,8 @@
 #include <limits.h>
 #include <ta_libc.h>
 
-SEXP impl_ta_CDLDOJISTARSTAR(SEXP open, SEXP high, SEXP low, SEXP close,
-                             SEXP normalize_flag) {
+SEXP impl_ta_CDLDOJISTAR(SEXP open, SEXP high, SEXP low, SEXP close,
+                         SEXP normalize_flag) {
 
   int protect_count = 0;
 
