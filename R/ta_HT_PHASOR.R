@@ -10,6 +10,7 @@
 #' @template description
 ht_phasor <- function(
 	x,
+	cols,
 	...
 ) {
 	UseMethod("ht_phasor")
@@ -66,8 +67,6 @@ ht_phasor.default <- function(
 			x[[1]]
 		)
 	)
-
-	colnames(x)[1] <- "dominant_cycle_period"
 
 	return(x)
 }
@@ -131,4 +130,55 @@ ht_phasor.matrix <- function(
 	as.matrix(
 		NextMethod()
 	)
+}
+
+#' @usage NULL
+#' @aliases ht_phasor
+#' @export
+ht_phasor.plotly <- function(
+	x,
+	cols,
+	...
+) {
+	## prepare series
+	## from
+	x <- as.data.frame(
+		series(
+			x = x,
+			formula = cols,
+			default = ~open,
+			...
+		)
+	)
+
+	## construct indicator
+	##
+	.indicator <- ht_phasor.default(
+		x = x,
+		cols = cols
+	)
+
+	.indicator$idx <- 1:nrow(.indicator)
+
+	output <- plotly::plot_ly(
+		data = .indicator,
+		name = "Phasor Components",
+		x = ~idx,
+		y = ~inphase
+	)
+
+	output <- plotly::add_lines(
+		output,
+		x = ~idx,
+		y = ~quadrature,
+		data = .indicator,
+		inherit = FALSE
+	)
+
+	.plotting_environment$sub <- c(
+		.plotting_environment$sub,
+		list(output)
+	)
+
+	output
 }

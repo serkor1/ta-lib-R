@@ -10,6 +10,7 @@
 #' @template description
 ht_trendmode <- function(
 	x,
+	cols,
 	...
 ) {
 	UseMethod("ht_trendmode")
@@ -131,4 +132,54 @@ ht_trendmode.matrix <- function(
 	as.matrix(
 		NextMethod()
 	)
+}
+
+#' @rdname ht_trendmode
+#' @usage NULL
+#' @export
+ht_trendmode.plotly <- function(
+	x,
+	cols,
+	...
+) {
+	## prepare series
+	## from
+	x <- as.data.frame(
+		series(
+			x = x,
+			formula = ~ open + high + low + close,
+			default = ~ open + high + low + close,
+			...
+		)
+	)
+
+	## indicator
+	.indicator <- ht_trendmode.default(
+		x = x,
+		cols = cols
+	)
+
+	.indicator$idx <- 1:nrow(.indicator)
+	.indicator$mid_price <- rowMeans(
+		x[, c(2, 4)]
+	)
+
+	## locate all trend modes
+	trend_idx <- which(.indicator[[1]] == 1)
+
+	.plotting_environment$main <- plotly::add_trace(
+		.plotting_environment$main,
+		x = ~ idx[trend_idx],
+		y = ~ .indicator$mid_price[trend_idx],
+		type = "scatter",
+		mode = "markers",
+		marker = list(
+			symbol = "star",
+			size = 10
+		),
+		name = sprintf("KAMA(%d)", 3),
+		inherit = FALSE
+	)
+
+	.plotting_environment$main
 }

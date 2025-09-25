@@ -10,6 +10,7 @@
 #' @template description
 ht_dc_phase <- function(
 	x,
+	cols,
 	...
 ) {
 	UseMethod("ht_dc_phase")
@@ -67,7 +68,7 @@ ht_dc_phase.default <- function(
 		)
 	)
 
-	colnames(x)[1] <- "dominant_cycle_period"
+	colnames(x)[1] <- "dominant_cycle_phase"
 
 	return(x)
 }
@@ -131,4 +132,47 @@ ht_dc_phase.matrix <- function(
 	as.matrix(
 		NextMethod()
 	)
+}
+
+#' @usage NULL
+#' @aliases ht_dc_phase
+#' @export
+ht_dc_phase.plotly <- function(
+	x,
+	cols,
+	...
+) {
+	## prepare series
+	## from
+	x <- as.data.frame(
+		series(
+			x = x,
+			formula = cols,
+			default = ~open,
+			...
+		)
+	)
+
+	## construct indicator
+	##
+	.indicator <- ht_dc_phase.default(
+		x = x,
+		cols = cols
+	)
+
+	.indicator$idx <- 1:nrow(.indicator)
+
+	output <- plotly::plot_ly(
+		data = .indicator,
+		name = "Dominant Cycle Phase",
+		x = ~idx,
+		y = ~dominant_cycle_phase
+	)
+
+	.plotting_environment$sub <- c(
+		.plotting_environment$sub,
+		list(output)
+	)
+
+	output
 }

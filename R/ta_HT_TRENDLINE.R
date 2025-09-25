@@ -10,6 +10,7 @@
 #' @template description
 ht_trendline <- function(
 	x,
+	cols,
 	...
 ) {
 	UseMethod("ht_trendline")
@@ -67,7 +68,7 @@ ht_trendline.default <- function(
 		)
 	)
 
-	colnames(x)[1] <- "dominant_cycle_period"
+	colnames(x)[1] <- "ht_trendline"
 
 	return(x)
 }
@@ -131,4 +132,50 @@ ht_trendline.matrix <- function(
 	as.matrix(
 		NextMethod()
 	)
+}
+
+
+#' @rdname ht_trendline
+#' @usage NULL
+#' @export
+ht_trendline.plotly <- function(
+	x,
+	cols,
+	...
+) {
+	## prepare series
+	## from
+	x <- as.data.frame(
+		series(
+			x = x,
+			formula = cols,
+			default = ~open,
+			...
+		)
+	)
+
+	## indicator
+	.indicator <- ht_trendline.default(
+		x = x,
+		cols = cols
+	)
+	.indicator$idx <- 1:nrow(.indicator)
+
+	for (i in 1:ncol(x)) {
+		local({
+			j <- i
+			.plotting_environment$main <- plotly::add_trace(
+				.plotting_environment$main,
+				data = .indicator,
+				x = ~idx,
+				y = ~ .indicator[, j],
+				type = "scatter",
+				mode = "lines",
+				name = sprintf("Trendline"),
+				inherit = FALSE
+			)
+		})
+	}
+
+	.plotting_environment$main
 }
