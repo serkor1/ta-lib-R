@@ -61,6 +61,12 @@ tail(output)
 \seealso{
 Other Pattern Recognition: 
 \code{\link{advance_block}()},
+\code{\link{belt_hold}()},
+\code{\link{break_away}()},
+\code{\link{closing_marubozu}()},
+\code{\link{concealing_baby_swallow}()},
+\code{\link{counter_attack}()},
+\code{\link{dark_cloud_cover}()},
 \code{\link{doji}()},
 \code{\link{doji_star}()},
 \code{\link{dragonfly_doji}()},

@@ -24,6 +24,12 @@ SEXP impl_ta_CDL3STARSINSOUTH(SEXP open, SEXP high, SEXP low, SEXP close, SEXP n
 SEXP impl_ta_CDL3WHITESOLDIERS(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
 SEXP impl_ta_CDLABANDONEDBABY(SEXP open, SEXP high, SEXP low, SEXP close, SEXP penetration, SEXP normalize_flag);
 SEXP impl_ta_CDLADVANCEBLOCK(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
+SEXP impl_ta_CDLBELTHOLD(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
+SEXP impl_ta_CDLBREAKAWAY(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
+SEXP impl_ta_CDLCLOSINGMARUBOZU(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
+SEXP impl_ta_CDLCONCEALBABYSWALL(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
+SEXP impl_ta_CDLCOUNTERATTACK(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
+SEXP impl_ta_CDLDARKCLOUDCOVER(SEXP open, SEXP high, SEXP low, SEXP close, SEXP penetration, SEXP normalize_flag);
 SEXP impl_ta_CDLDOJI(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
 SEXP impl_ta_CDLDOJISTARSTAR(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
 SEXP impl_ta_CDLDRAGONFLYDOJI(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
