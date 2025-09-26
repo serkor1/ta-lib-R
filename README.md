@@ -4,6 +4,10 @@
 # {talib}: R bindings for [TA-Lib](https://github.com/TA-Lib/ta-lib) <img src="man/figures/logo.png" align="right" height="170" alt="" />
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/serkor1/curly-giggle/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/serkor1/curly-giggle/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/serkor1/curly-giggle/graph/badge.svg)](https://app.codecov.io/gh/serkor1/curly-giggle)
 <!-- badges: end -->
 
 {talib} provides R bindings for
