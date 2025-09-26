@@ -24,6 +24,27 @@ flatten <- function(x) {
 	}
 }
 
+## padding with NAs
+na_pad <- function(x, n = 5) {
+	if (n <= 0L) {
+		return(x)
+	}
+
+	rbind(
+		setNames(
+			as.data.frame(
+				matrix(
+					NA_real_,
+					nrow = n,
+					ncol = ncol(x)
+				)
+			),
+			colnames(x)
+		),
+		x
+	)
+}
+
 ## extract open, high, low, close
 ## and volume by position
 ##

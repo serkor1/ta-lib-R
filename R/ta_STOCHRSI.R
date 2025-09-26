@@ -9,11 +9,14 @@
 #'
 #' @param fast_k Time period for building the Fast-K line.
 #' @param fast_d_MAtype Smoothing for making the Fast-D line.
+#' @param n_rsi Time period for [RSI]
+#'
 #' @template description
 stochastic_relative_strength_index <- function(
 	x,
 	cols,
 	n = 10,
+	n_rsi = 10,
 	fast_k = 5,
 	fast_d_MAtype = SMA(n = 10),
 	...
@@ -35,12 +38,18 @@ stochastic_relative_strength_index.default <- function(
 	x,
 	cols,
 	n = 10,
+	n_rsi = 10,
 	fast_k = 5,
 	fast_d_MAtype = SMA(n = 10),
 	na.rm = TRUE,
 	...
 ) {
-	fast_d_MAtype <- fast_d_MAtype
+	## calculate the rows of
+	## 'x' as the StochRSI is a combination
+	## of two indicators the the lengths
+	## will be clipped - all functions must
+	## have nrow(in) == nrow(out)
+	x_rows <- nrow(x)
 
 	## check input
 	## cols if passed
@@ -66,22 +75,38 @@ stochastic_relative_strength_index.default <- function(
 		)
 	}
 
-	x <- series(
-		x = cols,
-		default = ~RSI,
-		data = if (na.rm) na.omit(x) else x,
+	## calculate RSI
+	x <- relative_strength_index.default(
+		x = x,
+		cols = cols,
+		n = n_rsi,
 		...
 	)
 
-	as.data.frame(
+	x <- as.data.frame(
 		.Call(
 			"impl_ta_STOCHRSI",
-			x[[1]],
+			x[[1]][!is.na(x[[1]])],
 			as.integer(n),
 			as.integer(fast_k),
 			fast_d_MAtype$n,
 			fast_d_MAtype$maType
 		)
+	)
+
+	## append na values
+	## if there is a mismatch
+	## between input rows and
+	## output rows
+	if (nrow(x) != x_rows) {
+		x <- na_pad(
+			x = x,
+			n = x_rows - nrow(x)
+		)
+	}
+
+	return(
+		x
 	)
 }
 
@@ -92,6 +117,7 @@ stochastic_relative_strength_index.data.frame <- function(
 	x,
 	cols,
 	n = 10,
+	n_rsi = 10,
 	fast_k = 5,
 	fast_d_MAtype = SMA(n = 10),
 	...
@@ -108,6 +134,7 @@ stochastic_relative_strength_index.matrix <- function(
 	x,
 	cols,
 	n = 10,
+	n_rsi = 10,
 	fast_k = 5,
 	fast_d_MAtype = SMA(n = 10),
 	...
@@ -124,6 +151,7 @@ stochastic_relative_strength_index.plotly <- function(
 	x,
 	cols,
 	n = 10,
+	n_rsi = 10,
 	fast_k = 5,
 	fast_d_MAtype = SMA(n = 10),
 	...
@@ -137,21 +165,19 @@ stochastic_relative_strength_index.plotly <- function(
 		series(
 			x = x,
 			formula = cols,
-			default = ~RSI,
+			default = ~open,
 			...
 		)
 	)
 
 	## indicator
-	.indicator <- as.data.frame(
-		.Call(
-			"impl_ta_STOCHRSI",
-			x[[1]],
-			as.integer(n),
-			as.integer(fast_k),
-			fast_d_MAtype$n,
-			fast_d_MAtype$maType
-		)
+	.indicator <- stochastic_relative_strength_index.default(
+		x = x,
+		cols = cols,
+		n = n,
+		n_rsi = n_rsi,
+		fast_k = fast_k,
+		fast_d_MAtype = fast_d_MAtype
 	)
 
 	.indicator$idx <- 1:nrow(.indicator)
