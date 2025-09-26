@@ -23,9 +23,12 @@ three_black_crows <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases three_black_crows
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname three_black_crows
+#' @aliases three_black_crows
 CDL3BLACKCROWS <- three_black_crows
 
 #' @usage NULL

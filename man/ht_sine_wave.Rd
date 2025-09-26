@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_HT_SINE.R
 \name{ht_sine_wave}
 \alias{ht_sine_wave}
+\alias{HT_SINE}
 \title{Hilbert Transform - SineWave}
 \usage{
 ht_sine_wave(x, cols, ...)

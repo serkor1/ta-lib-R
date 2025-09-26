@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_CDL3STARSINSOUTH.R
 \name{three_stars_in_the_south}
 \alias{three_stars_in_the_south}
+\alias{CDL3STARSINSOUTH}
 \title{Three Stars in the South}
 \usage{
 three_stars_in_the_south(x, cols, ...)

@@ -23,9 +23,12 @@ harami <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases harami
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname harami
+#' @aliases harami
 CDLHARAMI <- harami
 
 #' @usage NULL

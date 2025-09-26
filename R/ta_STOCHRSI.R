@@ -26,9 +26,12 @@ stochastic_relative_strength_index <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases stochastic_relative_strength_index
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname stochastic_relative_strength_index
+#' @aliases stochastic_relative_strength_index
 STOCHRSI <- stochastic_relative_strength_index
 
 #' @usage NULL

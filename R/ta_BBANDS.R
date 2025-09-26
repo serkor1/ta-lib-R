@@ -33,9 +33,12 @@ bollinger_bands <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases bollinger_bands
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname bollinger_bands
+#' @aliases bollinger_bands
 BBANDS <- bollinger_bands
 
 #' @usage NULL

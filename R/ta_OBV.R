@@ -17,9 +17,12 @@ on_balance_volume <- function(
 	UseMethod("on_balance_volume")
 }
 
-#' @usage NULL
-#' @aliases on_balance_volume
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname on_balance_volume
+#' @aliases on_balance_volume
 OBV <- on_balance_volume
 
 #' @usage NULL

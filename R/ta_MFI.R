@@ -17,9 +17,12 @@ money_flow_index <- function(
 	UseMethod("money_flow_index")
 }
 
-#' @usage NULL
-#' @aliases money_flow_index
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname money_flow_index
+#' @aliases money_flow_index
 MFI <- money_flow_index
 
 #' @usage NULL

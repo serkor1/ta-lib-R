@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_HT_DCPERIOD.R
 \name{ht_dcperiod}
 \alias{ht_dcperiod}
+\alias{HT_DCPERIOD}
 \title{Hilbert Transform - Dominant Cycle Period}
 \usage{
 ht_dcperiod(x, cols, ...)

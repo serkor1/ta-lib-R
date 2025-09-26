@@ -24,9 +24,12 @@ evening_doji_star <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases evening_doji_star
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname evening_doji_star
+#' @aliases evening_doji_star
 CDLEVENINGDOJISTAR <- evening_doji_star
 
 #' @usage NULL

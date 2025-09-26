@@ -40,9 +40,12 @@ MAMA <- function(
 	UseMethod("MAMA")
 }
 
-#' @rdname MAMA
-#' @usage NULL
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname MAMA
+#' @aliases MAMA
 mesa_adaptive_moving_average <- MAMA
 
 #' @rdname MAMA

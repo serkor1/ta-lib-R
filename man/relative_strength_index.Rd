@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_RSI.R
 \name{relative_strength_index}
 \alias{relative_strength_index}
+\alias{RSI}
 \title{Relative Strength Index}
 \usage{
 relative_strength_index(x, cols, n = 10, ...)

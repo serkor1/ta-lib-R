@@ -25,9 +25,12 @@ stochastic <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases stochastic
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname stochastic
+#' @aliases stochastic
 STOCH <- stochastic
 
 #' @usage NULL

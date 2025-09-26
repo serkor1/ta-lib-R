@@ -16,9 +16,12 @@ ht_trendline <- function(
 	UseMethod("ht_trendline")
 }
 
-#' @usage NULL
-#' @aliases ht_trendline
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname ht_trendline
+#' @aliases ht_trendline
 HT_TRENDLINE <- ht_trendline
 
 #' @usage NULL

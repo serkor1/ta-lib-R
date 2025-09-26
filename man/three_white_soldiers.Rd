@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_CDL3WHITESOLDIERS.R
 \name{three_white_soldiers}
 \alias{three_white_soldiers}
+\alias{CDL3WHITESOLDIERS}
 \title{Three White Soldiers}
 \usage{
 three_white_soldiers(x, cols, ...)

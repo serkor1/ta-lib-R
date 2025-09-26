@@ -40,9 +40,12 @@ DEMA <- function(
 	UseMethod("DEMA")
 }
 
-#' @rdname DEMA
-#' @usage NULL
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname DEMA
+#' @aliases DEMA
 double_exponential_moving_average <- DEMA
 
 #' @rdname DEMA

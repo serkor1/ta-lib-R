@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_ACCBANDS.R
 \name{acceleration_bands}
 \alias{acceleration_bands}
+\alias{ACCBANDS}
 \title{Acceleration Bands}
 \usage{
 acceleration_bands(x, cols, n = 10, ...)

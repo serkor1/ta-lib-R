@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_STOCHF.R
 \name{fast_stochastic}
 \alias{fast_stochastic}
+\alias{STOCHF}
 \title{Fast Stochastic}
 \usage{
 fast_stochastic(x, cols, fast_k = 5, fast_d_MAtype = SMA(n = 10), ...)

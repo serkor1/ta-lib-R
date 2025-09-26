@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_CDL3BLACKCROWS.R
 \name{three_black_crows}
 \alias{three_black_crows}
+\alias{CDL3BLACKCROWS}
 \title{Three Black Crows}
 \usage{
 three_black_crows(x, cols, ...)

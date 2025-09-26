@@ -23,9 +23,12 @@ hanging_man <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases hanging_man
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname hanging_man
+#' @aliases hanging_man
 CDLHANGINGMAN <- hanging_man
 
 #' @usage NULL

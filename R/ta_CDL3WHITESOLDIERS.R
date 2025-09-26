@@ -23,9 +23,12 @@ three_white_soldiers <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases three_white_soldiers
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname three_white_soldiers
+#' @aliases three_white_soldiers
 CDL3WHITESOLDIERS <- three_white_soldiers
 
 #' @usage NULL

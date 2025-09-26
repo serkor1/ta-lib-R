@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_CDLDARKCLOUDCOVER.R
 \name{dark_cloud_cover}
 \alias{dark_cloud_cover}
+\alias{CDLDARKCLOUDCOVER}
 \title{Dark Cloud Cover}
 \usage{
 dark_cloud_cover(x, cols, eps = 0, ...)

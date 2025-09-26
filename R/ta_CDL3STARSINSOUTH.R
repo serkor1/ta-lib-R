@@ -23,9 +23,12 @@ three_stars_in_the_south <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases three_stars_in_the_south
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname three_stars_in_the_south
+#' @aliases three_stars_in_the_south
 CDL3STARSINSOUTH <- three_stars_in_the_south
 
 #' @usage NULL

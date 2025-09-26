@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_SAREXT.R
 \name{extended_parabolic_sar}
 \alias{extended_parabolic_sar}
+\alias{SAREXT}
 \title{Parabolic Stop and Reverse (SAR) - Extended}
 \usage{
 extended_parabolic_sar(

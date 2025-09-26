@@ -23,9 +23,12 @@ three_line_strike <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases three_line_strike
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname three_line_strike
+#' @aliases three_line_strike
 CDL3LINESTRIKE <- three_line_strike
 
 #' @usage NULL

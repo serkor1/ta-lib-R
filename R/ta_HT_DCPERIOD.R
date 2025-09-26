@@ -16,9 +16,12 @@ ht_dcperiod <- function(
 	UseMethod("ht_dcperiod")
 }
 
-#' @usage NULL
-#' @aliases ht_dcperiod
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname ht_dcperiod
+#' @aliases ht_dcperiod
 HT_DCPERIOD <- ht_dcperiod
 
 #' @usage NULL

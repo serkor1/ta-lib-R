@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_ADOSC.R
 \name{chaikin_AD_oscillator}
 \alias{chaikin_AD_oscillator}
+\alias{ADOSC}
 \title{Chaikin A/D Oscillator}
 \usage{
 chaikin_AD_oscillator(x, cols, fast = 3, slow = 10, ...)

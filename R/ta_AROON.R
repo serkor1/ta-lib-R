@@ -26,9 +26,12 @@ aroon <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases aroon
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname aroon
+#' @aliases aroon
 AROON <- aroon
 
 #' @export

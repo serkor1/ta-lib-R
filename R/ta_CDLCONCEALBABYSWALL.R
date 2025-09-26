@@ -23,9 +23,12 @@ concealing_baby_swallow <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases concealing_baby_swallow
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname concealing_baby_swallow
+#' @aliases concealing_baby_swallow
 CDLBABYSWALL <- concealing_baby_swallow
 
 #' @usage NULL

@@ -42,9 +42,12 @@ SMA <- function(
 	)
 }
 
-#' @rdname SMA
-#' @usage NULL
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname SMA
+#' @aliases SMA
 simple_moving_average <- SMA
 
 #' @rdname SMA

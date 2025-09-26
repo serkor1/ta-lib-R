@@ -19,9 +19,12 @@ relative_strength_index <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases relative_strength_index
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname relative_strength_index
+#' @aliases relative_strength_index
 RSI <- relative_strength_index
 
 #' @usage NULL

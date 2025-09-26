@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_CDLDOJISTAR.R
 \name{doji_star}
 \alias{doji_star}
+\alias{CDLDOJISTAR}
 \title{Doji Star}
 \usage{
 doji_star(x, cols, ...)

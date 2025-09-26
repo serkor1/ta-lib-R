@@ -24,9 +24,12 @@ abandoned_baby <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases abandoned_baby
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname abandoned_baby
+#' @aliases abandoned_baby
 CDLABANDONEDBABY <- abandoned_baby
 
 #' @usage NULL

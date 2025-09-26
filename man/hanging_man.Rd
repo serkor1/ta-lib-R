@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_CDLHANGINGMAN.R
 \name{hanging_man}
 \alias{hanging_man}
+\alias{CDLHANGINGMAN}
 \title{Hanging Man}
 \usage{
 hanging_man(x, cols, ...)

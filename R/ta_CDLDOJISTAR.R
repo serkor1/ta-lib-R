@@ -23,9 +23,12 @@ doji_star <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases doji_star
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname doji_star
+#' @aliases doji_star
 CDLDOJISTAR <- doji_star
 
 #' @usage NULL

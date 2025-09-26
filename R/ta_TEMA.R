@@ -40,9 +40,12 @@ TEMA <- function(
 	UseMethod("TEMA")
 }
 
-#' @rdname TEMA
-#' @usage NULL
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname TEMA
+#' @aliases TEMA
 triple_exponential_moving_average <- TEMA
 
 #' @rdname TEMA

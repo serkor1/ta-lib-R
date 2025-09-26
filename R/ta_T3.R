@@ -40,9 +40,12 @@ T3 <- function(
 	UseMethod("T3")
 }
 
-#' @rdname T3
-#' @usage NULL
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname T3
+#' @aliases T3
 T3_moving_average <- T3
 
 #' @rdname T3

@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_CDL3INSIDE.R
 \name{three_inside}
 \alias{three_inside}
+\alias{CDL3INSIDE}
 \title{Three Inside}
 \usage{
 three_inside(x, cols, ...)

@@ -23,9 +23,12 @@ hammer <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases hammer
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname hammer
+#' @aliases hammer
 CDLHAMMER <- hammer
 
 #' @usage NULL

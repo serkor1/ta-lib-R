@@ -23,9 +23,12 @@ advance_block <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases advance_block
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname advance_block
+#' @aliases advance_block
 CDLADVANCEBLOCK <- advance_block
 
 #' @usage NULL

@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_SAR.R
 \name{parabolic_sar}
 \alias{parabolic_sar}
+\alias{SAR}
 \title{Parabolic Stop and Reverse (SAR)}
 \usage{
 parabolic_sar(x, cols, acceleration = 0.02, maximum = 0.2, ...)

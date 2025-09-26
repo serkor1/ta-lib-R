@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_CDLGRAVESTONEDOJI.R
 \name{gravestone_doji}
 \alias{gravestone_doji}
+\alias{CDLGRAVESTONEDOJI}
 \title{Gravestone Doji}
 \usage{
 gravestone_doji(x, cols, ...)

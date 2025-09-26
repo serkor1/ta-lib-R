@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_HT_PHASOR.R
 \name{ht_phasor}
 \alias{ht_phasor}
+\alias{HT_PHASOR}
 \title{Hilbert Transform - Phasor Components}
 \usage{
 ht_phasor(x, cols, ...)

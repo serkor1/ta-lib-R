@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_CDLGAPSIDESIDEWHITE.R
 \name{gaps_side_white}
 \alias{gaps_side_white}
+\alias{CDLGAPSIDESIDEWHITE}
 \title{Up/Down-gap side-by-side white lines}
 \usage{
 gaps_side_white(x, cols, ...)

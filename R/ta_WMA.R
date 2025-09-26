@@ -40,9 +40,12 @@ WMA <- function(
 	UseMethod("WMA")
 }
 
-#' @rdname WMA
-#' @usage NULL
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname WMA
+#' @aliases WMA
 weighted_moving_average <- WMA
 
 #' @rdname WMA

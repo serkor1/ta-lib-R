@@ -22,8 +22,8 @@
 #include "normalize.h"
 #include "shift.h"
 #include <limits.h>
-#include <ta_libc.h>
 #include <stdbool.h>
+#include <ta_libc.h>
 
 // clang-format off
 SEXP impl_ta_CDLEVENINGDOJISTAR(

@@ -23,9 +23,12 @@ three_inside <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases three_inside
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname three_inside
+#' @aliases three_inside
 CDL3INSIDE <- three_inside
 
 #' @usage NULL

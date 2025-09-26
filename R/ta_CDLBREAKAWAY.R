@@ -23,9 +23,12 @@ break_away <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases break_away
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname break_away
+#' @aliases break_away
 CDLBREAKAWAY <- break_away
 
 #' @usage NULL

@@ -23,9 +23,12 @@ engulfing <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases engulfing
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname engulfing
+#' @aliases engulfing
 CDLENGULFING <- engulfing
 
 #' @usage NULL

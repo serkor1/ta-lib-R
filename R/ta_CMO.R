@@ -19,9 +19,12 @@ chande_momentum_oscillator <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases chande_momentum_oscillator
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname chande_momentum_oscillator
+#' @aliases chande_momentum_oscillator
 CMO <- chande_momentum_oscillator
 
 #' @usage NULL

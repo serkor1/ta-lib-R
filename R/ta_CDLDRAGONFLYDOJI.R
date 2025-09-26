@@ -23,9 +23,12 @@ dragonfly_doji <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases dragonfly_doji
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname dragonfly_doji
+#' @aliases dragonfly_doji
 CDLDRAGONFLYDOJI <- dragonfly_doji
 
 #' @usage NULL
