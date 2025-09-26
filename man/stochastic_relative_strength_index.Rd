@@ -8,6 +8,7 @@ stochastic_relative_strength_index(
   x,
   cols,
   n = 10,
+  n_rsi = 10,
   fast_k = 5,
   fast_d_MAtype = SMA(n = 10),
   ...
@@ -19,6 +20,8 @@ stochastic_relative_strength_index(
 \item{cols}{An optional \link{formula} passed into \link{model.frame}. If passed into indicators based on univariate series, the function calculates indicators for each element in 'cols'. For indicators based on multivariate series, it will alter the calculation itself. See \code{vignette("talib")} for more details.}
 
 \item{n}{An \link{integer} of \link{length} 1.}
+
+\item{n_rsi}{Time period for \link{RSI}}
 
 \item{fast_k}{Time period for building the Fast-K line.}
 

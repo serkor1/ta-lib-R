@@ -4,10 +4,12 @@
 \alias{ht_sine_wave}
 \title{Hilbert Transform - SineWave}
 \usage{
-ht_sine_wave(x, ...)
+ht_sine_wave(x, cols, ...)
 }
 \arguments{
 \item{x}{An OHLC-V series that is coercible to \link{data.frame}. The function assumes that all columns are named in lowercase and order invariant.}
+
+\item{cols}{An optional \link{formula} passed into \link{model.frame}. If passed into indicators based on univariate series, the function calculates indicators for each element in 'cols'. For indicators based on multivariate series, it will alter the calculation itself. See \code{vignette("talib")} for more details.}
 
 \item{...}{Additional parameters passed into \link{model.frame}}
 }
