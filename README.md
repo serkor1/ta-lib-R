@@ -14,27 +14,38 @@ status](https://www.r-pkg.org/badges/version/talib)](https://CRAN.R-project.org/
 downloads](https://cranlogs.r-pkg.org/badges/last-month/talib?color=blue)](https://r-pkg.org/pkg/talib)
 <!-- badges: end -->
 
-{talib} provides R bindings for
-[TA-Lib](https://github.com/TA-Lib/ta-lib), a C-library for Technical
-Analysis indicators and Candlestick patterns.
-
-{talib} also provides interactive financial charts based on {plotly}.
+[{talib}]() provides high-performance R bindings to the
+[TA-Lib](https://github.com/TA-Lib/ta-lib) C-library for Technical
+Analysis indicators, Candlestick patterns and interactive charting via
+[{plotly}]().
 
 ## Installation
 
-### Stable
+### Stable version
 
 ``` r
 pak::pak("talib")
 ```
 
-### Development
+### Development version
+
+The development version can be installed via:[^1]
 
 ``` r
 pak::pak("serkor1/curly-giggle")
 ```
 
-## Example
+Or it can be installed by cloning the repository:
+
+``` sh
+git clone --recursive https://github.com/serkor1/ta-lib-R.git
+cd ta-lib-R
+make build
+```
+
+Use `make` for all package-level build-tools.
+
+## Basic Usage
 
 ### Indicators
 
@@ -102,3 +113,11 @@ x <- talib::BTC
 ```
 
 <img src="man/figures/README-charting-1.png" style="display: block; margin: auto;" />
+
+## Code of Conduct
+
+Please note that [{talib}]() is released with a [Contributor Code of
+Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html).
+By contributing to this project, you agree to abide by its terms.
+
+[^1]: Requires that [TA-Lib]() is preinstalled.
