@@ -8,7 +8,7 @@ on:
     types: [published]
   workflow_dispatch:
 
-name: pkgdown.yaml
+name: pkgdown
 
 permissions: read-all
 
@@ -24,13 +24,8 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install TA-Lib (C library)
-        shell: bash
-        run: |
-          curl -sSL -o ta-lib_0.6.4_amd64.deb \
-            https://github.com/TA-Lib/ta-lib/releases/download/v0.6.4/ta-lib_0.6.4_amd64.deb
-          sudo dpkg -i ta-lib_0.6.4_amd64.deb || sudo apt-get -y -f install
+        with:
+         submodules: recursive
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -40,8 +35,18 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::pkgdown, local::.
+          extra-packages: any::pkgdown
           needs: website
+        
+      - name: Install {talib}
+        shell: bash
+        run: |
+          package_name=$(sed -n 's/^Package:[[:space:]]*//p' DESCRIPTION)
+          package_version=$(sed -n 's/^Version:[[:space:]]*//p' DESCRIPTION)
+          tarball_location="${package_name}_${package_version}.tar.gz"
+
+          R CMD build .
+          R CMD INSTALL "$tarball_location"
 
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
