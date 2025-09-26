@@ -10,18 +10,18 @@ help:
 		| sed -E 's/^[[:space:]]*//' \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "\033[1;34m%-15s\033[m \xE2\x80\x94 %s\n", $$1, $$2}'
 
-build: clean ## Build the R package
+build: clean fmt ## Build the R package
 	@tools/generate_API.sh src/ src/api.h && tools/generate_FFI.sh src/api.h src/init.c && $(MAKE) fmt
 	@Rscript --verbose -e "devtools::document()"
 	@R CMD build . && R CMD INSTALL $(tarball_location)
 	@rm -rf README.md
 	@Rscript -e "rmarkdown::render('README.Rmd', output_format = rmarkdown::github_document(html_preview = FALSE), clean = TRUE)"
 
-check: ## Check the R package
+check: fmt ## Check the R package
 	@Rscript --verbose -e "devtools::document()"
 	@R CMD build . && R CMD check $(tarball_location)
 
-test: ## Run tests
+test: fmt ## Run tests
 	@Rscript --verbose -e "library(talib); testthat::test_dir('tests/testthat')"
 
 clean: ## Remove artifacts
@@ -38,6 +38,7 @@ purge: clean ## Remove TA-Lib arifacts
 
 fmt: ## Format code
 	@clang-format -style=LLVM -dump-config > .clang-format && clang-format -i src/*.c src/*.h
+	@air format R
 	@rm -rf ./.clang-format
 
 pkgdown-build: ## Build {pkgdown} documentation
