@@ -7,14 +7,78 @@
 chart(x, type = "candlestick", ...)
 }
 \arguments{
-\item{x}{An OHLC-V object.}
+\item{x}{An OHLC object to be charted.}
 
-\item{type}{A \link{character}.}
+\item{type}{A \link{character} of \link{length} 1. Either \code{candlestick} or \code{ohlc}.}
 
 \item{...}{Parameters passed into \link[plotly:plot_ly]{plotly::plot_ly}}
 }
 \description{
-Chart
+The \link{chart}-function is a generic S3 function for charting OHLC series as either
+candlesticks or 'traditional' OHLC-bars. The function is a high-level wrapper of \link[plotly:plot_ly]{plotly::plot_ly} with
+predefined OHLC values based on the input series.
+}
+\details{
+The function uses various controlable options:
+
+\describe{
+\item{talib.deficiency <\link{logical}>}{\code{FALSE} by default. If \code{TRUE} it uses colorblind-friendly colors.}
+\item{talib.chart.dark <\link{logical}>}{\code{TRUE} by default. If \code{FALSE} it charting is done in light mode.}
+\item{talib.chart.slider <\link{logical}>}{\code{FALSE} by default. If \code{TRUE} a \code{rangeslider} is added to the chart.}
+\item{talib.chart.slider.size <\link{numeric}>}{0.05 by default. Controls the size of the \code{rangeslider}.}
+\item{talib.chart.legend <\link{logical}>}{\code{TRUE} by default. If \code{FALSE} the chart comes without legends.}
+\item{talib.chart.scale <\link{numeric}>}{1 by default. Controls the scale of fonts.}
+}
+}
+\examples{
+## charting in {talib}
+## using {plotly}
+x <- talib::BTC
+
+## candlestick chart
+## of BTC
+talib::chart(x)
+
+## adding indicators
+## via indicator()
+{
+	## simple moving
+	## averages
+	talib::indicator(
+		FUN = talib::SMA,
+		n = 7
+	)
+	talib::indicator(
+		FUN = talib::SMA,
+		n = 14
+	)
+	talib::indicator(
+		FUN = talib::SMA,
+		n = 21
+	)
+
+	## MACD
+	talib::indicator(
+		FUN = talib::MACD
+	)
+
+	## OBV
+	talib::indicator(
+		FUN = talib::OBV
+	)
+}
+
+## chart indicators
+## without candlesticks
+## by resetting the previous
+## chart
+talib::chart()
+
+## chart indicator
+talib::indicator(
+	FUN = stochastic,
+	data = x
+)
 }
 \seealso{
 Other Charting: 
@@ -24,4 +88,3 @@ Other Charting:
 Serkan Korkmaz
 }
 \concept{Charting}
-\concept{charting}

@@ -9,12 +9,65 @@ indicator(FUN, ...)
 \arguments{
 \item{FUN}{An indicator function}
 
-\item{...}{Arguments passed into \link{model.frame}}
-
-\item{cols}{A formula of variables.}
+\item{...}{Arguments passed into FUN.}
 }
 \description{
-Add an indicator to t
+This function is a high-level wrapper of the indicator functions and \href{plotly}{\{plotly\}}-objects.
+Its implemented similar to the \link{apply}-family, where the indicator function is passed, and its additional arguments
+are specificied by ...
+
+Internally it will look for a \link{chart}-object, and attach the indicator to the object if found. Otherwise it will return
+the indicator as a plot if \code{data} is provided.
+}
+\examples{
+## charting in {talib}
+## using {plotly}
+x <- talib::BTC
+
+## candlestick chart
+## of BTC
+talib::chart(x)
+
+## adding indicators
+## via indicator()
+{
+	## simple moving
+	## averages
+	talib::indicator(
+		FUN = talib::SMA,
+		n = 7
+	)
+	talib::indicator(
+		FUN = talib::SMA,
+		n = 14
+	)
+	talib::indicator(
+		FUN = talib::SMA,
+		n = 21
+	)
+
+	## MACD
+	talib::indicator(
+		FUN = talib::MACD
+	)
+
+	## OBV
+	talib::indicator(
+		FUN = talib::OBV
+	)
+}
+
+## chart indicators
+## without candlesticks
+## by resetting the previous
+## chart
+talib::chart()
+
+## chart indicator
+talib::indicator(
+	FUN = stochastic,
+	data = x
+)
 }
 \seealso{
 Other Charting: 
