@@ -79,10 +79,10 @@ three_stars_in_the_south.default <- function(
 	x <- as.data.frame(
 		.Call(
 			"impl_ta_CDL3STARSINSOUTH",
-			x[[1]],
-			x[[2]],
-			x[[3]],
-			x[[4]],
+			OHLC[[1]],
+			OHLC[[2]],
+			OHLC[[3]],
+			OHLC[[4]],
 			as.logical(
 				getOption("talib.normalize", TRUE)
 			)

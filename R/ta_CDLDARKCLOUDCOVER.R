@@ -81,10 +81,10 @@ dark_cloud_cover.default <- function(
 	x <- as.data.frame(
 		.Call(
 			"impl_ta_CDLDARKCLOUDCOVER",
-			x[[1]],
-			x[[2]],
-			x[[3]],
-			x[[4]],
+			OHLC[[1]],
+			OHLC[[2]],
+			OHLC[[3]],
+			OHLC[[4]],
 			as.double(eps),
 			as.logical(
 				getOption("talib.normalize", TRUE)

@@ -26,7 +26,7 @@ gaps_side_white <- function(
 #' @usage NULL
 #' @aliases gaps_side_white
 #' @export
-CDL2CROWS <- gaps_side_white
+CDLGAPSIDESIDEWHITE <- gaps_side_white
 
 #' @usage NULL
 #' @aliases gaps_side_white
@@ -78,7 +78,7 @@ gaps_side_white.default <- function(
 	## from source
 	x <- as.data.frame(
 		.Call(
-			"impl_ta_CDL2CROWS",
+			"impl_ta_CDLGAPSIDESIDEWHITE",
 			x[[1]],
 			x[[2]],
 			x[[3]],
