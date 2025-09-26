@@ -26,7 +26,7 @@ three_white_soldiers <- function(
 #' @usage NULL
 #' @aliases three_white_soldiers
 #' @export
-CDL3STARSINSOUTH <- three_white_soldiers
+CDL3WHITESOLDIERS <- three_white_soldiers
 
 #' @usage NULL
 #' @aliases three_white_soldiers
@@ -79,10 +79,10 @@ three_white_soldiers.default <- function(
 	x <- as.data.frame(
 		.Call(
 			"impl_ta_CDL3WHITESOLDIERS",
-			x[[1]],
-			x[[2]],
-			x[[3]],
-			x[[4]],
+			OHLC[[1]],
+			OHLC[[2]],
+			OHLC[[3]],
+			OHLC[[4]],
 			as.logical(
 				getOption("talib.normalize", TRUE)
 			)

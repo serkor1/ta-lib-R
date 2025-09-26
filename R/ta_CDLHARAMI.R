@@ -26,7 +26,7 @@ harami <- function(
 #' @usage NULL
 #' @aliases harami
 #' @export
-CDLGAPSIDESIDEWHITE <- harami
+CDLHARAMI <- harami
 
 #' @usage NULL
 #' @aliases harami
@@ -79,10 +79,10 @@ harami.default <- function(
 	x <- as.data.frame(
 		.Call(
 			"impl_ta_CDLHARAMI",
-			x[[1]],
-			x[[2]],
-			x[[3]],
-			x[[4]],
+			OHLC[[1]],
+			OHLC[[2]],
+			OHLC[[3]],
+			OHLC[[4]],
 			as.logical(
 				getOption("talib.normalize", TRUE)
 			)
