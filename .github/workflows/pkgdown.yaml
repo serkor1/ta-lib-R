@@ -41,7 +41,12 @@ jobs:
       - name: Install {talib}
         shell: bash
         run: |
-          make build
+          package_name=$(sed -n 's/^Package:[[:space:]]*//p' DESCRIPTION)
+          package_version=$(sed -n 's/^Version:[[:space:]]*//p' DESCRIPTION)
+          tarball_location="${package_name}_${package_version}.tar.gz"
+
+          R CMD build .
+          R CMD INSTALL "$tarball_location"
 
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
