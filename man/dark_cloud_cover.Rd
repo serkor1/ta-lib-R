@@ -39,7 +39,7 @@ data(BTC, package = "talib")
 output <- talib::dark_cloud_cover(BTC)
 
 ## display the results
-tail(output)
+utils::tail(output)
 
 ## visualize the indicator
 ## with candlesticks

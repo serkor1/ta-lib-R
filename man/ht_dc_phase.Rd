@@ -32,7 +32,7 @@ data(BTC, package = "talib")
 output <- talib::ht_dc_phase(BTC)
 
 ## display the results
-tail(output)
+utils::tail(output)
 
 ## visualize the indicator
 ## with candlesticks

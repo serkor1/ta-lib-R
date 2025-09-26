@@ -34,7 +34,7 @@ data(BTC, package = "talib")
 output <- talib::commodity_channel_index(BTC)
 
 ## display the results
-tail(output)
+utils::tail(output)
 
 ## visualize the indicator
 ## with candlesticks

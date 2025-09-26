@@ -37,7 +37,7 @@ data(BTC, package = "talib")
 output <- talib::counter_attack(BTC)
 
 ## display the results
-tail(output)
+utils::tail(output)
 
 ## visualize the indicator
 ## with candlesticks

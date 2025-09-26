@@ -45,7 +45,7 @@ data(BTC, package = "talib")
 output <- talib::bollinger_bands(BTC)
 
 ## display the results
-tail(output)
+utils::tail(output)
 
 ## visualize the indicator
 ## with candlesticks

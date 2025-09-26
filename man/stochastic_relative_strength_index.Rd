@@ -21,7 +21,7 @@ stochastic_relative_strength_index(
 
 \item{n}{An \link{integer} of \link{length} 1.}
 
-\item{n_rsi}{Time period for \link{RSI}}
+\item{n_rsi}{Time period for \link{relative_strength_index}}
 
 \item{fast_k}{Time period for building the Fast-K line.}
 
@@ -48,7 +48,7 @@ data(BTC, package = "talib")
 output <- talib::stochastic_relative_strength_index(BTC)
 
 ## display the results
-tail(output)
+utils::tail(output)
 
 ## visualize the indicator
 ## with candlesticks
