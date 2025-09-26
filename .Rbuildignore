@@ -1,0 +1,62 @@
+^curly-giggle\.Rproj$
+^\.Rproj\.user$
+^README\.Rmd$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+Makefile
+
+## TA-Lib
+
+### Executable files
+^src/ta-lib/bin/gen_code
+^src/ta-lib/bin/ta_regtest
+^src/ta-lib/dotnet/src/Release/TA-Lib-Core.dll
+^src/ta-lib/src/tools/gen_code/gen_code
+^src/ta-lib/src/tools/gen_code/mcpp.exe
+^src/ta-lib/src/tools/ta_regtest/.libs/ta_regtest
+
+### Hidden files
+^src/ta-lib/.editorconfig
+^src/ta-lib/.git
+^src/ta-lib/java/.classpath
+^src/ta-lib/src/ta_abstract/frames/.dirstamp
+^src/ta-lib/src/ta_abstract/tables/.dirstamp
+^src/ta-lib/src/tools/ta_regtest/ta_test_func/.dirstamp
+^src/ta-lib/.github
+^src/ta-lib/.vscode
+^src/ta-lib/src/.libs
+^src/ta-lib/src/ta_abstract/.libs
+^src/ta-lib/src/ta_abstract/frames/.libs
+^src/ta-lib/src/ta_abstract/tables/.libs
+^src/ta-lib/src/ta_common/.libs
+^src/ta-lib/src/ta_func/.libs
+^src/ta-lib/src/tools/ta_regtest/.libs
+
+### Build files
+^src/ta-lib/.*\.(?:o|lo|la|so)$
+# NOTE: 
+# * if .a is removed it will not install
+#       this needs to be fixed in configure (I think)
+#       .a is the static library (Or something) it makes
+#       everything work.
+#
+# * checking if this is a source package ... NOTE
+#   Found the following apparent object files/libraries:
+#   src/ta-lib/local/lib/libta-lib.a
+#
+# * When {talib} is getting ready to be submitted
+#   CRAN must make a decision as to whether this *NOTE*
+#   is acceptable, or not.
+#
+# With the current setup of the .Rbuildignore everything
+# builds and works --- this has been tested with 
+# make purge & make build & make check
+
+### Random stuff
+src/ta-lib/m4/lt~obsolete.m4
+
+### Makefiles
+src/ta-lib/Makefile
+src/ta-lib/Makefile.in
+^\.github$

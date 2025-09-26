@@ -47,3 +47,16 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+.Rproj.user
+
+# Makevars
+src/Makevars
+
+# Building notes
+NOTES.md
+
+# sandbox
+sandbox/**
+
+docs
+inst/doc

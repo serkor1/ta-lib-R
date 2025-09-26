@@ -1,0 +1,30 @@
+Package: talib
+Title: Bindings to the Technical Analysis Library (TA-Lib)
+Version: 0.9-0
+Authors@R: c(
+    person(
+      given   = "Serkan", 
+      family  = "Korkmaz",
+      email   = "serkor1@duck.com", 
+      role    = c("cre", "aut", "cph"),
+      comment = c(ORCID = "0000-0002-5052-0982")
+    )
+  )
+Description: 'TA-Lib' offers 200+ technical trading indicators, including candlestick pattern recognition.
+License: BSD_3_clause + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Depends: 
+    R (>= 3.5)
+LazyData: true
+Imports: 
+    plotly,
+    stats,
+    utils
+VignetteBuilder: knitr

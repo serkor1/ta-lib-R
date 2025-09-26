@@ -1,29 +1,38 @@
+---
+output: github_document
+---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r setup, include = FALSE}
+# set options
+Sys.setenv(OPENSSL_CONF="/dev/null")
+
+knitr::opts_chunk$set(
+  collapse = FALSE,
+  comment  = "#>",
+  fig.path = "man/figures/README-",
+  message  = FALSE,
+  warning  = FALSE,
+  echo     = FALSE 
+)
+```
 
 # {talib}: R bindings for [TA-Lib](https://github.com/TA-Lib/ta-lib) <img src="man/figures/logo.png" align="right" height="170" alt="" />
 
 <!-- badges: start -->
-
 [![R-CMD-check](https://github.com/serkor1/curly-giggle/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/serkor1/curly-giggle/actions/workflows/R-CMD-check.yaml)
-[![Codecov test
-coverage](https://codecov.io/gh/serkor1/curly-giggle/graph/badge.svg)](https://app.codecov.io/gh/serkor1/curly-giggle)
-[![CRAN
-status](https://www.r-pkg.org/badges/version/talib)](https://CRAN.R-project.org/package=talib)
-[![CRAN RStudio mirror
-downloads](https://cranlogs.r-pkg.org/badges/last-month/talib?color=blue)](https://r-pkg.org/pkg/talib)
+[![Codecov test coverage](https://codecov.io/gh/serkor1/curly-giggle/graph/badge.svg)](https://app.codecov.io/gh/serkor1/curly-giggle)
+[![CRAN status](https://www.r-pkg.org/badges/version/talib)](https://CRAN.R-project.org/package=talib)
+[![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/last-month/talib?color=blue)](https://r-pkg.org/pkg/talib)
 <!-- badges: end -->
 
-[{talib}]() provides high-performance R bindings to the
-[TA-Lib](https://github.com/TA-Lib/ta-lib) C-library for Technical
-Analysis indicators, Candlestick patterns and interactive charting via
-[{plotly}]().
+[{talib}]() provides high-performance R bindings to the [TA-Lib](https://github.com/TA-Lib/ta-lib) C-library for Technical Analysis indicators, Candlestick patterns and interactive charting via [{plotly}]().
 
 ## Installation
 
 ### Stable version
-
-``` r
+```{r devel_install, echo = TRUE, eval = FALSE}
 pak::pak("talib")
 ```
 
@@ -31,13 +40,13 @@ pak::pak("talib")
 
 The development version can be installed via:[^1]
 
-``` r
+```{r cran_install, echo = TRUE, eval = FALSE}
 pak::pak("serkor1/curly-giggle")
 ```
 
 Or it can be installed by cloning the repository:
 
-``` sh
+```sh
 git clone --recursive https://github.com/serkor1/ta-lib-R.git
 cd ta-lib-R
 make build
@@ -48,10 +57,9 @@ Use `make` for all package-level build-tools.
 ## Basic Usage
 
 ### Indicators
-
 This is a basic example which shows you how to solve a common problem:
 
-``` r
+```{r indicator, echo = TRUE}
 ## calculate bollinger
 ## bands
 tail(
@@ -61,17 +69,9 @@ tail(
 )
 ```
 
-    #>         upper   middle    lower
-    #> 361 106812.14 99260.81 91709.48
-    #> 362 104471.11 98218.27 91965.44
-    #> 363 100874.66 97021.36 93168.05
-    #> 364  99891.29 96519.09 93146.89
-    #> 365  99875.94 96136.93 92397.91
-    #> 366  99720.50 95622.57 91524.65
-
 ### Charting
 
-``` r
+```{r charting, fig.align = 'center', fig.dpi = 180, echo = TRUE}
 library(talib)
 
 ## calculate bollinger
@@ -112,12 +112,9 @@ x <- talib::BTC
 }
 ```
 
-<img src="man/figures/README-charting-1.png" style="display: block; margin: auto;" />
-
 ## Code of Conduct
+  
+Please note that [{talib}]() is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
 
-Please note that [{talib}]() is released with a [Contributor Code of
-Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html).
-By contributing to this project, you agree to abide by its terms.
 
 [^1]: Requires that [TA-Lib]() is preinstalled.
