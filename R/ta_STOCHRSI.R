@@ -9,7 +9,7 @@
 #'
 #' @param fast_k Time period for building the Fast-K line.
 #' @param fast_d_MAtype Smoothing for making the Fast-D line.
-#' @param n_rsi Time period for [RSI]
+#' @param n_rsi Time period for [relative_strength_index]
 #'
 #' @template description
 stochastic_relative_strength_index <- function(

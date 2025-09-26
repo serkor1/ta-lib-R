@@ -34,7 +34,7 @@ data(BTC, package = "talib")
 output <- talib::on_balance_volume(BTC)
 
 ## display the results
-tail(output)
+utils::tail(output)
 
 ## visualize the indicator
 ## with candlesticks

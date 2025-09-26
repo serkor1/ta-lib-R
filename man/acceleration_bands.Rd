@@ -43,7 +43,7 @@ data(BTC, package = "talib")
 output <- talib::acceleration_bands(BTC)
 
 ## display the results
-tail(output)
+utils::tail(output)
 
 ## visualize the indicator
 ## with candlesticks

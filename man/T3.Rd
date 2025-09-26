@@ -40,7 +40,7 @@ data(BTC, package = "talib")
 output <- talib::T3(BTC)
 
 ## display the results
-tail(output)
+utils::tail(output)
 
 ## visualize the indicator
 ## with candlesticks

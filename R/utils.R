@@ -31,7 +31,7 @@ na_pad <- function(x, n = 5) {
 	}
 
 	rbind(
-		setNames(
+		stats::setNames(
 			as.data.frame(
 				matrix(
 					NA_real_,
@@ -74,7 +74,7 @@ na_pad <- function(x, n = 5) {
 map_maType_call <- function(call_expr) {
 	args <- as.list(call_expr)[-1L]
 	head_chr <- as.character(call_expr[[1L]])
-	fun_name <- tail(head_chr, 1L)
+	fun_name <- utils::tail(head_chr, 1L)
 
 	maType <- switch(
 		fun_name,

@@ -37,7 +37,7 @@ data(BTC, package = "talib")
 output <- talib::three_line_strike(BTC)
 
 ## display the results
-tail(output)
+utils::tail(output)
 
 ## visualize the indicator
 ## with candlesticks

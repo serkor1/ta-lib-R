@@ -39,7 +39,7 @@ data(BTC, package = "talib")
 output <- talib::chaikin_AD_line(BTC)
 
 ## display the results
-tail(output)
+utils::tail(output)
 
 ## visualize the indicator
 ## with candlesticks

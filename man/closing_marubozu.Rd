@@ -37,7 +37,7 @@ data(BTC, package = "talib")
 output <- talib::closing_marubozu(BTC)
 
 ## display the results
-tail(output)
+utils::tail(output)
 
 ## visualize the indicator
 ## with candlesticks
