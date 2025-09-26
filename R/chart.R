@@ -4,16 +4,46 @@
 #'
 #' @title Chart
 #'
-#' @param x An OHLC-V object.
-#' @param type A [character].
+#' @description
+#' The [chart]-function is a generic S3 function for charting OHLC series as either
+#' candlesticks or 'traditional' OHLC-bars. The function is a high-level wrapper of [plotly::plot_ly] with
+#' predefined OHLC values based on the input series.
+#'
+#' @details
+#' The function uses various controlable options:
+#'
+#' \describe{
+#'  \item{talib.deficiency <[logical]>}{`FALSE` by default. If `TRUE` it uses colorblind-friendly colors.}
+#'  \item{talib.chart.dark <[logical]>}{`TRUE` by default. If `FALSE` it charting is done in light mode.}
+#'  \item{talib.chart.slider <[logical]>}{`FALSE` by default. If `TRUE` a `rangeslider` is added to the chart.}
+#'  \item{talib.chart.slider.size <[numeric]>}{0.05 by default. Controls the size of the `rangeslider`.}
+#'  \item{talib.chart.legend <[logical]>}{`TRUE` by default. If `FALSE` the chart comes without legends.}
+#'  \item{talib.chart.scale <[numeric]>}{1 by default. Controls the scale of fonts.}
+#' }
+#'
+#' @param x An OHLC object to be charted.
+#' @param type A [character] of [length] 1. Either `candlestick` or `ohlc`.
 #' @param ... Parameters passed into [plotly::plot_ly]
 #'
-#' @family charting
+#' @example man/examples/charting.R
+#'
+#' @author Serkan Korkmaz
 chart <- function(
 	x,
 	type = "candlestick",
 	...
 ) {
+	## clear env if called
+	## without passing 'x'
+	if (missing(x)) {
+		rm(
+			list = ls(envir = .plotting_environment, all.names = TRUE),
+			envir = .plotting_environment
+		)
+
+		return(invisible(NULL))
+	}
+
 	UseMethod(
 		"chart"
 	)
