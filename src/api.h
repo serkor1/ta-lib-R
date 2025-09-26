@@ -33,7 +33,13 @@ SEXP impl_ta_CDLDARKCLOUDCOVER(SEXP open, SEXP high, SEXP low, SEXP close, SEXP 
 SEXP impl_ta_CDLDOJI(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
 SEXP impl_ta_CDLDOJISTAR(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
 SEXP impl_ta_CDLDRAGONFLYDOJI(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
+SEXP impl_ta_CDLENGULFING(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
 SEXP impl_ta_CDLEVENINGDOJISTAR(SEXP open, SEXP high, SEXP low, SEXP close, SEXP penetration, SEXP normalize_flag);
+SEXP impl_ta_CDLGAPSIDESIDEWHITE(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
+SEXP impl_ta_CDLGRAVESTONEDOJI(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
+SEXP impl_ta_CDLHAMMER(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
+SEXP impl_ta_CDLHANGINGMAN(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
+SEXP impl_ta_CDLHARAMI(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
 SEXP impl_ta_CMO(SEXP x, SEXP optTimePeriod);
 SEXP impl_ta_HT_DCPERIOD(SEXP inReal);
 SEXP impl_ta_HT_DCPHASE(SEXP inReal);
