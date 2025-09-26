@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_CDLABANDONEDBABY.R
 \name{abandoned_baby}
 \alias{abandoned_baby}
+\alias{CDLABANDONEDBABY}
 \title{Abandoned Baby}
 \usage{
 abandoned_baby(x, cols, eps = 0, ...)

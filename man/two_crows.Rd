@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_CDL2CROWS.R
 \name{two_crows}
 \alias{two_crows}
+\alias{CDL2CROWS}
 \title{Two Crows}
 \usage{
 two_crows(x, cols, ...)

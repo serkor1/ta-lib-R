@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_CDLCOUNTERATTACK.R
 \name{counter_attack}
 \alias{counter_attack}
+\alias{CDLCOUNTERATTACK}
 \title{Counter Attack}
 \usage{
 counter_attack(x, cols, ...)

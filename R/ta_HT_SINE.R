@@ -16,9 +16,12 @@ ht_sine_wave <- function(
 	UseMethod("ht_sine_wave")
 }
 
-#' @usage NULL
-#' @aliases ht_sine_wave
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname ht_sine_wave
+#' @aliases ht_sine_wave
 HT_SINE <- ht_sine_wave
 
 #' @usage NULL

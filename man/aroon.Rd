@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_AROON.R
 \name{aroon}
 \alias{aroon}
+\alias{AROON}
 \title{Aroon}
 \usage{
 aroon(x, cols, n = 10, ...)

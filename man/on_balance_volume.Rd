@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_OBV.R
 \name{on_balance_volume}
 \alias{on_balance_volume}
+\alias{OBV}
 \title{On-Balance Volume}
 \usage{
 on_balance_volume(x, cols, n = 10, ...)

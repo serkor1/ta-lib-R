@@ -23,9 +23,12 @@ counter_attack <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases counter_attack
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname counter_attack
+#' @aliases counter_attack
 CDLCOUNTERATTACK <- counter_attack
 
 #' @usage NULL

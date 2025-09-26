@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_CDLEVENINGDOJISTAR.R
 \name{evening_doji_star}
 \alias{evening_doji_star}
+\alias{CDLEVENINGDOJISTAR}
 \title{Evening Doji Star}
 \usage{
 evening_doji_star(x, cols, eps = 0.1, ...)

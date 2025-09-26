@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_CDLBELTHOLD.R
 \name{belt_hold}
 \alias{belt_hold}
+\alias{CDLBELTHOLD}
 \title{Belt Hold}
 \usage{
 belt_hold(x, cols, ...)

@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_CCI.R
 \name{commodity_channel_index}
 \alias{commodity_channel_index}
+\alias{CCI}
 \title{Commodity Channel Index}
 \usage{
 commodity_channel_index(x, cols, n = 10, ...)

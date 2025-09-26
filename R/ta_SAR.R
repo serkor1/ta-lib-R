@@ -32,9 +32,12 @@ parabolic_sar <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases parabolic_sar
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname parabolic_sar
+#' @aliases parabolic_sar
 SAR <- parabolic_sar
 
 #' @usage NULL

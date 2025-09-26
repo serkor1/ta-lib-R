@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_CDLCLOSINGMARUBOZU.R
 \name{closing_marubozu}
 \alias{closing_marubozu}
+\alias{CDLCLOSINGMARUBOZU}
 \title{Closing Marubozu}
 \usage{
 closing_marubozu(x, cols, ...)

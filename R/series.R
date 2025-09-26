@@ -15,8 +15,8 @@ series <- function(
 #' @export
 series.plotly <- function(
 	x,
-	formula,
 	default,
+	formula,
 	...
 ) {
 	if (missing(formula)) {
@@ -40,10 +40,12 @@ series.plotly <- function(
 		dotsQ$data <- quote(.plotting_environment$x)
 	}
 
-	do.call(
-		series.formula,
-		c(list(x = formula, default = default), dotsQ),
-		quote = FALSE
+	as.data.frame(
+		do.call(
+			series.formula,
+			c(list(x = formula, default = default), dotsQ),
+			quote = FALSE
+		)
 	)
 }
 
@@ -88,10 +90,13 @@ series.formula <- function(
 	} else {
 		# Model frame with exactly one 'data'
 		out <- do.call(
-			model.frame,
+			stats::model.frame,
 			c(list(formula = x, data = data), dotsQ),
 			quote = FALSE
 		)
 	}
-	out
+
+	as.data.frame(
+		out
+	)
 }

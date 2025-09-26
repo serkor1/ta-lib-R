@@ -40,9 +40,12 @@ EMA <- function(
 	UseMethod("EMA")
 }
 
-#' @rdname EMA
-#' @usage NULL
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname EMA
+#' @aliases EMA
 exponential_moving_average <- EMA
 
 #' @rdname EMA

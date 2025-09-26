@@ -23,9 +23,12 @@ two_crows <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases two_crows
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname two_crows
+#' @aliases two_crows
 CDL2CROWS <- two_crows
 
 #' @usage NULL

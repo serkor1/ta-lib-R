@@ -23,9 +23,12 @@ doji <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases doji
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname doji
+#' @aliases doji
 CDLDOJI <- doji
 
 #' @usage NULL

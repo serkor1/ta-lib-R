@@ -1,6 +1,9 @@
-#' @usage NULL
-#' @aliases moving_average_convergence_divergence
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname moving_average_convergence_divergence
+#' @aliases moving_average_convergence_divergence
 MACDEXT <- function(
 	x,
 	cols,

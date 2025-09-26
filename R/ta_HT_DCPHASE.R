@@ -16,9 +16,12 @@ ht_dc_phase <- function(
 	UseMethod("ht_dc_phase")
 }
 
-#' @usage NULL
-#' @aliases ht_dc_phase
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname ht_dc_phase
+#' @aliases ht_dc_phase
 HT_DCPHASE <- ht_dc_phase
 
 #' @usage NULL

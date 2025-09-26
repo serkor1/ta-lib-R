@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_CDLHARAMI.R
 \name{harami}
 \alias{harami}
+\alias{CDLHARAMI}
 \title{Harami}
 \usage{
 harami(x, cols, ...)

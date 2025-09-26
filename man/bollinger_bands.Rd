@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_BBANDS.R
 \name{bollinger_bands}
 \alias{bollinger_bands}
+\alias{BBANDS}
 \title{Bollinger Bands}
 \usage{
 bollinger_bands(x, cols, ma = SMA(n = 10), up = 2, down = 2, ...)

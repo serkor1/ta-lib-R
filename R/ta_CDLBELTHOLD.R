@@ -23,9 +23,12 @@ belt_hold <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases belt_hold
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname belt_hold
+#' @aliases belt_hold
 CDLBELTHOLD <- belt_hold
 
 #' @usage NULL

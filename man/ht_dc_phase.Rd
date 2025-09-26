@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_HT_DCPHASE.R
 \name{ht_dc_phase}
 \alias{ht_dc_phase}
+\alias{HT_DCPHASE}
 \title{Hilbert Transform - Dominant Cycle Phase}
 \usage{
 ht_dc_phase(x, cols, ...)

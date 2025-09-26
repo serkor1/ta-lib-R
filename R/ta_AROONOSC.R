@@ -25,9 +25,12 @@ aroon_oscillator <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases aroon_oscillator
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname aroon_oscillator
+#' @aliases aroon_oscillator
 AROONOSC <- aroon_oscillator
 
 #' @export

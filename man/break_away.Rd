@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_CDLBREAKAWAY.R
 \name{break_away}
 \alias{break_away}
+\alias{CDLBREAKAWAY}
 \title{Break Away}
 \usage{
 break_away(x, cols, ...)

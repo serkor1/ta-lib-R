@@ -19,9 +19,12 @@ commodity_channel_index <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases commodity_channel_index
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname commodity_channel_index
+#' @aliases commodity_channel_index
 CCI <- commodity_channel_index
 
 #' @usage NULL

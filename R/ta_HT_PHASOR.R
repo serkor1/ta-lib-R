@@ -16,9 +16,12 @@ ht_phasor <- function(
 	UseMethod("ht_phasor")
 }
 
-#' @usage NULL
-#' @aliases ht_phasor
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname ht_phasor
+#' @aliases ht_phasor
 HT_PHASOR <- ht_phasor
 
 #' @usage NULL

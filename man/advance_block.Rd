@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_CDLADVANCEBLOCK.R
 \name{advance_block}
 \alias{advance_block}
+\alias{CDLADVANCEBLOCK}
 \title{Advance Block}
 \usage{
 advance_block(x, cols, ...)

@@ -18,9 +18,12 @@ ultimate_oscillator <- function(
 	)
 }
 
-#' @rdname ultimate_oscillator
-#' @usage NULL
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname ultimate_oscillator
+#' @aliases ultimate_oscillator
 ULTOSC <- ultimate_oscillator
 
 #' @rdname ultimate_oscillator

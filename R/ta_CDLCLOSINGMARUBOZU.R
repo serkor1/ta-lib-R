@@ -23,10 +23,13 @@ closing_marubozu <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases closing_marubozu
 #' @export
-CDLCOUNTERATTACK <- closing_marubozu
+#'
+#' @usage NULL
+#'
+#' @rdname closing_marubozu
+#' @aliases closing_marubozu
+CDLCLOSINGMARUBOZU <- closing_marubozu
 
 #' @usage NULL
 #' @aliases closing_marubozu

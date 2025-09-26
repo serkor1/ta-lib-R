@@ -24,9 +24,12 @@ dark_cloud_cover <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases dark_cloud_cover
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname dark_cloud_cover
+#' @aliases dark_cloud_cover
 CDLDARKCLOUDCOVER <- dark_cloud_cover
 
 #' @usage NULL

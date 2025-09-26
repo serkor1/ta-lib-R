@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_AROONOSC.R
 \name{aroon_oscillator}
 \alias{aroon_oscillator}
+\alias{AROONOSC}
 \title{Aroon Oscillator}
 \usage{
 aroon_oscillator(x, cols, n = 10, ...)

@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_MFI.R
 \name{money_flow_index}
 \alias{money_flow_index}
+\alias{MFI}
 \title{Money Flow Index}
 \usage{
 money_flow_index(x, cols, n = 10, ...)

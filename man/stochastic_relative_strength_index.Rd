@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_STOCHRSI.R
 \name{stochastic_relative_strength_index}
 \alias{stochastic_relative_strength_index}
+\alias{STOCHRSI}
 \title{Stochastic Relative Strength Index}
 \usage{
 stochastic_relative_strength_index(

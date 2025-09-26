@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_HT_TRENDLINE.R
 \name{ht_trendline}
 \alias{ht_trendline}
+\alias{HT_TRENDLINE}
 \alias{ht_trendline.plotly}
 \title{Hilbert Transform - Instantaneous Trendline}
 \usage{

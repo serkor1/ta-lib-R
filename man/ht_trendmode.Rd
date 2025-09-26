@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_HT_TRENDMODE.R
 \name{ht_trendmode}
 \alias{ht_trendmode}
+\alias{HT_TRENDMODE}
 \alias{ht_trendmode.plotly}
 \title{Hilbert Transform - Trend vs Cycle Mode}
 \usage{

@@ -23,9 +23,12 @@ gaps_side_white <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases gaps_side_white
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname gaps_side_white
+#' @aliases gaps_side_white
 CDLGAPSIDESIDEWHITE <- gaps_side_white
 
 #' @usage NULL

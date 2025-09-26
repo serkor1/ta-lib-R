@@ -23,9 +23,12 @@ gravestone_doji <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases gravestone_doji
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname gravestone_doji
+#' @aliases gravestone_doji
 CDLGRAVESTONEDOJI <- gravestone_doji
 
 #' @usage NULL

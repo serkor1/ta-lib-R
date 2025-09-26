@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_CDL3LINESTRIKE.R
 \name{three_line_strike}
 \alias{three_line_strike}
+\alias{CDL3LINESTRIKE}
 \title{Three-Line Strike}
 \usage{
 three_line_strike(x, cols, ...)

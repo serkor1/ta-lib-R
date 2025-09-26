@@ -44,9 +44,12 @@ extended_parabolic_sar <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases extended_parabolic_sar
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname extended_parabolic_sar
+#' @aliases extended_parabolic_sar
 SAREXT <- extended_parabolic_sar
 
 #' @usage NULL

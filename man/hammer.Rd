@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_CDLHAMMER.R
 \name{hammer}
 \alias{hammer}
+\alias{CDLHAMMER}
 \title{Hammer}
 \usage{
 hammer(x, cols, ...)

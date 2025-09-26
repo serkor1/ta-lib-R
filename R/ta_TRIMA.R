@@ -40,9 +40,12 @@ TRIMA <- function(
 	UseMethod("TRIMA")
 }
 
-#' @rdname TRIMA
-#' @usage NULL
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname TRIMA
+#' @aliases TRIMA
 triangular_moving_average <- TRIMA
 
 #' @rdname TRIMA

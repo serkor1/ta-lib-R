@@ -25,9 +25,12 @@ chaikin_AD_line <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases chaikin_AD_line
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname chaikin_AD_line
+#' @aliases chaikin_AD_line
 AD <- chaikin_AD_line
 
 #' @usage NULL

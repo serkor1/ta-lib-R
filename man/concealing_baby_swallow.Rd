@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_CDLCONCEALBABYSWALL.R
 \name{concealing_baby_swallow}
 \alias{concealing_baby_swallow}
+\alias{CDLBABYSWALL}
 \title{Concealing Baby Swallow}
 \usage{
 concealing_baby_swallow(x, cols, ...)

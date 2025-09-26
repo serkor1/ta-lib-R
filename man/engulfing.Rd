@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_CDLENGULFING.R
 \name{engulfing}
 \alias{engulfing}
+\alias{CDLENGULFING}
 \title{Engulfing}
 \usage{
 engulfing(x, cols, ...)

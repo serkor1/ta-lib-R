@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_CDLDRAGONFLYDOJI.R
 \name{dragonfly_doji}
 \alias{dragonfly_doji}
+\alias{CDLDRAGONFLYDOJI}
 \title{Dragonfly Doji}
 \usage{
 dragonfly_doji(x, cols, ...)

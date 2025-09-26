@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_CDLDOJI.R
 \name{doji}
 \alias{doji}
+\alias{CDLDOJI}
 \title{Doji}
 \usage{
 doji(x, cols, ...)

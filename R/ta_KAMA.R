@@ -40,9 +40,12 @@ KAMA <- function(
 	UseMethod("KAMA")
 }
 
-#' @rdname KAMA
-#' @usage NULL
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname KAMA
+#' @aliases KAMA
 kaufmans_adaptive_moving_average <- KAMA
 
 #' @rdname KAMA

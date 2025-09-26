@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_STOCH.R
 \name{stochastic}
 \alias{stochastic}
+\alias{STOCH}
 \title{Stochastic}
 \usage{
 stochastic(x, cols, fastk = 5, slowk = SMA(n = 10), slowd = SMA(n = 8), ...)

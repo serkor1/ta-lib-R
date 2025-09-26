@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_CDL3OUTSIDE.R
 \name{three_outside}
 \alias{three_outside}
+\alias{CDL3OUTSIDE}
 \title{Three Outside}
 \usage{
 three_outside(x, cols, ...)

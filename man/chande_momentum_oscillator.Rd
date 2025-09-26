@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_CMO.R
 \name{chande_momentum_oscillator}
 \alias{chande_momentum_oscillator}
+\alias{CMO}
 \title{Chande Momentum Oscillator}
 \usage{
 chande_momentum_oscillator(x, cols, n = 10, ...)

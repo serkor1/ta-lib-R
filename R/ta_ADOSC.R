@@ -30,9 +30,12 @@ chaikin_AD_oscillator <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases chaikin_AD_oscillator
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname chaikin_AD_oscillator
+#' @aliases chaikin_AD_oscillator
 ADOSC <- chaikin_AD_oscillator
 
 #' @export

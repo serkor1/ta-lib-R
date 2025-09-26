@@ -2,6 +2,7 @@
 % Please edit documentation in R/ta_AD.R
 \name{chaikin_AD_line}
 \alias{chaikin_AD_line}
+\alias{AD}
 \title{Chaikin A/D Line}
 \usage{
 chaikin_AD_line(x, cols, ...)

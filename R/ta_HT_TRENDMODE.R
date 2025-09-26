@@ -16,9 +16,12 @@ ht_trendmode <- function(
 	UseMethod("ht_trendmode")
 }
 
-#' @usage NULL
-#' @aliases ht_trendmode
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname ht_trendmode
+#' @aliases ht_trendmode
 HT_TRENDMODE <- ht_trendmode
 
 #' @usage NULL

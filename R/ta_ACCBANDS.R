@@ -26,9 +26,12 @@ acceleration_bands <- function(
 	UseMethod("acceleration_bands")
 }
 
-#' @usage NULL
-#' @aliases acceleration_bands
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname acceleration_bands
+#' @aliases acceleration_bands
 ACCBANDS <- acceleration_bands
 
 #' @usage NULL

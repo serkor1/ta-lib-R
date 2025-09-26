@@ -23,9 +23,12 @@ fast_stochastic <- function(
 	)
 }
 
-#' @usage NULL
-#' @aliases fast_stochastic
 #' @export
+#'
+#' @usage NULL
+#'
+#' @rdname fast_stochastic
+#' @aliases fast_stochastic
 STOCHF <- fast_stochastic
 
 #' @usage NULL
