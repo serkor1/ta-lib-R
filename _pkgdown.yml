@@ -1,58 +1,50 @@
+url: https://serkor1.github.io/ta-lib-R/
 home:
   title: R bindings for TA-Lib
-
-  description: >
+  description: |
     {talib}: R bindings for TA-Lib. Technical Analysis indicators and Candlestick pattern recognition.
-
 navbar:
-  inverse: true
-
+  inverse: yes
 template:
   bootstrap: 5
-  light-switch: true
+  light-switch: yes
   bslib:
-    primary: "#0054AD"
+    primary: '#0054AD'
     border-radius: 0.5rem
     btn-border-radius: 0.25rem
-    danger: "#A6081A"
-
+    danger: '#A6081A'
 reference:
 - title: Candlestick Patterns
-  desc: >
+  desc: |
     The collenction of Candlestick Patterns
 - contents: has_concept('Pattern Recognition')
-
 - title: Momentum Indicators
-  desc: >
+  desc: |
     The collenction of momentum indicators
 - contents: has_concept('Momentum Indicator')
-
 - title: Overlap Studies
-  desc: >
+  desc: |
     The collenction of Overlap Studies
 - contents: has_concept('Overlap Study')
-
 - title: Cycle Indicators
-  desc: >
+  desc: |
     The collenction of Cycle Indicators
 - contents: has_concept('Cycle Indicator')
-
 - title: Volume Indicators
-  desc: >
+  desc: |
     The collenction of Volume Indicators
 - contents: has_concept('Volume Indicator')
-
 - title: Financial Charts
-  desc: >
+  desc: |
     Charting functions
   contents:
   - chart
   - indicator
-
 - title: Financial Data
-  desc: >
+  desc: |
     Preloaded financial data
   contents:
   - BTC
   - SPY
   - NVDA
+
