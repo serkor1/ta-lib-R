@@ -20,6 +20,7 @@
 #include "normalize.h"
 #include <limits.h>
 #include <ta_libc.h>
+#include <stdbool.h>
 
 SEXP impl_ta_CDLDOJISTAR(SEXP open, SEXP high, SEXP low, SEXP close,
                          SEXP normalize_flag) {
