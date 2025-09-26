@@ -8,6 +8,10 @@
 [![R-CMD-check](https://github.com/serkor1/curly-giggle/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/serkor1/curly-giggle/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/serkor1/curly-giggle/graph/badge.svg)](https://app.codecov.io/gh/serkor1/curly-giggle)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/talib)](https://CRAN.R-project.org/package=talib)
+[![CRAN RStudio mirror
+downloads](https://cranlogs.r-pkg.org/badges/last-month/talib?color=blue)](https://r-pkg.org/pkg/talib)
 <!-- badges: end -->
 
 {talib} provides R bindings for
@@ -18,11 +22,15 @@ Analysis indicators and Candlestick patterns.
 
 ## Installation
 
-You can install the development version of talib from
-[GitHub](https://github.com/) with:
+### Stable
 
 ``` r
-# install.packages("pak")
+pak::pak("talib")
+```
+
+### Development
+
+``` r
 pak::pak("serkor1/curly-giggle")
 ```
 
@@ -33,17 +41,11 @@ pak::pak("serkor1/curly-giggle")
 This is a basic example which shows you how to solve a common problem:
 
 ``` r
-library(talib)
-
-## calculate bollinger
-## bands
-x <- talib::BTC
-
 ## calculate bollinger
 ## bands
 tail(
   talib::bollinger_bands(
-    x
+    talib::BTC
   )
 )
 ```
@@ -66,8 +68,8 @@ library(talib)
 x <- talib::BTC
 
 {
-  ## calculate bollinger
-  ## bands
+  ## chart Bitcoin
+  ## with candlesticks
   talib::chart(
     x = x
   )
@@ -76,13 +78,25 @@ x <- talib::BTC
   ## to the chart
   talib::indicator(
     FUN = talib::SMA,
-    cols = ~close + open
+    cols = ~ close + open
   )
 
   ## add bollinger bands
   ## to the chart
   talib::indicator(
-    FUN = talib::stochastic
+    FUN = talib::bollinger_bands
+  )
+
+  ## add RSI indicator
+  ## to the chart
+  talib::indicator(
+    FUN = talib::relative_strength_index
+  )
+
+  ## add harami indicators
+  ## to the chart
+  talib::indicator(
+    FUN = talib::harami
   )
 }
 ```
