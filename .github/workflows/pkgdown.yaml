@@ -24,8 +24,13 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-        with:
-         submodules: recursive
+
+      - name: Install TA-Lib (C library)
+        shell: bash
+        run: |
+          curl -sSL -o ta-lib_0.6.4_amd64.deb \
+            https://github.com/TA-Lib/ta-lib/releases/download/v0.6.4/ta-lib_0.6.4_amd64.deb
+          sudo dpkg -i ta-lib_0.6.4_amd64.deb || sudo apt-get -y -f install
 
       - uses: r-lib/actions/setup-pandoc@v2
 
