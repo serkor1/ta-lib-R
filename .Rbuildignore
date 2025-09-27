@@ -5,6 +5,9 @@
 ^docs$
 ^pkgdown$
 Makefile
+air.toml
+data-raw
+man-roxygen
 
 ## TA-Lib
 
