@@ -13,11 +13,8 @@
 #include "R_ext/Error.h"
 #include "lib.h"
 #include "shift.h"
-#include "ta-lib/include/ta_defs.h"
-#include "ta_defs.h"
-#include "ta_func.h"
-#include "ta_libc.h"
 #include <Rinternals.h>
+#include <ta_libc.h>
 
 // clang-format off
 SEXP impl_ta_MA(

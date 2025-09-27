@@ -8,7 +8,6 @@
 //   Length equals input; leading elements are NA (padded using shift_array).
 #include "lib.h"
 #include "shift.h"
-#include "ta_func.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <ta_libc.h>

@@ -9,8 +9,6 @@
 //   unnamed numeric vector of length n, padded with NA_REAL.
 #include "lib.h"
 #include "names.h"
-#include "ta_defs.h"
-#include "ta_func.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <ta_libc.h>

@@ -16,7 +16,6 @@
 #include "lib.h"
 #include "normalize.h"
 #include "shift.h"
-#include "ta_func.h"
 #include <stdbool.h>
 #include <ta_libc.h>
 

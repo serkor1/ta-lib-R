@@ -14,7 +14,6 @@
 #include "lib.h"
 #include "normalize.h"
 #include "shift.h"
-#include "ta_func.h"
 #include <ta_libc.h>
 
 SEXP impl_ta_CDLDARKCLOUDCOVER(SEXP open, SEXP high, SEXP low, SEXP close,

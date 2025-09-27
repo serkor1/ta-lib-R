@@ -25,7 +25,6 @@
 #include "lib.h"
 #include "names.h"
 #include "shift.h"
-#include "ta_func.h"
 #include <ta_libc.h>
 
 // clang-format off

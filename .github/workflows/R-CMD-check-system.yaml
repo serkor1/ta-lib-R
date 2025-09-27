@@ -1,6 +1,6 @@
 # Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
-name: R-CMD-check (vendored)
+name: R-CMD-check (system)
 
 on:
   push:
@@ -27,7 +27,7 @@ jobs:
           # ignore macos and windows for now
           # - {os: macos-latest,   r: 'release'}
           # - {os: windows-latest, r: 'release'}
-          
+        
           # Ubuntu
           - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
@@ -41,8 +41,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-         submodules: recursive
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -51,6 +49,12 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
+
+      - name: Install TA-Lib (C library)
+        run: |
+          curl -sSL -o ta-lib_0.6.4_amd64.deb \
+            https://github.com/TA-Lib/ta-lib/releases/download/v0.6.4/ta-lib_0.6.4_amd64.deb
+          sudo dpkg -i ta-lib_0.6.4_amd64.deb || sudo apt-get -y -f install
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:

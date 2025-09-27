@@ -11,7 +11,6 @@
 #include "R_ext/Print.h"
 #include "lib.h"
 #include "shift.h"
-#include "ta_func.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <stdio.h>

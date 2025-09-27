@@ -5,9 +5,10 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/serkor1/curly-giggle/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/serkor1/curly-giggle/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/serkor1/ta-lib-R/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/serkor1/ta-lib-R/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/serkor1/ta-lib-R/actions/workflows/R-CMD-check-system.yaml/badge.svg)](https://github.com/serkor1/ta-lib-R/actions/workflows/R-CMD-check-system.yaml)
 [![Codecov test
-coverage](https://codecov.io/gh/serkor1/curly-giggle/graph/badge.svg)](https://app.codecov.io/gh/serkor1/curly-giggle)
+coverage](https://codecov.io/gh/serkor1/ta-lib-R/graph/badge.svg)](https://app.codecov.io/gh/serkor1/ta-lib-R)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/talib)](https://CRAN.R-project.org/package=talib)
 [![CRAN RStudio mirror
@@ -32,7 +33,7 @@ pak::pak("talib")
 The development version can be installed via:[^1]
 
 ``` r
-pak::pak("serkor1/curly-giggle")
+pak::pak("serkor1/ta-lib-R")
 ```
 
 Or it can be installed by cloning the repository:

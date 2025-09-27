@@ -10,7 +10,6 @@
 //   Leading rows are NA-padded via shift_array; column names are lower-case.
 #include "lib.h"
 #include "shift.h"
-#include "ta_func.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <ta_libc.h>
