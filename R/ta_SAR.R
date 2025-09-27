@@ -164,6 +164,7 @@ parabolic_sar.plotly <- function(
 	colnames(.indicator)[1] <- "SAR"
 
 	.indicator$idx <- 1:nrow(.indicator)
+	chart_theme <- .chart_theme()
 
 	## calculate colors for
 	## the chart
@@ -176,8 +177,8 @@ parabolic_sar.plotly <- function(
 	##
 	colors <- ifelse(
 		bull,
-		plotly::toRGB(chart.theme()$bull_color, alpha = 0.8),
-		plotly::toRGB(chart.theme()$bear_color, alpha = 0.8)
+		plotly::toRGB(chart_theme$bull_color, alpha = 0.8),
+		plotly::toRGB(chart_theme$bear_color, alpha = 0.8)
 	)
 
 	## constuct chart

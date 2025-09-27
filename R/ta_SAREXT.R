@@ -219,13 +219,13 @@ extended_parabolic_sar.plotly <- function(
 	## identify bullish
 	## signals
 	bull <- (.indicator$SAR < as.numeric(HL[[2L]]))
-
+	chart_theme <- .chart_theme()
 	## determine colors
 	##
 	colors <- ifelse(
 		bull,
-		plotly::toRGB(chart.theme()$bull_color, alpha = 0.8),
-		plotly::toRGB(chart.theme()$bear_color, alpha = 0.8)
+		plotly::toRGB(chart_theme$bull_color, alpha = 0.8),
+		plotly::toRGB(chart_theme$bear_color, alpha = 0.8)
 	)
 
 	## constuct chart

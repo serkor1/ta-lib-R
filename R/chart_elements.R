@@ -1,7 +1,7 @@
 .chart_layout <- function(x, title_text, ...) {
 	## extract chart theme
 	## from R/chart_options.R
-	chart_theme <- chart.theme()
+	chart_theme <- .chart_theme()
 
 	## hardcoded layout elements
 	## and added flexibility in ellipsis

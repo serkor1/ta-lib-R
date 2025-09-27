@@ -283,6 +283,8 @@ moving_average_convergence_divergence.plotly <- function(
 	.indicator$idx <- 1:nrow(.indicator)
 	.indicator$direction <- .indicator$signal >= .indicator$macd
 
+	## theme
+	chart_theme <- .chart_theme()
 	## generate indicator plot
 	output <- plotly::plot_ly(
 		data = .indicator,
@@ -292,8 +294,8 @@ moving_average_convergence_divergence.plotly <- function(
 		y = ~histogram,
 		color = ~direction,
 		colors = c(
-			chart.theme()$bull_color,
-			chart.theme()$bear_color
+			chart_theme$bull_color,
+			chart_theme$bear_color
 		),
 		type = 'bar'
 	)

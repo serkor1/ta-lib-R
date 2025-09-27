@@ -6,7 +6,7 @@ pattern <- function(
 	pattern_name = "Doji"
 ) {
 	## chart theme controls
-	chart_theme <- chart.theme()
+	chart_theme <- .chart_theme()
 
 	## locate bull and
 	## bear indices

@@ -71,7 +71,7 @@ chart.default <- function(
 	##    3. chart: The user-facing TA chart.
 	##              This is empty and is constructed on the fly
 	##              via plotly::subplot.
-	.color_values <- chart.theme()
+	.color_values <- .chart_theme()
 	.plotting_environment$sub <- .plotting_environment$chart <- list()
 
 	## convert input to data.frame object

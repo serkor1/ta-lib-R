@@ -1,5 +1,5 @@
 ## chart theme
-chart.theme <- function() {
+.chart_theme <- function() {
 	## bull or bear colors
 	if (getOption("talib.chart.deficiency", default = FALSE)) {
 		bull_color = "#5d8ca8"
