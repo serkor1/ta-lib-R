@@ -19,7 +19,11 @@ build: clean fmt ## Build the R package
 
 check: fmt ## Check the R package
 	@Rscript --verbose -e "devtools::document()"
-	@R CMD build . && R CMD check $(tarball_location)
+	@R CMD build . && R CMD check --as-cran $(tarball_location)
+
+check-full: fmt ## Check the R package with valgrind and gc torture
+	@Rscript --verbose -e "devtools::document()"
+	@R CMD build . && R CMD check --as-cran --use-gct --use-valgrind $(tarball_location)
 
 test: fmt ## Run tests
 	@Rscript --verbose -e "library(talib); testthat::test_dir('tests/testthat')"
