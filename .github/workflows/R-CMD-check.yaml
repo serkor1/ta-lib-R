@@ -1,10 +1,10 @@
 # Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
-name: R-CMD-check
+name: R-CMD-check (vendored)
 
 on:
   push:
-    branches: [main, devel]
+    branches: [main, devel, system_lib]
   pull_request:
     branches: [devel]
 
@@ -27,9 +27,9 @@ jobs:
           # ignore macos and windows for now
           # - {os: macos-latest,   r: 'release'}
           # - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
-
+          
           # Ubuntu
+          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
           - {os: ubuntu-latest,   r: 'oldrel-1'}
           - {os: ubuntu-latest,   r: 'oldrel-2'}
