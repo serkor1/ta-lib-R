@@ -2,7 +2,7 @@
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
-    branches: [devel]
+    branches: [devel, codecov]
   pull_request:
 
 name: test-coverage.yaml
@@ -17,8 +17,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-         submodules: recursive
 
       - uses: r-lib/actions/setup-r@v2
         with:
@@ -28,6 +26,13 @@ jobs:
         with:
           extra-packages: any::covr, any::xml2
           needs: coverage
+
+
+      - name: Install TA-Lib (C library)
+        run: |
+          curl -sSL -o ta-lib_0.6.4_amd64.deb \
+            https://github.com/TA-Lib/ta-lib/releases/download/v0.6.4/ta-lib_0.6.4_amd64.deb
+          sudo dpkg -i ta-lib_0.6.4_amd64.deb || sudo apt-get -y -f install
 
       - name: Test coverage
         run: |
