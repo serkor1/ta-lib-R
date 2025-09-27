@@ -15,6 +15,9 @@ A \link{matrix} with 501 rows and 5 columns.
 \item{volume}{Candle volume.}
 }
 }
+\usage{
+NVDA
+}
 \description{
 NVIDIA Corporation (NVDA) in daily intervals between
 2022-01-01 and 2023-12-31.

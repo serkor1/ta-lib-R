@@ -23,4 +23,4 @@
 #' @examples
 #' ## Load the dataset
 #' data(BTC, package = "talib")
-data(BTC, package = "talib")
+"BTC"

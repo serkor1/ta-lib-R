@@ -15,6 +15,9 @@ A \link{data.frame} with 366 rows and 5 columns.
 \item{volume}{Candle volume.}
 }
 }
+\usage{
+BTC
+}
 \description{
 USDC denominated Bitcoin (BTC) in daily intervals between
 2024-01-01 and 2024-12-31.

@@ -15,6 +15,9 @@ A \link{matrix} with 501 rows and 5 columns.
 \item{volume}{Candle volume.}
 }
 }
+\usage{
+SPY
+}
 \description{
 SPDR S&P 500 ETF (SPY) in daily intervals between
 2023-01-01 and 2024-12-31.

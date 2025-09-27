@@ -23,4 +23,4 @@
 #' @examples
 #' ## Load the dataset
 #' data(NVDA, package = "talib")
-data(NVDA, package = "talib")
+"NVDA"

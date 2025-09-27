@@ -23,4 +23,4 @@
 #' @examples
 #' ## Load the dataset
 #' data(SPY, package = "talib")
-data(SPY, package = "talib")
+"SPY"
