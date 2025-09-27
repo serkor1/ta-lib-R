@@ -16,9 +16,9 @@
 #include "MAType.h"
 #include "lib.h"
 #include "names.h"
-#include <ta_libc.h>
 #include <R.h>
 #include <Rinternals.h>
+#include <ta_libc.h>
 
 // clang-format off
 SEXP impl_ta_STOCH(
