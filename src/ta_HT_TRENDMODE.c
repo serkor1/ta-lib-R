@@ -10,7 +10,6 @@
 #include "R_ext/Arith.h"
 #include "lib.h"
 #include "shift.h"
-#include "ta_func.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <ta_libc.h>

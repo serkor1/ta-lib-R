@@ -13,8 +13,7 @@
 //   the Ultimate Oscillator, with NA for indices before the lookback.
 #include "lib.h"
 #include "shift.h"
-#include "ta_func.h"
-#include "ta_libc.h"
+#include <ta_libc.h>
 #include <R.h>
 #include <Rinternals.h>
 

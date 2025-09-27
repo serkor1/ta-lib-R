@@ -16,8 +16,6 @@
 #include "lib.h"
 #include "names.h"
 #include "shift.h"
-#include "ta-lib/include/ta_defs.h"
-#include "ta_func.h"
 #include <Rinternals.h>
 #include <ta_libc.h>
 

@@ -9,7 +9,6 @@
 #include "lib.h"
 #include "normalize.h"
 #include "shift.h"
-#include "ta_func.h"
 #include <ta_libc.h>
 
 SEXP impl_ta_CDLCONCEALBABYSWALL(SEXP open, SEXP high, SEXP low, SEXP close,

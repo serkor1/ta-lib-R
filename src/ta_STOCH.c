@@ -16,9 +16,7 @@
 #include "MAType.h"
 #include "lib.h"
 #include "names.h"
-#include "ta_defs.h"
-#include "ta_func.h"
-#include "ta_libc.h"
+#include <ta_libc.h>
 #include <R.h>
 #include <Rinternals.h>
 
