@@ -14,6 +14,7 @@ print_header() {
 // Generated from tools/generate_FFI.sh
 #include <R.h>
 #include <R_ext/Rdynload.h>
+#include <Rinternals.h>
 #include <stdlib.h>
 
 #include "api.h"
@@ -59,11 +60,22 @@ print_footer() {
 EOF
 }
 
+print_init() {
+  cat <<EOF
+
+void R_init_talib(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
+}
+EOF
+}
+
 main() {
   echo "Generating ${OUT_FILE} from ${API_HEADER}..."
   print_header > "$OUT_FILE"
   generate_entries >> "$OUT_FILE"
   print_footer    >> "$OUT_FILE"
+  print_init      >> "$OUT_FILE"
   echo "Done: $OUT_FILE"
 }
 

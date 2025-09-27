@@ -60,8 +60,8 @@ SEXP impl_ta_STOCHF(SEXP high, SEXP low, SEXP close, SEXP fastk_period, SEXP fas
 SEXP impl_ta_STOCHRSI(SEXP real, SEXP timeperiod, SEXP fastk_period, SEXP fastd_period, SEXP fastd_matype);
 SEXP impl_ta_STOCH(SEXP high, SEXP low, SEXP close, SEXP fastk_period, SEXP slowk_period, SEXP slowk_matype, SEXP slowd_period, SEXP slowd_matype);
 SEXP impl_ta_ULTOSC(SEXP high, SEXP low, SEXP close, SEXP timeperiod1, SEXP timeperiod2, SEXP timeperiod3);
-SEXP initialize_ta_lib(void);
-SEXP shutdown_ta_lib(void);
+SEXP initialize_ta_lib();
+SEXP shutdown_ta_lib();
 // clang-format on
 
 #endif //_API_H

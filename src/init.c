@@ -1,6 +1,7 @@
 // Generated from tools/generate_FFI.sh
 #include <R.h>
 #include <R_ext/Rdynload.h>
+#include <Rinternals.h>
 #include <stdlib.h>
 
 #include "api.h"
@@ -65,6 +66,11 @@ static const R_CallMethodDef CallEntries[] = {
     CALLDEF(impl_ta_STOCHRSI, 5),
     CALLDEF(impl_ta_STOCH, 8),
     CALLDEF(impl_ta_ULTOSC, 6),
-    CALLDEF(initialize_ta_lib, 1),
-    CALLDEF(shutdown_ta_lib, 1),
+    CALLDEF(initialize_ta_lib, 0),
+    CALLDEF(shutdown_ta_lib, 0),
     {NULL, NULL, 0}};
+
+void R_init_talib(DllInfo *dll) {
+  R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+  R_useDynamicSymbols(dll, FALSE);
+}

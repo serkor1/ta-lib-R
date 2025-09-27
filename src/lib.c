@@ -7,7 +7,7 @@
 #include <ta_libc.h>
 
 // initialize TA-Lib
-SEXP initialize_ta_lib(void) {
+SEXP initialize_ta_lib() {
   TA_RetCode return_code = TA_Initialize();
 
   if (return_code != TA_SUCCESS) {
@@ -20,7 +20,7 @@ SEXP initialize_ta_lib(void) {
 }
 
 // shutdown TA-Lib
-SEXP shutdown_ta_lib(void) {
+SEXP shutdown_ta_lib() {
   TA_RetCode return_code = TA_Shutdown();
 
   if (return_code != TA_SUCCESS) {
