@@ -6,7 +6,6 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/serkor1/ta-lib-R/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/serkor1/ta-lib-R/actions/workflows/R-CMD-check.yaml)
-[![R-CMD-check](https://github.com/serkor1/ta-lib-R/actions/workflows/R-CMD-check-system.yaml/badge.svg)](https://github.com/serkor1/ta-lib-R/actions/workflows/R-CMD-check-system.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/serkor1/ta-lib-R/graph/badge.svg)](https://app.codecov.io/gh/serkor1/ta-lib-R)
 [![CRAN
@@ -30,21 +29,16 @@ pak::pak("talib")
 
 ### Development version
 
-The development version can be installed via:[^1]
+The development version can be installed by recursive cloning the
+repository and using the available build tools as follows:
 
-``` r
-pak::pak("serkor1/ta-lib-R")
-```
-
-Or it can be installed by cloning the repository:
-
-``` sh
+``` shell
 git clone --recursive https://github.com/serkor1/ta-lib-R.git
 cd ta-lib-R
 make build
 ```
 
-Use `make` for all package-level build-tools.
+Use `make` to see package-level build-tools.
 
 ## Basic Usage
 
@@ -120,5 +114,3 @@ x <- talib::BTC
 Please note that [{talib}]() is released with a [Contributor Code of
 Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html).
 By contributing to this project, you agree to abide by its terms.
-
-[^1]: Requires that [TA-Lib]() is preinstalled.

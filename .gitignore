@@ -60,3 +60,5 @@ sandbox/**
 
 docs
 inst/doc
+
+/.quarto/
