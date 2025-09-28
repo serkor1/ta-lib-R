@@ -7,10 +7,10 @@ set CMAKE_GENERATOR=NMake Makefiles
 set CMAKE_BUILD_TYPE=Release
 set CMAKE_CONFIGURATION_TYPES=Release
 
-curl -L -o talib-%TALIB_C_VER%.zip https://github.com/TA-Lib/ta-lib/archive/refs/tags/v%TALIB_C_VER%.zip
+curl -L -o talib-%TALIB_C_VER%.tar.gz https://github.com/TA-Lib/ta-lib/archive/refs/tags/v%TALIB_C_VER%.tar.gz
 if errorlevel 1 exit /B 1
 
-tar -xzvf talib-%TALIB_C_VER%.zip
+tar -xzvf talib-%TALIB_C_VER%.tar.gz
 if errorlevel 1 exit /B 1
 
 :: git apply --verbose --binary talib.diff
