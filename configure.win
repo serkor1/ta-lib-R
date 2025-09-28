@@ -103,7 +103,7 @@ if [ "$USE_SYSTEM" -eq 0 ]; then
     -DCMAKE_INSTALL_PREFIX="$TA_PREFIX" \
     -DBUILD_SHARED_LIBS=OFF \
     -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-    -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON \
+    -DCMAKE_C_FLAGS_RELEASE="-O3 -march=native" \
     -DBUILD_DEV_TOOLS=OFF
 
   cmake --build "$BUILDROOT/cmake" --target install -- -j"$(nprocs)"
