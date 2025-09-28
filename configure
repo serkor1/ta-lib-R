@@ -1,27 +1,38 @@
 #!/bin/sh
+# Purpose: Prefer system TA-Lib; else build bundled src/ta-lib. Emit src/Makevars.
 set -eu
 
-# 1) Setup
-TA_LIB_SRC="src/ta-lib"
-TA_LIB_PREFIX="$(cd "$TA_LIB_SRC" 2>/dev/null && pwd)/local"
+# --- 1) Setup ---------------------------------------------------------------
+TA_SRC="src/ta-lib"
+TA_PREFIX="$(cd "$TA_SRC" 2>/dev/null && pwd)/local"
+CC_BIN="${CC:-cc}"
 PKG_CPPFLAGS=""
 PKG_LIBS=""
 USE_SYSTEM=0
-CC_BIN="${CC:-cc}"
 
-# 2) Try pkg-config first
+# --- 2) System TA-Lib via pkg-config ---------------------------------------
 if command -v pkg-config >/dev/null 2>&1 && pkg-config --exists ta-lib; then
   PKG_CPPFLAGS="$(pkg-config --cflags ta-lib)"
   PKG_LIBS="$(pkg-config --libs ta-lib)"
-  # Add rpath for each discovered -L
+  # Add rpath for each -L
   for d in $(pkg-config --libs-only-L ta-lib | sed 's/-L//g'); do
     PKG_LIBS="$PKG_LIBS -Wl,-rpath,$d"
   done
+  # If cflags include .../ta-lib, also include its parent so <ta_libc.h> works.
+  EXTRA_INC=""
+  for tok in $PKG_CPPFLAGS; do
+    case "$tok" in
+      -I*/ta-lib)
+        p=${tok#-I}; EXTRA_INC="$EXTRA_INC -I$(dirname "$p")"
+        ;;
+    esac
+  done
+  PKG_CPPFLAGS="$PKG_CPPFLAGS$EXTRA_INC"
   USE_SYSTEM=1
   echo "configure: using system TA-Lib via pkg-config"
 fi
 
-# 3) Fallback probe (headers+link test)
+# --- 3) Probe system TA-Lib (compile+link test) ----------------------------
 if [ "$USE_SYSTEM" -eq 0 ]; then
   echo "configure: probing for system TA-Lib"
   cat > conftest.c <<'EOF'
@@ -42,7 +53,7 @@ EOF
           PKG_LIBS="$LIBTRY -lm"
           [ -n "$libd" ] && PKG_LIBS="$PKG_LIBS -Wl,-rpath,$libd"
           USE_SYSTEM=1
-          echo "configure: found TA-Lib at${inc:+ inc=$inc}${libd:+ lib=$libd} name=$lname"
+          echo "configure: found TA-Lib${inc:+ inc=$inc}${libd:+ lib=$libd} name=$lname"
           break 3
         fi
       done
@@ -51,78 +62,55 @@ EOF
   rm -f conftest conftest.c
 fi
 
-# 4) Vendored build if needed
+# --- 4) Vendored build (static + PIC) --------------------------------------
+# 5) Vendored build (PIC) if no system TA-Lib
 if [ "$USE_SYSTEM" -eq 0 ]; then
-  echo "configure: building vendored TA-Lib in $TA_LIB_SRC"
-  [ -d "$TA_LIB_SRC" ] || { echo "ERROR: $TA_LIB_SRC not found" >&2; exit 1; }
-  cd "$TA_LIB_SRC"
+  echo "configure: building vendored TA-Lib"
+  [ -d "$TA_SRC" ] || { echo "ERROR: $TA_SRC not found" >&2; exit 1; }
 
-  if command -v cmake >/dev/null 2>&1 && [ -f CMakeLists.txt ]; then
+  # Out-of-tree build dir under TMP; auto-clean on exit
+  BUILDROOT="$(mktemp -d "${TMPDIR:-/tmp}/talib-build-XXXXXX")"
+  trap 'rm -rf "$BUILDROOT"' EXIT INT HUP TERM
+
+  if command -v cmake >/dev/null 2>&1 && [ -f "$TA_SRC/CMakeLists.txt" ]; then
     echo "configure: CMake + static PIC (no dev tools)"
-    builddir="_build"
-    rm -rf "$builddir" "$TA_LIB_PREFIX"
-    cmake -S . -B "$builddir" \
+    cmake -S "$TA_SRC" -B "$BUILDROOT/cmake" \
       -DCMAKE_BUILD_TYPE=Release \
-      -DCMAKE_INSTALL_PREFIX="$TA_LIB_PREFIX" \
+      -DCMAKE_INSTALL_PREFIX="$TA_PREFIX" \
       -DBUILD_SHARED_LIBS=OFF \
       -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
       -DBUILD_DEV_TOOLS=OFF
-    cmake --build "$builddir" --target install -- -j"$(nproc 2>/dev/null || echo 2)"
+    cmake --build "$BUILDROOT/cmake" --target install -- -j"$(nprocs)"
   else
     echo "configure: Autotools + static PIC"
-    [ -x ./configure ] || { [ -f ./autogen.sh ] && sh ./autogen.sh; }
-    rm -rf "$TA_LIB_PREFIX"
-    CFLAGS="${CFLAGS:+$CFLAGS }-O3 -fPIC" \
-    ./configure --prefix="$TA_LIB_PREFIX" --enable-static --disable-shared --with-pic
-    make -j"$(nproc 2>/dev/null || echo 2)"
-    make install
+    mkdir -p "$BUILDROOT/auto"
+    ( cd "$BUILDROOT/auto"
+      [ -x "$TA_SRC/configure" ] || { [ -f "$TA_SRC/autogen.sh" ] && sh "$TA_SRC/autogen.sh"; }
+      CFLAGS="${CFLAGS:+$CFLAGS }-O3 -fPIC" \
+      "$TA_SRC/configure" --prefix="$TA_PREFIX" --enable-static --disable-shared --with-pic
+      make -j"$(nprocs)"
+      make install
+    )
   fi
-  cd - >/dev/null
+
+  # Flags for vendored install (relative to src/)
+  REL="ta-lib/local"
+  PKG_CPPFLAGS="-I$REL/include -I$REL/include/ta-lib"
+  if   [ -f "$TA_SRC/local/lib/libta-lib.a" ]; then
+    PKG_LIBS="$REL/lib/libta-lib.a -lm"
+  elif [ -f "$TA_SRC/local/lib/libta_lib.a" ]; then
+    PKG_LIBS="$REL/lib/libta_lib.a -lm"
+  elif [ -f "$TA_SRC/local/lib/libta-lib.so" ] || [ -f "$TA_SRC/local/lib/libta-lib.dylib" ]; then
+    PKG_LIBS="-L$REL/lib -Wl,-rpath,'\$$ORIGIN'/$REL/lib -lta-lib -lm"
+  else
+    echo "ERROR: TA-Lib library not found under $TA_SRC/local/lib" >&2
+    exit 1
+  fi
 fi
 
 
-# 4b) Resolve flags for vendored install
-INC_BASE="$TA_LIB_PREFIX/include"
-LIB_BASE="$TA_LIB_PREFIX/lib"
-
-PKG_CPPFLAGS="-I$INC_BASE -I$INC_BASE/ta-lib"
-
-if   [ -f "$LIB_BASE/libta-lib.a" ]; then
-  PKG_LIBS="$LIB_BASE/libta-lib.a -lm"
-elif [ -f "$LIB_BASE/libta_lib.a" ]; then
-  PKG_LIBS="$LIB_BASE/libta_lib.a -lm"              # old name
-elif [ -f "$LIB_BASE/libta-lib.so" ]; then
-  PKG_LIBS="-L$LIB_BASE -Wl,-rpath,$LIB_BASE -lta-lib -lm"
-elif [ -f "$LIB_BASE/libta-lib.dylib" ]; then
-  PKG_LIBS="-L$LIB_BASE -Wl,-rpath,$LIB_BASE -lta-lib -lm"
-else
-  echo "ERROR: TA-Lib library not found under $LIB_BASE" >&2
-  exit 1
-fi
-
-# 6) Guarantee <ta_libc.h> is reachable even if CFLAGS came without /ta-lib
-cat > conftest.c <<'EOF'
-#include <ta_libc.h>
-int main(void){return 0;}
-EOF
-if ! $CC_BIN -c conftest.c $PKG_CPPFLAGS >/dev/null 2>&1; then
-  for base in $(printf "%s\n" "$PKG_CPPFLAGS" | tr ' ' '\n' | sed -n 's/^-I//p'); do
-    if [ -d "$base/ta-lib" ]; then
-      PKG_CPPFLAGS="$PKG_CPPFLAGS -I$base/ta-lib"
-    fi
-  done
-fi
-rm -f conftest.c conftest.o
-
-[ -n "$PKG_LIBS" ] || { echo "ERROR: empty PKG_LIBS"; exit 1; }
-
-# paths are relative to src/ (where Makevars lives)
-REL=ta-lib/local
-PKG_CPPFLAGS="-I$REL/include -I$REL/include/ta-lib"
-PKG_LIBS="$REL/lib/libta-lib.a -lm"
-
-
-# 5) Emit Makevars
+# --- 5) Emit src/Makevars ---------------------------------------------------
+[ -n "$PKG_LIBS" ] || { echo "ERROR: empty PKG_LIBS" >&2; exit 1; }
 echo "configure: writing src/Makevars"
 cat > src/Makevars <<EOF
 # autogenerated by configure
