@@ -61,35 +61,8 @@ jobs:
 
       - name: Install TA-Lib (Windows)
         if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          $rt = (Get-ChildItem 'C:\rtools*' -Directory | Sort-Object Name -Descending | Select-Object -First 1).FullName
-          & "$rt\usr\bin\bash.exe" -lc @'
-            set -euxo pipefail
-            pacman -Sy --noconfirm --needed \
-              mingw-w64-ucrt-x86_64-toolchain \
-              mingw-w64-ucrt-x86_64-cmake \
-              mingw-w64-ucrt-x86_64-ninja \
-              mingw-w64-ucrt-x86_64-pkgconf \
-              git
-            export PATH=/ucrt64/bin:/usr/bin:$PATH
-            export Platform=x64 
-            git clone --depth=1 https://github.com/TA-Lib/ta-lib /tmp/ta-lib
-            cmake -S /tmp/ta-lib -B /tmp/ta-build -G Ninja \
-                  -DCMAKE_BUILD_TYPE=Release \
-                  -DCMAKE_INSTALL_PREFIX=/ucrt64 \
-                  -DBUILD_DEV_TOOLS=OFF \
-                  -DBUILD_SHARED_LIBS=OFF
-            cmake --build /tmp/ta-build --target install -j2
-            # sanity
-            test -f /ucrt64/include/ta-lib/ta_libc.h
-            pkg-config --modversion ta-lib || true
-          '@
-          # Make system TA-Lib visible to your configure.win
-          "PATH=$rt\ucrt64\bin;$env:PATH"                     | Out-File $env:GITHUB_ENV -Append -Encoding utf8
-          "PKG_CONFIG_PATH=$rt\ucrt64\lib\pkgconfig"         | Out-File $env:GITHUB_ENV -Append -Encoding utf8
-          "TA_INCLUDE_PATH=$rt\ucrt64\include\ta-lib"        | Out-File $env:GITHUB_ENV -Append -Encoding utf8
-          "TA_LIBRARY_PATH=$rt\ucrt64\lib"                   | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+        shell: cmd
+        run: tools/build_talib_windows.cmd
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
