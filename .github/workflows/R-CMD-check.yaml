@@ -1,10 +1,10 @@
 # Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
-name: R-CMD-check (vendored)
+name: R-CMD-check
 
 on:
   push:
-    branches: [main, devel, fix_check]
+    branches: [devel, fix_check]
   pull_request:
     branches: [devel]
 
@@ -26,18 +26,18 @@ jobs:
         config:
           ## macOS
           - {os: macos-latest,   r: 'release'}
-          #- {os: macos-latest,   r: 'oldrel-1'}
+          - {os: macos-latest,   r: 'oldrel-1'}
 
           ## windows
           - {os: windows-latest, r: 'release'}
-          #- {os: windows-latest, r: 'oldrel-1'}
+          - {os: windows-latest, r: 'oldrel-1'}
           
           # Ubuntu
-          #- {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
+          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
-          #- {os: ubuntu-latest,   r: 'oldrel-1'}
-          #- {os: ubuntu-latest,   r: 'oldrel-2'}
-          #- {os: ubuntu-latest,   r: 'oldrel-3'}
+          - {os: ubuntu-latest,   r: 'oldrel-1'}
+          - {os: ubuntu-latest,   r: 'oldrel-2'}
+          - {os: ubuntu-latest,   r: 'oldrel-3'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
