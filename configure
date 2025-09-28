@@ -2,8 +2,8 @@
 set -eu
 
 # 1) Setup
-TA_SRC="src/ta-lib"
-TA_PREFIX="$(cd "$TA_SRC" 2>/dev/null && pwd)/local"
+TA_LIB_SRC="src/ta-lib"
+TA_LIB_PREFIX="$(cd "$TA_LIB_SRC" 2>/dev/null && pwd)/local"
 PKG_CPPFLAGS=""
 PKG_LIBS=""
 USE_SYSTEM=0
@@ -53,26 +53,74 @@ fi
 
 # 4) Vendored build if needed
 if [ "$USE_SYSTEM" -eq 0 ]; then
-  echo "configure: building vendored TA-Lib in $TA_SRC"
-  [ -d "$TA_SRC" ] || { echo "ERROR: $TA_SRC not found"; exit 1; }
-  cd "$TA_SRC"
-  if [ ! -x ./configure ]; then
-    if [ -f ./autogen.sh ]; then sh ./autogen.sh; fi
+  echo "configure: building vendored TA-Lib in $TA_LIB_SRC"
+  [ -d "$TA_LIB_SRC" ] || { echo "ERROR: $TA_LIB_SRC not found" >&2; exit 1; }
+  cd "$TA_LIB_SRC"
+
+  if command -v cmake >/dev/null 2>&1 && [ -f CMakeLists.txt ]; then
+    echo "configure: CMake + static PIC (no dev tools)"
+    builddir="_build"
+    rm -rf "$builddir" "$TA_LIB_PREFIX"
+    cmake -S . -B "$builddir" \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_INSTALL_PREFIX="$TA_LIB_PREFIX" \
+      -DBUILD_SHARED_LIBS=OFF \
+      -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+      -DBUILD_DEV_TOOLS=OFF
+    cmake --build "$builddir" --target install -- -j"$(nproc 2>/dev/null || echo 2)"
+  else
+    echo "configure: Autotools + static PIC"
+    [ -x ./configure ] || { [ -f ./autogen.sh ] && sh ./autogen.sh; }
+    rm -rf "$TA_LIB_PREFIX"
+    CFLAGS="${CFLAGS:+$CFLAGS }-O3 -fPIC" \
+    ./configure --prefix="$TA_LIB_PREFIX" --enable-static --disable-shared --with-pic
+    make -j"$(nproc 2>/dev/null || echo 2)"
+    make install
   fi
-  CFLAGS="${CFLAGS:+$CFLAGS }-O3 -fPIC" ./configure --prefix="$TA_PREFIX"
-  make -j"$( (getconf _NPROCESSORS_ONLN || printf 2) 2>/dev/null )"
-  make install
   cd - >/dev/null
-
-  # Normalize archive name across versions
-  if   [ -f "$TA_PREFIX/lib/libta-lib.a" ]; then TA_A="$TA_PREFIX/lib/libta-lib.a"
-  elif [ -f "$TA_PREFIX/lib/libta_lib.a" ]; then TA_A="$TA_PREFIX/lib/libta_lib.a"
-  else echo "ERROR: TA-Lib static archive not found under $TA_PREFIX/lib"; exit 1
-  fi
-
-  PKG_CPPFLAGS="-I$TA_PREFIX/include -I$TA_PREFIX/include/ta-lib"
-  PKG_LIBS="$TA_A -lm"
 fi
+
+
+# 4b) Resolve flags for vendored install
+INC_BASE="$TA_LIB_PREFIX/include"
+LIB_BASE="$TA_LIB_PREFIX/lib"
+
+PKG_CPPFLAGS="-I$INC_BASE -I$INC_BASE/ta-lib"
+
+if   [ -f "$LIB_BASE/libta-lib.a" ]; then
+  PKG_LIBS="$LIB_BASE/libta-lib.a -lm"
+elif [ -f "$LIB_BASE/libta_lib.a" ]; then
+  PKG_LIBS="$LIB_BASE/libta_lib.a -lm"              # old name
+elif [ -f "$LIB_BASE/libta-lib.so" ]; then
+  PKG_LIBS="-L$LIB_BASE -Wl,-rpath,$LIB_BASE -lta-lib -lm"
+elif [ -f "$LIB_BASE/libta-lib.dylib" ]; then
+  PKG_LIBS="-L$LIB_BASE -Wl,-rpath,$LIB_BASE -lta-lib -lm"
+else
+  echo "ERROR: TA-Lib library not found under $LIB_BASE" >&2
+  exit 1
+fi
+
+# 6) Guarantee <ta_libc.h> is reachable even if CFLAGS came without /ta-lib
+cat > conftest.c <<'EOF'
+#include <ta_libc.h>
+int main(void){return 0;}
+EOF
+if ! $CC_BIN -c conftest.c $PKG_CPPFLAGS >/dev/null 2>&1; then
+  for base in $(printf "%s\n" "$PKG_CPPFLAGS" | tr ' ' '\n' | sed -n 's/^-I//p'); do
+    if [ -d "$base/ta-lib" ]; then
+      PKG_CPPFLAGS="$PKG_CPPFLAGS -I$base/ta-lib"
+    fi
+  done
+fi
+rm -f conftest.c conftest.o
+
+[ -n "$PKG_LIBS" ] || { echo "ERROR: empty PKG_LIBS"; exit 1; }
+
+# paths are relative to src/ (where Makevars lives)
+REL=ta-lib/local
+PKG_CPPFLAGS="-I$REL/include -I$REL/include/ta-lib"
+PKG_LIBS="$REL/lib/libta-lib.a -lm"
+
 
 # 5) Emit Makevars
 echo "configure: writing src/Makevars"

@@ -22,7 +22,7 @@
 // R definition clashes
 // clang-format off
 #define Int32 TA_Lib_Int32
-  #include <ta-lib/ta_libc.h>
+  #include <ta_libc.h>
 #undef Int32
 // clang-format on
 
