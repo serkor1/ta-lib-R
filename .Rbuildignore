@@ -35,6 +35,7 @@ man-roxygen
 ^src/ta-lib/src/ta_common/.libs
 ^src/ta-lib/src/ta_func/.libs
 ^src/ta-lib/src/tools/ta_regtest/.libs
+^src/ta-lib/_build/Makefile
 
 ### Build files
 ^src/ta-lib/.*\.(?:o|lo|la|so)$
