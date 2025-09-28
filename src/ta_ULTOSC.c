@@ -78,7 +78,7 @@ SEXP impl_ta_ULTOSC(
       p3,
       &outBeg, 
       &outNB, 
-      output_ptr + outBeg
+      output_ptr
     );
     // clang-format on
 
