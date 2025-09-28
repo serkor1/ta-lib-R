@@ -72,7 +72,7 @@ SEXP impl_ta_STOCH(
                minimum_lookback);
 
     for (size_t i = 0; i < n; ++i) {
-      outSlowK[i] = outSlowK[i] = NA_REAL;
+      outSlowK[i] = outSlowD[i] = NA_REAL;
     }
 
   } else {
