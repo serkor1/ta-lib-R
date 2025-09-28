@@ -52,12 +52,17 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-      - name: Install TA-Lib (Unix)
-        if: runner.os != 'windows'
+      - name: Install TA-Lib (Ubuntu)
+        if: runner.os == 'ubuntu'
         run: |
           curl -sSL -o ta-lib_0.6.4_amd64.deb \
             https://github.com/TA-Lib/ta-lib/releases/download/v0.6.4/ta-lib_0.6.4_amd64.deb
           sudo dpkg -i ta-lib_0.6.4_amd64.deb || sudo apt-get -y -f install
+
+      - name: Install TA-Lib (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install ta-lib
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
