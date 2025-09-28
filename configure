@@ -77,7 +77,7 @@ if [ "$USE_SYSTEM" -eq 0 ]; then
   ## NOTE: this builds a temporary
   ##       directory to build TA-Lib
   ##       without this step .Rbuildignore will riot.
-  BUILDROOT="$(mktemp -d "${TMPDIR:-/tmp}/talib-build-temporary")"
+  BUILDROOT="$(mktemp -d "${TMPDIR:-/tmp}/talib-build-XXXXXXXX")"
   trap 'rm -rf "$BUILDROOT"' EXIT INT HUP TERM
 
   if command -v cmake >/dev/null 2>&1 && [ -f "$TA_SRC/CMakeLists.txt" ]; then

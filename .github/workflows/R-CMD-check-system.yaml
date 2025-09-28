@@ -53,7 +53,7 @@ jobs:
           use-public-rspm: true
 
       - name: Install TA-Lib (Ubuntu)
-        if: runner.os == 'ubuntu'
+        if: runner.os == 'Linux'
         run: |
           curl -sSL -o ta-lib_0.6.4_amd64.deb \
             https://github.com/TA-Lib/ta-lib/releases/download/v0.6.4/ta-lib_0.6.4_amd64.deb
