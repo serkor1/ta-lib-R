@@ -19,30 +19,22 @@ USE_SYSTEM=0
 ##    This is always the preferred way 
 ##    of installing {talib}
 if command -v pkg-config >/dev/null 2>&1 && pkg-config --exists ta-lib; then
-  PKG_CPPFLAGS="$(pkg-config --cflags ta-lib)"
-  PKG_LIBS="$(pkg-config --libs ta-lib)"
-  for d in $(pkg-config --libs-only-L ta-lib | sed 's/-L//g'); do
-    PKG_LIBS="$PKG_LIBS -Wl,-rpath,$d"
-  done
-  EXTRA_INC=""
-  for tok in $PKG_CPPFLAGS; do
-    case "$tok" in
-      -I*/ta-lib)
-        p=${tok#-I}; EXTRA_INC="$EXTRA_INC -I$(dirname "$p")"
-        ;;
-    esac
-  done
-  PKG_CPPFLAGS="$PKG_CPPFLAGS$EXTRA_INC"
+  incdir="$(pkg-config --variable=includedir ta-lib)"
+  libdir="$(pkg-config --variable=libdir ta-lib)"
+  PKG_CPPFLAGS="-I$incdir -I$incdir/ta-lib"
+  PKG_LIBS="-L$libdir -lta-lib"
+  case "$(uname -s)" in
+    Linux) PKG_LIBS="$PKG_LIBS -Wl,-rpath,$libdir" ;;
+  esac
   USE_SYSTEM=1
-  echo "configure: using system TA-Lib via pkg-config"
+  echo "configure: using system TA-Lib (inc=$incdir lib=$libdir)"
 fi
 
 ## 2.1) check if it works
 ##      by a simple program
 if [ "$USE_SYSTEM" -eq 0 ]; then
-  echo "configure: probing for system TA-Lib"
   cat > conftest.c <<'EOF'
-#include <ta_libc.h>
+#include <ta-lib/ta_libc.h>
 int main(void){ return 0; }
 EOF
   INC_DIRS="/usr/local/include/ta-lib /usr/include/ta-lib /opt/homebrew/include/ta-lib /opt/local/include/ta-lib"
@@ -54,12 +46,12 @@ EOF
         CPPTRY=""; LIBTRY="-l$lname"
         [ -n "$inc" ]  && CPPTRY="-I$inc -I$(dirname "$inc")"
         [ -n "$libd" ] && LIBTRY="-L$libd $LIBTRY"
-        if $CC_BIN conftest.c -o conftest $CPPTRY $LIBTRY -lm >/dev/null 2>&1; then
+        if ${CC:-cc} conftest.c -o conftest $CPPTRY $LIBTRY -lm >/dev/null 2>&1; then
           PKG_CPPFLAGS="$CPPTRY"
           PKG_LIBS="$LIBTRY -lm"
-          [ -n "$libd" ] && PKG_LIBS="$PKG_LIBS -Wl,-rpath,$libd"
+          [ -n "$libd" ] && { case "$(uname -s)" in Linux) PKG_LIBS="$PKG_LIBS -Wl,-rpath,$libd";; esac; }
           USE_SYSTEM=1
-          echo "configure: found TA-Lib${inc:+ inc=$inc}${libd:+ lib=$libd} name=$lname"
+          echo "configure: found system TA-Lib inc=$inc lib=$libd name=$lname"
           break 3
         fi
       done
