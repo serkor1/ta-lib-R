@@ -59,6 +59,12 @@ jobs:
             https://github.com/TA-Lib/ta-lib/releases/download/v0.6.4/ta-lib_0.6.4_amd64.deb
           sudo dpkg -i ta-lib_0.6.4_amd64.deb || sudo apt-get -y -f install
 
+      - name: Set up MSVC for x86
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: amd64_x86
+
       - name: Install TA-Lib (Windows)
         if: runner.os == 'Windows'
         shell: cmd
