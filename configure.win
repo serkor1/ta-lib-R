@@ -1,7 +1,6 @@
 #!/bin/sh
 set -eu
 
-# 1) Setup
 TA_SRC="src/ta-lib"
 TA_PREFIX="$(cd "$TA_SRC" 2>/dev/null && pwd)/local"
 PKG_CPPFLAGS=""
@@ -15,7 +14,7 @@ nprocs() {
   else echo 2; fi
 }
 
-# 2) Try system TA-Lib via pkg-config (MSYS2 environments)
+# 1) Prefer system TA-Lib (MSYS2)
 if command -v pkg-config >/dev/null 2>&1 && pkg-config --exists ta-lib; then
   PKG_CPPFLAGS="$(pkg-config --cflags ta-lib)"
   PKG_LIBS="$(pkg-config --libs ta-lib)"   # no rpath on Windows
@@ -23,42 +22,29 @@ if command -v pkg-config >/dev/null 2>&1 && pkg-config --exists ta-lib; then
   echo "configure.win: using system TA-Lib via pkg-config"
 fi
 
-# 3) Probe for system TA-Lib without pkg-config
-#    Search typical Mingw prefixes; reject MSVC .lib binaries implicitly.
+# 2) Probe system TA-Lib without pkg-config (MinGW paths only)
 if [ "$USE_SYSTEM" -eq 0 ]; then
   echo "configure.win: probing for system TA-Lib"
   cat > conftest.c <<'EOF'
 #include <ta_libc.h>
 int main(void){ return 0; }
 EOF
-
-  # Prefer the active MSYS2 root if available
   ROOTS=""
-  case "${MSYSTEM:-}" in
-    UCRT64)  ROOTS="/ucrt64" ;;
-    MINGW64) ROOTS="/mingw64" ;;
-    MINGW32) ROOTS="/mingw32" ;;
-    CLANG64) ROOTS="/clang64" ;;
-  esac
+  case "${MSYSTEM:-}" in UCRT64) ROOTS="/ucrt64";; MINGW64) ROOTS="/mingw64";; MINGW32) ROOTS="/mingw32";; CLANG64) ROOTS="/clang64";; esac
   ROOTS="$ROOTS /usr/local /usr"
-
-  # Optional user hints
   [ -n "${TA_LIB_ROOT:-}" ] && ROOTS="$TA_LIB_ROOT $ROOTS"
   [ -n "${TA_LIB_DIR:-}"  ] && ROOTS="$TA_LIB_DIR $ROOTS"
 
   for r in $ROOTS; do
-    INC_CAND="$r/include/ta-lib"
-    LIBDIRS="$r/lib $r/lib64"
-    [ -d "$INC_CAND" ] || continue
-    for libd in $LIBDIRS; do
+    inc="$r/include/ta-lib"; [ -d "$inc" ] || continue
+    for libd in "$r/lib" "$r/lib64"; do
       [ -d "$libd" ] || continue
-      # Prefer Mingw import/static archives (*.a). Do not try MSVC *.lib.
       for lname in ta-lib ta_lib; do
-        if "$CC_BIN" conftest.c -o conftest -I"$INC_CAND" -I"$(dirname "$INC_CAND")" -L"$libd" -l"$lname" >/dev/null 2>&1; then
-          PKG_CPPFLAGS="-I$INC_CAND -I$(dirname "$INC_CAND")"
+        if "$CC_BIN" conftest.c -o conftest -I"$inc" -I"$(dirname "$inc")" -L"$libd" -l"$lname" >/dev/null 2>&1; then
+          PKG_CPPFLAGS="-I$inc -I$(dirname "$inc")"
           PKG_LIBS="-L$libd -l$lname"
           USE_SYSTEM=1
-          echo "configure.win: found TA-Lib at inc=$INC_CAND lib=$libd name=$lname"
+          echo "configure.win: found TA-Lib inc=$inc lib=$libd name=$lname"
           break 3
         fi
       done
@@ -67,51 +53,41 @@ EOF
   rm -f conftest conftest.exe
 fi
 
-# 4) Vendored build (CMake ≥ 3.30 required by upstream on Windows)
+# 3) Vendored build if needed
 if [ "$USE_SYSTEM" -eq 0 ]; then
   echo "configure.win: building vendored TA-Lib"
   [ -d "$TA_SRC" ] || { echo "ERROR: $TA_SRC not found" >&2; exit 1; }
 
   command -v cmake >/dev/null 2>&1 || { echo "ERROR: cmake not found" >&2; exit 1; }
-  set +e
-  set -- $(cmake --version | sed -n '1s/.* version \([0-9][0-9]*\)\.\([0-9][0-9]*\).*/\1 \2/p')
-  set -e
-  CM_MAJ=${1:-0}; CM_MIN=${2:-0}
-  if [ "$CM_MAJ" -lt 3 ] || { [ "$CM_MAJ" -eq 3 ] && [ "$CM_MIN" -lt 30 ]; }; then
-    echo "ERROR: Need CMake >= 3.30 on Windows; found ${CM_MAJ}.${CM_MIN}" >&2
-    exit 1
+
+  # Satisfy upstream CMakeLists’ Platform check
+  if [ -z "${Platform:-}" ]; then
+    case "$(uname -m)" in x86_64|amd64) export Platform=x64 ;; aarch64) export Platform=arm64 ;; i*86) export Platform=x86 ;; *) export Platform=x64 ;; esac
   fi
 
   BUILDROOT="$(mktemp -d "${TMPDIR:-/tmp}/talib-win-build-XXXXXX")"
   trap 'rm -rf "$BUILDROOT"' EXIT INT HUP TERM
 
-  # Upstream expects Platform env when WIN32; set a sane default
-  if [ -z "${Platform:-}" ]; then
-    case "$(uname -m)" in
-      x86_64|amd64) export Platform=x64 ;;
-      aarch64)      export Platform=arm64 ;;
-      i*86)         export Platform=x86 ;;
-      *)            export Platform=x64 ;;
-    esac
-  fi
-
-  GEN="MinGW Makefiles"
-  command -v ninja >/dev/null 2>&1 && GEN="Ninja"
+  GEN="MinGW Makefiles"; command -v ninja >/dev/null 2>&1 && GEN="Ninja"
 
   cmake -S "$TA_SRC" -B "$BUILDROOT/cmake" -G "$GEN" \
     -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_INSTALL_PREFIX="$TA_PREFIX" \
+    -DCMAKE_INSTALL_PREFIX="$TA_PREFIX" \  # ignored by upstream on WIN32
     -DBUILD_SHARED_LIBS=OFF \
     -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
     -DCMAKE_C_FLAGS_RELEASE="-O3 -march=native" \
     -DBUILD_DEV_TOOLS=OFF
 
-  cmake --build "$BUILDROOT/cmake" --target install -- -j"$(nprocs)"
+  cmake --build "$BUILDROOT/cmake" --config Release -- -j"$(nprocs)"
+  # Force our prefix at install time (overrides CMakeLists’ Program Files path)
+  cmake --install "$BUILDROOT/cmake" --config Release --prefix "$TA_PREFIX"
 
-  # Emit flags for vendored install (relative to src/)
+  # Emit flags (relative to src/)
   REL="ta-lib/local"
   PKG_CPPFLAGS="-I$REL/include -I$REL/include/ta-lib"
-  if   [ -f "$TA_SRC/local/lib/libta-lib.a" ]; then
+  if   [ -f "$TA_SRC/local/lib/libta-lib-static.a" ]; then
+    PKG_LIBS="$REL/lib/libta-lib-static.a"
+  elif [ -f "$TA_SRC/local/lib/libta-lib.a" ]; then
     PKG_LIBS="$REL/lib/libta-lib.a"
   elif [ -f "$TA_SRC/local/lib/libta-lib.dll.a" ]; then
     PKG_LIBS="-L$REL/lib -lta-lib"
@@ -121,7 +97,7 @@ if [ "$USE_SYSTEM" -eq 0 ]; then
   fi
 fi
 
-# 5) Sanity check header
+# 4) Sanity check header
 cat > conftest.c <<'EOF'
 #include <ta_libc.h>
 int main(void){return 0;}
@@ -133,7 +109,7 @@ EOF
 }
 rm -f conftest.c conftest.o
 
-# 6) Write Makevars.win
+# 5) Write Makevars.win
 echo "configure.win: writing src/Makevars.win"
 cat > src/Makevars.win <<EOF
 # autogenerated by configure.win
