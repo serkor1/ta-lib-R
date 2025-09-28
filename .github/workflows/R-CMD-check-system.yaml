@@ -25,10 +25,10 @@ jobs:
       matrix:
         config:
           # ignore macos and windows for now
-          # - {os: macos-latest,   r: 'release'}
+          - {os: macos-latest,   r: 'release'}
 
           # Windows
-          - {os: windows-latest, r: 'release'}
+          # - {os: windows-latest, r: 'release'}
         
           # Ubuntu
           # - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
@@ -58,47 +58,6 @@ jobs:
           curl -sSL -o ta-lib_0.6.4_amd64.deb \
             https://github.com/TA-Lib/ta-lib/releases/download/v0.6.4/ta-lib_0.6.4_amd64.deb
           sudo dpkg -i ta-lib_0.6.4_amd64.deb || sudo apt-get -y -f install
-
-      - name: Install TA-Lib (Windows)
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          $rt = (Get-ChildItem 'C:\rtools*' -Directory | Sort-Object Name -Descending | Select-Object -First 1).FullName
-          & "$rt\usr\bin\bash.exe" -lc '
-            set -euxo pipefail
-            export PATH=/ucrt64/bin:/usr/bin:$PATH
-            pacman -Sy --noconfirm --needed \
-              mingw-w64-ucrt-x86_64-toolchain \
-              mingw-w64-ucrt-x86_64-cmake \
-              mingw-w64-ucrt-x86_64-ninja \
-              mingw-w64-ucrt-x86_64-pkgconf \
-              git
-            export Platform=x64
-            git clone --depth=1 https://github.com/TA-Lib/ta-lib /tmp/ta-lib
-            cmake -S /tmp/ta-lib -B /tmp/ta-build -G Ninja \
-                  -DCMAKE_BUILD_TYPE=Release \
-                  -DCMAKE_INSTALL_PREFIX=/ucrt64 \
-                  -DBUILD_DEV_TOOLS=OFF -DBUILD_SHARED_LIBS=OFF
-            cmake --build /tmp/ta-build -j2
-            cmake --install /tmp/ta-build
-
-            pkg-config --modversion ta-lib
-          '
-          "TA_INCLUDE_PATH=$rt\ucrt64\include"         | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
-          "TA_LIBRARY_PATH=$rt\ucrt64\lib"             | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
-          "PKG_CONFIG_PATH=$rt\ucrt64\lib\pkgconfig"   | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
-
-
-      # - name: Set up MSVC for x86
-      #   if: runner.os == 'Windows'
-      #   uses: ilammy/msvc-dev-cmd@v1
-      #   with:
-      #     arch: amd64_x86
-
-      # - name: Install TA-Lib (Windows)
-      #   if: runner.os == 'Windows'
-      #   shell: cmd
-      #   run: tools/build_talib_windows.cmd
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
