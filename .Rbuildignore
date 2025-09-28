@@ -38,7 +38,9 @@ man-roxygen
 ^src/ta-lib/_build/Makefile
 
 ### Build files
-^src/ta-lib/.*\.(?:o|lo|la|so)$
+^src/ta-lib/.*\.(?:o|lo|la|so|dll)$
+^src/ta-lib/local/bin/.*\.(?:o|lo|la|so|dll)$
+^src/ta-lib/local/lib/.*\.(?:o|lo|la|so|dll)$
 # NOTE: 
 # * if .a is removed it will not install
 #       this needs to be fixed in configure (I think)
