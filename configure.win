@@ -72,7 +72,7 @@ if [ "$USE_SYSTEM" -eq 0 ]; then
 
   cmake -S "$TA_SRC" -B "$BUILDROOT/cmake" -G "$GEN" \
     -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_INSTALL_PREFIX="$TA_PREFIX" \  # ignored by upstream on WIN32
+    -DCMAKE_INSTALL_PREFIX="$TA_PREFIX" \
     -DBUILD_SHARED_LIBS=OFF \
     -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
     -DCMAKE_C_FLAGS_RELEASE="-O3 -march=native" \
