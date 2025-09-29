@@ -38,7 +38,8 @@ clean: ## Remove artifacts
 	@Rscript -e "try(remove.packages('$(package_name)'))"
 
 purge: clean ## Remove TA-Lib arifacts
-	@cd src/ta-lib && make uninstall && make maintainer-clean
+	@git -C src/ta-lib restore --staged --worktree .
+	@git -C src/ta-lib clean -fdx
 
 fmt: ## Format code
 	@clang-format -style=LLVM -dump-config > .clang-format && clang-format -i src/*.c src/*.h
