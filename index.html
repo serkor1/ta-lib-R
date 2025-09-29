@@ -82,14 +82,11 @@
 <div class="section level3">
 <h3 id="development-version">Development version<a class="anchor" aria-label="anchor" href="#development-version"></a>
 </h3>
-<p>The development version can be installed via:<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;Requires that &lt;a href=""&gt;TA-Lib&lt;/a&gt; is preinstalled.&lt;/p&gt;'><sup>1</sup></a></p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"serkor1/ta-lib-R"</span><span class="op">)</span></span></code></pre></div>
-<p>Or it can be installed by cloning the repository:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">git</span> clone <span class="at">--recursive</span> https://github.com/serkor1/ta-lib-R.git</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="bu">cd</span> ta-lib-R</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="fu">make</span> build</span></code></pre></div>
-<p>Use <code>make</code> for all package-level build-tools.</p>
+<p>The development version can be installed by recursive cloning the repository and using the available build tools as follows:</p>
+<pre class="shell"><code>git clone --recursive https://github.com/serkor1/ta-lib-R.git
+cd ta-lib-R
+make build</code></pre>
+<p>Use <code>make</code> to see package-level build-tools.</p>
 </div>
 </div>
 <div class="section level2">
@@ -99,7 +96,7 @@
 <h3 id="indicators">Indicators<a class="anchor" aria-label="anchor" href="#indicators"></a>
 </h3>
 <p>This is a basic example which shows you how to solve a common problem:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## calculate bollinger</span></span>
 <span><span class="co">## bands</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span></span>
@@ -107,18 +104,18 @@
 <span>    <span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="reference/BTC.html">BTC</a></span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co">#&gt;         upper   middle    lower</span></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co">#&gt; 361 106812.14 99260.81 91709.48</span></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt; 362 104471.11 98218.27 91965.44</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt; 363 100874.66 97021.36 93168.05</span></span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; 364  99891.29 96519.09 93146.89</span></span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt; 365  99875.94 96136.93 92397.91</span></span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; 366  99720.50 95622.57 91524.65</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co">#&gt;         upper   middle    lower</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; 361 106812.14 99260.81 91709.48</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt; 362 104471.11 98218.27 91965.44</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; 363 100874.66 97021.36 93168.05</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; 364  99891.29 96519.09 93146.89</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt; 365  99875.94 96136.93 92397.91</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt; 366  99720.50 95622.57 91524.65</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="charting">Charting<a class="anchor" aria-label="anchor" href="#charting"></a>
 </h3>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://serkor1.github.io/ta-lib-R/">talib</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## calculate bollinger</span></span>
@@ -166,13 +163,11 @@
 <p>Please note that <a href="">{talib}</a> is released with a <a href="https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html" class="external-link">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
 </div>
 </div>
-
-
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/serkor1/ta-lib-R/" class="external-link">Browse source code</a></li>
-<li><a href="https://github.com/serkor1/ta-lib-R" class="external-link">Report a bug</a></li>
+<li><a href="https://github.com/serkor1/ta-lib-R/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
@@ -210,7 +205,6 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/serkor1/ta-lib-R/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/serkor1/ta-lib-R/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://github.com/serkor1/ta-lib-R/actions/workflows/R-CMD-check-system.yaml" class="external-link"><img src="https://github.com/serkor1/ta-lib-R/actions/workflows/R-CMD-check-system.yaml/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://app.codecov.io/gh/serkor1/ta-lib-R" class="external-link"><img src="https://codecov.io/gh/serkor1/ta-lib-R/graph/badge.svg" alt="Codecov test coverage"></a></li>
 <li><a href="https://CRAN.R-project.org/package=talib" class="external-link"><img src="https://www.r-pkg.org/badges/version/talib" alt="CRAN status"></a></li>
 <li><a href="https://r-pkg.org/pkg/talib" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/last-month/talib?color=blue" alt="CRAN RStudio mirror downloads"></a></li>
