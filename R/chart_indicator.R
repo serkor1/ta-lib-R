@@ -19,6 +19,21 @@
 #'
 #' @author Serkan Korkmaz
 indicator <- function(FUN, ...) {
+	## resolve function name of no
+	## title have been passed
+	title <- input_name(
+		substitute(
+			FUN
+		)
+	)
+
+	## clean up title
+	if (any(grepl(x = title, pattern = "_"))) {
+		title <- to_title(
+			title
+		)
+	}
+
 	## plotting environment
 	## does exist
 	chart_called <- TRUE
@@ -39,6 +54,24 @@ indicator <- function(FUN, ...) {
 		## object to trigger .plotly
 		## method downstream
 		plt <- plotly::plot_ly()
+
+		if (has_arg(idx)) {
+			idx <- eval.parent(
+				match.call()[["idx"]]
+			)
+		} else {
+			idx <- NULL
+		}
+
+		.plotting_environment$idx$label <- idx
+
+		if (has_arg(data)) {
+			data <- eval.parent(
+				match.call()[["data"]]
+			)
+		} else {
+			stop("'data'-argument has to be provided.")
+		}
 	}
 
 	## construct {plotly}-object
@@ -79,13 +112,18 @@ indicator <- function(FUN, ...) {
 		)
 		.plotting_environment$chart <- fig
 
-		return(fig)
+		return(
+			fig
+		)
 	}
 
 	## reconstruct charting
 	## as if called from chart()
-	.chart_layout(
+	outcome <- .chart_layout(
 		x = outcome,
-		title_text = "title_text"
+		title_text = title,
+		idx = if (is.null(idx)) 1:nrow(data) else idx
 	)
+
+	outcome
 }

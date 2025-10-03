@@ -1,4 +1,9 @@
-.chart_layout <- function(x, title_text, ...) {
+.chart_layout <- function(
+	x,
+	title_text,
+	idx = NULL,
+	...
+) {
 	## extract chart theme
 	## from R/chart_options.R
 	chart_theme <- .chart_theme()
@@ -18,9 +23,11 @@
 			color = chart_theme$font_color
 		),
 		yaxis = list(
+			title = '',
 			gridcolor = chart_theme$grid_color
 		),
 		xaxis = list(
+			title = '',
 			gridcolor = chart_theme$grid_color,
 			rangeslider = list(
 				visible = getOption(
@@ -31,7 +38,10 @@
 					"talib.chart.slider.size",
 					default = 0.05
 				)
-			)
+			),
+			tickvals = seq_along(idx),
+			tickmode = "auto",
+			ticktext = idx
 		),
 
 		## legend start
