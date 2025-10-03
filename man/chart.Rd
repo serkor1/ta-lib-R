@@ -4,12 +4,14 @@
 \alias{chart}
 \title{Chart}
 \usage{
-chart(x, type = "candlestick", ...)
+chart(x, type = "candlestick", idx = NULL, title, ...)
 }
 \arguments{
 \item{x}{An OHLC object to be charted.}
 
 \item{type}{A \link{character} of \link{length} 1. Either \code{candlestick} or \code{ohlc}.}
+
+\item{idx}{A \link{vector} with the same \link{length} of \code{x}. If passed it will replace the x-axis labels. See \code{vignette("charting")} for more details.}
 
 \item{...}{Parameters passed into \link[plotly:plot_ly]{plotly::plot_ly}}
 }

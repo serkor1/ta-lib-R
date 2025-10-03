@@ -23,6 +23,7 @@
 #'
 #' @param x An OHLC object to be charted.
 #' @param type A [character] of [length] 1. Either `candlestick` or `ohlc`.
+#' @param idx A [vector] with the same [length] of `x`. If passed it will replace the x-axis labels. See `vignette("charting")` for more details.
 #' @param ... Parameters passed into [plotly::plot_ly]
 #'
 #' @example man/examples/charting.R
@@ -31,6 +32,8 @@
 chart <- function(
 	x,
 	type = "candlestick",
+	idx = NULL,
+	title,
 	...
 ) {
 	## clear env if called
@@ -54,6 +57,7 @@ chart.default <- function(
 	x,
 	type = "candlestick",
 	idx = NULL,
+	title,
 	...
 ) {
 	## default chart function
@@ -71,6 +75,15 @@ chart.default <- function(
 	##    3. chart: The user-facing TA chart.
 	##              This is empty and is constructed on the fly
 	##              via plotly::subplot.
+
+	## extract title
+	if (missing(title)) {
+		chart_title <- input_name(
+			substitute(x)
+		)
+	} else {
+		chart_title <- title
+	}
 	.color_values <- .chart_theme()
 	.plotting_environment$sub <- .plotting_environment$chart <- list()
 
@@ -83,6 +96,10 @@ chart.default <- function(
 	x <- as.data.frame(x)
 	x$idx <- if (is.null(idx)) 1:nrow(x) else idx
 	.plotting_environment$x <- data_frame <- x
+	.plotting_environment$idx <- list(
+		label = x$idx,
+		index = seq_along(x$idx)
+	)
 
 	## generate price chart
 	## based on type. can be either
@@ -137,10 +154,17 @@ chart.default <- function(
 	.plotting_environment$main <- .chart_layout(
 		x = price_chart,
 		title_text = sprintf(
-			"<b>Ticker:</b> %s <br><sub><b>Period:</b> %s</sub>",
-			deparse(substitute(x)),
-			"Period Value"
-		)
+			fmt = "<b>Ticker:</b> %s <br><sub><b>Period:</b> %s </sub>",
+			chart_title,
+			paste(
+				.plotting_environment$idx$label[1],
+				"-",
+				.plotting_environment$idx$label[length(
+					.plotting_environment$idx$label
+				)]
+			)
+		),
+		idx = idx
 	)
 
 	.plotting_environment$main
