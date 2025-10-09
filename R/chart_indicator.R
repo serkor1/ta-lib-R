@@ -76,6 +76,17 @@ indicator <- function(FUN, ...) {
 
 	## construct {plotly}-object
 	## based on FUN
+	##
+	## Note to future self:
+	##
+	## You could add chart layouting here
+	## to avoid having to do it for each plotly method
+	## but it would require you to add an identifier
+	## of whether its a subplot or not.
+	##
+	## `outcome` by itself is just directly returned
+	## and is not attached to the plotting environment
+	## downstream
 	outcome <- do.call(
 		what = FUN,
 		args = list(
@@ -108,7 +119,12 @@ indicator <- function(FUN, ...) {
 				margin = 0.02,
 				heights = heights
 			),
-			showlegend = TRUE
+			showlegend = TRUE,
+			yaxis = list(title = ''),
+			xaxis = list(
+				title = '',
+				tickmode = "auto"
+			)
 		)
 		.plotting_environment$chart <- fig
 

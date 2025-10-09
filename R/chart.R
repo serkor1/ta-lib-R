@@ -94,7 +94,22 @@ chart.default <- function(
 	## NOTE: it is also a hard requirement on
 	##       {plotly} side
 	x <- as.data.frame(x)
-	x$idx <- if (is.null(idx)) 1:nrow(x) else idx
+	x$idx <- if (is.null(idx)) {
+		## check if rownames can be
+		## converted to integer
+		is_valid <- suppressWarnings(
+			!is.na(as.integer(rownames(x)[1]))
+		)
+		if (is_valid) {
+			as.integer(
+				rownames(x)
+			)
+		} else {
+			1:nrow(x)
+		}
+	} else {
+		idx
+	}
 	.plotting_environment$x <- data_frame <- x
 	.plotting_environment$idx <- list(
 		label = x$idx,
@@ -146,6 +161,15 @@ chart.default <- function(
 				alpha = 1 ## This should be controlled from .chart_theme()
 			)
 		),
+
+		## remove legend
+		## there is no reason to display
+		## it in the legend.
+		##
+		## If there is demand for it we can
+		## implement a heuristic to determine intervals
+		## for 1h, 2h, etc. Similar to {cryptoQuotes}
+		showlegend = FALSE,
 		...
 	)
 
