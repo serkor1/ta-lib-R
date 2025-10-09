@@ -261,8 +261,8 @@ moving_average_convergence_divergence.plotly <- function(
 	signal = 9,
 	...
 ) {
-	## prepare series
-	## from
+	## prepare univariate
+	## series for MACD
 	x <- series(
 		x = x,
 		formula = cols,
@@ -270,61 +270,94 @@ moving_average_convergence_divergence.plotly <- function(
 		...
 	)
 
-	## construct indicator
-	##
+	## calculator indicator
+	## and return as data.frame
 	.indicator <- moving_average_convergence_divergence.default(
 		x = x,
-		cols = cols,
+		cols = rebuild_formula(
+			names(x)
+		),
 		fast = fast,
 		slow = slow,
 		signal = signal
 	)
 
-	.indicator$idx <- 1:nrow(.indicator)
-	.indicator$direction <- .indicator$signal >= .indicator$macd
-
-	## theme
-	chart_theme <- .chart_theme()
-	## generate indicator plot
-	output <- plotly::plot_ly(
-		data = .indicator,
-		showlegend = FALSE,
-		name = 'MACD',
-		x = ~idx,
-		y = ~histogram,
-		color = ~direction,
-		colors = c(
-			chart_theme$bull_color,
-			chart_theme$bear_color
-		),
-		type = 'bar'
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		x
 	)
 
-	output <- plotly::add_lines(
-		output,
+	## calculate directions for bull
+	## and bear candles
+	.indicator$direction <- .indicator$signal >= .indicator$macd
+
+	## generate plotly object
+	## of the indicator
+	chart_theme <- .chart_theme()
+
+	plotly_object <- plotly::layout(
+		plotly::plot_ly(
+			data = .indicator,
+			showlegend = FALSE,
+			name = 'MACD',
+			x = ~idx,
+			y = ~histogram,
+			color = ~direction,
+			colors = c(
+				chart_theme$bull_color,
+				chart_theme$bear_color
+			),
+			type = 'bar'
+		),
+		xaxis = list(
+			tickvals = seq_along(.indicator$idx),
+			ticktext = .indicator$idx,
+			tickmode = "auto"
+		)
+	)
+
+	plotly_object <- plotly::add_lines(
+		plotly_object,
 		x = ~idx,
 		y = ~signal,
 		data = .indicator,
-		inherit = FALSE
+		inherit = FALSE,
+		name = sprintf(
+			fmt = "Signal(%d)",
+			if (is.list(signal)) signal$n else signal
+		)
 	)
 
-	output <- plotly::add_lines(
-		output,
+	plotly_object <- plotly::add_lines(
+		plotly_object,
 		x = ~idx,
 		y = ~macd,
 		data = .indicator,
-		inherit = FALSE
+		inherit = FALSE,
+		name = sprintf(
+			fmt = "MACD(%d, %d)",
+			if (is.list(fast)) fast$n else fast,
+			if (is.list(slow)) slow$n else slow
+		)
 	)
 
-	output <- add_title(
-		x = output,
-		text = "MACD"
-	)
+	if (!is.null(.plotting_environment$main)) {
+		plotly_object <- add_title(
+			x = plotly_object,
+			text = sprintf(
+				fmt = "MACD(%d, %d, %d)",
+				if (is.list(fast)) fast$n else fast,
+				if (is.list(slow)) slow$n else slow,
+				if (is.list(signal)) signal$n else signal
+			)
+		)
+	}
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
-		list(output)
+		list(plotly_object)
 	)
 
-	output
+	plotly_object
 }

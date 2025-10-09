@@ -135,15 +135,14 @@ stochastic.plotly <- function(
 	fastk = 5,
 	slowk = SMA(n = 10),
 	slowd = SMA(n = 8),
+	lower = 20,
+	upper = 80,
+	color = "lightgray",
+	alpha = 0.7,
 	...
 ) {
-	# slowk <- map_maType_call(substitute(slowk))
-	# slowd <- map_maType_call(substitute(slowd))
-	# slowk <- substitute(slowk)
-	# slowd <- substitute(slowd)
-	# slowk <- map_maType_call(slowk)
-	# slowd <- map_maType_call(slowd)
 	## construct HLC series
+	## for stochastic
 	HLC <- as.data.frame(
 		series(
 			x = x,
@@ -153,52 +152,62 @@ stochastic.plotly <- function(
 		)
 	)
 
-	.indicator <- as.data.frame(
-		.Call(
-			"impl_ta_STOCH",
-			HLC[[1]],
-			HLC[[2]],
-			HLC[[3]],
-			as.integer(fastk),
-			as.integer(slowk$n),
-			as.integer(slowk$maType),
-			as.integer(slowd$n),
-			as.integer(slowd$maType)
-		)
+	## calculate stochastic
+	## and return as data.frame
+	.indicator <- stochastic.default(
+		x = HLC,
+		cols = rebuild_formula(
+			x = names(HLC)
+		),
+		fastk = fastk,
+		slowk = slowk,
+		slowd = slowd
 	)
 
-	.indicator$idx <- 1:nrow(.indicator)
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		HLC
+	)
 
-	## Create
-	output <- plotly::plot_ly(
+	## generate plotly object
+	## of the indicator
+	plotly_object <- subchart(
 		data = .indicator,
-		x = ~idx,
 		y = ~slowk,
 		type = "scatter",
 		mode = "lines",
-		# line = list(color = ad_col),
-		name = "Stochastic %K",
-		legendgroup = "stochastic",
+		name = "Stocastic %K",
+		legendgroup = "STOCH",
 		showlegend = TRUE
 	)
 
-	output <- plotly::add_lines(
-		output,
+	plotly_object <- add_ribbons(
+		plotly_object = plotly_object,
+		data = .indicator,
 		x = ~idx,
 		y = ~slowd,
-		name = "Stochastic %D",
-		legendgroup = "stochastic",
-		showlegend = TRUE
+		ymin = rep(lower, nrow(.indicator)),
+		ymax = rep(upper, nrow(.indicator)),
+		color = color,
+		alpha = alpha,
+		showlegend = TRUE,
+		dash = c("solid", "dot", "dot"),
+		name = c("Stochastic %D", "Lower", "Upper"),
+		legendgroup = "STOCH"
 	)
 
-	output <- add_title(
-		x = output,
-		text = "Stochastic"
-	)
+	if (main_chart_exists()) {
+		plotly_object <- add_title(
+			x = plotly_object,
+			text = "Stochastic"
+		)
+	}
+
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
-		list(output)
+		list(plotly_object)
 	)
 
-	output
+	plotly_object
 }

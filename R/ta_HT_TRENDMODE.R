@@ -145,44 +145,53 @@ ht_trendmode.plotly <- function(
 	cols,
 	...
 ) {
-	## prepare series
-	## from
+	## prepare univariate
+	## series for the the
+	## trendmode
 	x <- as.data.frame(
 		series(
 			x = x,
-			formula = ~ open + high + low + close,
-			default = ~ open + high + low + close,
+			formula = cols,
+			default = ~open,
 			...
 		)
 	)
 
-	## indicator
+	## calculate the trendmode
+	## and return as data.frame
 	.indicator <- ht_trendmode.default(
 		x = x,
-		cols = cols
+		cols = rebuild_formula(
+			names(x)
+		)
 	)
 
-	.indicator$idx <- 1:nrow(.indicator)
-	.indicator$mid_price <- rowMeans(
-		x[, c(2, 4)]
+	## add idx based on the
+	## univariate series
+	.indicator$idx <- add_idx(
+		x
 	)
 
-	## locate all trend modes
-	trend_idx <- which(.indicator[[1]] == 1)
-
-	.plotting_environment$main <- plotly::add_trace(
-		.plotting_environment$main,
-		x = ~ idx[trend_idx],
-		y = ~ .indicator$mid_price[trend_idx],
+	plotly_object <- subchart(
+		data = .indicator,
+		y = ~dominant_cycle_period,
 		type = "scatter",
-		mode = "markers",
-		marker = list(
-			symbol = "star",
-			size = 10
-		),
-		name = sprintf("KAMA(%d)", 3),
-		inherit = FALSE
+		mode = "lines",
+		name = "Trendmode",
+		line = list(shape = "hvh")
 	)
 
-	.plotting_environment$main
+	if (main_chart_exists()) {
+		plotly_object <- add_title(
+			x = plotly_object,
+			text = "Trendmode"
+		)
+	}
+
+	.plotting_environment$sub <- c(
+		.plotting_environment$sub,
+		list(plotly_object)
+	)
+
+	plotly_object
 }

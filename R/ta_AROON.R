@@ -121,6 +121,8 @@ aroon.plotly <- function(
 	n = 10,
 	...
 ) {
+	## prepare HL series
+	## for the aroon oscillator
 	HL <- series(
 		x = x,
 		formula = cols,
@@ -128,49 +130,53 @@ aroon.plotly <- function(
 		...
 	)
 
-	.indicator <- as.data.frame(
-		.Call(
-			"impl_ta_AROON",
-			HL[[1]],
-			HL[[2]],
-			as.integer(n)
-		)
+	## calculate indicator
+	## and return as data.frame
+	.indicator <- aroon.default(
+		x = x,
+		cols = rebuild_formula(
+			names(HL)
+		),
+		n = n
 	)
 
-	.indicator$idx <- 1:nrow(.indicator)
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		HL
+	)
 
-	ad_plot <- plotly::plot_ly(
+	## construct chart
+	## element
+	plotly_object <- subchart(
 		data = .indicator,
-		x = ~idx,
 		y = ~aroon_down,
 		type = "scatter",
 		mode = "lines",
-		# line = list(color = ad_col),
 		name = "AD",
 		legendgroup = "Aroon",
 		showlegend = FALSE
 	)
 
-	# dashed y = 0 line in the same color
-	ad_plot <- plotly::add_lines(
-		p = ad_plot,
+	plotly_object <- plotly::add_lines(
+		p = plotly_object,
 		x = .indicator$idx,
 		y = ~aroon_up,
-		# line = list(color = ad_col, dash = "dash"),
 		showlegend = FALSE,
-		hoverinfo = "skip",
-		legendgroup = "Aroon",
-		name = "Zero"
+		legendgroup = "Aroon"
 	)
 
-	ad_plot <- add_title(
-		x = ad_plot,
-		text = "Aroon"
-	)
+	if (main_chart_exists()) {
+		plotly_object <- add_title(
+			x = plotly_object,
+			text = "Aroon"
+		)
+	}
+
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
-		list(ad_plot)
+		list(plotly_object)
 	)
 
-	ad_plot
+	plotly_object
 }

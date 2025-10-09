@@ -157,10 +157,14 @@ chande_momentum_oscillator.plotly <- function(
 	x,
 	cols,
 	n = 10,
+	upper = 50,
+	lower = -50,
+	alpha = 0.7,
 	...
 ) {
-	## prepare series
-	## from {plotly}-object
+	## prepare univariate
+	## series for the chande momentum
+	## indicator
 	x <- as.data.frame(
 		series(
 			x = x,
@@ -170,56 +174,60 @@ chande_momentum_oscillator.plotly <- function(
 		)
 	)
 
-	## construct indicator
-	## NOTE: NextMethod might be risky
-	##       here
-	.indicator <- as.data.frame(
-		.Call(
-			"impl_ta_CMO",
-			x[[1]],
-			as.integer(n)
-		)
+	## calculate indicator
+	## and return as data.frame
+	.indicator <- chande_momentum_oscillator.default(
+		x = x,
+		cols = rebuild_formula(
+			names(x)
+		),
+		n = n
 	)
 
-	colnames(.indicator) <- "CMO"
-
-	.indicator$idx <- 1:nrow(.indicator)
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		x
+	)
 
 	## construct plot with ribbons
 	## on upper and lower limits
-	output <- plotly::plot_ly(
+	plotly_object <- subchart(
 		data = .indicator,
-		x = ~idx,
 		y = ~CMO,
 		type = "scatter",
 		mode = "lines",
 		showlegend = FALSE
 	)
 
-	output <- plotly::add_ribbons(
-		output,
-		x = ~idx,
+	plotly_object <- add_ribbons(
+		plotly_object = plotly_object,
+		data = .indicator,
+		x = ~ 1:nrow(.indicator),
 		ymin = rep(-50, nrow(.indicator)),
 		ymax = rep(50, nrow(.indicator)),
-		line = list(width = 0),
-		fillcolor = plotly::toRGB(
-			x = "lightgray",
-			alpha = 0.2
-		)
+		alpha = alpha,
+		color = "lightgray",
+		showlegend = FALSE,
+		legendgroup = "cmo_area",
+		name = "cmo_area",
+		dash = "dot"
 	)
 
-	output <- add_title(
-		x = output,
-		text = sprintf(
-			"Chande Momentum Indicator (%d)",
-			n
+	if (main_chart_exists()) {
+		plotly_object <- add_title(
+			x = plotly_object,
+			text = sprintf(
+				"Chande Momentum Indicator (%d)",
+				n
+			)
 		)
-	)
+	}
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
-		list(output)
+		list(plotly_object)
 	)
 
-	output
+	plotly_object
 }

@@ -185,10 +185,13 @@ bollinger_bands.plotly <- function(
 	ma = SMA(n = 10),
 	up = 2,
 	down = 2,
+	color = "steelblue",
+	alpha = 0.7,
 	...
 ) {
-	## prepare series
-	## from
+	## prepare univariate
+	## series for the bollinger
+	## bands
 	x <- series(
 		x = x,
 		formula = cols,
@@ -196,61 +199,46 @@ bollinger_bands.plotly <- function(
 		...
 	)
 
-	.indicator <- as.data.frame(
-		.Call(
-			"impl_ta_BBANDS",
-			as.double(x[[1]]),
-			ma$n,
-			as.numeric(up),
-			as.numeric(down),
-			as.integer(ma$maType)
-		)
+	## calculate indicator
+	## and return as data.frame
+	.indicator <- bollinger_bands.default(
+		x = x,
+		cols = rebuild_formula(
+			names(x)
+		),
+		ma = ma,
+		up = up,
+		down = down
 	)
 
-	.indicator$idx <- 1:nrow(.indicator)
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		x
+	)
+
+	## acceleration bands by itself
+	## makes no sense - throw an error
+	## if not provided
+	if (is.null(.plotting_environment$main)) {
+		stop("No existing chart found.", call. = FALSE)
+	}
 
 	## constuct chart
 	## element
-	for (i in seq_len(ncol(.indicator) - 1)) {
-		local({
-			j <- i
-
-			.plotting_environment$main <- plotly::add_lines(
-				.plotting_environment$main,
-				data = .indicator,
-				x = ~idx,
-				y = ~ .indicator[, j],
-				inherit = FALSE,
-				line = list(
-					color = '#4682b4'
-				),
-				showlegend = FALSE,
-				legendgroup = 'bollinger_band',
-				name = c(
-					"Upper Band",
-					"Middle Band",
-					"Lower Band"
-				)[j],
-			)
-		})
-	}
-
-	.plotting_environment$main <- plotly::add_ribbons(
-		p = .plotting_environment$main,
-		inherit = FALSE,
+	.plotting_environment$main <- add_ribbons(
+		plotly_object = .plotting_environment$main,
 		data = .indicator,
 		x = ~idx,
-		ymin = ~ .indicator[, 3],
-		ymax = ~ .indicator[, 1],
-		fillcolor = plotly::toRGB("#4682b4", alpha = 0.2),
-		line = list(
-			color = "transparent"
-		),
+		y = ~middle,
+		ymin = ~lower,
+		ymax = ~upper,
+		color = color,
+		alpha = alpha,
 		showlegend = TRUE,
-		legendgroup = 'bollinger_band',
-		name = paste0(
-			"BBand"
-		)
+		legendgroup = "Bollinger Bands",
+		name = c("lower", "middle", "upper"),
+		dash = NULL
 	)
 
 	.plotting_environment$main

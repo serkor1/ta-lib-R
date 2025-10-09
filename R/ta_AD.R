@@ -121,6 +121,7 @@ chaikin_AD_line.plotly <- function(
 	...
 ) {
 	## prepare HLCV series
+	## for the chaikin A/D line
 	HLCV <- series(
 		x = x,
 		formula = cols,
@@ -128,51 +129,42 @@ chaikin_AD_line.plotly <- function(
 		...
 	)
 
-	## construct the chaikin A/D
-	## line and store as data.frame
-	## for plotly
-	.indicator <- data.frame(
-		AD_line = .Call(
-			"impl_ta_AD",
-			HLCV[[1]],
-			HLCV[[2]],
-			HLCV[[3]],
-			HLCV[[4]]
+	## calculate indicator
+	## and return as data.grame
+	.indicator <- chaikin_AD_line.default(
+		x = HLCV,
+		cols = rebuild_formula(
+			names(HLCV)
 		)
 	)
 
-	## add idx for the axis
-	## TODO: this should be passed
-	## upstream instead
-	.indicator$idx <- 1:nrow(.indicator)
-
-	## chart indicator
-	## as subplot
-	output <- add_title(
-		## generate plot
-		## as line
-		plotly::plot_ly(
-			data = .indicator,
-			x = ~idx,
-			y = ~AD_line,
-			type = "scatter",
-			mode = "lines",
-			showlegend = FALSE
-		),
-		## add title to
-		## the plot
-		text = "Chaikin A/D Line"
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		HLCV
 	)
 
-	## pass to sub as
-	## list to preserve
-	## types
+	## construct chart
+	## element
+	plotly_object <- subchart(
+		data = .indicator,
+		y = ~AD_line,
+		type = "scatter",
+		mode = "lines",
+		showlegend = FALSE
+	)
+
+	if (main_chart_exists()) {
+		plotly_object <- add_title(
+			x = plotly_object,
+			text = "Chaikin A/D Line"
+		)
+	}
+
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
-		list(output)
+		list(plotly_object)
 	)
 
-	## return plot
-	## if called directly
-	output
+	plotly_object
 }

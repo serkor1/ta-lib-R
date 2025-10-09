@@ -128,42 +128,44 @@ on_balance_volume.plotly <- function(
 		...
 	)
 
-	## calculate acceleration
-	## bands and return as
-	## data.frame
-	.indicator <- as.data.frame(
-		.Call(
-			"impl_ta_OBV",
-			CV[[1]],
-			CV[[2]]
-		)
+	## calculate on balance volume
+	## and return as data.frame
+	.indicator <- on_balance_volume.default(
+		x = CV,
+		cols = rebuild_formula(
+			x = names(CV)
+		),
+		n = n
 	)
 
-	colnames(.indicator)[1] <- "OBV"
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		CV
+	)
 
-	.indicator$idx <- 1:nrow(.indicator)
-
-	## Create
-	output <- plotly::plot_ly(
+	## construct plot
+	plotly_object <- subchart(
 		data = .indicator,
-		x = ~idx,
 		y = ~OBV,
 		type = "scatter",
 		mode = "lines",
-		# line = list(color = ad_col),
 		name = "On-Balance Volume",
 		legendgroup = "obv",
 		showlegend = TRUE
 	)
 
-	output <- add_title(
-		x = output,
-		text = "On-Balance Volume (OBV)"
-	)
+	if (main_chart_exists()) {
+		plotly_object <- add_title(
+			x = plotly_object,
+			text = "On-Balance Volume (OBV)"
+		)
+	}
+
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
-		list(output)
+		list(plotly_object)
 	)
 
-	output
+	plotly_object
 }

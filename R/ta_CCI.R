@@ -109,6 +109,8 @@ commodity_channel_index.matrix <- function(
 	x,
 	cols,
 	n = 10,
+	upper = 100,
+	lower = -100,
 	...
 ) {
 	as.matrix(
@@ -125,8 +127,8 @@ commodity_channel_index.plotly <- function(
 	n = 10,
 	...
 ) {
-	## prepare series
-	## from {plotly}-object
+	## prepare HLC series
+	## for the commodity channel index
 	HLC <- as.data.frame(
 		series(
 			x = x,
@@ -136,23 +138,32 @@ commodity_channel_index.plotly <- function(
 		)
 	)
 
-	## construct indicator
-	.indicator <- as.data.frame(
-		.Call(
-			"impl_ta_CCI",
-			HLC[[1]],
-			HLC[[2]],
-			HLC[[3]],
-			as.integer(n)
-		)
+	## calculate indicator
+	## and return as data.frame
+	.indicator <- commodity_channel_index.default(
+		x = HLC,
+		cols = rebuild_formula(
+			names(HLC)
+		),
+		n = n
 	)
 
-	colnames(.indicator) <- "CCI"
-	.indicator$idx <- 1:nrow(.indicator)
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		HLC
+	)
+
+	## commodity channels by itself
+	## makes no sense - throw an error
+	## if not provided
+	if (!main_chart_exists()) {
+		stop("No existing chart found.", call. = FALSE)
+	}
 
 	## construct plot with ribbons
 	## on upper and lower limits
-	output <- plotly::plot_ly(
+	plotly_object <- plotly::plot_ly(
 		data = .indicator,
 		x = ~idx,
 		y = ~CCI,
@@ -161,30 +172,34 @@ commodity_channel_index.plotly <- function(
 		showlegend = FALSE
 	)
 
-	output <- plotly::add_ribbons(
-		output,
-		x = ~idx,
-		ymin = rep(-100, nrow(.indicator)),
-		ymax = rep(100, nrow(.indicator)),
-		line = list(width = 0),
-		fillcolor = plotly::toRGB(
-			x = "lightgray",
-			alpha = 0.2
-		)
+	plotly_object <- add_ribbons(
+		plotly_object = plotly_object,
+		data = .indicator,
+		x = ~ 1:nrow(.indicator),
+		ymin = rep(lower, nrow(.indicator)),
+		ymax = rep(upper, nrow(.indicator)),
+		color = "lightgray",
+		alpha = 0.1,
+		showlegend = FALSE,
+		legendgroup = "placeholder",
+		name = "CCI",
+		dash = "dot"
 	)
 
-	output <- add_title(
-		x = output,
-		text = sprintf(
-			"Commodity Channel Index (%d)",
-			n
+	if (main_chart_exists()) {
+		plotly_object <- add_title(
+			x = plotly_object,
+			text = sprintf(
+				"Commodity Channel Index (%d)",
+				n
+			)
 		)
-	)
+	}
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
-		list(output)
+		list(plotly_object)
 	)
 
-	output
+	plotly_object
 }

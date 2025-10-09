@@ -160,22 +160,38 @@ ht_dcperiod.plotly <- function(
 	##
 	.indicator <- ht_dcperiod.default(
 		x = x,
-		cols = cols
+		cols = rebuild_formula(
+			names(x)
+		)
 	)
 
-	.indicator$idx <- 1:nrow(.indicator)
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		x
+	)
 
-	output <- plotly::plot_ly(
+	## construct plotly object
+	## as lines + markers
+	plotly_object <- subchart(
 		data = .indicator,
-		name = "Dominant Cycle Period",
-		x = ~idx,
-		y = ~dominant_cycle_period
+		y = ~dominant_cycle_period,
+		type = "scatter",
+		mode = "lines+markers",
+		name = "DC Period"
 	)
+
+	if (main_chart_exists()) {
+		plotly_object <- add_title(
+			x = plotly_object,
+			text = "Dominant Cycle Period"
+		)
+	}
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
-		list(output)
+		list(plotly_object)
 	)
 
-	output
+	plotly_object
 }

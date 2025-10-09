@@ -131,37 +131,35 @@ money_flow_index.plotly <- function(
 		...
 	)
 
-	## calculate acceleration
-	## bands and return as
+	## calculate money flow index
+	## and return as
 	## data.frame
-	.indicator <- as.data.frame(
-		.Call(
-			"impl_ta_MFI",
-			HLCV[[1]],
-			HLCV[[2]],
-			HLCV[[3]],
-			HLCV[[4]],
-			as.integer(n)
-		)
+	.indicator <- money_flow_index.default(
+		x = HLCV,
+		cols = rebuild_formula(
+			names(HLCV)
+		),
+		n = n
 	)
 
-	colnames(.indicator)[1] <- "MFI"
-
-	.indicator$idx <- 1:nrow(.indicator)
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		HLCV
+	)
 
 	## construct plot with ribbons
 	## on upper and lower limits
-	output <- plotly::plot_ly(
+	plotly_object <- subchart(
 		data = .indicator,
-		x = ~idx,
 		y = ~MFI,
 		type = "scatter",
 		mode = "lines",
 		showlegend = FALSE
 	)
 
-	output <- plotly::add_ribbons(
-		output,
+	plotly_object <- plotly::add_ribbons(
+		plotly_object,
 		x = ~idx,
 		ymin = rep(-20, nrow(.indicator)),
 		ymax = rep(70, nrow(.indicator)),
@@ -172,18 +170,20 @@ money_flow_index.plotly <- function(
 		)
 	)
 
-	output <- add_title(
-		x = output,
-		text = sprintf(
-			"Money Flow Index (%d)",
-			n
+	if (main_chart_exists()) {
+		plotly_object <- add_title(
+			x = plotly_object,
+			text = sprintf(
+				"Money Flow Index (%d)",
+				n
+			)
 		)
-	)
+	}
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
-		list(output)
+		list(plotly_object)
 	)
 
-	output
+	plotly_object
 }

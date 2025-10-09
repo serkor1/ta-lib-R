@@ -157,13 +157,18 @@ stochastic_relative_strength_index.plotly <- function(
 	n_rsi = 10,
 	fast_k = 5,
 	fast_d_MAtype = SMA(n = 10),
+	lower = 20,
+	upper = 80,
+	color = "lightgray",
+	alpha = 0.7,
 	...
 ) {
 	## input arguments
 	fast_d_MAtype <- fast_d_MAtype
 
-	## prepare series
-	## from
+	## prepare univariate
+	## series for stochastic
+	## relative strength index
 	x <- as.data.frame(
 		series(
 			x = x,
@@ -173,22 +178,29 @@ stochastic_relative_strength_index.plotly <- function(
 		)
 	)
 
-	## indicator
+	## calculate indicator
+	## and return as data.frame
 	.indicator <- stochastic_relative_strength_index.default(
 		x = x,
-		cols = cols,
+		cols = rebuild_formula(
+			names(x)
+		),
 		n = n,
 		n_rsi = n_rsi,
 		fast_k = fast_k,
 		fast_d_MAtype = fast_d_MAtype
 	)
 
-	.indicator$idx <- 1:nrow(.indicator)
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		x
+	)
 
-	# plot
-	output <- plotly::plot_ly(
+	## generate plotly object
+	## of the indicator
+	plotly_object <- subchart(
 		data = .indicator,
-		x = ~idx,
 		y = ~fastk,
 		type = "scatter",
 		mode = "lines",
@@ -197,24 +209,32 @@ stochastic_relative_strength_index.plotly <- function(
 		showlegend = TRUE
 	)
 
-	output <- plotly::add_lines(
-		output,
+	plotly_object <- add_ribbons(
+		plotly_object = plotly_object,
+		data = .indicator,
 		x = ~idx,
 		y = ~fastd,
-		name = "StochRSI %D",
-		legendgroup = "stochrsi",
-		showlegend = TRUE
+		ymin = rep(lower, nrow(.indicator)),
+		ymax = rep(upper, nrow(.indicator)),
+		color = color,
+		alpha = alpha,
+		showlegend = TRUE,
+		dash = c("solid", "dot", "dot"),
+		name = c("StochRSI %D", "Lower", "Upper"),
+		legendgroup = "stochrsi"
 	)
 
-	output <- add_title(
-		x = output,
-		text = "StochRSI"
-	)
+	if (main_chart_exists()) {
+		plotly_object <- add_title(
+			x = plotly_object,
+			text = "StochRSI"
+		)
+	}
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
-		list(output)
+		list(plotly_object)
 	)
 
-	output
+	plotly_object
 }

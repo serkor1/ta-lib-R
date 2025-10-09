@@ -124,10 +124,12 @@ acceleration_bands.plotly <- function(
 	x,
 	cols,
 	n = 10,
+	color = "steelblue",
+	alpha = 0.2,
 	...
 ) {
-	## prepare series
-	## from
+	## prepare HLC series
+	## for the acceleration bands
 	HLC <- series(
 		x = x,
 		formula = cols,
@@ -135,20 +137,28 @@ acceleration_bands.plotly <- function(
 		...
 	)
 
-	## calculate acceleration
-	## bands and return as
-	## data.frame
-	.indicator <- as.data.frame(
-		.Call(
-			"impl_ta_ACCBANDS",
-			HLC[[1]],
-			HLC[[2]],
-			HLC[[3]],
-			as.integer(n)
-		)
+	## calculate indicator
+	## and return as data.frame
+	.indicator <- acceleration_bands.default(
+		x = HLC,
+		cols = rebuild_formula(
+			names(HLC)
+		),
+		n = n
 	)
 
-	.indicator$idx <- 1:nrow(.indicator)
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		HLC
+	)
+
+	## acceleration bands by itself
+	## makes no sense - throw an error
+	## if not provided
+	if (is.null(.plotting_environment$main)) {
+		stop("No existing chart found.", call. = FALSE)
+	}
 
 	## add upper, middle and lower bands
 	## to the main chart - wrapped in local
@@ -163,11 +173,14 @@ acceleration_bands.plotly <- function(
 			.plotting_environment$main <- plotly::add_lines(
 				.plotting_environment$main,
 				data = .indicator,
-				x = ~idx,
+				x = .indicator[["idx"]],
 				y = ~ .indicator[, j],
 				inherit = FALSE,
 				line = list(
-					color = '#4682b4'
+					color = plotly::toRGB(
+						x = color,
+						alpha = 1
+					)
 				),
 				showlegend = FALSE,
 				legendgroup = 'acceleration_band',
@@ -184,10 +197,13 @@ acceleration_bands.plotly <- function(
 		p = .plotting_environment$main,
 		inherit = FALSE,
 		data = .indicator,
-		x = ~idx,
+		x = .indicator[["idx"]],
 		ymin = ~ .indicator[, 3],
 		ymax = ~ .indicator[, 1],
-		fillcolor = plotly::toRGB("#4682b4", alpha = 0.2),
+		fillcolor = plotly::toRGB(
+			x = color,
+			alpha = alpha
+		),
 		line = list(
 			color = "transparent"
 		),
