@@ -3,7 +3,8 @@ pattern <- function(
 	x, # pattern
 	high,
 	low,
-	pattern_name = "Doji"
+	pattern_name = "Doji",
+	agnostic = FALSE
 ) {
 	## chart theme controls
 	chart_theme <- .chart_theme()
@@ -50,17 +51,40 @@ pattern <- function(
 		p <- plotly::add_trace(
 			p = p,
 			x = idx_bull,
-			y = low[idx_bull] - offset[idx_bull],
+			y = if (agnostic) {
+				high[idx_bull] - offset[idx_bull]
+			} else {
+				low[idx_bull] - offset[idx_bull]
+			},
 			type = "scatter",
 			mode = "markers+text",
 			marker = list(
-				symbol = "triangle-up",
-				color = chart_theme$bull_color,
+				symbol = if (agnostic) {
+					"triangle-down"
+				} else {
+					"triangle-up"
+				},
+				color = if (agnostic) {
+					chart_theme$font_color
+				} else {
+					chart_theme$bull_color
+				},
 				size = 10
 			),
 			text = bull_text,
-			textposition = "bottom center",
-			textfont = list(color = chart_theme$bull_color, size = 10),
+			textposition = if (agnostic) {
+				"top center"
+			} else {
+				"bottom center"
+			},
+			textfont = list(
+				color = if (agnostic) {
+					chart_theme$font_color
+				} else {
+					chart_theme$bull_color
+				},
+				size = 10
+			),
 			hoverinfo = "skip",
 			name = "Bearish",
 			inherit = FALSE,
