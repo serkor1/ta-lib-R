@@ -252,3 +252,10 @@ has_arg <- function(name) {
 		eval(substitute(!missing(name)), sys.frame(sys.parent()))
 	}
 }
+
+
+## main chart called
+## function
+main_chart_exists <- function() {
+	!is.null(.plotting_environment$main)
+}
