@@ -194,6 +194,9 @@ rebuild_formula <- function(
 	x,
 	exclude = "idx"
 ) {
+	if (!is.character(x)) {
+		x <- names(x)
+	}
 	## this function removes
 	## idx and rebuilds the passed
 	## series as formulas
