@@ -145,10 +145,16 @@ advance_block.plotly <- function(
 	## indicators
 	.indicator <- advance_block.default(
 		x = OHLC,
-		cols = ~ open + high + low + close
+		cols = rebuild_formula(
+			names(OHLC)
+		)
 	)
 
-	.indicator$idx <- 1:nrow(.indicator)
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		OHLC
+	)
 
 	## chart patterns
 	.plotting_environment$main <- pattern(
@@ -156,7 +162,8 @@ advance_block.plotly <- function(
 		x = .indicator,
 		high = OHLC[[2]],
 		low = OHLC[[3]],
-		pattern_name = "Advance Block"
+		pattern_name = "Advance Block",
+		agnostic = FALSE
 	)
 
 	.plotting_environment$main
