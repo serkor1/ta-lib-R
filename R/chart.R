@@ -105,7 +105,7 @@ chart.default <- function(
 				rownames(x)
 			)
 		} else {
-			1:nrow(x)
+			rownames(x)
 		}
 	} else {
 		idx
