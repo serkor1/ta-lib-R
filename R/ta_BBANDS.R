@@ -186,7 +186,7 @@ bollinger_bands.plotly <- function(
 	up = 2,
 	down = 2,
 	color = "steelblue",
-	alpha = 0.7,
+	alpha = 0.5,
 	...
 ) {
 	## prepare univariate
@@ -237,7 +237,7 @@ bollinger_bands.plotly <- function(
 		alpha = alpha,
 		showlegend = TRUE,
 		legendgroup = "Bollinger Bands",
-		name = c("lower", "middle", "upper"),
+		name = c("Bollinger Bands", "middle", "upper"),
 		dash = NULL
 	)
 

@@ -125,7 +125,7 @@ acceleration_bands.plotly <- function(
 	cols,
 	n = 10,
 	color = "steelblue",
-	alpha = 0.2,
+	alpha = 0.5,
 	...
 ) {
 	## prepare HLC series
@@ -166,52 +166,19 @@ acceleration_bands.plotly <- function(
 	##
 	## NOTE: Otherwise it will only evaluate
 	##       and add the last element
-	for (i in seq_len(ncol(HLC))) {
-		local({
-			j <- i
-
-			.plotting_environment$main <- plotly::add_lines(
-				.plotting_environment$main,
-				data = .indicator,
-				x = .indicator[["idx"]],
-				y = ~ .indicator[, j],
-				inherit = FALSE,
-				line = list(
-					color = plotly::toRGB(
-						x = color,
-						alpha = 1
-					)
-				),
-				showlegend = FALSE,
-				legendgroup = 'acceleration_band',
-				name = c(
-					"Upper Band",
-					"Middle Band",
-					"Lower Band"
-				)[j],
-			)
-		})
-	}
-
-	.plotting_environment$main <- plotly::add_ribbons(
-		p = .plotting_environment$main,
-		inherit = FALSE,
+	.plotting_environment$main <- add_ribbons(
+		plotly_object = .plotting_environment$main,
 		data = .indicator,
-		x = .indicator[["idx"]],
-		ymin = ~ .indicator[, 3],
-		ymax = ~ .indicator[, 1],
-		fillcolor = plotly::toRGB(
-			x = color,
-			alpha = alpha
-		),
-		line = list(
-			color = "transparent"
-		),
+		x = ~idx,
+		y = ~middle,
+		ymin = ~lower,
+		ymax = ~upper,
+		color = color,
+		alpha = alpha,
 		showlegend = TRUE,
 		legendgroup = 'acceleration_band',
-		name = paste0(
-			"Acceleration Bands"
-		)
+		name = c("Acceleration Bands", "B", "C"),
+		dash = NULL
 	)
 
 	.plotting_environment$main
