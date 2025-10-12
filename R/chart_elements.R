@@ -10,7 +10,7 @@
 
 	## hardcoded layout elements
 	## and added flexibility in ellipsis
-	plotly::layout(
+	plotly_object <- plotly::layout(
 		p = x,
 		paper_bgcolor = chart_theme$paper_bgcolor,
 		plot_bgcolor = chart_theme$plot_bgcolor,
@@ -84,6 +84,29 @@
 		## title end
 
 		...
+	)
+
+	## add chart configurations
+	## for TA
+	plotly::config(
+		p = plotly_object,
+
+		## options for support
+		## and resistance lines
+		modeBarButtonsToAdd = c(
+			"drawline",
+			"drawrect",
+			"eraseshape"
+		),
+
+		## remove {plotly} logo
+		## to reduce clutter
+		##
+		## NOTE: Some of the other
+		##       buttons is most likely
+		##       redundant too. These will be
+		##       removed later (TM)
+		displaylogo = FALSE
 	)
 }
 
