@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 ## 1) populate test file
 ##    with standard stuff
 cat > tests/testthat/test-ta_$1.R <<EOF
@@ -13,8 +12,10 @@ cat > tests/testthat/test-ta_$1.R <<EOF
 ## updated: $(date +"%Y-%m-%d")
 
 ## 1) alias and function similarity
-##    checks
+##    checks this ensures that 
+##    $1 and $2 produces the same results
 testthat::test_that(desc = 'Alias and function similarity', code = {
+
     ## 1) test that the alias and 
     ##    function returns the same values
     output <- $1(SPY)
@@ -26,15 +27,16 @@ testthat::test_that(desc = 'Alias and function similarity', code = {
 		object   = output,
 		expected = alias
 	)
+
 })
 
-## 2) {plotly}-method for data.frames
+## 2) {plotly}-method checks for data.frames
 ##    and matrices
 ## 
-## 2.1) data.frame
-testthat::test_that(desc = '{plotly}-methods for <data.frame> and <matrix>', code = {
-    ## 2) test that charting
-	##    works
+## 2.1) data.frame checks
+testthat::test_that(desc = '{plotly}-methods for <data.frame>', code = {
+    ## 1) check that $1 can
+	##    use {plotly} without any issues
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
@@ -42,17 +44,17 @@ testthat::test_that(desc = '{plotly}-methods for <data.frame> and <matrix>', cod
 		}
 	)
 
-	## 2.1) test that it outputs
-	##      a plotly object
+	## 1.1) check that the output
+	##      is a {plotly}-object
 	testthat::expect_true(
 		inherits(output, "plotly")
 	)
 })
 
-## 2.2) matrix
-testthat::test_that(desc = '{plotly}-methods for <data.frame> and <matrix>', code = {
-    ## 2) test that charting
-	##    works
+## 2.2) matrix checks
+testthat::test_that(desc = '{plotly}-methods for <matrix>', code = {
+    ## 1) check that $1 can
+	##    use {plotly} without any issues
 	output <- testthat::expect_no_error(
 		{
 			chart(SPY)
@@ -60,37 +62,42 @@ testthat::test_that(desc = '{plotly}-methods for <data.frame> and <matrix>', cod
 		}
 	)
 
-	## 2.1) test that it outputs
-	##      a plotly object
+	## 1.1) check that the output
+	##      is a {plotly}-object
 	testthat::expect_true(
 		inherits(output, "plotly")
 	)
 })
 
-## 3) class-in, class-out
-##    for matrices
+## 3) type-checks for data.frames and
+##    matrices
+##
+## 3.1) <matrix> object
 testthat::test_that(desc = 'Class in, class out (<matrix>)', code = {
-    ## 3.1) matrix
+	## 1) check that the output class
+	##    matches the input class
 	testthat::expect_true(
 		inherits($1(SPY), class(SPY))
 	)
 
 })
 
-## 3) class-in, class-out
-##    for data.frame
+## 3.2) <data.frame> object
 testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
-    
-
-	## 3.2) data.frame
+	## 1) check that the output class
+	##    matches the input class
 	testthat::expect_true(
 		inherits($1(BTC), class(BTC))
 	)
 })
 
-## 4) check default calls vs expected
-##    calls
-testthat::test_that(desc = 'Class in, class out', code = {
+## 4) check that the default calls
+##    matches that of the constructed call
+##    with default values.
+##
+##    NOTE: This test is more of a test of the internal
+##          series() function
+testthat::test_that(desc = 'Default calls', code = {
     testthat::expect_equal(
 		object = $1(
 			BTC
@@ -99,6 +106,17 @@ testthat::test_that(desc = 'Class in, class out', code = {
 			BTC,
 			cols = $3
 		)
+	)
+})
+
+## 5) check that the lenght of the input
+##    matches the output length
+testthat::test_that(desc = 'Equal length of input and output', code = {
+    testthat::expect_equal(
+		object = nrow($1(
+			BTC
+		)),
+		expected = nrow(BTC)
 	)
 })
 
