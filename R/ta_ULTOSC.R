@@ -109,11 +109,16 @@ ultimate_oscillator.plotly <- function(
 	x,
 	cols,
 	n = c(7, 14, 28),
+	lower = 30,
+	upper = 70,
+	color = "lightgray",
+	alpha = 0.7,
 	...
 ) {
-	## prepare series
-	## from
-	x <- as.data.frame(
+	## prepare HLC
+	## series for ultimate
+	## oscillator
+	HLC <- as.data.frame(
 		series(
 			x = x,
 			formula = cols,
@@ -122,14 +127,25 @@ ultimate_oscillator.plotly <- function(
 		)
 	)
 
-	## indicator
-	.indicator <- as.data.frame(NextMethod())
-	.indicator$idx <- 1:nrow(.indicator)
+	## calculate indicator
+	## and return as data.frame
+	.indicator <- ultimate_oscillator.default(
+		x = HLC,
+		cols = rebuild_formula(
+			names(HLC)
+		),
+		n = n
+	)
+
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		HLC
+	)
 
 	# plot
-	output <- plotly::plot_ly(
+	plotly_object <- subchart(
 		data = .indicator,
-		x = ~idx,
 		y = ~utimate_oscillator,
 		type = "scatter",
 		mode = "lines",
@@ -138,15 +154,31 @@ ultimate_oscillator.plotly <- function(
 		showlegend = TRUE
 	)
 
-	output <- add_title(
-		x = output,
-		text = "Ultimate Oscillator"
+	plotly_object <- add_ribbons(
+		plotly_object = plotly_object,
+		data = .indicator,
+		x = ~idx,
+		ymin = rep(lower, nrow(.indicator)),
+		ymax = rep(upper, nrow(.indicator)),
+		color = color,
+		alpha = alpha,
+		showlegend = TRUE,
+		dash = c("dot", "dot"),
+		name = c("Lower", "Upper"),
+		legendgroup = "stochrsi"
 	)
+
+	if (main_chart_exists()) {
+		plotly_object <- add_title(
+			x = plotly_object,
+			text = "Ultimate Oscillator"
+		)
+	}
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
-		list(output)
+		list(plotly_object)
 	)
 
-	output
+	plotly_object
 }

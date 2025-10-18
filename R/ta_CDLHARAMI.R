@@ -145,10 +145,16 @@ harami.plotly <- function(
 	## indicators
 	.indicator <- harami.default(
 		x = OHLC,
-		cols = ~ open + high + low + close
+		cols = rebuild_formula(
+			names(OHLC)
+		)
 	)
 
-	.indicator$idx <- 1:nrow(.indicator)
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		OHLC
+	)
 
 	## chart patterns
 	.plotting_environment$main <- pattern(
@@ -156,7 +162,8 @@ harami.plotly <- function(
 		x = .indicator,
 		high = OHLC[[2]],
 		low = OHLC[[3]],
-		pattern_name = "Harami"
+		pattern_name = "Harami",
+		agnostic = FALSE
 	)
 
 	.plotting_environment$main

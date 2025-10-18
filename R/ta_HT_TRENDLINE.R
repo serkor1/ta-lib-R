@@ -146,8 +146,8 @@ ht_trendline.plotly <- function(
 	cols,
 	...
 ) {
-	## prepare series
-	## from
+	## prepare univariate series
+	## for the trendline
 	x <- as.data.frame(
 		series(
 			x = x,
@@ -157,13 +157,22 @@ ht_trendline.plotly <- function(
 		)
 	)
 
-	## indicator
+	## calculate trendline indicator
+	## and return as data.frame
 	.indicator <- ht_trendline.default(
 		x = x,
-		cols = cols
+		cols = rebuild_formula(
+			names(x)
+		)
 	)
-	.indicator$idx <- 1:nrow(.indicator)
 
+	## add idx conditional
+	## on whether idx is passed
+	.indicator$idx <- add_idx(
+		x
+	)
+
+	## construct plotly object
 	for (i in 1:ncol(x)) {
 		local({
 			j <- i
@@ -174,7 +183,7 @@ ht_trendline.plotly <- function(
 				y = ~ .indicator[, j],
 				type = "scatter",
 				mode = "lines",
-				name = sprintf("Trendline"),
+				name = "Trendline",
 				inherit = FALSE
 			)
 		})
