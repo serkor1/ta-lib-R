@@ -41,6 +41,12 @@
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="articles/talib.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="articles/charting.html">Interactive Financial Charts</a></li>
+  </ul>
+</li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -64,19 +70,131 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header">
-<img src="logo.png" class="logo" alt=""><h1 id="talib-r-bindings-for-ta-lib-">{talib}: R bindings for <a href="https://github.com/TA-Lib/ta-lib" class="external-link">TA-Lib</a> <a class="anchor" aria-label="anchor" href="#talib-r-bindings-for-ta-lib-"></a>
+<img src="logo.png" class="logo" alt=""><h1 id="talib-a-technical-analysis-and-candlestick-pattern-library-in-r-">{talib}: A Technical Analysis and Candlestick Pattern Library in R <a class="anchor" aria-label="anchor" href="#talib-a-technical-analysis-and-candlestick-pattern-library-in-r-"></a>
 </h1>
 </div>
 <!-- badges: start -->
 
-<p><a href="">{talib}</a> provides high-performance R bindings to the <a href="https://github.com/TA-Lib/ta-lib" class="external-link">TA-Lib</a> C-library for Technical Analysis indicators, Candlestick patterns and interactive charting via <a href="">{plotly}</a>.</p>
+<p><a href="https://serkor1.github.io/ta-lib-R/">{talib}</a> is an <code>R</code>-package for Technical Analysis and algorithmic Candlestick pattern recognition built on the <code>C</code> library <a href="https://github.com/TA-Lib/ta-lib" class="external-link">TA-Lib</a>. <a href="https://serkor1.github.io/ta-lib-R/">{talib}</a> extends <a href="https://github.com/joshuaulrich/TTR" class="external-link">{TTR}</a> by adding Candlestick pattern recognition to the pool of available indicators, and interactive charts via <a href="https://github.com/plotly/plotly.R" class="external-link">{plotly}</a>.</p>
+<p><a href="https://github.com/TA-Lib/ta-lib" class="external-link">TA-Lib</a> supports 200+ indicators for Technical Analysis and Candlestick Patterns, all of which are available in <a href="https://serkor1.github.io/ta-lib-R/">{talib}</a>.</p>
+<div class="section level2">
+<h2 id="types-of-indicators-and-interface">Types of Indicators and Interface<a class="anchor" aria-label="anchor" href="#types-of-indicators-and-interface"></a>
+</h2>
+<p>In the core C library functions are named as <code>TA_INDICATOR()</code> and <code>TA_CDLPATTERN()</code> for indicators and patterns respectively. In the <code>Python</code>-wrapper the functions are named <code>INDICATOR()</code> and <code>CDLPATTERN()</code>—but this <code>R</code> package follows the <a href="https://style.tidyverse.org/" class="external-link">tidyverse styleguide</a> and therefore the naming is inconsistent with the core library and the Python wrapper. See below for an example of the mapping:</p>
+<div align="center">
+<table class="table">
+<colgroup>
+<col width="31%">
+<col width="29%">
+<col width="39%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Function Group</th>
+<th align="left">TA-Lib (core)</th>
+<th align="left">{talib}</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Overlap Studies</td>
+<td align="left"><code>TA_BBANDS()</code></td>
+<td align="left"><code><a href="reference/bollinger_bands.html">bollinger_bands()</a></code></td>
+</tr>
+<tr class="even">
+<td align="left">Momentum Indicators</td>
+<td align="left"><code>TA_CCI()</code></td>
+<td align="left"><code><a href="reference/commodity_channel_index.html">commodity_channel_index()</a></code></td>
+</tr>
+<tr class="odd">
+<td align="left">Volume Indicators</td>
+<td align="left"><code>TA_OBV()</code></td>
+<td align="left"><code><a href="reference/on_balance_volume.html">on_balance_volume()</a></code></td>
+</tr>
+<tr class="even">
+<td align="left">Volatility Indicators</td>
+<td align="left"><code>TA_ATR()</code></td>
+<td align="left"><code>average_true_range()</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Price Transform</td>
+<td align="left"><code>TA_AVGPRICE()</code></td>
+<td align="left"><code>average_price()</code></td>
+</tr>
+<tr class="even">
+<td align="left">Cycle Indicators</td>
+<td align="left"><code>TA_HT_SINE()</code></td>
+<td align="left"><code><a href="reference/ht_sine_wave.html">ht_sine_wave()</a></code></td>
+</tr>
+<tr class="odd">
+<td align="left">Pattern Recognition</td>
+<td align="left"><code>TA_CDLHANGINGMAN()</code></td>
+<td align="left"><code><a href="reference/hanging_man.html">hanging_man()</a></code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>However, each function in <a href="https://serkor1.github.io/ta-lib-R/">{talib}</a> is aliased so its consistent with the remaining ecosystem. See below:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span></span>
+<span>    target <span class="op">=</span> <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="reference/bollinger_bands.html">bollinger_bands</a></span><span class="op">(</span><span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="reference/BTC.html">BTC</a></span><span class="op">)</span>,</span>
+<span>    current <span class="op">=</span> <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="reference/bollinger_bands.html">BBANDS</a></span><span class="op">(</span><span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="reference/BTC.html">BTC</a></span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<p>The aliases are exported but are not a part of the documentation, but they behave exactly the same as the main functions as demonstrated above.</p>
+</div>
+<div class="section level2">
+<h2 id="basic-usage">Basic Usage<a class="anchor" aria-label="anchor" href="#basic-usage"></a>
+</h2>
+<p>Below are an example on how to use <a href="https://serkor1.github.io/ta-lib-R/">{talib}</a> to calculate an indicator and charting it.</p>
+<div class="section level3">
+<h3 id="indicators">Indicators<a class="anchor" aria-label="anchor" href="#indicators"></a>
+</h3>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## calculate bollinger</span></span>
+<span><span class="co">## bands</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span></span>
+<span>    <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="reference/bollinger_bands.html">bollinger_bands</a></span><span class="op">(</span></span>
+<span>        <span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="reference/BTC.html">BTC</a></span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt;         upper   middle    lower</span></span>
+<span><span class="co">#&gt; 361 106812.14 99260.81 91709.48</span></span>
+<span><span class="co">#&gt; 362 104471.11 98218.27 91965.44</span></span>
+<span><span class="co">#&gt; 363 100874.66 97021.36 93168.05</span></span>
+<span><span class="co">#&gt; 364  99891.29 96519.09 93146.89</span></span>
+<span><span class="co">#&gt; 365  99875.94 96136.93 92397.91</span></span>
+<span><span class="co">#&gt; 366  99720.50 95622.57 91524.65</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="charting">Charting<a class="anchor" aria-label="anchor" href="#charting"></a>
+</h3>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="op">{</span></span>
+<span>    <span class="co">## main chart</span></span>
+<span>    <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="reference/chart.html">chart</a></span><span class="op">(</span></span>
+<span>        <span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="reference/BTC.html">BTC</a></span>,</span>
+<span>        <span class="co">## optional idx-argument</span></span>
+<span>        <span class="co">## for adding dates to chart</span></span>
+<span>        idx <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="reference/BTC.html">BTC</a></span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span></span>
+<span>    <span class="co">## add bollinger bands</span></span>
+<span>    <span class="co">## to chart</span></span>
+<span>    <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="reference/indicator.html">indicator</a></span><span class="op">(</span></span>
+<span>        <span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="reference/bollinger_bands.html">bollinger_bands</a></span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p><img src="reference/figures/README-charting-1.png" style="display: block; margin: auto;"></p>
+</div>
+</div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
+<p><a href="https://github.com/TA-Lib/ta-lib" class="external-link">TA-Lib</a> is vendored in <a href="https://serkor1.github.io/ta-lib-R/">{talib}</a> via <code>CMake</code>, so it is not necessary to have <a href="https://github.com/TA-Lib/ta-lib" class="external-link">TA-Lib</a> pre-installed.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;Some systems (Windows in particular) may require you to explicitly install and link &lt;code&gt;CMake&lt;/code&gt; for &lt;a href="https://serkor1.github.io/ta-lib-R/"&gt;{talib}&lt;/a&gt; to build properly.&lt;/p&gt;'><sup>1</sup></a></p>
 <div class="section level3">
 <h3 id="stable-version">Stable version<a class="anchor" aria-label="anchor" href="#stable-version"></a>
 </h3>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"talib"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -90,79 +208,13 @@ make build</code></pre>
 </div>
 </div>
 <div class="section level2">
-<h2 id="basic-usage">Basic Usage<a class="anchor" aria-label="anchor" href="#basic-usage"></a>
-</h2>
-<div class="section level3">
-<h3 id="indicators">Indicators<a class="anchor" aria-label="anchor" href="#indicators"></a>
-</h3>
-<p>This is a basic example which shows you how to solve a common problem:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">## calculate bollinger</span></span>
-<span><span class="co">## bands</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span></span>
-<span>  <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="reference/bollinger_bands.html">bollinger_bands</a></span><span class="op">(</span></span>
-<span>    <span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="reference/BTC.html">BTC</a></span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co">#&gt;         upper   middle    lower</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; 361 106812.14 99260.81 91709.48</span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt; 362 104471.11 98218.27 91965.44</span></span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; 363 100874.66 97021.36 93168.05</span></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; 364  99891.29 96519.09 93146.89</span></span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt; 365  99875.94 96136.93 92397.91</span></span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt; 366  99720.50 95622.57 91524.65</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="charting">Charting<a class="anchor" aria-label="anchor" href="#charting"></a>
-</h3>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://serkor1.github.io/ta-lib-R/">talib</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">## calculate bollinger</span></span>
-<span><span class="co">## bands</span></span>
-<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="reference/BTC.html">BTC</a></span></span>
-<span></span>
-<span><span class="op">{</span></span>
-<span>  <span class="co">## chart Bitcoin</span></span>
-<span>  <span class="co">## with candlesticks</span></span>
-<span>  <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="reference/chart.html">chart</a></span><span class="op">(</span></span>
-<span>    x <span class="op">=</span> <span class="va">x</span></span>
-<span>  <span class="op">)</span></span>
-<span></span>
-<span>  <span class="co">## add bollinger bands</span></span>
-<span>  <span class="co">## to the chart</span></span>
-<span>  <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="reference/indicator.html">indicator</a></span><span class="op">(</span></span>
-<span>    FUN <span class="op">=</span> <span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="reference/SMA.html">SMA</a></span>,</span>
-<span>    cols <span class="op">=</span> <span class="op">~</span> <span class="va">close</span> <span class="op">+</span> <span class="va">open</span></span>
-<span>  <span class="op">)</span></span>
-<span></span>
-<span>  <span class="co">## add bollinger bands</span></span>
-<span>  <span class="co">## to the chart</span></span>
-<span>  <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="reference/indicator.html">indicator</a></span><span class="op">(</span></span>
-<span>    FUN <span class="op">=</span> <span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="reference/bollinger_bands.html">bollinger_bands</a></span></span>
-<span>  <span class="op">)</span></span>
-<span></span>
-<span>  <span class="co">## add RSI indicator</span></span>
-<span>  <span class="co">## to the chart</span></span>
-<span>  <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="reference/indicator.html">indicator</a></span><span class="op">(</span></span>
-<span>    FUN <span class="op">=</span> <span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="reference/relative_strength_index.html">relative_strength_index</a></span></span>
-<span>  <span class="op">)</span></span>
-<span></span>
-<span>  <span class="co">## add harami indicators</span></span>
-<span>  <span class="co">## to the chart</span></span>
-<span>  <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="reference/indicator.html">indicator</a></span><span class="op">(</span></span>
-<span>    FUN <span class="op">=</span> <span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="reference/harami.html">harami</a></span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">}</span></span></code></pre></div>
-<p><img src="reference/figures/README-charting-1.png" style="display: block; margin: auto;"></p>
-</div>
-</div>
-<div class="section level2">
 <h2 id="code-of-conduct">Code of Conduct<a class="anchor" aria-label="anchor" href="#code-of-conduct"></a>
 </h2>
-<p>Please note that <a href="">{talib}</a> is released with a <a href="https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html" class="external-link">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
+<p>Please note that <a href="https://serkor1.github.io/ta-lib-R/">{talib}</a> is released with a <a href="https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html" class="external-link">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
 </div>
 </div>
+
+
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
