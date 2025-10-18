@@ -133,7 +133,7 @@ aroon.plotly <- function(
 	## calculate indicator
 	## and return as data.frame
 	.indicator <- aroon.default(
-		x = x,
+		x = HL,
 		cols = rebuild_formula(
 			names(HL)
 		),
