@@ -171,6 +171,33 @@ subchart <- function(
 		)
 	)
 
+	## readd configuations
+	##
+	## NOTE: This is repeated code
+	##       from .chart_layout()
+	##       - should be consolidated at
+	##         some point (TM)
+	plotly_object <- plotly::config(
+		p = plotly_object,
+
+		## options for support
+		## and resistance lines
+		modeBarButtonsToAdd = c(
+			"drawline",
+			"drawrect",
+			"eraseshape"
+		),
+
+		## remove {plotly} logo
+		## to reduce clutter
+		##
+		## NOTE: Some of the other
+		##       buttons is most likely
+		##       redundant too. These will be
+		##       removed later (TM)
+		displaylogo = FALSE
+	)
+
 	return(plotly_object)
 }
 
