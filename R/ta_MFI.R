@@ -120,6 +120,8 @@ money_flow_index.plotly <- function(
 	x,
 	cols,
 	n = 10,
+	lower = -20,
+	upper = 80,
 	...
 ) {
 	## prepare series
@@ -161,8 +163,8 @@ money_flow_index.plotly <- function(
 	plotly_object <- plotly::add_ribbons(
 		plotly_object,
 		x = ~idx,
-		ymin = rep(-20, nrow(.indicator)),
-		ymax = rep(70, nrow(.indicator)),
+		ymin = rep(lower, nrow(.indicator)),
+		ymax = rep(upper, nrow(.indicator)),
 		line = list(width = 0),
 		fillcolor = plotly::toRGB(
 			x = "lightgray",

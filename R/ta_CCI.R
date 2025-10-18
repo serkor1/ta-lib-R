@@ -125,6 +125,8 @@ commodity_channel_index.plotly <- function(
 	x,
 	cols,
 	n = 10,
+	lower = -100,
+	upper = 100,
 	...
 ) {
 	## prepare HLC series
