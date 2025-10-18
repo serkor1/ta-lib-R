@@ -50,6 +50,7 @@ purge: clean ## Remove TA-Lib arifacts
 fmt: ## Format code
 	@clang-format -style=LLVM -dump-config > .clang-format && clang-format -i src/*.c src/*.h
 	@air format R
+	@air format tests/testthat
 	@rm -rf ./.clang-format
 
 pkgdown-build: ## Build {pkgdown} documentation
@@ -75,5 +76,7 @@ unit-tests: ## Generate, or update, unit-tests
 	while IFS=$$'\t' read -r f alias cols; do \
 	  "$$GEN" "$$f" "$$alias" "$$cols"; \
 	done
+
+	$(MAKE) fmt
 
 
