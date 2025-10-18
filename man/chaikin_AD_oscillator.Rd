@@ -66,7 +66,8 @@ utils::tail(output)
 \seealso{
 Other Volume Indicator: 
 \code{\link{chaikin_AD_line}()},
-\code{\link{on_balance_volume}()}
+\code{\link{on_balance_volume}()},
+\code{\link{trading_volume}()}
 }
 \author{
 Serkan Korkmaz
