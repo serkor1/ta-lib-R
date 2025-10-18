@@ -7,9 +7,12 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun trading_volume
 #'
+#' @param ma An optional list of moving average specifications.
+#'
 #' @template description
 trading_volume <- function(
 	x,
+	cols,
 	ma,
 	...
 ) {
@@ -112,6 +115,7 @@ trading_volume.data.frame <- function(
 #' @export
 trading_volume.matrix <- function(
 	x,
+	cols,
 	ma,
 	...
 ) {

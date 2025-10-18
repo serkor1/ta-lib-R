@@ -10,14 +10,16 @@
 \alias{trading_volume.plotly}
 \title{Trading Volume}
 \usage{
-trading_volume(x, ma, ...)
+trading_volume(x, cols, ma, ...)
 }
 \arguments{
 \item{x}{An OHLC-V series that is coercible to \link{data.frame}. The function assumes that all columns are named in lowercase and order invariant.}
 
-\item{...}{Additional parameters passed into \link{model.frame}}
-
 \item{cols}{An optional \link{formula} passed into \link{model.frame}. If passed into indicators based on univariate series, the function calculates indicators for each element in 'cols'. For indicators based on multivariate series, it will alter the calculation itself. See \code{vignette("talib")} for more details.}
+
+\item{ma}{An optional list of moving average specifications.}
+
+\item{...}{Additional parameters passed into \link{model.frame}}
 }
 \description{
 The \code{trading_volume()} is a generic S3 function that builds upon 'type-safe'-esque workflows limited to classes in in base \code{R}, and the package-wide
