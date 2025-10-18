@@ -174,13 +174,22 @@ chart.default <- function(
 		...
 	)
 
-	## store in main chart
-	## (see description)
-	.plotting_environment$main <- .chart_layout(
-		x = price_chart,
-		title_text = sprintf(
-			fmt = "<b>Ticker:</b> %s <br><sub><b>Period:</b> %s </sub>",
+	## construct chart meta data
+	##
+	## There is no relevant information in the range 1:N
+	## so if the rownames only contrains integers the chart will
+	## skip it
+	if (is.integer(.plotting_environment$idx$label)) {
+		title_text <- sprintf(
+			fmt = "<b>Ticker:</b> %s <br><sub><b>N:</b> %d </sub>",
 			chart_title,
+			nrow(x)
+		)
+	} else {
+		title_text <- sprintf(
+			fmt = "<b>Ticker:</b> %s <br><sub><b>N:</b> %d <b>Period:</b> %s </sub>",
+			chart_title,
+			nrow(x),
 			paste(
 				.plotting_environment$idx$label[1],
 				"-",
@@ -188,7 +197,14 @@ chart.default <- function(
 					.plotting_environment$idx$label
 				)]
 			)
-		),
+		)
+	}
+
+	## store in main chart
+	## (see description)
+	.plotting_environment$main <- .chart_layout(
+		x = price_chart,
+		title_text = title_text,
 		idx = idx
 	)
 
