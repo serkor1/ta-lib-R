@@ -217,7 +217,11 @@ add_idx <- function(x) {
 
 	if (!is.null(idx)) {
 		idx[
-			attributes(x)$subset %||% 1:nrow(x)
+			if (is.null(attributes(x)$subset)) {
+				1:nrow(x)
+			} else {
+				attributes(x)$subset
+			}
 		]
 	} else {
 		1:nrow(x)
