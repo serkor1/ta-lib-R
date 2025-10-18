@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
-## 1) generate unit-test
-Rscript -e "usethis::use_test('$1')"
 
-## 2) populate test file
+## 1) populate test file
 ##    with standard stuff
 cat > tests/testthat/test-ta_$1.R <<EOF
 
