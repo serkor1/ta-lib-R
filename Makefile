@@ -1,3 +1,8 @@
+## settings
+SHELL := /bin/bash
+.ONESHELL:
+.SHELLFLAGS := -euo pipefail -c
+
 ## Package information
 package_name     := $(shell grep "^Package:" DESCRIPTION | sed "s/Package: //")
 package_version  := $(shell grep "^Version:" DESCRIPTION | sed "s/Version: //")
@@ -35,6 +40,7 @@ clean: ## Remove artifacts
 	@rm -rf src/Makevars
 	@rm -rf $(package_name).Rcheck
 	@rm -rf docs
+	@rm -rf tools/table.csv
 	@Rscript -e "try(remove.packages('$(package_name)'))"
 
 purge: clean ## Remove TA-Lib arifacts
@@ -54,3 +60,20 @@ pkgdown-build: ## Build {pkgdown} documentation
 
 pkgdown-preview: ## Preview {pkgdown} documetation
 	@Rscript -e "pkgdown::preview_site()"
+
+unit-tests: ## Generate, or update, unit-tests
+	@Rscript ./tools/generate_table.R
+	@GEN=./tools/generate_unit-tests.sh; \
+	UNIT_CSV=$${UNIT_CSV:-tools/table.csv}; \
+	awk -F, 'NR==1{next} /^[[:space:]]*$$/{next} { \
+	  for(i=1;i<=3;i++){ \
+	    gsub(/^[ \t]+|[ \t]+$$/,"",$$i); \
+	    sub(/^"/,"",$$i); sub(/"$$/,"",$$i); \
+	  } \
+	  printf "%s\t%s\t%s\n", $$1,$$2,$$3 \
+	}' "$$UNIT_CSV" | \
+	while IFS=$$'\t' read -r f alias cols; do \
+	  "$$GEN" "$$f" "$$alias" "$$cols"; \
+	done
+
+
