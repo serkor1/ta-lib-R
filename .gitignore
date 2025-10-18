@@ -62,3 +62,5 @@ docs
 inst/doc
 
 /.quarto/
+
+tools/table.csv
