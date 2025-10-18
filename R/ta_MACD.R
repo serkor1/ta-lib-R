@@ -296,25 +296,17 @@ moving_average_convergence_divergence.plotly <- function(
 	## of the indicator
 	chart_theme <- .chart_theme()
 
-	plotly_object <- plotly::layout(
-		plotly::plot_ly(
-			data = .indicator,
-			showlegend = FALSE,
-			name = 'MACD',
-			x = ~idx,
-			y = ~histogram,
-			color = ~direction,
-			colors = c(
-				chart_theme$bull_color,
-				chart_theme$bear_color
-			),
-			type = 'bar'
+	## construct plotly object
+	plotly_object <- subchart(
+		data = .indicator,
+		y = ~histogram,
+		color = ~direction,
+		colors = c(
+			chart_theme$bull_color,
+			chart_theme$bear_color
 		),
-		xaxis = list(
-			tickvals = seq_along(.indicator$idx),
-			ticktext = .indicator$idx,
-			tickmode = "auto"
-		)
+		type = 'bar',
+		showlegend = FALSE
 	)
 
 	plotly_object <- plotly::add_lines(
