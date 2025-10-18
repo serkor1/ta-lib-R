@@ -95,6 +95,15 @@ Other Pattern Recognition:
 \code{\link{morning_star}()},
 \code{\link{piercing}()},
 \code{\link{rickshaw_man}()},
+\code{\link{rise_fall_3_methods}()},
+\code{\link{separating_lines}()},
+\code{\link{shooting_star}()},
+\code{\link{short_line}()},
+\code{\link{spinning_top}()},
+\code{\link{stalled_pattern}()},
+\code{\link{stick_sandwich}()},
+\code{\link{takuri}()},
+\code{\link{tasuki_gap}()},
 \code{\link{three_black_crows}()},
 \code{\link{three_identical_crows}()},
 \code{\link{three_inside}()},
@@ -102,7 +111,12 @@ Other Pattern Recognition:
 \code{\link{three_outside}()},
 \code{\link{three_stars_in_the_south}()},
 \code{\link{three_white_soldiers}()},
-\code{\link{two_crows}()}
+\code{\link{thrusting}()},
+\code{\link{tristar}()},
+\code{\link{two_crows}()},
+\code{\link{unique_3_river}()},
+\code{\link{upside_gap_2_crows}()},
+\code{\link{xside_gap_3_methods}()}
 }
 \author{
 Serkan Korkmaz
