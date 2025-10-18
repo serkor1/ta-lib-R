@@ -145,10 +145,16 @@ gaps_side_white.plotly <- function(
 	## indicators
 	.indicator <- gaps_side_white.default(
 		x = OHLC,
-		cols = ~ open + high + low + close
+		cols = rebuild_formula(
+			names(OHLC)
+		)
 	)
 
-	.indicator$idx <- 1:nrow(.indicator)
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		OHLC
+	)
 
 	## chart patterns
 	.plotting_environment$main <- pattern(
@@ -156,7 +162,8 @@ gaps_side_white.plotly <- function(
 		x = .indicator,
 		high = OHLC[[2]],
 		low = OHLC[[3]],
-		pattern_name = "Gaps-side White"
+		pattern_name = "Gap-side White",
+		agnostic = FALSE
 	)
 
 	.plotting_environment$main

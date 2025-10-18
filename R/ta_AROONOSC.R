@@ -120,6 +120,8 @@ aroon_oscillator.plotly <- function(
 	n = 10,
 	...
 ) {
+	## prepare HL series
+	## for the aroon oscillator
 	HL <- series(
 		x = x,
 		formula = cols,
@@ -127,37 +129,48 @@ aroon_oscillator.plotly <- function(
 		...
 	)
 
-	.indicator <- data.frame(
-		aroon_oscillator = .Call(
-			"impl_ta_AROONOSC",
-			HL[[1]],
-			HL[[2]],
-			as.integer(n)
-		)
+	## calculate indicator
+	## and return as data.frame
+	.indicator <- aroon_oscillator.default(
+		x = HL,
+		cols = rebuild_formula(
+			names(HL)
+		),
+		n = n
 	)
 
-	.indicator$idx <- 1:nrow(.indicator)
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		HL
+	)
 
-	ad_plot <- plotly::plot_ly(
+	## construct chart
+	## element
+	plotly_object <- subchart(
 		data = .indicator,
-		x = ~idx,
 		y = ~aroon_oscillator,
 		type = "scatter",
 		mode = "lines",
-		# line = list(color = ad_col),
-		name = "AD",
+		name = sprintf(
+			fmt = "AD(%d)",
+			n
+		),
 		legendgroup = "Aroon",
 		showlegend = FALSE
 	)
 
-	ad_plot <- add_title(
-		x = ad_plot,
-		text = "Aroon Oscillator"
-	)
+	if (!is.null(.plotting_environment$main)) {
+		plotly_object <- add_title(
+			x = plotly_object,
+			text = "Aroon Oscillator"
+		)
+	}
+
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
-		list(ad_plot)
+		list(plotly_object)
 	)
 
-	ad_plot
+	plotly_object
 }

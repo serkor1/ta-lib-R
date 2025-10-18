@@ -128,11 +128,18 @@ fast_stochastic.plotly <- function(
 	cols,
 	fast_k = 5,
 	fast_d_MAtype = SMA(n = 10),
+	lower = 20,
+	upper = 80,
+	color = "lightgray",
+	alpha = 0.7,
 	...
 ) {
+	## input arguments
 	slowk_ma <- fast_d_MAtype
 
-	## construct HLC series
+	## prepare HLC
+	## series for stochastic
+	## relative strength index
 	HLC <- as.data.frame(series(
 		x = x,
 		formula = cols,
@@ -140,49 +147,61 @@ fast_stochastic.plotly <- function(
 		...
 	))
 
-	.indicator <- as.data.frame(
-		.Call(
-			"impl_ta_STOCHF",
-			HLC[[1]],
-			HLC[[2]],
-			HLC[[3]],
-			as.integer(fast_k),
-			as.integer(slowk_ma$n),
-			as.integer(slowk_ma$maType)
-		)
+	## calculate indicator
+	## and return as data.frame
+	.indicator <- fast_stochastic.default(
+		x = HLC,
+		cols = rebuild_formula(
+			names(HLC)
+		),
+		fast_k = fast_k,
+		fast_d_MAtype = fast_d_MAtype
 	)
 
-	.indicator$idx <- 1:nrow(.indicator)
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		HLC
+	)
 
-	## Create
-	output <- plotly::plot_ly(
+	## generate plotly object
+	## of the indicator
+	plotly_object <- subchart(
 		data = .indicator,
-		x = ~idx,
 		y = ~fastk,
 		type = "scatter",
 		mode = "lines",
-		# line = list(color = ad_col),
 		name = "Stochastic %K (Fast)",
 		legendgroup = "stochastic_fast",
 		showlegend = FALSE
 	)
 
-	output <- plotly::add_lines(
-		output,
+	plotly_object <- add_ribbons(
+		plotly_object = plotly_object,
+		data = .indicator,
 		x = ~idx,
 		y = ~fastd,
+		ymin = rep(lower, nrow(.indicator)),
+		ymax = rep(upper, nrow(.indicator)),
+		color = color,
+		alpha = alpha,
+		dash = c("solid", "dot", "dot"),
 		legendgroup = "stochastic_fast",
-		name = "Stochastic %D (Fast)"
+		name = c("Stochastic %D (Fast)", "Lower", "Upper"),
+		showlegend = TRUE
 	)
 
-	output <- add_title(
-		x = output,
-		text = "Fast Stochastic"
-	)
+	if (main_chart_exists()) {
+		plotly_object <- add_title(
+			x = plotly_object,
+			text = "Fast Stochastic"
+		)
+	}
+
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
-		list(output)
+		list(plotly_object)
 	)
 
-	output
+	plotly_object
 }

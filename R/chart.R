@@ -23,6 +23,8 @@
 #'
 #' @param x An OHLC object to be charted.
 #' @param type A [character] of [length] 1. Either `candlestick` or `ohlc`.
+#' @param idx A [vector] with the same [length] of `x`. If passed it will replace the x-axis labels. See `vignette("charting")` for more details.
+#' @param title An optional [character] vector of [length] 1.
 #' @param ... Parameters passed into [plotly::plot_ly]
 #'
 #' @example man/examples/charting.R
@@ -31,6 +33,8 @@
 chart <- function(
 	x,
 	type = "candlestick",
+	idx = NULL,
+	title,
 	...
 ) {
 	## clear env if called
@@ -54,6 +58,7 @@ chart.default <- function(
 	x,
 	type = "candlestick",
 	idx = NULL,
+	title,
 	...
 ) {
 	## default chart function
@@ -71,6 +76,15 @@ chart.default <- function(
 	##    3. chart: The user-facing TA chart.
 	##              This is empty and is constructed on the fly
 	##              via plotly::subplot.
+
+	## extract title
+	if (missing(title)) {
+		chart_title <- input_name(
+			substitute(x)
+		)
+	} else {
+		chart_title <- title
+	}
 	.color_values <- .chart_theme()
 	.plotting_environment$sub <- .plotting_environment$chart <- list()
 
@@ -81,8 +95,27 @@ chart.default <- function(
 	## NOTE: it is also a hard requirement on
 	##       {plotly} side
 	x <- as.data.frame(x)
-	x$idx <- if (is.null(idx)) 1:nrow(x) else idx
+	x$idx <- if (is.null(idx)) {
+		## check if rownames can be
+		## converted to integer
+		is_valid <- suppressWarnings(
+			!is.na(as.integer(rownames(x)[1]))
+		)
+		if (is_valid) {
+			as.integer(
+				rownames(x)
+			)
+		} else {
+			rownames(x)
+		}
+	} else {
+		idx
+	}
 	.plotting_environment$x <- data_frame <- x
+	.plotting_environment$idx <- list(
+		label = x$idx,
+		index = seq_along(x$idx)
+	)
 
 	## generate price chart
 	## based on type. can be either
@@ -129,18 +162,50 @@ chart.default <- function(
 				alpha = 1 ## This should be controlled from .chart_theme()
 			)
 		),
+
+		## remove legend
+		## there is no reason to display
+		## it in the legend.
+		##
+		## If there is demand for it we can
+		## implement a heuristic to determine intervals
+		## for 1h, 2h, etc. Similar to {cryptoQuotes}
+		showlegend = FALSE,
 		...
 	)
+
+	## construct chart meta data
+	##
+	## There is no relevant information in the range 1:N
+	## so if the rownames only contrains integers the chart will
+	## skip it
+	if (is.integer(.plotting_environment$idx$label)) {
+		title_text <- sprintf(
+			fmt = "<b>Ticker:</b> %s <br><sub><b>N:</b> %d </sub>",
+			chart_title,
+			nrow(x)
+		)
+	} else {
+		title_text <- sprintf(
+			fmt = "<b>Ticker:</b> %s <br><sub><b>N:</b> %d <b>Period:</b> %s </sub>",
+			chart_title,
+			nrow(x),
+			paste(
+				.plotting_environment$idx$label[1],
+				"-",
+				.plotting_environment$idx$label[length(
+					.plotting_environment$idx$label
+				)]
+			)
+		)
+	}
 
 	## store in main chart
 	## (see description)
 	.plotting_environment$main <- .chart_layout(
 		x = price_chart,
-		title_text = sprintf(
-			"<b>Ticker:</b> %s <br><sub><b>Period:</b> %s</sub>",
-			deparse(substitute(x)),
-			"Period Value"
-		)
+		title_text = title_text,
+		idx = idx
 	)
 
 	.plotting_environment$main

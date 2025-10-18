@@ -19,6 +19,21 @@
 #'
 #' @author Serkan Korkmaz
 indicator <- function(FUN, ...) {
+	## resolve function name of no
+	## title have been passed
+	title <- input_name(
+		substitute(
+			FUN
+		)
+	)
+
+	## clean up title
+	if (any(grepl(x = title, pattern = "_"))) {
+		title <- to_title(
+			title
+		)
+	}
+
 	## plotting environment
 	## does exist
 	chart_called <- TRUE
@@ -39,10 +54,39 @@ indicator <- function(FUN, ...) {
 		## object to trigger .plotly
 		## method downstream
 		plt <- plotly::plot_ly()
+
+		if (has_arg(idx)) {
+			idx <- eval.parent(
+				match.call()[["idx"]]
+			)
+		} else {
+			idx <- NULL
+		}
+
+		.plotting_environment$idx$label <- idx
+
+		if (has_arg(data)) {
+			data <- eval.parent(
+				match.call()[["data"]]
+			)
+		} else {
+			stop("'data'-argument has to be provided.")
+		}
 	}
 
 	## construct {plotly}-object
 	## based on FUN
+	##
+	## Note to future self:
+	##
+	## You could add chart layouting here
+	## to avoid having to do it for each plotly method
+	## but it would require you to add an identifier
+	## of whether its a subplot or not.
+	##
+	## `outcome` by itself is just directly returned
+	## and is not attached to the plotting environment
+	## downstream
 	outcome <- do.call(
 		what = FUN,
 		args = list(
@@ -75,17 +119,27 @@ indicator <- function(FUN, ...) {
 				margin = 0.02,
 				heights = heights
 			),
-			showlegend = TRUE
+			showlegend = TRUE,
+			yaxis = list(title = ''),
+			xaxis = list(
+				title = '',
+				tickmode = "auto"
+			)
 		)
 		.plotting_environment$chart <- fig
 
-		return(fig)
+		return(
+			fig
+		)
 	}
 
 	## reconstruct charting
 	## as if called from chart()
-	.chart_layout(
+	outcome <- .chart_layout(
 		x = outcome,
-		title_text = "title_text"
+		title_text = title,
+		idx = if (is.null(idx)) 1:nrow(data) else idx
 	)
+
+	outcome
 }

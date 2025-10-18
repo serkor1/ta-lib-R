@@ -55,7 +55,8 @@ relative_strength_index.default <- function(
 			paste0(
 				"'cols' has to be length 1. ",
 				"Got length ",
-				length(all.vars(cols))
+				length(all.vars(cols)),
+				paste(all.vars(cols), collapse = " and ")
 			)
 		)
 	}
@@ -143,10 +144,12 @@ relative_strength_index.plotly <- function(
 	n = 10,
 	lower_band = 20,
 	upper_band = 80,
+	color = "lightgray",
+	alpha = 0.2,
 	...
 ) {
-	## prepare series
-	## from
+	## prepare univariate series
+	## for RSI
 	x <- as.data.frame(
 		series(
 			x = x,
@@ -156,31 +159,50 @@ relative_strength_index.plotly <- function(
 		)
 	)
 
-	## indicator
-	.indicator <- as.data.frame(NextMethod())
-	.indicator$idx <- 1:nrow(.indicator)
+	## calculate indicator
+	## and return as data.frame
+	.indicator <- relative_strength_index.default(
+		x = x,
+		## pass the column
+		## based on 'x'
+		cols = rebuild_formula(
+			names(x)
+		),
+		n = n
+	)
 
-	rsi_plot <- plotly::plot_ly(
-		.indicator,
-		x = ~idx,
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		x
+	)
+
+	## generate plotly object
+	## of the indicator
+	plotly_object <- subchart(
+		data = .indicator,
 		y = ~RSI,
 		type = "scatter",
 		mode = "lines",
 		showlegend = FALSE
 	)
-	rsi_plot <- plotly::add_ribbons(
-		rsi_plot,
+
+	plotly_object <- plotly::add_ribbons(
+		plotly_object,
 		x = ~idx,
 		ymin = rep(lower_band, nrow(.indicator)),
 		ymax = rep(upper_band, nrow(.indicator)),
 		line = list(width = 0),
-		fillcolor = "rgba(160,160,160,0.20)"
+		fillcolor = plotly::toRGB(
+			x = color,
+			alpha = alpha
+		)
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
-		list(rsi_plot)
+		list(plotly_object)
 	)
 
-	rsi_plot
+	plotly_object
 }

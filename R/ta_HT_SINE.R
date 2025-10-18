@@ -144,8 +144,8 @@ ht_sine_wave.plotly <- function(
 	cols,
 	...
 ) {
-	## prepare series
-	## from
+	## prepare univariate
+	## seris for sine wave
 	x <- as.data.frame(
 		series(
 			x = x,
@@ -155,35 +155,52 @@ ht_sine_wave.plotly <- function(
 		)
 	)
 
-	## construct indicator
-	##
+	## construct sine wave
+	## as data.frame
 	.indicator <- ht_sine_wave.default(
 		x = x,
-		cols = cols,
-		...
+		cols = rebuild_formula(
+			names(x)
+		)
 	)
 
-	.indicator$idx <- 1:nrow(.indicator)
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		x
+	)
 
-	output <- plotly::plot_ly(
+	## construct plotly
+	## object
+	plotly_object <- subchart(
 		data = .indicator,
-		name = "Sine Wave",
-		x = ~idx,
-		y = ~sine
+		y = ~sine,
+		type = "scatter",
+		mode = "lines",
+		name = "Sine",
+		legendgroup = "sinewave"
 	)
 
-	output <- plotly::add_lines(
-		p = output,
+	plotly_object <- plotly::add_lines(
+		p = plotly_object,
 		x = ~idx,
 		y = ~leadsine,
 		data = .indicator,
-		inherit = FALSE
+		name = "Lead Sine",
+		legendgroup = "sinewave"
 	)
+
+	if (main_chart_exists()) {
+		plotly_object <- add_title(
+			x = plotly_object,
+			text = "Sine Wave"
+		)
+	}
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
-		list(output)
+		list(plotly_object)
 	)
 
-	output
+	plotly_object
 }

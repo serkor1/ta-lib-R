@@ -150,10 +150,16 @@ dark_cloud_cover.plotly <- function(
 	## indicators
 	.indicator <- dark_cloud_cover.default(
 		x = OHLC,
-		cols = ~ open + high + low + close
+		cols = rebuild_formula(
+			names(OHLC)
+		)
 	)
 
-	.indicator$idx <- 1:nrow(.indicator)
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		OHLC
+	)
 
 	## chart patterns
 	.plotting_environment$main <- pattern(
@@ -161,7 +167,8 @@ dark_cloud_cover.plotly <- function(
 		x = .indicator,
 		high = OHLC[[2]],
 		low = OHLC[[3]],
-		pattern_name = "Dark Cloud Cover"
+		pattern_name = "Dark Cloud Cover",
+		agnostic = FALSE
 	)
 
 	.plotting_environment$main

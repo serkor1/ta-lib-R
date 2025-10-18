@@ -181,3 +181,88 @@ reclass <- function(x, ...) {
 is.formula <- function(x) {
 	inherits(x, "formula")
 }
+
+## extract input name
+input_name <- function(x) {
+	if (is.call(x) && as.character(x[[1L]]) %in% c("::", ":::")) {
+		x <- x[[3L]]
+	}
+	deparse(x)
+}
+
+rebuild_formula <- function(
+	x,
+	exclude = "idx"
+) {
+	if (!is.character(x)) {
+		x <- names(x)
+	}
+	## this function removes
+	## idx and rebuilds the passed
+	## series as formulas
+	idx <- grepl(
+		pattern = exclude,
+		x = x,
+		ignore.case = TRUE
+	)
+
+	stats::reformulate(
+		x[!idx]
+	)
+}
+
+add_idx <- function(x) {
+	## store idx
+	idx <- .plotting_environment$idx$label
+
+	if (!is.null(idx)) {
+		idx[
+			if (is.null(attributes(x)$subset)) {
+				1:nrow(x)
+			} else {
+				attributes(x)$subset
+			}
+		]
+	} else {
+		1:nrow(x)
+	}
+}
+
+to_title <- function(
+	x
+) {
+	## remove underscores
+	## if preset
+	x <- gsub(pattern = "_", replacement = " ", x = x)
+	gsub("\\b(.)", "\\U\\1", tolower(x), perl = TRUE)
+}
+
+
+has_arg <- function(name) {
+	## shamelessly stolen from
+	## {methods}
+	aname <- as.character(substitute(name))
+	fnames <- names(
+		formals(
+			sys.function(sys.parent())
+		)
+	)
+
+	if (is.na(match(aname, fnames))) {
+		if (is.na(match("...", fnames))) {
+			FALSE
+		} else {
+			dotsCall <- eval(quote(substitute(list(...))), sys.parent())
+			!is.na(match(aname, names(dotsCall)))
+		}
+	} else {
+		eval(substitute(!missing(name)), sys.frame(sys.parent()))
+	}
+}
+
+
+## main chart called
+## function
+main_chart_exists <- function() {
+	!is.null(.plotting_environment$main)
+}

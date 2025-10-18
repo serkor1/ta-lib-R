@@ -89,7 +89,7 @@ WMA.default <- function(
 
 	colnames(x) <- paste0("wma_", colnames(x))
 
-	x
+	as.data.frame(x)
 }
 
 #' @rdname WMA
@@ -153,8 +153,8 @@ WMA.plotly <- function(
 	n = 10,
 	...
 ) {
-	## prepare series
-	## from
+	## prepare univariate
+	## series for WMA
 	x <- as.data.frame(
 		series(
 			x = x,
@@ -164,9 +164,21 @@ WMA.plotly <- function(
 		)
 	)
 
-	## indicator
-	.indicator <- as.data.frame(NextMethod())
-	.indicator$idx <- 1:nrow(.indicator)
+	## calculator indicator
+	## and return as data.frame
+	.indicator <- WMA.default(
+		x = x,
+		cols = rebuild_formula(
+			x = names(x)
+		),
+		n = n
+	)
+
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		x
+	)
 
 	for (i in 1:ncol(x)) {
 		local({
@@ -175,7 +187,7 @@ WMA.plotly <- function(
 				.plotting_environment$main,
 				data = .indicator,
 				x = ~idx,
-				y = ~ .indicator[, j],
+				y = ~ .indicator[[j]],
 				type = "scatter",
 				mode = "lines",
 				name = sprintf("WMA(%d)", n),

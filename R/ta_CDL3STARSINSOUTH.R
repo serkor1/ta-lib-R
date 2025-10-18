@@ -145,10 +145,16 @@ three_stars_in_the_south.plotly <- function(
 	## indicators
 	.indicator <- three_stars_in_the_south.default(
 		x = OHLC,
-		cols = ~ open + high + low + close
+		cols = rebuild_formula(
+			names(OHLC)
+		)
 	)
 
-	.indicator$idx <- 1:nrow(.indicator)
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		OHLC
+	)
 
 	## chart patterns
 	.plotting_environment$main <- pattern(
@@ -156,7 +162,8 @@ three_stars_in_the_south.plotly <- function(
 		x = .indicator,
 		high = OHLC[[2]],
 		low = OHLC[[3]],
-		pattern_name = "Three Stars in the South"
+		pattern_name = "Three Stars in the South",
+		agnostic = FALSE
 	)
 
 	.plotting_environment$main

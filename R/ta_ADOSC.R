@@ -129,9 +129,11 @@ chaikin_AD_oscillator.plotly <- function(
 	cols,
 	fast = 3,
 	slow = 10,
+	color = "steelblue",
 	...
 ) {
-	## prepare series
+	## prepare HLCV series
+	## for the chaikin A/D line
 	HLCV <- series(
 		x = x,
 		formula = cols,
@@ -139,53 +141,67 @@ chaikin_AD_oscillator.plotly <- function(
 		...
 	)
 
-	.indicator <- data.frame(
-		AD_line = .Call(
-			"impl_ta_ADOSC",
-			HLCV[[1]],
-			HLCV[[2]],
-			HLCV[[3]],
-			HLCV[[4]],
-			as.integer(fast),
-			as.integer(slow)
-		)
+	## calculate indicator
+	## and return as data.frame
+	.indicator <- chaikin_AD_oscillator.default(
+		x = HLCV,
+		cols = rebuild_formula(
+			names(HLCV)
+		),
+		fast = fast,
+		slow = slow
 	)
 
-	.indicator$idx <- 1:nrow(.indicator)
-	ad_col <- "#1f77b4"
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		HLCV
+	)
 
-	ad_plot <- plotly::plot_ly(
+	plotly_object <- subchart(
 		data = .indicator,
-		x = ~idx,
-		y = ~AD_line,
+		y = ~AD_oscillator,
 		type = "scatter",
 		mode = "lines",
-		line = list(color = ad_col),
+		line = list(
+			color = plotly::toRGB(
+				x = color,
+				alpha = 1
+			)
+		),
 		name = "AD",
 		legendgroup = "ChaikinOscillator",
 		showlegend = FALSE
 	)
 
-	# dashed y = 0 line in the same color
-	ad_plot <- plotly::add_lines(
-		p = ad_plot,
+	plotly_object <- plotly::add_lines(
+		p = plotly_object,
 		x = .indicator$idx,
 		y = 0,
-		line = list(color = ad_col, dash = "dash"),
+		line = list(
+			color = plotly::toRGB(
+				x = color,
+				alpha = 1
+			),
+			dash = "dot"
+		),
 		showlegend = FALSE,
 		hoverinfo = "skip",
 		legendgroup = "ChaikinOscillator",
 		name = "Zero"
 	)
 
-	ad_plot <- add_title(
-		x = ad_plot,
-		text = "Chaikin A/D Oscillator"
-	)
+	if (main_chart_exists()) {
+		plotly_object <- add_title(
+			x = plotly_object,
+			text = "Chaikin A/D Oscillator"
+		)
+	}
+
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
-		list(ad_plot)
+		list(plotly_object)
 	)
 
-	ad_plot
+	plotly_object
 }

@@ -40,13 +40,19 @@ series.plotly <- function(
 		dotsQ$data <- quote(.plotting_environment$x)
 	}
 
-	as.data.frame(
+	out <- as.data.frame(
 		do.call(
 			series.formula,
 			c(list(x = formula, default = default), dotsQ),
 			quote = FALSE
 		)
 	)
+
+	## set subset attribute
+	## for the
+	attr(out, "subset") <- eval(dotsQ$subset)
+
+	out
 }
 
 #' @export
@@ -95,6 +101,10 @@ series.formula <- function(
 			quote = FALSE
 		)
 	}
+
+	## set subset attribute
+	## for the
+	attr(out, "subset") <- eval(dotsQ$subset)
 
 	as.data.frame(
 		out

@@ -145,8 +145,8 @@ ht_dc_phase.plotly <- function(
 	cols,
 	...
 ) {
-	## prepare series
-	## from
+	## prepare univariate
+	## series for DC phase
 	x <- as.data.frame(
 		series(
 			x = x,
@@ -156,26 +156,42 @@ ht_dc_phase.plotly <- function(
 		)
 	)
 
-	## construct indicator
-	##
+	## construct DC phase
+	## as data.frame
 	.indicator <- ht_dc_phase.default(
 		x = x,
-		cols = cols
+		cols = rebuild_formula(
+			names(x)
+		)
 	)
 
-	.indicator$idx <- 1:nrow(.indicator)
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		x
+	)
 
-	output <- plotly::plot_ly(
+	## construct indicator
+	## as plotly object
+	plotly_object <- subchart(
 		data = .indicator,
-		name = "Dominant Cycle Phase",
-		x = ~idx,
-		y = ~dominant_cycle_phase
+		y = ~dominant_cycle_phase,
+		type = "scatter",
+		mode = "markers",
+		name = "DC Phase"
 	)
+
+	if (main_chart_exists()) {
+		plotly_object <- add_title(
+			x = plotly_object,
+			text = "Dominant Cycle Phase"
+		)
+	}
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
-		list(output)
+		list(plotly_object)
 	)
 
-	output
+	plotly_object
 }

@@ -89,7 +89,7 @@ MAMA.default <- function(
 
 	colnames(x) <- paste0("mama_", colnames(x))
 
-	x
+	as.data.frame(x)
 }
 
 #' @rdname MAMA
@@ -153,8 +153,8 @@ MAMA.plotly <- function(
 	n = 10,
 	...
 ) {
-	## prepare series
-	## from
+	## prepare univariate
+	## series for MAMA
 	x <- as.data.frame(
 		series(
 			x = x,
@@ -164,9 +164,21 @@ MAMA.plotly <- function(
 		)
 	)
 
-	## indicator
-	.indicator <- as.data.frame(NextMethod())
-	.indicator$idx <- 1:nrow(.indicator)
+	## calculator indicator
+	## and return as data.frame
+	.indicator <- MAMA.default(
+		x = x,
+		cols = rebuild_formula(
+			x = names(x)
+		),
+		n = n
+	)
+
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		x
+	)
 
 	for (i in 1:ncol(x)) {
 		local({
@@ -175,7 +187,7 @@ MAMA.plotly <- function(
 				.plotting_environment$main,
 				data = .indicator,
 				x = ~idx,
-				y = ~ .indicator[, j],
+				y = ~ .indicator[[j]],
 				type = "scatter",
 				mode = "lines",
 				name = sprintf("MAMA(%d)", n),
