@@ -13,6 +13,8 @@ chart(x, type = "candlestick", idx = NULL, title, ...)
 
 \item{idx}{A \link{vector} with the same \link{length} of \code{x}. If passed it will replace the x-axis labels. See \code{vignette("charting")} for more details.}
 
+\item{title}{An optional \link{character} vector of \link{length} 1.}
+
 \item{...}{Parameters passed into \link[plotly:plot_ly]{plotly::plot_ly}}
 }
 \description{

@@ -24,6 +24,7 @@
 #' @param x An OHLC object to be charted.
 #' @param type A [character] of [length] 1. Either `candlestick` or `ohlc`.
 #' @param idx A [vector] with the same [length] of `x`. If passed it will replace the x-axis labels. See `vignette("charting")` for more details.
+#' @param title An optional [character] vector of [length] 1.
 #' @param ... Parameters passed into [plotly::plot_ly]
 #'
 #' @example man/examples/charting.R
