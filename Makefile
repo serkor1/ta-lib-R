@@ -62,6 +62,7 @@ pkgdown-preview: ## Preview {pkgdown} documetation
 	@Rscript -e "pkgdown::preview_site()"
 
 unit-tests: ## Generate, or update, unit-tests
+	@Rscript ./tools/generate_table.R
 	@GEN=./tools/generate_unit-tests.sh; \
 	UNIT_CSV=$${UNIT_CSV:-tools/table.csv}; \
 	awk -F, 'NR==1{next} /^[[:space:]]*$$/{next} { \
