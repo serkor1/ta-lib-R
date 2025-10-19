@@ -165,9 +165,8 @@ commodity_channel_index.plotly <- function(
 
 	## construct plot with ribbons
 	## on upper and lower limits
-	plotly_object <- plotly::plot_ly(
+	plotly_object <- subchart(
 		data = .indicator,
-		x = ~idx,
 		y = ~CCI,
 		type = "scatter",
 		mode = "lines",
@@ -177,7 +176,7 @@ commodity_channel_index.plotly <- function(
 	plotly_object <- add_ribbons(
 		plotly_object = plotly_object,
 		data = .indicator,
-		x = ~ 1:nrow(.indicator),
+		x = ~idx,
 		ymin = rep(lower, nrow(.indicator)),
 		ymax = rep(upper, nrow(.indicator)),
 		color = "lightgray",
