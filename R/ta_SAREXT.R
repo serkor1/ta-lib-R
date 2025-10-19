@@ -211,7 +211,11 @@ extended_parabolic_sar.plotly <- function(
 
 	colnames(.indicator)[1] <- "SAR"
 
-	.indicator$idx <- 1:nrow(.indicator)
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		HLC
+	)
 
 	## calculate colors for
 	## the chart
