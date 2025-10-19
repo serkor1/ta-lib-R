@@ -148,7 +148,11 @@ kicking.plotly <- function(
 		cols = ~ open + high + low + close
 	)
 
-	.indicator$idx <- 1:nrow(.indicator)
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		OHLC
+	)
 
 	## chart patterns
 	.plotting_environment$main <- pattern(

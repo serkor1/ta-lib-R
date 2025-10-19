@@ -92,7 +92,13 @@ long_legged_doji.plotly <- function(x, cols, ...) {
 		x = OHLC,
 		cols = ~ open + high + low + close
 	)
-	.indicator$idx <- 1:nrow(.indicator)
+
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		OHLC
+	)
+
 	.plotting_environment$main <- pattern(
 		p = .plotting_environment$main,
 		x = .indicator,

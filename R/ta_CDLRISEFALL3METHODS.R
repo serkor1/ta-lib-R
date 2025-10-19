@@ -78,7 +78,13 @@ rise_fall_3_methods.plotly <- function(x, cols, ...) {
 		x = OHLC,
 		cols = ~ open + high + low + close
 	)
-	.indicator$idx <- 1:nrow(.indicator)
+
+	## add x-axis conditional on whether
+	## the data have been subsetted or not
+	.indicator$idx <- add_idx(
+		OHLC
+	)
+
 	.plotting_environment$main <- pattern(
 		.plotting_environment$main,
 		.indicator,
