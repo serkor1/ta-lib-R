@@ -167,7 +167,7 @@ subchart <- function(
 		xaxis = list(
 			tickvals = seq_along(data$idx),
 			ticktext = data$idx,
-			ticmode = "auto"
+			tickmode = "auto"
 		)
 	)
 

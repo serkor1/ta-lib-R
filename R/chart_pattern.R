@@ -28,7 +28,7 @@ pattern <- function(
 	if (length(idx_bear)) {
 		p <- plotly::add_trace(
 			p = p,
-			x = idx_bear,
+			x = x$idx[idx_bear],
 			y = high[idx_bear] + offset[idx_bear],
 			type = "scatter",
 			mode = "markers+text",
@@ -50,7 +50,7 @@ pattern <- function(
 	if (length(idx_bull)) {
 		p <- plotly::add_trace(
 			p = p,
-			x = idx_bull,
+			x = x$idx[idx_bull],
 			y = if (agnostic) {
 				high[idx_bull] - offset[idx_bull]
 			} else {
@@ -91,6 +91,18 @@ pattern <- function(
 			showlegend = FALSE
 		)
 	}
+
+	p <- plotly::layout(
+		p,
+		## if this part is not added
+		## there is mismatch between the
+		## main chart and the subscharts
+		xaxis = list(
+			tickvals = seq_along(x$idx),
+			ticktext = x$idx,
+			tickmode = "auto"
+		)
+	)
 
 	return(p)
 }
