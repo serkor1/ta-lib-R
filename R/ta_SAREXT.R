@@ -214,7 +214,7 @@ extended_parabolic_sar.plotly <- function(
 	## add x-axis conditional on whether
 	## the data have been subsetted or not
 	.indicator$idx <- add_idx(
-		HLC
+		HL
 	)
 
 	## calculate colors for
