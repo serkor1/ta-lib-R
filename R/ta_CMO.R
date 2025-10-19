@@ -203,7 +203,7 @@ chande_momentum_oscillator.plotly <- function(
 	plotly_object <- add_ribbons(
 		plotly_object = plotly_object,
 		data = .indicator,
-		x = ~ 1:nrow(.indicator),
+		x = ~idx,
 		ymin = rep(lower, nrow(.indicator)),
 		ymax = rep(upper, nrow(.indicator)),
 		alpha = alpha,
