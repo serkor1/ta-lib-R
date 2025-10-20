@@ -20,6 +20,7 @@
 //     Reference: https://ta-lib.org/api/ , https://ta-lib.org/functions/ .
 //     (Also exposed in TA-Lib “volume” group.)
 #include "lib.h"
+#include "names.h"
 #include "shift.h"
 #include <R.h>
 #include <Rinternals.h>
@@ -42,7 +43,7 @@ SEXP impl_ta_AD(SEXP inHigh, SEXP inLow, SEXP inClose, SEXP inVolume) {
   const double *restrict volume = REAL(inVolume);
 
   // 2) Allocate full-length output; unnamed vector by contract.
-  SEXP result = PROTECT(allocVector(REALSXP, n));
+  SEXP result = PROTECT(allocMatrix(REALSXP, n, 1));
   double *restrict out = REAL(result);
 
   // 3) Call TA-Lib over the whole range; write from index 0.
@@ -69,6 +70,8 @@ SEXP impl_ta_AD(SEXP inHigh, SEXP inLow, SEXP inClose, SEXP inVolume) {
   // 4) Normalize to input length by padding leading NAs.
   //    This shifts [0..outNb-1] to start at index outBeg.
   shift_array(out, n, outBeg);
+
+  set_colnames(result, "AD");
 
   UNPROTECT(1);
   return result;
