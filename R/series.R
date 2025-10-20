@@ -88,6 +88,28 @@ series.formula <- function(
 	# Use default formula if missing
 	if (missing(x)) {
 		x <- default
+	} else {
+		## assert formula length
+		## relative to the default
+		##
+		## NOTE: It is OK to pass a longer
+		##       formula than the expected
+		##
+		##       The function will just use what it
+		##       needs anyways.
+		formula_length <- length(all.vars(x))
+		default_length <- length(all.vars(default))
+
+		assert(
+			x = formula_length >= default_length,
+			call = sys.call(sys.parent()),
+
+			## expected
+			paste0("Expected 'cols' length to be ", default_length, "."),
+
+			## actual
+			paste0("Got length", formula_length, ".")
+		)
 	}
 
 	# Fast path: no extra args -> select columns directly
