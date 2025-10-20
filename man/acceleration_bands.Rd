@@ -20,9 +20,9 @@ acceleration_bands(x, cols, n = 10, ...)
 A \link{data.frame}- or \link{matrix}-object:
 
 \describe{
-\item{upper <\link{double}>}{The lower band.}
+\item{upper <\link{double}>}{The upper band.}
 \item{middle <\link{double}>}{The middle band.}
-\item{lower <\link{double}>}{The upper band.}
+\item{lower <\link{double}>}{The lower band.}
 }
 }
 \description{
