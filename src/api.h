@@ -10,7 +10,7 @@ SEXP impl_ta_ADOSC(SEXP inHigh, SEXP inLow, SEXP inClose, SEXP inVolume, SEXP op
 SEXP impl_ta_AD(SEXP inHigh, SEXP inLow, SEXP inClose, SEXP inVolume);
 SEXP impl_ta_ADXR(SEXP high, SEXP low, SEXP close, SEXP optTimePeriod);
 SEXP impl_ta_ADX(SEXP high, SEXP low, SEXP close, SEXP optTimePeriod);
-SEXP impl_ta_APO(SEXP inRealSEXP, SEXP fastPeriodSEXP, SEXP slowPeriodSEXP, SEXP maTypeSEXP);
+SEXP impl_ta_APO(SEXP x_input, SEXP fast_period, SEXP slow_period, SEXP ma_type);
 SEXP impl_ta_AROONOSC(SEXP high, SEXP low, SEXP timeperiod);
 SEXP impl_ta_AROON(SEXP high, SEXP low, SEXP timeperiod);
 SEXP impl_ta_BBANDS(SEXP inReal, SEXP optTimePeriod, SEXP optNbDevUp, SEXP optNbDevDn, SEXP optMAType);

@@ -1,7 +1,7 @@
 // Interface to ta_APO.c
 //
 // Parameters
-//   inReal     : Numeric vector of input values.
+//   x     : Numeric vector of input values.
 //   fastPeriod : Integer, period for the fast moving average.
 //   slowPeriod : Integer, period for the slow moving average.
 //   maType     : Integer, TA-Lib MA type (e.g., SMA, EMA).
@@ -12,48 +12,56 @@
 //   of the same length as input; positions before the lookback are set to NA.
 #include "MAType.h"
 #include "lib.h"
+#include "names.h"
 #include "shift.h"
 #include "ta_defs.h"
 #include <Rinternals.h>
 #include <ta_libc.h>
 
-SEXP impl_ta_APO(SEXP inRealSEXP, SEXP fastPeriodSEXP, SEXP slowPeriodSEXP,
-                 SEXP maTypeSEXP) {
+// clang-format off
+SEXP impl_ta_APO(
+  SEXP x_input, 
+  SEXP fast_period, 
+  SEXP slow_period,
+  SEXP ma_type) {
+  // clang-format on
+
   // Protect the output vector from garbage collection
-  R_xlen_t n = xlength(inRealSEXP);
-  int fastPeriod = asInteger(fastPeriodSEXP);
-  int slowPeriod = asInteger(slowPeriodSEXP);
-  TA_MAType maType = as_MAType(maTypeSEXP);
+  R_xlen_t n = xlength(x_input);
+  int fastPeriod = asInteger(fast_period);
+  int slowPeriod = asInteger(slow_period);
+  TA_MAType maType = as_MAType(ma_type);
 
   // Allocate result vector
-  SEXP outRealSEXP = PROTECT(allocVector(REALSXP, n));
-  double *restrict outReal = REAL(outRealSEXP);
-  const double *restrict inReal = REAL(inRealSEXP);
+  SEXP result = PROTECT(allocMatrix(REALSXP, n, 1));
+  double *restrict out = REAL(result);
+  const double *restrict x = REAL(x_input);
 
   // Call TA-Lib
   int outBegIdx = 0, outNBElement = 0;
   // clang-format off
-  TA_RetCode ret = TA_APO(
+  TA_RetCode return_code = TA_APO(
     0,
-    (int)n - 1,
-    inReal,
+    n - 1,
+    x,
     fastPeriod,
     slowPeriod,
     maType,
     &outBegIdx,
     &outNBElement,
-    outReal 
+    out 
   );
   // clang-format on
 
-  if (ret != TA_SUCCESS) {
+  if (return_code != TA_SUCCESS) {
     UNPROTECT(1);
-    error("TA_APO failed with error code %d", ret);
+    error("TA_APO failed with error code %d", return_code);
   }
 
   // shift
-  shift_array(outReal, n, outBegIdx);
+  shift_array(out, n, outBegIdx);
 
+  set_colnames(result, "APO");
   UNPROTECT(1);
-  return outRealSEXP;
+  return result;
 }
