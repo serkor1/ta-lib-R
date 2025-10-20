@@ -29,8 +29,13 @@
 #include <Rinternals.h>
 #include <ta_libc.h>
 
-SEXP impl_ta_ACCBANDS(SEXP inHigh, SEXP inLow, SEXP inClose,
-                      SEXP optTimePeriod) {
+// clang-format off
+SEXP impl_ta_ACCBANDS(
+  SEXP inHigh, 
+  SEXP inLow, 
+  SEXP inClose,
+  SEXP optTimePeriod) {
+  // clang-format on
 
   int protect_count = 0;
   int n = LENGTH(inHigh);
@@ -88,9 +93,9 @@ SEXP impl_ta_ACCBANDS(SEXP inHigh, SEXP inLow, SEXP inClose,
   // clang-format off
   set_colnames(
     result, 
-    "upper", 
+    "lower", 
     "middle", 
-    "lower"
+    "upper"
   );
   // clang-format on
 
