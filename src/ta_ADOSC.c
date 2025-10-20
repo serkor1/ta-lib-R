@@ -27,6 +27,7 @@
 //   * Single allocation, single pass over the output
 //   * Early empty/length checks avoid TA call on degenerate ranges
 #include "lib.h"
+#include "names.h"
 #include "shift.h"
 #include <R.h>
 #include <Rinternals.h>
@@ -54,7 +55,7 @@ SEXP impl_ta_ADOSC(SEXP inHigh, SEXP inLow, SEXP inClose, SEXP inVolume,
   const double *restrict volume = REAL(inVolume);
 
   // 3) Allocate full-length output.
-  SEXP result = PROTECT(allocVector(REALSXP, n));
+  SEXP result = PROTECT(allocMatrix(REALSXP, n, 1));
   double *restrict out = REAL(result);
 
   // 4) Call TA-Lib from index 0; write from out[0].
@@ -82,6 +83,8 @@ SEXP impl_ta_ADOSC(SEXP inHigh, SEXP inLow, SEXP inClose, SEXP inVolume,
 
   // 5) Normalize by padding leading NAs equal to outBeg (EMA lookback).
   shift_array(out, n, outBeg);
+
+  set_colnames(result, "ADOSC");
 
   UNPROTECT(1);
   return result;

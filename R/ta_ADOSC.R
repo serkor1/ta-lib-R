@@ -2,11 +2,12 @@
 #' @family Volume Indicator
 #'
 #' @title Chaikin A/D Oscillator
-#'
 #' @templateVar .title Chaikin A/D Oscillator
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun chaikin_AD_oscillator
 #'
+#'
+## input start
 #' @param fast An <[integer]> of [length] 1. The window size passed into the fast moving average (MA).
 #' @param slow An <[integer]> of [length] 1. The window size passed into the slow moving average (MA).
 #'
@@ -14,8 +15,10 @@
 #' A [data.frame]- or [matrix]-object:
 #'
 #' \describe{
-#'  \item{AD_oscillator <[double]>}{Chaikin A/D Oscillator}
+#'  \item{ADOSC <[double]>}{Chaikin A/D Oscillator}
 #' }
+#'
+## input end
 #'
 #' @template description
 chaikin_AD_oscillator <- function(
@@ -25,19 +28,19 @@ chaikin_AD_oscillator <- function(
 	slow = 10,
 	...
 ) {
-	UseMethod(
-		"chaikin_AD_oscillator"
-	)
+	UseMethod("chaikin_AD_oscillator")
 }
 
 #' @export
-#'
 #' @usage NULL
-#'
 #' @rdname chaikin_AD_oscillator
+#'
 #' @aliases chaikin_AD_oscillator
 ADOSC <- chaikin_AD_oscillator
 
+#' @usage NULL
+#' @aliases chaikin_AD_oscillator
+#'
 #' @export
 chaikin_AD_oscillator.default <- function(
 	x,
@@ -46,53 +49,49 @@ chaikin_AD_oscillator.default <- function(
 	slow = 10,
 	...
 ) {
-	## check input
-	## cols if passed
+	## validate 'cols'-argument
+	## if explicitly passed
 	if (!missing(cols)) {
-		assert(
-			is.formula(cols),
-			paste0(
-				"'cols' has to be <",
-				class(~s),
-				">. ",
-				"Got <",
-				class(cols),
-				">."
-			)
-		)
-		assert(
-			length(all.vars(cols)) == 4,
-			paste0(
-				"'cols' has to be length 4. ",
-				"Got length ",
-				length(all.vars(cols))
-			)
-		)
+		assert_formula(cols)
 	}
 
-	HLCV <- series(
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
+
+	## construct series
+	## from input
+	constructed_series <- series(
 		x = cols,
 		default = ~ high + low + close + volume,
 		data = x,
 		...
 	)
 
-	data.frame(
-		AD_oscillator = .Call(
-			"impl_ta_ADOSC",
-			HLCV[[1]],
-			HLCV[[2]],
-			HLCV[[3]],
-			HLCV[[4]],
-			as.integer(fast),
-			as.integer(slow)
-		)
+	## calculate indicator and
+	## return as data.frame
+	x <- .Call(
+		"impl_ta_ADOSC",
+		## input start
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
+		as.integer(fast),
+		as.integer(slow)
+		## input end
 	)
-}
 
+	## readd rownames
+	rownames(x) <- x_names
+
+	## return indicator
+	x
+}
 
 #' @usage NULL
 #' @aliases chaikin_AD_oscillator
+#'
 #' @export
 chaikin_AD_oscillator.data.frame <- function(
 	x,
@@ -108,6 +107,7 @@ chaikin_AD_oscillator.data.frame <- function(
 
 #' @usage NULL
 #' @aliases chaikin_AD_oscillator
+#'
 #' @export
 chaikin_AD_oscillator.matrix <- function(
 	x,
@@ -123,52 +123,57 @@ chaikin_AD_oscillator.matrix <- function(
 
 #' @usage NULL
 #' @aliases chaikin_AD_oscillator
+#'
 #' @export
 chaikin_AD_oscillator.plotly <- function(
 	x,
 	cols,
 	fast = 3,
 	slow = 10,
-	color = "steelblue",
 	...
 ) {
-	## prepare HLCV series
-	## for the chaikin A/D line
-	HLCV <- series(
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
 		x = x,
 		formula = cols,
 		default = ~ high + low + close + volume,
 		...
 	)
 
-	## calculate indicator
-	## and return as data.frame
-	.indicator <- chaikin_AD_oscillator.default(
-		x = HLCV,
+	## construct indicator
+	## from the series
+	constructed_indicator <- chaikin_AD_oscillator(
+		x = constructed_series,
 		cols = rebuild_formula(
-			names(HLCV)
+			names(constructed_series)
 		),
-		fast = fast,
-		slow = slow
+		fast = 3,
+		slow = 10
 	)
 
-	## add x-axis conditional on whether
-	## the data have been subsetted or not
-	.indicator$idx <- add_idx(
-		HLCV
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
 	)
 
+	## construct {plotly}-object
+	## input start
 	plotly_object <- subchart(
-		data = .indicator,
-		y = ~AD_oscillator,
+		data = constructed_indicator,
+		y = ~ADOSC,
 		type = "scatter",
 		mode = "lines",
-		line = list(
-			color = plotly::toRGB(
-				x = color,
-				alpha = 1
-			)
-		),
 		name = "AD",
 		legendgroup = "ChaikinOscillator",
 		showlegend = FALSE
@@ -176,13 +181,9 @@ chaikin_AD_oscillator.plotly <- function(
 
 	plotly_object <- plotly::add_lines(
 		p = plotly_object,
-		x = .indicator$idx,
+		x = constructed_indicator$idx,
 		y = 0,
 		line = list(
-			color = plotly::toRGB(
-				x = color,
-				alpha = 1
-			),
 			dash = "dot"
 		),
 		showlegend = FALSE,
@@ -202,6 +203,7 @@ chaikin_AD_oscillator.plotly <- function(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
+	## input end
 
 	plotly_object
 }
