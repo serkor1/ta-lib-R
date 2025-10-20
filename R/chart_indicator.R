@@ -53,7 +53,7 @@ indicator <- function(FUN, ...) {
 		## add empty {plotly}
 		## object to trigger .plotly
 		## method downstream
-		plt <- plotly::plot_ly()
+		plt <- .plotting_environment$main <- plotly::plot_ly()
 
 		if (has_arg(idx)) {
 			idx <- eval.parent(
