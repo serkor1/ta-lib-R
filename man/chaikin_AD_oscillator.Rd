@@ -22,7 +22,7 @@ chaikin_AD_oscillator(x, cols, fast = 3, slow = 10, ...)
 A \link{data.frame}- or \link{matrix}-object:
 
 \describe{
-\item{AD_oscillator <\link{double}>}{Chaikin A/D Oscillator}
+\item{ADOSC <\link{double}>}{Chaikin A/D Oscillator}
 }
 }
 \description{

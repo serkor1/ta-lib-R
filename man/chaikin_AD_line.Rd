@@ -18,7 +18,7 @@ chaikin_AD_line(x, cols, ...)
 A \link{data.frame}- or \link{matrix}-object:
 
 \describe{
-\item{AD_line <\link{double}>}{Chaikin A/D Line}
+\item{AD <\link{double}>}{Chaikin A/D Line}
 }
 }
 \description{
