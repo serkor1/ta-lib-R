@@ -1,185 +1,96 @@
-## script: utilities
-assert <- function(x, ...) {
-	## Assert truthfulness
-	## of x
-	condition <- x
-	if (!condition) {
-		if (...length() == 0) {
-			stop("Assertion failed", call. = FALSE)
-		} else {
-			stop(..., call. = FALSE)
-		}
+## script: utility functions
+## for the small essential tasks
+##
+## assert input values
+## with and without wrappers
+assert <- function(
+	x,
+	call = sys.call(),
+	...
+) {
+	## exit the function if x is
+	## TRUE
+	if (x) {
+		return(invisible(TRUE))
 	}
 
-	return(
-		invisible(TRUE)
+	system_message <- if (...length()) {
+		paste(...)
+	} else {
+		"Assertion failed"
+	}
+
+	stop(
+		simpleError(
+			message = system_message,
+			call = call
+		)
 	)
 }
 
+assert_formula <- function(x) {
+	## NOTE: this **could** potentially
+	##       be used in
+	## assert that it is a formula
+	##
+	assert(
+		x = is.formula(x),
+		call = sys.call(sys.parent()),
+		"Expected",
+		paste0("'", substitute(x), "'"),
+		"as <formula>.",
+		"Got",
+		paste0(
+			"<",
+			class(x),
+			">."
+		)
+	)
+}
+
+
+assert_plotly <- function(x) {
+	assert(
+		x = is.plotly(x),
+		call = sys.call(sys.parent()),
+		"Expected",
+		paste0("'", substitute(x), "'"),
+		"as <plotly>.",
+		"Got",
+		paste0(
+			"<",
+			class(x),
+			">."
+		)
+	)
+}
+
+
+## class related utility
+## functions
+is.number <- function(x) {
+	is.numeric(x) || is.integer(x)
+}
+
+is.formula <- function(x) {
+	inherits(x, "formula")
+}
+
+is.plotly <- function(x) {
+	inherits(x, "plotly")
+}
+
+reclass <- function(x, ...) {
+	class(x) <- c(class(x), ...)
+}
+
+## list operations
 flatten <- function(x) {
 	if (!inherits(x, "list")) {
 		list(x)
 	} else {
 		unlist(c(lapply(x, flatten)), recursive = FALSE)
 	}
-}
-
-## padding with NAs
-na_pad <- function(x, n = 5) {
-	if (n <= 0L) {
-		return(x)
-	}
-
-	rbind(
-		stats::setNames(
-			as.data.frame(
-				matrix(
-					NA_real_,
-					nrow = n,
-					ncol = ncol(x)
-				)
-			),
-			colnames(x)
-		),
-		x
-	)
-}
-
-## extract open, high, low, close
-## and volume by position
-##
-## offset if idx is present
-##
-## NOTE: Offset is like scratching your
-##       left ear with your right arm
-##       only added for backwards compatibility
-##       - should remove it.
-# .open <- function(x, offset = FALSE) {
-# 	x[, 1L + as.integer(offset)]
-# }
-# .high <- function(x, offset = FALSE) {
-# 	x[, 2L + as.integer(offset)]
-# }
-# .low <- function(x, offset = FALSE) {
-# 	x[, 3L + as.integer(offset)]
-# }
-# .close <- function(x, offset = FALSE) {
-# 	x[, 4L + as.integer(offset)]
-# }
-# .volume <- function(x, offset = FALSE) {
-# 	x[, 5L + as.integer(offset)]
-# }
-
-## map MAs
-map_maType_call <- function(call_expr) {
-	args <- as.list(call_expr)[-1L]
-	head_chr <- as.character(call_expr[[1L]])
-	fun_name <- utils::tail(head_chr, 1L)
-
-	maType <- switch(
-		fun_name,
-		SMA = 0L,
-		EMA = 1L,
-		WMA = 2L,
-		DEMA = 3L,
-		TEMA = 4L,
-		TRIMA = 5L,
-		KAMA = 6L,
-		MAMA = 7L,
-		T3 = 8L,
-		stop(sprintf("Unknown MA type: %s", fun_name))
-	)
-
-	n_val <- args[["n"]]
-
-	list(
-		n = as.integer(n_val),
-		maType = maType
-	)
-}
-
-is.number <- function(x) {
-	is.numeric(x) || is.integer(x)
-}
-
-# .unwrap_meta <- function(expr, env) {
-# 	repeat {
-# 		if (!is.call(expr)) {
-# 			break
-# 		}
-# 		head <- expr[[1L]]
-# 		if (
-# 			is.symbol(head) &&
-# 				as.character(head) %in%
-# 					c("substitute", "quote")
-# 		) {
-# 			expr <- eval(expr, envir = env, enclos = env)
-# 		} else {
-# 			break
-# 		}
-# 	}
-# 	expr
-# }
-
-# .is_ma_spec <- function(expr, env) {
-# 	expr1 <- .unwrap_meta(expr, env)
-# 	if (is.call(expr1)) {
-# 		return(TRUE)
-# 	}
-# 	if (is.symbol(expr1)) {
-# 		v <- try(
-# 			get(
-# 				as.character(expr1),
-# 				envir = env,
-# 				inherits = TRUE
-# 			),
-# 			silent = TRUE
-# 		)
-# 		return(!inherits(v, "try-error") && is.language(v))
-# 	}
-# 	FALSE
-# }
-
-# # Normalize one MA argument to a CALL, without forcing promises.
-# .normalize_ma_arg_expr <- function(expr, env) {
-# 	expr1 <- .unwrap_meta(expr, env)
-# 	if (is.call(expr1)) {
-# 		return(expr1)
-# 	}
-# 	if (is.symbol(expr1)) {
-# 		v <- get(as.character(expr1), envir = env, inherits = TRUE)
-# 		if (is.language(v)) return(v)
-# 	}
-# 	stop("Expected an MA spec like EMA(n = 12).", call. = FALSE)
-# }
-
-# # Safe integer eval for the numeric path (after unwrapping).
-# .eval_int <- function(expr, env) {
-# 	expr1 <- .unwrap_meta(expr, env)
-# 	v <- eval(expr1, envir = env, enclos = env)
-# 	if (!is.number(v) || length(v) != 1L || !is.finite(v)) {
-# 		stop(
-# 			"fast/slow/signal must be finite numeric scalars.",
-# 			call. = FALSE
-# 		)
-# 	}
-# 	as.integer(v)
-# }
-
-reclass <- function(x, ...) {
-	class(x) <- c(class(x), ...)
-}
-
-
-# ## series
-# .univariate_series <- function(x) {
-# 	as.double(
-# 		x[, 1L]
-# 	)
-# }
-
-is.formula <- function(x) {
-	inherits(x, "formula")
 }
 
 ## extract input name
@@ -190,54 +101,7 @@ input_name <- function(x) {
 	deparse(x)
 }
 
-rebuild_formula <- function(
-	x,
-	exclude = "idx"
-) {
-	if (!is.character(x)) {
-		x <- names(x)
-	}
-	## this function removes
-	## idx and rebuilds the passed
-	## series as formulas
-	idx <- grepl(
-		pattern = exclude,
-		x = x,
-		ignore.case = TRUE
-	)
-
-	stats::reformulate(
-		x[!idx]
-	)
-}
-
-add_idx <- function(x) {
-	## store idx
-	idx <- .plotting_environment$idx$label
-
-	if (!is.null(idx)) {
-		idx[
-			if (is.null(attributes(x)$subset)) {
-				1:nrow(x)
-			} else {
-				attributes(x)$subset
-			}
-		]
-	} else {
-		1:nrow(x)
-	}
-}
-
-to_title <- function(
-	x
-) {
-	## remove underscores
-	## if preset
-	x <- gsub(pattern = "_", replacement = " ", x = x)
-	gsub("\\b(.)", "\\U\\1", tolower(x), perl = TRUE)
-}
-
-
+## check for args
 has_arg <- function(name) {
 	## shamelessly stolen from
 	## {methods}
@@ -258,11 +122,4 @@ has_arg <- function(name) {
 	} else {
 		eval(substitute(!missing(name)), sys.frame(sys.parent()))
 	}
-}
-
-
-## main chart called
-## function
-main_chart_exists <- function() {
-	!is.null(.plotting_environment$main)
 }
