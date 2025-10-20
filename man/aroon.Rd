@@ -64,6 +64,7 @@ utils::tail(output)
 }
 \seealso{
 Other Momentum Indicator: 
+\code{\link{absolute_price_oscillator}()},
 \code{\link{aroon_oscillator}()},
 \code{\link{chande_momentum_oscillator}()},
 \code{\link{commodity_channel_index}()},
