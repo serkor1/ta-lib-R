@@ -3,7 +3,6 @@
 ## the file will be overwritten in the next iteration
 ##
 ## author: Serkan Korkmaz
-## updated: 2025-10-18
 
 ## 1) alias and function similarity
 ##    checks this ensures that
@@ -95,7 +94,7 @@ testthat::test_that(desc = 'Default calls', code = {
 		),
 		expected = CMO(
 			BTC,
-			cols = ~open
+			cols = ~close
 		)
 	)
 })

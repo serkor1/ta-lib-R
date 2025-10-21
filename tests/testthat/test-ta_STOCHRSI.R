@@ -6,12 +6,12 @@
 
 ## 1) alias and function similarity
 ##    checks this ensures that
-##    MACD and moving_average_convergence_divergence produces the same results
+##    STOCHRSI and stochastic_relative_strength_index produces the same results
 testthat::test_that(desc = 'Alias and function similarity', code = {
 	## 1) test that the alias and
 	##    function returns the same values
-	output <- MACD(SPY)
-	alias <- moving_average_convergence_divergence(SPY)
+	output <- STOCHRSI(SPY)
+	alias <- stochastic_relative_strength_index(SPY)
 
 	## 1.1) check if the values
 	##      are equal
@@ -26,12 +26,12 @@ testthat::test_that(desc = 'Alias and function similarity', code = {
 ##
 ## 2.1) data.frame checks
 testthat::test_that(desc = '{plotly}-methods for <data.frame>', code = {
-	## 1) check that MACD can
+	## 1) check that STOCHRSI can
 	##    use {plotly} without any issues
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(MACD)
+			indicator(STOCHRSI)
 		}
 	)
 
@@ -44,12 +44,12 @@ testthat::test_that(desc = '{plotly}-methods for <data.frame>', code = {
 
 ## 2.2) matrix checks
 testthat::test_that(desc = '{plotly}-methods for <matrix>', code = {
-	## 1) check that MACD can
+	## 1) check that STOCHRSI can
 	##    use {plotly} without any issues
 	output <- testthat::expect_no_error(
 		{
 			chart(SPY)
-			indicator(MACD)
+			indicator(STOCHRSI)
 		}
 	)
 
@@ -68,7 +68,7 @@ testthat::test_that(desc = 'Class in, class out (<matrix>)', code = {
 	## 1) check that the output class
 	##    matches the input class
 	testthat::expect_true(
-		inherits(MACD(SPY), class(SPY))
+		inherits(STOCHRSI(SPY), class(SPY))
 	)
 })
 
@@ -77,7 +77,7 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 	## 1) check that the output class
 	##    matches the input class
 	testthat::expect_true(
-		inherits(MACD(BTC), class(BTC))
+		inherits(STOCHRSI(BTC), class(BTC))
 	)
 })
 
@@ -89,12 +89,12 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 ##          series() function
 testthat::test_that(desc = 'Default calls', code = {
 	testthat::expect_equal(
-		object = MACD(
+		object = STOCHRSI(
 			BTC
 		),
-		expected = MACD(
+		expected = STOCHRSI(
 			BTC,
-			cols = ~close
+			cols = ~ high + low + close
 		)
 	)
 })
@@ -103,7 +103,7 @@ testthat::test_that(desc = 'Default calls', code = {
 ##    matches the output length
 testthat::test_that(desc = 'Equal length of input and output', code = {
 	testthat::expect_equal(
-		object = nrow(MACD(
+		object = nrow(STOCHRSI(
 			BTC
 		)),
 		expected = nrow(BTC)
