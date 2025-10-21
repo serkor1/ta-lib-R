@@ -12,6 +12,7 @@
 //   shift_array().
 
 #include "lib.h"
+#include "names.h"
 #include "shift.h"
 #include <R.h>
 #include <Rinternals.h>
@@ -32,7 +33,7 @@ SEXP impl_ta_CMO(SEXP x, SEXP optTimePeriod) {
   // output vector
   // clang-format off
   SEXP output = PROTECT(
-    allocVector(REALSXP, n)
+    allocMatrix(REALSXP, n, 1)
   ); protection_count++;
   double *output_ptr = REAL(output);
   // clang-format on
@@ -73,6 +74,7 @@ SEXP impl_ta_CMO(SEXP x, SEXP optTimePeriod) {
 
     // shift values
     shift_array(output_ptr, n, outBeg);
+    set_colnames(output, "CMO");
   }
 
   UNPROTECT(protection_count);

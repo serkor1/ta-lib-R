@@ -19,7 +19,7 @@ SEXP impl_ta_RSI(SEXP inReal, SEXP optTimePeriod) {
   double *restrict src = REAL(inReal);
   int period = INTEGER(optTimePeriod)[0];
 
-  SEXP result = PROTECT(allocVector(REALSXP, n));
+  SEXP result = PROTECT(allocMatrix(REALSXP, n, 1));
   protect_count++;
   double *rsi = REAL(result);
 
@@ -54,6 +54,7 @@ SEXP impl_ta_RSI(SEXP inReal, SEXP optTimePeriod) {
 
     // shift
     shift_array(rsi, n, outBeg);
+    set_colnames(result, "RSI");
   }
 
   UNPROTECT(protect_count);
