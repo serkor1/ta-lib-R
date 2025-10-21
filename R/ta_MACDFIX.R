@@ -192,8 +192,8 @@ fixed_moving_average_convergence_divergence.plotly <- function(
 		inherit = FALSE,
 		name = sprintf(
 			fmt = "MACD(%d, %d)",
-			if (is.list(fast)) fast$n else fast,
-			if (is.list(slow)) slow$n else slow
+			12L,
+			26L
 		)
 	)
 
@@ -202,8 +202,8 @@ fixed_moving_average_convergence_divergence.plotly <- function(
 			x = plotly_object,
 			text = sprintf(
 				fmt = "MACD(%d, %d, %d)",
-				if (is.list(fast)) fast$n else fast,
-				if (is.list(slow)) slow$n else slow,
+				12L,
+				26L,
 				if (is.list(signal)) signal$n else signal
 			)
 		)
