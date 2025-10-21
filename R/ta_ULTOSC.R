@@ -115,6 +115,8 @@ ultimate_oscillator.plotly <- function(
 	cols,
 	n = c(7, 14, 28),
 	## splice:optional-plotly:start
+	lower = 30,
+	upper = 70,
 	## splice:optional-plotly:end
 	...
 ) {
@@ -156,7 +158,7 @@ ultimate_oscillator.plotly <- function(
 	## splice:plotly-assembly:start
 	plotly_object <- subchart(
 		data = constructed_indicator,
-		y = ~utimate_oscillator,
+		y = ~ULTOSC,
 		type = "scatter",
 		mode = "lines",
 		name = "Ultimate Oscillator",
@@ -170,8 +172,8 @@ ultimate_oscillator.plotly <- function(
 		x = ~idx,
 		ymin = rep(lower, nrow(constructed_indicator)),
 		ymax = rep(upper, nrow(constructed_indicator)),
-		color = color,
-		alpha = alpha,
+		color = "lightgray",
+		alpha = 0.2,
 		showlegend = TRUE,
 		dash = c("dot", "dot"),
 		name = c("Lower", "Upper"),
