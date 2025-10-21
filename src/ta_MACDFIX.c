@@ -16,7 +16,13 @@
 #include <Rinternals.h>
 #include <ta_libc.h>
 
-SEXP impl_ta_MACDFIX(SEXP inReal, SEXP optSignalPeriod) {
+// clang-format off
+SEXP impl_ta_MACDFIX(
+  SEXP inReal, 
+  SEXP optSignalPeriod
+) {
+  // clang-format on
+
   int protect_count = 0;
   // 1) Prepare inputs
   int n = LENGTH(inReal);
@@ -24,10 +30,14 @@ SEXP impl_ta_MACDFIX(SEXP inReal, SEXP optSignalPeriod) {
   int signalP = INTEGER(optSignalPeriod)[0];
 
   // 2) Allocate output matrix (n rows × 3 cols)
-  SEXP result = PROTECT(allocMatrix(REALSXP, n, 3));
+  // clang-format off
+  SEXP result = PROTECT(
+    allocMatrix(REALSXP, n, 3)
+  ); protect_count++;
   double *restrict macd = REAL(result);
   double *restrict signal = macd + n;
   double *restrict histogram = macd + 2 * n;
+  // clang-format on
 
   const int minimum_lookback = TA_MACDFIX_Lookback(signalP);
   if (n < minimum_lookback) {
@@ -37,26 +47,27 @@ SEXP impl_ta_MACDFIX(SEXP inReal, SEXP optSignalPeriod) {
     for (size_t i = 0; i < n; ++i) {
       macd[i] = signal[i] = histogram[i] = NA_REAL;
     }
+
   } else {
     // 3) Call underlying TA function
     int outBeg = 0, outNb = 0;
     // clang-format off
-  TA_RetCode ret = TA_MACDFIX(
-    0,
-    n - 1,
-    src,
-    signalP,
-    &outBeg, 
-    &outNb, 
-    macd + outBeg, 
-    signal + outBeg,
-    histogram + outBeg
-  );
+    TA_RetCode return_code = TA_MACDFIX(
+      0,
+      n - 1,
+      src,
+      signalP,
+      &outBeg, 
+      &outNb, 
+      macd + outBeg, 
+      signal + outBeg,
+      histogram + outBeg
+    );
     // clang-format on
 
-    if (ret != TA_SUCCESS) {
-      UNPROTECT(1);
-      error("TA_MACDFIX failed with code %d", ret);
+    if (return_code != TA_SUCCESS) {
+      UNPROTECT(protect_count);
+      error("TA_MACDFIX failed with code %d", return_code);
     }
 
     // 4) Shift each output down by outBeg, padding with NA
