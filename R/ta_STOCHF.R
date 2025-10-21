@@ -2,101 +2,91 @@
 #' @family Momentum Indicator
 #'
 #' @title Fast Stochastic
-#'
 #' @templateVar .title Fast Stochastic
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun fast_stochastic
 #'
-#' @param fast_k Time period for building the Fast-K line.
-#' @param fast_d_MAtype Smoothing for making the Fast-D line.
+## splice:documentation:start
+## splice:documentation:end
 #'
 #' @template description
 fast_stochastic <- function(
 	x,
 	cols,
-	fast_k = 5,
-	fast_d_MAtype = SMA(n = 10),
+	fastk = 5,
+	fastd = SMA(n = 10),
 	...
 ) {
-	UseMethod(
-		"fast_stochastic"
-	)
+	UseMethod("fast_stochastic")
 }
 
 #' @export
-#'
 #' @usage NULL
-#'
 #' @rdname fast_stochastic
+#'
 #' @aliases fast_stochastic
 STOCHF <- fast_stochastic
 
 #' @usage NULL
 #' @aliases fast_stochastic
+#'
 #' @export
 fast_stochastic.default <- function(
 	x,
 	cols,
-	fast_k = 5,
-	fast_d_MAtype = SMA(n = 10),
+	fastk = 5,
+	fastd = SMA(n = 10),
 	...
 ) {
-	## check input
-	## cols if passed
+	## validate 'cols'-argument
+	## if explicitly passed
 	if (!missing(cols)) {
-		assert(
-			is.formula(cols),
-			paste0(
-				"'cols' has to be <",
-				class(~s),
-				">. ",
-				"Got <",
-				class(cols),
-				">."
-			)
-		)
-		assert(
-			length(all.vars(cols)) == 3,
-			paste0(
-				"'cols' has to be length 3. ",
-				"Got length ",
-				length(all.vars(cols))
-			)
-		)
+		assert_formula(cols)
 	}
 
-	## construct HLC series
-	HLC <- series(
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
+
+	## construct series
+	## from input
+	constructed_series <- series(
 		x = cols,
 		default = ~ high + low + close,
 		data = x,
 		...
 	)
 
-	slowk_ma <- fast_d_MAtype
-
-	as.data.frame(
-		.Call(
-			"impl_ta_STOCHF",
-			HLC[[1]],
-			HLC[[2]],
-			HLC[[3]],
-			as.integer(fast_k),
-			as.integer(slowk_ma$n),
-			as.integer(slowk_ma$maType)
-		)
+	## calculate indicator and
+	## return as data.frame
+	x <- .Call(
+		"impl_ta_STOCHF",
+		## splice:call:start
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		as.integer(fastk),
+		as.integer(fastd$n),
+		as.integer(fastd$maType)
+		## splice:call:end
 	)
-}
 
+	## readd rownames
+	rownames(x) <- x_names
+
+	## return indicator
+	x
+}
 
 #' @usage NULL
 #' @aliases fast_stochastic
+#'
 #' @export
 fast_stochastic.data.frame <- function(
 	x,
 	cols,
-	fast_k = 5,
-	fast_d_MAtype = SMA(n = 10),
+	fastk = 5,
+	fastd = SMA(n = 10),
 	...
 ) {
 	as.data.frame(
@@ -106,12 +96,13 @@ fast_stochastic.data.frame <- function(
 
 #' @usage NULL
 #' @aliases fast_stochastic
+#'
 #' @export
 fast_stochastic.matrix <- function(
 	x,
 	cols,
-	fast_k = 5,
-	fast_d_MAtype = SMA(n = 10),
+	fastk = 5,
+	fastd = SMA(n = 10),
 	...
 ) {
 	as.matrix(
@@ -119,55 +110,58 @@ fast_stochastic.matrix <- function(
 	)
 }
 
-
 #' @usage NULL
 #' @aliases fast_stochastic
+#'
 #' @export
 fast_stochastic.plotly <- function(
 	x,
 	cols,
-	fast_k = 5,
-	fast_d_MAtype = SMA(n = 10),
-	lower = 20,
-	upper = 80,
-	color = "lightgray",
-	alpha = 0.7,
+	fastk = 5,
+	fastd = SMA(n = 10),
+	## splice:optional-plotly:start
+	## splice:optional-plotly:end
 	...
 ) {
-	## input arguments
-	slowk_ma <- fast_d_MAtype
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
 
-	## prepare HLC
-	## series for stochastic
-	## relative strength index
-	HLC <- as.data.frame(series(
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
 		x = x,
 		formula = cols,
 		default = ~ high + low + close,
 		...
-	))
+	)
 
-	## calculate indicator
-	## and return as data.frame
-	.indicator <- fast_stochastic.default(
-		x = HLC,
+	## construct indicator
+	## from the series
+	constructed_indicator <- fast_stochastic(
+		x = constructed_series,
 		cols = rebuild_formula(
-			names(HLC)
+			names(constructed_series)
 		),
-		fast_k = fast_k,
-		fast_d_MAtype = fast_d_MAtype
+		fastk = fastk,
+		fastd = fastd
 	)
 
-	## add x-axis conditional on whether
-	## the data have been subsetted or not
-	.indicator$idx <- add_idx(
-		HLC
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
 	)
 
-	## generate plotly object
-	## of the indicator
+	## construct {plotly}-object
+	## splice:plotly-assembly:start
 	plotly_object <- subchart(
-		data = .indicator,
+		data = constructed_indicator,
 		y = ~fastk,
 		type = "scatter",
 		mode = "lines",
@@ -178,13 +172,13 @@ fast_stochastic.plotly <- function(
 
 	plotly_object <- add_ribbons(
 		plotly_object = plotly_object,
-		data = .indicator,
+		data = constructed_indicator,
 		x = ~idx,
 		y = ~fastd,
-		ymin = rep(lower, nrow(.indicator)),
-		ymax = rep(upper, nrow(.indicator)),
-		color = color,
-		alpha = alpha,
+		ymin = rep(20, nrow(constructed_indicator)),
+		ymax = rep(80, nrow(constructed_indicator)),
+		color = "lightgray",
+		alpha = 0.7,
 		dash = c("solid", "dot", "dot"),
 		legendgroup = "stochastic_fast",
 		name = c("Stochastic %D (Fast)", "Lower", "Upper"),
@@ -202,6 +196,7 @@ fast_stochastic.plotly <- function(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
+	## splice:plotly-assembly:end
 
 	plotly_object
 }

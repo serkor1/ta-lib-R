@@ -2,14 +2,12 @@
 #' @family Momentum Indicator
 #'
 #' @title Stochastic Relative Strength Index
-#'
 #' @templateVar .title Stochastic Relative Strength Index
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun stochastic_relative_strength_index
 #'
-#' @param fast_k Time period for building the Fast-K line.
-#' @param fast_d_MAtype Smoothing for making the Fast-D line.
-#' @param n_rsi Time period for [relative_strength_index]
+## splice:documentation:start
+## splice:documentation:end
 #'
 #' @template description
 stochastic_relative_strength_index <- function(
@@ -17,112 +15,83 @@ stochastic_relative_strength_index <- function(
 	cols,
 	n = 10,
 	n_rsi = 10,
-	fast_k = 5,
-	fast_d_MAtype = SMA(n = 10),
+	fastk = 5,
+	fastd = SMA(n = 10),
 	...
 ) {
-	UseMethod(
-		"stochastic_relative_strength_index"
-	)
+	UseMethod("stochastic_relative_strength_index")
 }
 
 #' @export
-#'
 #' @usage NULL
-#'
 #' @rdname stochastic_relative_strength_index
+#'
 #' @aliases stochastic_relative_strength_index
 STOCHRSI <- stochastic_relative_strength_index
 
 #' @usage NULL
 #' @aliases stochastic_relative_strength_index
+#'
 #' @export
 stochastic_relative_strength_index.default <- function(
 	x,
 	cols,
 	n = 10,
 	n_rsi = 10,
-	fast_k = 5,
-	fast_d_MAtype = SMA(n = 10),
-	na.rm = TRUE,
+	fastk = 5,
+	fastd = SMA(n = 10),
 	...
 ) {
-	## calculate the rows of
-	## 'x' as the StochRSI is a combination
-	## of two indicators the the lengths
-	## will be clipped - all functions must
-	## have nrow(in) == nrow(out)
-	x_rows <- nrow(x)
-
-	## check input
-	## cols if passed
+	## validate 'cols'-argument
+	## if explicitly passed
 	if (!missing(cols)) {
-		assert(
-			is.formula(cols),
-			paste0(
-				"'cols' has to be <",
-				class(~s),
-				">. ",
-				"Got <",
-				class(cols),
-				">."
-			)
-		)
-		assert(
-			length(all.vars(cols)) == 1,
-			paste0(
-				"'cols' has to be length 1. ",
-				"Got length ",
-				length(all.vars(cols))
-			)
-		)
+		assert_formula(cols)
 	}
 
-	## calculate RSI
-	x <- relative_strength_index.default(
-		x = x,
-		cols = cols,
-		n = n_rsi,
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
+
+	## construct series
+	## from input
+	constructed_series <- series(
+		x = cols,
+		default = ~ high + low + close,
+		data = x,
 		...
 	)
 
-	x <- as.data.frame(
-		.Call(
-			"impl_ta_STOCHRSI",
-			x[[1]][!is.na(x[[1]])],
-			as.integer(n),
-			as.integer(fast_k),
-			fast_d_MAtype$n,
-			fast_d_MAtype$maType
-		)
+	## calculate indicator and
+	## return as data.frame
+	x <- .Call(
+		"impl_ta_STOCHRSI",
+		## splice:call:start
+		relative_strength_index(constructed_series, n = n_rsi)[[1]],
+		as.integer(n),
+		as.integer(fastk),
+		fastd$n,
+		fastd$maType
+		## splice:call:end
 	)
 
-	## append na values
-	## if there is a mismatch
-	## between input rows and
-	## output rows
-	if (nrow(x) != x_rows) {
-		x <- na_pad(
-			x = x,
-			n = x_rows - nrow(x)
-		)
-	}
+	## readd rownames
+	rownames(x) <- x_names
 
-	return(
-		x
-	)
+	## return indicator
+	x
 }
 
 #' @usage NULL
 #' @aliases stochastic_relative_strength_index
+#'
 #' @export
 stochastic_relative_strength_index.data.frame <- function(
 	x,
 	cols,
 	n = 10,
 	n_rsi = 10,
-	fast_k = 5,
-	fast_d_MAtype = SMA(n = 10),
+	fastk = 5,
+	fastd = SMA(n = 10),
 	...
 ) {
 	as.data.frame(
@@ -132,14 +101,15 @@ stochastic_relative_strength_index.data.frame <- function(
 
 #' @usage NULL
 #' @aliases stochastic_relative_strength_index
+#'
 #' @export
 stochastic_relative_strength_index.matrix <- function(
 	x,
 	cols,
 	n = 10,
 	n_rsi = 10,
-	fast_k = 5,
-	fast_d_MAtype = SMA(n = 10),
+	fastk = 5,
+	fastd = SMA(n = 10),
 	...
 ) {
 	as.matrix(
@@ -149,58 +119,60 @@ stochastic_relative_strength_index.matrix <- function(
 
 #' @usage NULL
 #' @aliases stochastic_relative_strength_index
+#'
 #' @export
 stochastic_relative_strength_index.plotly <- function(
 	x,
 	cols,
 	n = 10,
 	n_rsi = 10,
-	fast_k = 5,
-	fast_d_MAtype = SMA(n = 10),
-	lower = 20,
-	upper = 80,
-	color = "lightgray",
-	alpha = 0.7,
+	fastk = 5,
+	fastd = SMA(n = 10),
+	## splice:optional-plotly:start
+	## splice:optional-plotly:end
 	...
 ) {
-	## input arguments
-	fast_d_MAtype <- fast_d_MAtype
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
 
-	## prepare univariate
-	## series for stochastic
-	## relative strength index
-	x <- as.data.frame(
-		series(
-			x = x,
-			formula = cols,
-			default = ~open,
-			...
-		)
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
+		x = x,
+		formula = cols,
+		default = ~ high + low + close,
+		...
 	)
 
-	## calculate indicator
-	## and return as data.frame
-	.indicator <- stochastic_relative_strength_index.default(
-		x = x,
+	## construct indicator
+	## from the series
+	constructed_indicator <- stochastic_relative_strength_index(
+		x = constructed_series,
 		cols = rebuild_formula(
-			names(x)
+			names(constructed_series)
 		),
 		n = n,
 		n_rsi = n_rsi,
-		fast_k = fast_k,
-		fast_d_MAtype = fast_d_MAtype
+		fastk = fastk,
+		fastd = fastd
 	)
 
-	## add x-axis conditional on whether
-	## the data have been subsetted or not
-	.indicator$idx <- add_idx(
-		x
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
 	)
 
-	## generate plotly object
-	## of the indicator
+	## construct {plotly}-object
+	## splice:plotly-assembly:start
 	plotly_object <- subchart(
-		data = .indicator,
+		data = constructed_indicator,
 		y = ~fastk,
 		type = "scatter",
 		mode = "lines",
@@ -211,13 +183,13 @@ stochastic_relative_strength_index.plotly <- function(
 
 	plotly_object <- add_ribbons(
 		plotly_object = plotly_object,
-		data = .indicator,
+		data = constructed_indicator,
 		x = ~idx,
 		y = ~fastd,
-		ymin = rep(lower, nrow(.indicator)),
-		ymax = rep(upper, nrow(.indicator)),
-		color = color,
-		alpha = alpha,
+		ymin = rep(20, nrow(constructed_indicator)),
+		ymax = rep(80, nrow(constructed_indicator)),
+		color = "lightgray",
+		alpha = 0.2,
 		showlegend = TRUE,
 		dash = c("solid", "dot", "dot"),
 		name = c("StochRSI %D", "Lower", "Upper"),
@@ -235,6 +207,7 @@ stochastic_relative_strength_index.plotly <- function(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
+	## splice:plotly-assembly:end
 
 	plotly_object
 }

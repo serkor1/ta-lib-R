@@ -2,10 +2,12 @@
 #' @family Momentum Indicator
 #'
 #' @title Chande Momentum Oscillator
-#'
 #' @templateVar .title Chande Momentum Oscillator
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun chande_momentum_oscillator
+#'
+## splice:documentation:start
+## splice:documentation:end
 #'
 #' @template description
 chande_momentum_oscillator <- function(
@@ -14,21 +16,19 @@ chande_momentum_oscillator <- function(
 	n = 10,
 	...
 ) {
-	UseMethod(
-		generic = "chande_momentum_oscillator"
-	)
+	UseMethod("chande_momentum_oscillator")
 }
 
 #' @export
-#'
 #' @usage NULL
-#'
 #' @rdname chande_momentum_oscillator
+#'
 #' @aliases chande_momentum_oscillator
 CMO <- chande_momentum_oscillator
 
 #' @usage NULL
 #' @aliases chande_momentum_oscillator
+#'
 #' @export
 chande_momentum_oscillator.default <- function(
 	x,
@@ -36,94 +36,45 @@ chande_momentum_oscillator.default <- function(
 	n = 10,
 	...
 ) {
-	## check input
-	## cols if passed
+	## validate 'cols'-argument
+	## if explicitly passed
 	if (!missing(cols)) {
-		assert(
-			is.formula(cols),
-			paste0(
-				"'cols' has to be <",
-				class(~s),
-				">. ",
-				"Got <",
-				class(cols),
-				">."
-			)
-		)
-		assert(
-			length(all.vars(cols)) == 1,
-			paste0(
-				"'cols' has to be length 1. ",
-				"Got length ",
-				length(all.vars(cols))
-			)
-		)
+		assert_formula(cols)
 	}
 
-	## default behaviour is to
-	## coerce to a `matrix` check that
-	## it is double and then pass to
-	## C-side.
-	x <- series(
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
+
+	## construct series
+	## from input
+	constructed_series <- series(
 		x = cols,
-		default = ~open,
+		default = ~close,
 		data = x,
 		...
 	)
 
-	## 1) pass `x` assuming that it
-	##    follows OHLC-V structure
-	x <- as.data.frame(
-		.Call(
-			"impl_ta_CMO",
-			x[[1]],
-			as.integer(n)
-		)
-	)
-
-	colnames(x) <- "CMO"
-
-	return(x)
-}
-
-#' @usage NULL
-#' @aliases chande_momentum_oscillator
-#' @export
-chande_momentum_oscillator.numeric <- function(
-	x,
-	cols,
-	n = 10,
-	...
-) {
-	## determine branch
-	## if its a matrix call
-	## matrix method and end the function
-	##
-	## NOTE: this is necessary as matrix are
-	##       internally doubles
-	if (is.matrix(x)) {
-		output <- NextMethod()
-
-		return(output)
-	}
-
-	## treat 'x' as a vector
-	##
-	if (!missing(cols)) {
-		warning(
-			"'cols' have been passed but is unused in for vectors"
-		)
-	}
-
-	.Call(
+	## calculate indicator and
+	## return as data.frame
+	x <- .Call(
 		"impl_ta_CMO",
-		x,
+		## splice:call:start
+		constructed_series[[1]],
 		as.integer(n)
+		## splice:call:end
 	)
+
+	## readd rownames
+	rownames(x) <- x_names
+
+	## return indicator
+	x
 }
 
 #' @usage NULL
 #' @aliases chande_momentum_oscillator
+#'
 #' @export
 chande_momentum_oscillator.data.frame <- function(
 	x,
@@ -138,6 +89,7 @@ chande_momentum_oscillator.data.frame <- function(
 
 #' @usage NULL
 #' @aliases chande_momentum_oscillator
+#'
 #' @export
 chande_momentum_oscillator.matrix <- function(
 	x,
@@ -152,48 +104,54 @@ chande_momentum_oscillator.matrix <- function(
 
 #' @usage NULL
 #' @aliases chande_momentum_oscillator
+#'
 #' @export
 chande_momentum_oscillator.plotly <- function(
 	x,
 	cols,
 	n = 10,
-	upper = 50,
-	lower = -50,
-	alpha = 0.7,
+	## splice:optional-plotly:start
+	## splice:optional-plotly:end
 	...
 ) {
-	## prepare univariate
-	## series for the chande momentum
-	## indicator
-	x <- as.data.frame(
-		series(
-			x = x,
-			formula = cols,
-			default = ~open,
-			...
-		)
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
+		x = x,
+		formula = cols,
+		default = ~close,
+		...
 	)
 
-	## calculate indicator
-	## and return as data.frame
-	.indicator <- chande_momentum_oscillator.default(
-		x = x,
+	## construct indicator
+	## from the series
+	constructed_indicator <- chande_momentum_oscillator(
+		x = constructed_series,
 		cols = rebuild_formula(
-			names(x)
+			names(constructed_series)
 		),
 		n = n
 	)
 
-	## add x-axis conditional on whether
-	## the data have been subsetted or not
-	.indicator$idx <- add_idx(
-		x
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
 	)
 
-	## construct plot with ribbons
-	## on upper and lower limits
+	## construct {plotly}-object
+	## splice:plotly-assembly:start
 	plotly_object <- subchart(
-		data = .indicator,
+		data = constructed_indicator,
 		y = ~CMO,
 		type = "scatter",
 		mode = "lines",
@@ -202,11 +160,11 @@ chande_momentum_oscillator.plotly <- function(
 
 	plotly_object <- add_ribbons(
 		plotly_object = plotly_object,
-		data = .indicator,
+		data = constructed_indicator,
 		x = ~idx,
-		ymin = rep(lower, nrow(.indicator)),
-		ymax = rep(upper, nrow(.indicator)),
-		alpha = alpha,
+		ymin = rep(-50, nrow(constructed_indicator)),
+		ymax = rep(50, nrow(constructed_indicator)),
+		alpha = 0.5,
 		color = "lightgray",
 		showlegend = FALSE,
 		legendgroup = "cmo_area",
@@ -228,6 +186,7 @@ chande_momentum_oscillator.plotly <- function(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
+	## splice:plotly-assembly:end
 
 	plotly_object
 }

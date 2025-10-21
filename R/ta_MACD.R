@@ -2,27 +2,14 @@
 #' @family Momentum Indicator
 #'
 #' @title Moving Average Convergence Divergence
-#'
-#' @templateVar .title Bollinger Bands
+#' @templateVar .title Moving Average Convergence Divergence
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun moving_average_convergence_divergence
 #'
-#' @param fast Number of period for the fast MA.
-#' @param slow Number of period for the slow MA.
-#' @param signal Smoothing for the signal line.
+## splice:documentation:start
+## splice:documentation:end
 #'
 #' @template description
-#'
-#' @returns
-#' A [data.frame]- or [matrix]-object with the format:
-#'
-#' \describe{
-#'  \item{macd <[double]>}{The lower band.}
-#'  \item{signal <[double]>}{The middle band.}
-#'  \item{histogram <[double]>}{The upper band.}
-#' }
-#'
-#' @export
 moving_average_convergence_divergence <- function(
 	x,
 	cols,
@@ -35,15 +22,15 @@ moving_average_convergence_divergence <- function(
 }
 
 #' @export
-#'
 #' @usage NULL
-#'
 #' @rdname moving_average_convergence_divergence
+#'
 #' @aliases moving_average_convergence_divergence
 MACD <- moving_average_convergence_divergence
 
 #' @usage NULL
 #' @aliases moving_average_convergence_divergence
+#'
 #' @export
 moving_average_convergence_divergence.default <- function(
 	x,
@@ -53,159 +40,47 @@ moving_average_convergence_divergence.default <- function(
 	signal = 9,
 	...
 ) {
-	## check if they are all numeric
-	## or calls
-	is_calls <- vapply(
-		list(fast, slow, signal),
-		FUN = function(x) {
-			inherits(x, "ma_specification")
-		},
-		logical(1L)
-	)
-
-	if (!(all(is_calls) || all(!is_calls))) {
-		stop(
-			"Either all of `fast`, `slow` and `signal` is specified as calls, or none at all. See examples for more details."
-		)
-	}
-
-	## construct series
-	x <- series(
-		x = cols,
-		default = ~close,
-		data = x,
-		...
-	)
-
-	## if not passed as calls
-	##
-	if (!all(is_calls)) {
-		if (fast == 12L && slow == 26L) {
-			output <- .Call("impl_ta_MACDFIX", x[[1]], as.integer(signal))
-		} else {
-			output <- .Call(
-				"impl_ta_MACD",
-				x[[1]],
-				as.integer(fast),
-				as.integer(slow),
-				as.integer(signal)
-			)
-		}
-
-		output <- as.data.frame(
-			output
-		)
-
-		return(output)
-	}
-
-	as.data.frame(
-		.Call(
-			"impl_ta_MACDEXT",
-			x[[1]],
-			fast$n,
-			fast$maType,
-			slow$n,
-			slow$maType,
-			signal$n,
-			signal$maType
-		)
-	)
-}
-
-#' @usage NULL
-#' @aliases moving_average_convergence_divergence
-#' @export
-moving_average_convergence_divergence.numeric <- function(
-	x,
-	cols,
-	fast = 12,
-	slow = 26,
-	signal = 9,
-	...
-) {
-	## determine branch
-	## if its a matrix call
-	## matrix method and end the function
-	##
-	## NOTE: this is necessary as matrix are
-	##       internally doubles
-	if (is.matrix(x)) {
-		output <- NextMethod()
-
-		return(output)
-	}
-
-	## treat 'x' as a vector
-	##
+	## validate 'cols'-argument
+	## if explicitly passed
 	if (!missing(cols)) {
-		warning(
-			"'cols' have been passed but is unused in for vectors"
-		)
+		assert_formula(cols)
 	}
 
-	## check if they are all numeric
-	## or calls
-	is_calls <- vapply(
-		list(fast, slow, signal),
-		FUN = function(x) {
-			inherits(x, "ma_specification")
-		},
-		logical(1L)
-	)
-
-	if (!(all(is_calls) || all(!is_calls))) {
-		stop(
-			"Either all of `fast`, `slow` and `signal` is specified as calls, or none at all. See examples for more details."
-		)
-	}
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
 
 	## construct series
-	x <- series(
+	## from input
+	constructed_series <- series(
 		x = cols,
 		default = ~close,
 		data = x,
 		...
 	)
 
-	## if not passed as calls
-	##
-	if (!all(is_calls)) {
-		if (fast == 12L && slow == 26L) {
-			output <- .Call("impl_ta_MACDFIX", x, as.integer(signal))
-		} else {
-			output <- .Call(
-				"impl_ta_MACD",
-				x,
-				as.integer(fast),
-				as.integer(slow),
-				as.integer(signal)
-			)
-		}
-
-		output <- as.data.frame(
-			output
-		)
-
-		return(output)
-	}
-
-	as.data.frame(
-		.Call(
-			"impl_ta_MACDEXT",
-			x,
-			fast$n,
-			fast$maType,
-			slow$n,
-			slow$maType,
-			signal$n,
-			signal$maType
-		)
+	## calculate indicator and
+	## return as data.frame
+	x <- .Call(
+		"impl_ta_MACD",
+		## splice:call:start
+		constructed_series[[1]],
+		as.integer(fast),
+		as.integer(slow),
+		as.integer(signal)
+		## splice:call:end
 	)
+
+	## readd rownames
+	rownames(x) <- x_names
+
+	## return indicator
+	x
 }
 
 #' @usage NULL
 #' @aliases moving_average_convergence_divergence
+#'
 #' @export
 moving_average_convergence_divergence.data.frame <- function(
 	x,
@@ -216,19 +91,13 @@ moving_average_convergence_divergence.data.frame <- function(
 	...
 ) {
 	as.data.frame(
-		moving_average_convergence_divergence.default(
-			x = x,
-			cols = cols,
-			fast = fast,
-			slow = slow,
-			signal = signal,
-			...
-		)
+		NextMethod()
 	)
 }
 
 #' @usage NULL
 #' @aliases moving_average_convergence_divergence
+#'
 #' @export
 moving_average_convergence_divergence.matrix <- function(
 	x,
@@ -239,19 +108,13 @@ moving_average_convergence_divergence.matrix <- function(
 	...
 ) {
 	as.matrix(
-		moving_average_convergence_divergence.default(
-			x = x,
-			cols = cols,
-			fast = fast,
-			slow = slow,
-			signal = signal,
-			...
-		)
+		NextMethod()
 	)
 }
 
 #' @usage NULL
 #' @aliases moving_average_convergence_divergence
+#'
 #' @export
 moving_average_convergence_divergence.plotly <- function(
 	x,
@@ -259,38 +122,52 @@ moving_average_convergence_divergence.plotly <- function(
 	fast = 12,
 	slow = 26,
 	signal = 9,
+	## splice:optional-plotly:start
+	## splice:optional-plotly:end
 	...
 ) {
-	## prepare univariate
-	## series for MACD
-	x <- series(
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
 		x = x,
 		formula = cols,
 		default = ~close,
 		...
 	)
 
-	## calculator indicator
-	## and return as data.frame
-	.indicator <- moving_average_convergence_divergence.default(
-		x = x,
+	## construct indicator
+	## from the series
+	constructed_indicator <- moving_average_convergence_divergence(
+		x = constructed_series,
 		cols = rebuild_formula(
-			names(x)
+			names(constructed_series)
 		),
 		fast = fast,
 		slow = slow,
 		signal = signal
 	)
 
-	## add x-axis conditional on whether
-	## the data have been subsetted or not
-	.indicator$idx <- add_idx(
-		x
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
 	)
 
+	## construct {plotly}-object
+	## splice:plotly-assembly:start
 	## calculate directions for bull
 	## and bear candles
-	.indicator$direction <- .indicator$signal >= .indicator$macd
+	constructed_indicator$direction <- constructed_indicator$signal >=
+		constructed_indicator$macd
 
 	## generate plotly object
 	## of the indicator
@@ -298,7 +175,7 @@ moving_average_convergence_divergence.plotly <- function(
 
 	## construct plotly object
 	plotly_object <- subchart(
-		data = .indicator,
+		data = constructed_indicator,
 		y = ~histogram,
 		color = ~direction,
 		colors = c(
@@ -313,7 +190,7 @@ moving_average_convergence_divergence.plotly <- function(
 		plotly_object,
 		x = ~idx,
 		y = ~signal,
-		data = .indicator,
+		data = constructed_indicator,
 		inherit = FALSE,
 		name = sprintf(
 			fmt = "Signal(%d)",
@@ -325,7 +202,7 @@ moving_average_convergence_divergence.plotly <- function(
 		plotly_object,
 		x = ~idx,
 		y = ~macd,
-		data = .indicator,
+		data = constructed_indicator,
 		inherit = FALSE,
 		name = sprintf(
 			fmt = "MACD(%d, %d)",
@@ -350,6 +227,7 @@ moving_average_convergence_divergence.plotly <- function(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
+	## splice:plotly-assembly:end
 
 	plotly_object
 }

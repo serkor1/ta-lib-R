@@ -3,10 +3,6 @@
 \name{ultimate_oscillator}
 \alias{ultimate_oscillator}
 \alias{ULTOSC}
-\alias{ultimate_oscillator.default}
-\alias{ultimate_oscillator.data.frame}
-\alias{ultimate_oscillator.matrix}
-\alias{ultimate_oscillator.plotly}
 \title{Ultimate Oscillator}
 \usage{
 ultimate_oscillator(x, cols, n = c(7, 14, 28), ...)
@@ -65,7 +61,9 @@ Other Momentum Indicator:
 \code{\link{aroon_oscillator}()},
 \code{\link{chande_momentum_oscillator}()},
 \code{\link{commodity_channel_index}()},
+\code{\link{extended_moving_average_convergence_divergence}()},
 \code{\link{fast_stochastic}()},
+\code{\link{fixed_moving_average_convergence_divergence}()},
 \code{\link{money_flow_index}()},
 \code{\link{moving_average_convergence_divergence}()},
 \code{\link{relative_strength_index}()},
