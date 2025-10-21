@@ -12,6 +12,7 @@
 //   Returns a numeric vector of the same length as inputs containing
 //   the Ultimate Oscillator, with NA for indices before the lookback.
 #include "lib.h"
+#include "names.h"
 #include "shift.h"
 #include <R.h>
 #include <Rinternals.h>
@@ -43,7 +44,7 @@ SEXP impl_ta_ULTOSC(
   int outBeg, outNB;
   // clang-format off
   SEXP output = PROTECT(
-    allocVector(REALSXP, n)
+    allocMatrix(REALSXP, n, 1)
   ); protect_count++;
   double *__restrict__ output_ptr = REAL(output);
   // clang-format on
@@ -89,6 +90,7 @@ SEXP impl_ta_ULTOSC(
 
     // shift
     shift_array(output_ptr, n, outBeg);
+    set_colnames(output, "ULTOSC");
   }
 
   UNPROTECT(protect_count);

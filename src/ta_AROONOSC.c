@@ -11,6 +11,7 @@
 #include "R_ext/Error.h"
 #include "Rinternals.h"
 #include "lib.h"
+#include "names.h"
 #include "shift.h"
 #include "ta_func.h"
 #include "ta_libc.h"
@@ -29,7 +30,7 @@ SEXP impl_ta_AROONOSC(
   const double *restrict low_ptr = REAL(low);
   const int period = INTEGER(timeperiod)[0];
 
-  SEXP result = PROTECT(allocVector(REALSXP, n));
+  SEXP result = PROTECT(allocMatrix(REALSXP, n, 1));
   protect_count++;
   double *restrict out_ptr = REAL(result);
 
@@ -63,6 +64,7 @@ SEXP impl_ta_AROONOSC(
     }
 
     shift_array(out_ptr, n, outBeg);
+    set_colnames(result, "AROONOSC");
   }
 
   UNPROTECT(protect_count);

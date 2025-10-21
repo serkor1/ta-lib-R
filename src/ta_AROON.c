@@ -72,7 +72,7 @@ SEXP impl_ta_AROON(
   }
 
   // set column names "down","up"
-  set_colnames(result, "aroon_down", "aroon_up");
+  set_colnames(result, "AROONDOWN", "AROONUP");
 
   UNPROTECT(protect_count);
   return result;

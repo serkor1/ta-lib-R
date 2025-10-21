@@ -13,6 +13,7 @@
 //   with the first lookback elements padded by NA using shift_array().
 
 #include "lib.h"
+#include "names.h"
 #include "shift.h"
 #include <R.h>
 #include <Rinternals.h>
@@ -39,7 +40,7 @@ SEXP impl_ta_CCI(
 
   // clang-format off
   SEXP output = PROTECT(
-    allocVector(REALSXP, n)
+    allocMatrix(REALSXP, n, 1)
   ); protect_count++;
   double *restrict output_ptr = REAL(output);
   // clang-format on
@@ -77,6 +78,7 @@ SEXP impl_ta_CCI(
     }
 
     shift_array(output_ptr, n, outBeg);
+    set_colnames(output, "CCI");
   }
 
   UNPROTECT(protect_count);
