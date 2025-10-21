@@ -9,7 +9,6 @@ cat > tests/testthat/test-ta_$1.R <<EOF
 ## the file will be overwritten in the next iteration
 ## 
 ## author: Serkan Korkmaz
-## updated: $(date +"%Y-%m-%d")
 
 ## 1) alias and function similarity
 ##    checks this ensures that 
