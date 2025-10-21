@@ -6,10 +6,8 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun $FUN
 #' 
-#'
-$START
-## initial scaffold
-$END
+## splice:documentation:start
+## splice:documentation:end
 #'
 #' @template description
 $FUN <- function(
@@ -58,9 +56,8 @@ $FUN.default <- function(
 	## return as data.frame
 	x <- .Call(
 		"impl_ta_$ALIAS",
-		$START
-		## initial scaffold
-		$END 
+		## splice:call:start
+		## splice:call:end
 	)
 
 	## readd rownames
@@ -103,7 +100,9 @@ $FUN.matrix <- function(
 #' @export
 $FUN.plotly <- function(
 	x, 
-	cols, $SIG_FORMALS 
+	cols, $SIG_FORMALS
+	## splice:optional-plotly:start
+	## splice:optional-plotly:end
 	...) { 
 
 	## check that input value
@@ -131,8 +130,7 @@ $FUN.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
-		$SIG_ACTUALS
+		)$SIG_ACTUALS
 	)
 
 	## add conditional idx
@@ -141,9 +139,9 @@ $FUN.plotly <- function(
 	)
 
 	## construct {plotly}-object
-	$START
+	## splice:plotly-assembly:start
 	## initial scaffold
-	$END
+	## splice:plotly-assembly:end
 
 	plotly_object
  }
