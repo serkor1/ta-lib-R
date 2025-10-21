@@ -2,10 +2,12 @@
 #' @family Momentum Indicator
 #'
 #' @title Money Flow Index
-#'
 #' @templateVar .title Money Flow Index
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun money_flow_index
+#'
+## splice:documentation:start
+## splice:documentation:end
 #'
 #' @template description
 money_flow_index <- function(
@@ -18,15 +20,15 @@ money_flow_index <- function(
 }
 
 #' @export
-#'
 #' @usage NULL
-#'
 #' @rdname money_flow_index
+#'
 #' @aliases money_flow_index
 MFI <- money_flow_index
 
 #' @usage NULL
 #' @aliases money_flow_index
+#'
 #' @export
 money_flow_index.default <- function(
 	x,
@@ -34,59 +36,48 @@ money_flow_index.default <- function(
 	n = 10,
 	...
 ) {
-	## check input
-	## cols if passed
+	## validate 'cols'-argument
+	## if explicitly passed
 	if (!missing(cols)) {
-		assert(
-			is.formula(cols),
-			paste0(
-				"'cols' has to be <",
-				class(~s),
-				">. ",
-				"Got <",
-				class(cols),
-				">."
-			)
-		)
-		assert(
-			length(all.vars(cols)) == 4,
-			paste0(
-				"'cols' has to be length 4. ",
-				"Got length ",
-				length(all.vars(cols))
-			)
-		)
+		assert_formula(cols)
 	}
 
-	HLCV <- series(
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
+
+	## construct series
+	## from input
+	constructed_series <- series(
 		x = cols,
 		default = ~ high + low + close + volume,
 		data = x,
 		...
 	)
 
-	assert(n >= 2)
-
-	## 1) pass `x` assuming that it
-	##    follows OHLC-V structure
-	output <- as.data.frame(
-		.Call(
-			"impl_ta_MFI",
-			HLCV[[1]],
-			HLCV[[2]],
-			HLCV[[3]],
-			HLCV[[4]],
-			as.integer(n)
-		)
+	## calculate indicator and
+	## return as data.frame
+	x <- .Call(
+		"impl_ta_MFI",
+		## splice:call:start
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
+		as.integer(n)
+		## splice:call:end
 	)
 
-	colnames(output) <- "MFI"
+	## readd rownames
+	rownames(x) <- x_names
 
-	output
+	## return indicator
+	x
 }
 
 #' @usage NULL
 #' @aliases money_flow_index
+#'
 #' @export
 money_flow_index.data.frame <- function(
 	x,
@@ -101,6 +92,7 @@ money_flow_index.data.frame <- function(
 
 #' @usage NULL
 #' @aliases money_flow_index
+#'
 #' @export
 money_flow_index.matrix <- function(
 	x,
@@ -115,45 +107,54 @@ money_flow_index.matrix <- function(
 
 #' @usage NULL
 #' @aliases money_flow_index
+#'
 #' @export
 money_flow_index.plotly <- function(
 	x,
 	cols,
 	n = 10,
-	lower = -20,
-	upper = 80,
+	## splice:optional-plotly:start
+	## splice:optional-plotly:end
 	...
 ) {
-	## prepare series
-	## from
-	HLCV <- series(
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
 		x = x,
 		formula = cols,
 		default = ~ high + low + close + volume,
 		...
 	)
 
-	## calculate money flow index
-	## and return as
-	## data.frame
-	.indicator <- money_flow_index.default(
-		x = HLCV,
+	## construct indicator
+	## from the series
+	constructed_indicator <- money_flow_index(
+		x = constructed_series,
 		cols = rebuild_formula(
-			names(HLCV)
+			names(constructed_series)
 		),
 		n = n
 	)
 
-	## add x-axis conditional on whether
-	## the data have been subsetted or not
-	.indicator$idx <- add_idx(
-		HLCV
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
 	)
 
-	## construct plot with ribbons
-	## on upper and lower limits
+	## construct {plotly}-object
+	## splice:plotly-assembly:start
 	plotly_object <- subchart(
-		data = .indicator,
+		data = constructed_indicator,
 		y = ~MFI,
 		type = "scatter",
 		mode = "lines",
@@ -163,8 +164,8 @@ money_flow_index.plotly <- function(
 	plotly_object <- plotly::add_ribbons(
 		plotly_object,
 		x = ~idx,
-		ymin = rep(lower, nrow(.indicator)),
-		ymax = rep(upper, nrow(.indicator)),
+		ymin = rep(-20, nrow(constructed_indicator)),
+		ymax = rep(80, nrow(constructed_indicator)),
 		line = list(width = 0),
 		fillcolor = plotly::toRGB(
 			x = "lightgray",
@@ -186,6 +187,7 @@ money_flow_index.plotly <- function(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
+	## splice:plotly-assembly:end
 
 	plotly_object
 }

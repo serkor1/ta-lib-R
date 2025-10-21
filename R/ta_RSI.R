@@ -2,10 +2,12 @@
 #' @family Momentum Indicator
 #'
 #' @title Relative Strength Index
-#'
 #' @templateVar .title Relative Strength Index
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun relative_strength_index
+#'
+## splice:documentation:start
+## splice:documentation:end
 #'
 #' @template description
 relative_strength_index <- function(
@@ -14,21 +16,19 @@ relative_strength_index <- function(
 	n = 10,
 	...
 ) {
-	UseMethod(
-		"relative_strength_index"
-	)
+	UseMethod("relative_strength_index")
 }
 
 #' @export
-#'
 #' @usage NULL
-#'
 #' @rdname relative_strength_index
+#'
 #' @aliases relative_strength_index
 RSI <- relative_strength_index
 
 #' @usage NULL
 #' @aliases relative_strength_index
+#'
 #' @export
 relative_strength_index.default <- function(
 	x,
@@ -36,72 +36,45 @@ relative_strength_index.default <- function(
 	n = 10,
 	...
 ) {
-	## check input
-	## cols if passed
+	## validate 'cols'-argument
+	## if explicitly passed
 	if (!missing(cols)) {
-		assert(
-			is.formula(cols),
-			paste0(
-				"'cols' has to be <",
-				class(~s),
-				">. ",
-				"Got <",
-				class(cols),
-				">."
-			)
-		)
-		assert(
-			length(all.vars(cols)) == 1,
-			paste0(
-				"'cols' has to be length 1. ",
-				"Got length ",
-				length(all.vars(cols)),
-				paste(all.vars(cols), collapse = " and ")
-			)
-		)
+		assert_formula(cols)
 	}
 
-	x <- series(
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
+
+	## construct series
+	## from input
+	constructed_series <- series(
 		x = cols,
-		default = ~open,
+		default = ~close,
 		data = x,
 		...
 	)
 
-	## 1) pass `x` to C
-	data.frame(
-		RSI = .Call(
-			"impl_ta_RSI",
-			x[[1]],
-			as.integer(n)
-		)
-	)
-}
-
-#' @usage NULL
-#' @aliases relative_strength_index
-#' @export
-relative_strength_index.numeric <- function(
-	x,
-	cols,
-	n = 10,
-	...
-) {
-	if (!missing(cols)) {
-		warning(
-			"'cols' have been passed but is unused in for vectors"
-		)
-	}
-
-	.Call(
+	## calculate indicator and
+	## return as data.frame
+	x <- .Call(
 		"impl_ta_RSI",
-		as.double(x),
+		## splice:call:start
+		constructed_series[[1]],
 		as.integer(n)
+		## splice:call:end
 	)
+
+	## readd rownames
+	rownames(x) <- x_names
+
+	## return indicator
+	x
 }
 
 #' @usage NULL
 #' @aliases relative_strength_index
+#'
 #' @export
 relative_strength_index.data.frame <- function(
 	x,
@@ -116,6 +89,7 @@ relative_strength_index.data.frame <- function(
 
 #' @usage NULL
 #' @aliases relative_strength_index
+#'
 #' @export
 relative_strength_index.matrix <- function(
 	x,
@@ -123,64 +97,61 @@ relative_strength_index.matrix <- function(
 	n = 10,
 	...
 ) {
-	## NOTE: NextMethod dispactes
-	## 		 to numeric
 	as.matrix(
-		relative_strength_index.default(
-			x = x,
-			cols = cols,
-			n = n,
-			...
-		)
+		NextMethod()
 	)
 }
 
 #' @usage NULL
 #' @aliases relative_strength_index
+#'
 #' @export
 relative_strength_index.plotly <- function(
 	x,
 	cols,
 	n = 10,
-	lower_band = 20,
-	upper_band = 80,
-	color = "lightgray",
-	alpha = 0.2,
+	## splice:optional-plotly:start
+	## splice:optional-plotly:end
 	...
 ) {
-	## prepare univariate series
-	## for RSI
-	x <- as.data.frame(
-		series(
-			x = x,
-			formula = cols,
-			default = ~open,
-			...
-		)
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
+		x = x,
+		formula = cols,
+		default = ~close,
+		...
 	)
 
-	## calculate indicator
-	## and return as data.frame
-	.indicator <- relative_strength_index.default(
-		x = x,
-		## pass the column
-		## based on 'x'
+	## construct indicator
+	## from the series
+	constructed_indicator <- relative_strength_index(
+		x = constructed_series,
 		cols = rebuild_formula(
-			names(x)
+			names(constructed_series)
 		),
 		n = n
 	)
 
-	## add x-axis conditional on whether
-	## the data have been subsetted or not
-	.indicator$idx <- add_idx(
-		x
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
 	)
 
-	## generate plotly object
-	## of the indicator
+	## construct {plotly}-object
+	## splice:plotly-assembly:start
 	plotly_object <- subchart(
-		data = .indicator,
+		data = constructed_indicator,
 		y = ~RSI,
 		type = "scatter",
 		mode = "lines",
@@ -190,12 +161,12 @@ relative_strength_index.plotly <- function(
 	plotly_object <- plotly::add_ribbons(
 		plotly_object,
 		x = ~idx,
-		ymin = rep(lower_band, nrow(.indicator)),
-		ymax = rep(upper_band, nrow(.indicator)),
+		ymin = rep(20, nrow(constructed_indicator)),
+		ymax = rep(80, nrow(constructed_indicator)),
 		line = list(width = 0),
 		fillcolor = plotly::toRGB(
-			x = color,
-			alpha = alpha
+			x = "lightgray",
+			alpha = 0.2
 		)
 	)
 
@@ -203,6 +174,7 @@ relative_strength_index.plotly <- function(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
+	## splice:plotly-assembly:end
 
 	plotly_object
 }

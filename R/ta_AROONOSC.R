@@ -6,12 +6,8 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun aroon_oscillator
 #'
-#' @returns
-#' A [data.frame]- or [matrix]-object:
-#'
-#' \describe{
-#'  \item{aroon_oscillator <[double]>}{}
-#' }
+## splice:documentation:start
+## splice:documentation:end
 #'
 #' @template description
 aroon_oscillator <- function(
@@ -20,19 +16,19 @@ aroon_oscillator <- function(
 	n = 10,
 	...
 ) {
-	UseMethod(
-		generic = "aroon_oscillator"
-	)
+	UseMethod("aroon_oscillator")
 }
 
 #' @export
-#'
 #' @usage NULL
-#'
 #' @rdname aroon_oscillator
+#'
 #' @aliases aroon_oscillator
 AROONOSC <- aroon_oscillator
 
+#' @usage NULL
+#' @aliases aroon_oscillator
+#'
 #' @export
 aroon_oscillator.default <- function(
 	x,
@@ -40,50 +36,46 @@ aroon_oscillator.default <- function(
 	n = 10,
 	...
 ) {
-	## check input
-	## cols if passed
+	## validate 'cols'-argument
+	## if explicitly passed
 	if (!missing(cols)) {
-		assert(
-			is.formula(cols),
-			paste0(
-				"'cols' has to be <",
-				class(~s),
-				">. ",
-				"Got <",
-				class(cols),
-				">."
-			)
-		)
-		assert(
-			length(all.vars(cols)) == 2,
-			paste0(
-				"'cols' has to be length 2. ",
-				"Got length ",
-				length(all.vars(cols))
-			)
-		)
+		assert_formula(cols)
 	}
 
-	HL <- series(
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
+
+	## construct series
+	## from input
+	constructed_series <- series(
 		x = cols,
 		default = ~ high + low,
 		data = x,
 		...
 	)
 
-	data.frame(
-		aroon_oscillator = .Call(
-			"impl_ta_AROONOSC",
-			HL[[1]],
-			HL[[2]],
-			as.integer(n)
-		)
+	## calculate indicator and
+	## return as data.frame
+	x <- .Call(
+		"impl_ta_AROONOSC",
+		## splice:call:start
+		constructed_series[[1]],
+		constructed_series[[2]],
+		as.integer(n)
+		## splice:call:end
 	)
-}
 
+	## readd rownames
+	rownames(x) <- x_names
+
+	## return indicator
+	x
+}
 
 #' @usage NULL
 #' @aliases aroon_oscillator
+#'
 #' @export
 aroon_oscillator.data.frame <- function(
 	x,
@@ -98,6 +90,7 @@ aroon_oscillator.data.frame <- function(
 
 #' @usage NULL
 #' @aliases aroon_oscillator
+#'
 #' @export
 aroon_oscillator.matrix <- function(
 	x,
@@ -110,46 +103,57 @@ aroon_oscillator.matrix <- function(
 	)
 }
 
-
 #' @usage NULL
 #' @aliases aroon_oscillator
+#'
 #' @export
 aroon_oscillator.plotly <- function(
 	x,
 	cols,
 	n = 10,
+	## splice:optional-plotly:start
+	## splice:optional-plotly:end
 	...
 ) {
-	## prepare HL series
-	## for the aroon oscillator
-	HL <- series(
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
 		x = x,
 		formula = cols,
 		default = ~ high + low,
 		...
 	)
 
-	## calculate indicator
-	## and return as data.frame
-	.indicator <- aroon_oscillator.default(
-		x = HL,
+	## construct indicator
+	## from the series
+	constructed_indicator <- aroon_oscillator(
+		x = constructed_series,
 		cols = rebuild_formula(
-			names(HL)
+			names(constructed_series)
 		),
 		n = n
 	)
 
-	## add x-axis conditional on whether
-	## the data have been subsetted or not
-	.indicator$idx <- add_idx(
-		HL
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
 	)
 
-	## construct chart
-	## element
+	## construct {plotly}-object
+	## splice:plotly-assembly:start
 	plotly_object <- subchart(
-		data = .indicator,
-		y = ~aroon_oscillator,
+		data = constructed_indicator,
+		y = ~AROONOSC,
 		type = "scatter",
 		mode = "lines",
 		name = sprintf(
@@ -171,6 +175,7 @@ aroon_oscillator.plotly <- function(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
+	## splice:plotly-assembly:end
 
 	plotly_object
 }

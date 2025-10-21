@@ -2,10 +2,12 @@
 #' @family Momentum Indicator
 #'
 #' @title Commodity Channel Index
-#'
 #' @templateVar .title Commodity Channel Index
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun commodity_channel_index
+#'
+## splice:documentation:start
+## splice:documentation:end
 #'
 #' @template description
 commodity_channel_index <- function(
@@ -14,21 +16,19 @@ commodity_channel_index <- function(
 	n = 10,
 	...
 ) {
-	UseMethod(
-		generic = "commodity_channel_index"
-	)
+	UseMethod("commodity_channel_index")
 }
 
 #' @export
-#'
 #' @usage NULL
-#'
 #' @rdname commodity_channel_index
+#'
 #' @aliases commodity_channel_index
 CCI <- commodity_channel_index
 
 #' @usage NULL
 #' @aliases commodity_channel_index
+#'
 #' @export
 commodity_channel_index.default <- function(
 	x,
@@ -36,60 +36,47 @@ commodity_channel_index.default <- function(
 	n = 10,
 	...
 ) {
-	## check input
-	## cols if passed
+	## validate 'cols'-argument
+	## if explicitly passed
 	if (!missing(cols)) {
-		assert(
-			is.formula(cols),
-			paste0(
-				"'cols' has to be <",
-				class(~s),
-				">. ",
-				"Got <",
-				class(cols),
-				">."
-			)
-		)
-		assert(
-			length(all.vars(cols)) == 3,
-			paste0(
-				"'cols' has to be length 3. ",
-				"Got length ",
-				length(all.vars(cols))
-			)
-		)
+		assert_formula(cols)
 	}
 
-	## default behaviour is to
-	## coerce to a `matrix` check that
-	## it is double and then pass to
-	## C-side.
-	HLC <- series(
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
+
+	## construct series
+	## from input
+	constructed_series <- series(
 		x = cols,
 		default = ~ high + low + close,
 		data = x,
 		...
 	)
 
-	## 1) pass `x` assuming that it
-	##    follows OHLC-V structure
-	x <- as.data.frame(
-		.Call(
-			"impl_ta_CCI",
-			HLC[[1]],
-			HLC[[2]],
-			HLC[[3]],
-			as.integer(n)
-		)
+	## calculate indicator and
+	## return as data.frame
+	x <- .Call(
+		"impl_ta_CCI",
+		## splice:call:start
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		as.integer(n)
+		## splice:call:end
 	)
 
-	colnames(x) <- "CCI"
+	## readd rownames
+	rownames(x) <- x_names
 
-	return(x)
+	## return indicator
+	x
 }
 
 #' @usage NULL
 #' @aliases commodity_channel_index
+#'
 #' @export
 commodity_channel_index.data.frame <- function(
 	x,
@@ -104,13 +91,12 @@ commodity_channel_index.data.frame <- function(
 
 #' @usage NULL
 #' @aliases commodity_channel_index
+#'
 #' @export
 commodity_channel_index.matrix <- function(
 	x,
 	cols,
 	n = 10,
-	upper = 100,
-	lower = -100,
 	...
 ) {
 	as.matrix(
@@ -120,53 +106,54 @@ commodity_channel_index.matrix <- function(
 
 #' @usage NULL
 #' @aliases commodity_channel_index
+#'
 #' @export
 commodity_channel_index.plotly <- function(
 	x,
 	cols,
 	n = 10,
-	lower = -100,
-	upper = 100,
+	## splice:optional-plotly:start
+	## splice:optional-plotly:end
 	...
 ) {
-	## prepare HLC series
-	## for the commodity channel index
-	HLC <- as.data.frame(
-		series(
-			x = x,
-			formula = cols,
-			default = ~ high + low + close,
-			...
-		)
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
+		x = x,
+		formula = cols,
+		default = ~ high + low + close,
+		...
 	)
 
-	## calculate indicator
-	## and return as data.frame
-	.indicator <- commodity_channel_index.default(
-		x = HLC,
+	## construct indicator
+	## from the series
+	constructed_indicator <- commodity_channel_index(
+		x = constructed_series,
 		cols = rebuild_formula(
-			names(HLC)
+			names(constructed_series)
 		),
 		n = n
 	)
 
-	## add x-axis conditional on whether
-	## the data have been subsetted or not
-	.indicator$idx <- add_idx(
-		HLC
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
 	)
 
-	## commodity channels by itself
-	## makes no sense - throw an error
-	## if not provided
-	if (!main_chart_exists()) {
-		stop("No existing chart found.", call. = FALSE)
-	}
-
-	## construct plot with ribbons
-	## on upper and lower limits
+	## construct {plotly}-object
+	## splice:plotly-assembly:start
 	plotly_object <- subchart(
-		data = .indicator,
+		data = constructed_indicator,
 		y = ~CCI,
 		type = "scatter",
 		mode = "lines",
@@ -175,10 +162,10 @@ commodity_channel_index.plotly <- function(
 
 	plotly_object <- add_ribbons(
 		plotly_object = plotly_object,
-		data = .indicator,
+		data = constructed_indicator,
 		x = ~idx,
-		ymin = rep(lower, nrow(.indicator)),
-		ymax = rep(upper, nrow(.indicator)),
+		ymin = rep(-100, nrow(constructed_indicator)),
+		ymax = rep(100, nrow(constructed_indicator)),
 		color = "lightgray",
 		alpha = 0.1,
 		showlegend = FALSE,
@@ -201,6 +188,7 @@ commodity_channel_index.plotly <- function(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
+	## splice:plotly-assembly:end
 
 	plotly_object
 }

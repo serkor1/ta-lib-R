@@ -1,10 +1,13 @@
 #' @export
 #' @family Momentum Indicator
-#' @title Ultimate Oscillator
 #'
+#' @title Ultimate Oscillator
 #' @templateVar .title Ultimate Oscillator
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun ultimate_oscillator
+#'
+## splice:documentation:start
+## splice:documentation:end
 #'
 #' @template description
 ultimate_oscillator <- function(
@@ -13,21 +16,19 @@ ultimate_oscillator <- function(
 	n = c(7, 14, 28),
 	...
 ) {
-	UseMethod(
-		"ultimate_oscillator"
-	)
+	UseMethod("ultimate_oscillator")
 }
 
 #' @export
-#'
 #' @usage NULL
-#'
 #' @rdname ultimate_oscillator
+#'
 #' @aliases ultimate_oscillator
 ULTOSC <- ultimate_oscillator
 
-#' @rdname ultimate_oscillator
 #' @usage NULL
+#' @aliases ultimate_oscillator
+#'
 #' @export
 ultimate_oscillator.default <- function(
 	x,
@@ -35,47 +36,49 @@ ultimate_oscillator.default <- function(
 	n = c(7, 14, 28),
 	...
 ) {
-	## default behaviour is to
-	## coerce to a `matrix` check that
-	## it is double and then pass to
-	## C-side.
-
-	## 0) validate input
-	##    and stop the script
-	##    if conditions are not
-	##    met
-	if (!length(n) == 3) {
-		stop("`n` has to be a vector of length 3")
+	## validate 'cols'-argument
+	## if explicitly passed
+	if (!missing(cols)) {
+		assert_formula(cols)
 	}
 
-	HLC <- series(
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
+
+	## construct series
+	## from input
+	constructed_series <- series(
 		x = cols,
 		default = ~ high + low + close,
 		data = x,
 		...
 	)
 
-	## 1) pass `x` assuming that it
-	##    follows OHLC-V structure
-	x <- as.data.frame(
-		.Call(
-			"impl_ta_ULTOSC",
-			HLC[[1]],
-			HLC[[2]],
-			HLC[[3]],
-			as.integer(n[1]),
-			as.integer(n[2]),
-			as.integer(n[3])
-		)
+	## calculate indicator and
+	## return as data.frame
+	x <- .Call(
+		"impl_ta_ULTOSC",
+		## splice:call:start
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		as.integer(n[1]),
+		as.integer(n[2]),
+		as.integer(n[3])
+		## splice:call:end
 	)
 
-	colnames(x) <- "utimate_oscillator"
+	## readd rownames
+	rownames(x) <- x_names
 
-	return(x)
+	## return indicator
+	x
 }
 
-#' @rdname ultimate_oscillator
 #' @usage NULL
+#' @aliases ultimate_oscillator
+#'
 #' @export
 ultimate_oscillator.data.frame <- function(
 	x,
@@ -88,8 +91,9 @@ ultimate_oscillator.data.frame <- function(
 	)
 }
 
-#' @rdname ultimate_oscillator
 #' @usage NULL
+#' @aliases ultimate_oscillator
+#'
 #' @export
 ultimate_oscillator.matrix <- function(
 	x,
@@ -102,50 +106,56 @@ ultimate_oscillator.matrix <- function(
 	)
 }
 
-#' @rdname ultimate_oscillator
 #' @usage NULL
+#' @aliases ultimate_oscillator
+#'
 #' @export
 ultimate_oscillator.plotly <- function(
 	x,
 	cols,
 	n = c(7, 14, 28),
-	lower = 30,
-	upper = 70,
-	color = "lightgray",
-	alpha = 0.7,
+	## splice:optional-plotly:start
+	## splice:optional-plotly:end
 	...
 ) {
-	## prepare HLC
-	## series for ultimate
-	## oscillator
-	HLC <- as.data.frame(
-		series(
-			x = x,
-			formula = cols,
-			default = ~ high + low + close,
-			...
-		)
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
+		x = x,
+		formula = cols,
+		default = ~ high + low + close,
+		...
 	)
 
-	## calculate indicator
-	## and return as data.frame
-	.indicator <- ultimate_oscillator.default(
-		x = HLC,
+	## construct indicator
+	## from the series
+	constructed_indicator <- ultimate_oscillator(
+		x = constructed_series,
 		cols = rebuild_formula(
-			names(HLC)
+			names(constructed_series)
 		),
 		n = n
 	)
 
-	## add x-axis conditional on whether
-	## the data have been subsetted or not
-	.indicator$idx <- add_idx(
-		HLC
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
 	)
 
-	# plot
+	## construct {plotly}-object
+	## splice:plotly-assembly:start
 	plotly_object <- subchart(
-		data = .indicator,
+		data = constructed_indicator,
 		y = ~utimate_oscillator,
 		type = "scatter",
 		mode = "lines",
@@ -156,10 +166,10 @@ ultimate_oscillator.plotly <- function(
 
 	plotly_object <- add_ribbons(
 		plotly_object = plotly_object,
-		data = .indicator,
+		data = constructed_indicator,
 		x = ~idx,
-		ymin = rep(lower, nrow(.indicator)),
-		ymax = rep(upper, nrow(.indicator)),
+		ymin = rep(lower, nrow(constructed_indicator)),
+		ymax = rep(upper, nrow(constructed_indicator)),
 		color = color,
 		alpha = alpha,
 		showlegend = TRUE,
@@ -179,6 +189,7 @@ ultimate_oscillator.plotly <- function(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
+	## splice:plotly-assembly:end
 
 	plotly_object
 }

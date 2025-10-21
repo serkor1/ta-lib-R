@@ -10,8 +10,8 @@ stochastic_relative_strength_index(
   cols,
   n = 10,
   n_rsi = 10,
-  fast_k = 5,
-  fast_d_MAtype = SMA(n = 10),
+  fastk = 5,
+  fastd = SMA(n = 10),
   ...
 )
 }
@@ -21,12 +21,6 @@ stochastic_relative_strength_index(
 \item{cols}{An optional \link{formula} passed into \link{model.frame}. If passed into indicators based on univariate series, the function calculates indicators for each element in 'cols'. For indicators based on multivariate series, it will alter the calculation itself. See \code{vignette("talib")} for more details.}
 
 \item{n}{An \link{integer} of \link{length} 1.}
-
-\item{n_rsi}{Time period for \link{relative_strength_index}}
-
-\item{fast_k}{Time period for building the Fast-K line.}
-
-\item{fast_d_MAtype}{Smoothing for making the Fast-D line.}
 
 \item{...}{Additional parameters passed into \link{model.frame}}
 }
@@ -75,7 +69,9 @@ Other Momentum Indicator:
 \code{\link{aroon_oscillator}()},
 \code{\link{chande_momentum_oscillator}()},
 \code{\link{commodity_channel_index}()},
+\code{\link{extended_moving_average_convergence_divergence}()},
 \code{\link{fast_stochastic}()},
+\code{\link{fixed_moving_average_convergence_divergence}()},
 \code{\link{money_flow_index}()},
 \code{\link{moving_average_convergence_divergence}()},
 \code{\link{relative_strength_index}()},
