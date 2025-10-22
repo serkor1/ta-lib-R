@@ -20,6 +20,7 @@ static const R_CallMethodDef CallEntries[] = {
     CALLDEF(impl_ta_AROONOSC, 3),
     CALLDEF(impl_ta_AROON, 3),
     CALLDEF(impl_ta_BBANDS, 5),
+    CALLDEF(impl_ta_BOP, 4),
     CALLDEF(impl_ta_CCI, 4),
     CALLDEF(impl_ta_CDL2CROWS, 5),
     CALLDEF(impl_ta_CDL3BLACKCROWS, 5),
@@ -92,6 +93,7 @@ static const R_CallMethodDef CallEntries[] = {
     CALLDEF(impl_ta_MACD, 4),
     CALLDEF(impl_ta_MA, 3),
     CALLDEF(impl_ta_MFI, 5),
+    CALLDEF(impl_ta_MOM, 2),
     CALLDEF(impl_ta_OBV, 2),
     CALLDEF(impl_ta_RSI, 2),
     CALLDEF(impl_ta_SAREXT, 10),
@@ -100,6 +102,7 @@ static const R_CallMethodDef CallEntries[] = {
     CALLDEF(impl_ta_STOCHRSI, 6),
     CALLDEF(impl_ta_STOCH, 8),
     CALLDEF(impl_ta_ULTOSC, 6),
+    CALLDEF(impl_ta_WILLR, 4),
     CALLDEF(initialize_ta_lib, 0),
     CALLDEF(shutdown_ta_lib, 0),
     {NULL, NULL, 0}};
