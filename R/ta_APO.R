@@ -8,7 +8,9 @@
 #'
 #'
 ## input start
-## initial scaffold
+#' @param fast something
+#' @param slow something
+#' @param ma something
 ## input end
 #'
 #' @template description

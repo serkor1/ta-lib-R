@@ -22,6 +22,12 @@ stochastic_relative_strength_index(
 
 \item{n}{An \link{integer} of \link{length} 1.}
 
+\item{n_rsi}{Time period for \link{relative_strength_index}}
+
+\item{fastk}{Time period for building the Fast-K line.}
+
+\item{fastd}{Smoothing for making the Fast-D line.}
+
 \item{...}{Additional parameters passed into \link{model.frame}}
 }
 \description{

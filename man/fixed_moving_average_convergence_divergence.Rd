@@ -12,6 +12,8 @@ fixed_moving_average_convergence_divergence(x, cols, signal = 9, ...)
 
 \item{cols}{An optional \link{formula} passed into \link{model.frame}. If passed into indicators based on univariate series, the function calculates indicators for each element in 'cols'. For indicators based on multivariate series, it will alter the calculation itself. See \code{vignette("talib")} for more details.}
 
+\item{signal}{Smoothing for the signal line.}
+
 \item{...}{Additional parameters passed into \link{model.frame}}
 }
 \description{

@@ -7,6 +7,9 @@
 #' @templateVar .fun stochastic
 #'
 ## splice:documentation:start
+#' @param fastk Time period for building the Fast-K line
+#' @param slowk Smoothing for making the Slow-K line.
+#' @param slowd Smoothing for making the Slow-D line
 ## splice:documentation:end
 #'
 #' @template description
