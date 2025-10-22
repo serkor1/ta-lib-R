@@ -6,6 +6,7 @@
 //   fastk_period    – integer period for %K of StochRSI
 //   fastd_period    – integer period for %D smoothing
 //   fastd_matype    – integer MA type for %D smoothing
+//   offset          – integer value of the 'n'passed into the RSI
 //
 // Description
 //   Returns an N×2 matrix with columns 'fastk' and 'fastd', both
@@ -23,7 +24,9 @@ SEXP impl_ta_STOCHRSI(
   SEXP timeperiod, 
   SEXP fastk_period,
   SEXP fastd_period, 
-  SEXP fastd_matype) {
+  SEXP fastd_matype,
+  SEXP offset_by_RSI
+) {
   // clang-format on
 
   int protection_count = 0;
@@ -35,6 +38,7 @@ SEXP impl_ta_STOCHRSI(
   const int fastk = INTEGER(fastk_period)[0];
   const int fastd = INTEGER(fastd_period)[0];
   const int lag = INTEGER(timeperiod)[0];
+  const int offset = INTEGER(offset_by_RSI)[0];
 
   // data
   const double *restrict series_ptr = REAL(real);
@@ -46,11 +50,11 @@ SEXP impl_ta_STOCHRSI(
   // output matrix
   // clang-format off
   SEXP output = PROTECT(
-    allocMatrix(REALSXP,n,2)
+    allocMatrix(REALSXP, n + offset, 2)
   ); protection_count++;
   double *__restrict__ output_ptr = REAL(output);
   double *__restrict__ fastk_ptr = output_ptr;
-  double *__restrict__ fastd_ptr = output_ptr + n;
+  double *__restrict__ fastd_ptr = output_ptr + (n + offset);
   // clang-format on
 
   // verify lookback
@@ -96,8 +100,19 @@ SEXP impl_ta_STOCHRSI(
     }
 
     // shift values
-    shift_array(fastk_ptr, n, outBeg);
-    shift_array(fastd_ptr, n, outBeg);
+    // clang-format off
+    shift_array(
+      fastk_ptr, 
+      n + offset, 
+      outBeg + offset
+    );
+
+    shift_array(
+      fastd_ptr, 
+      n + offset, 
+      outBeg + offset
+    );
+    // clang-format on
   }
 
   // set column names
