@@ -12,7 +12,9 @@
 //   Computes ADX over H/L/C. Returns a double vector of length n (unnamed),
 //   with the first lookback elements padded by NA using shift_array().
 
+#include "Rdefines.h"
 #include "lib.h"
+#include "names.h"
 #include "shift.h"
 #include "ta_func.h"
 #include <R.h>
@@ -41,7 +43,7 @@ SEXP impl_ta_ADX(
 
   // clang-format off
   SEXP output = PROTECT(
-    allocVector(REALSXP, n)
+    allocMatrix(REALSXP, n, 1)
   ); protect_count++;
   double *restrict output_ptr = REAL(output);
   // clang-format on
@@ -78,6 +80,7 @@ SEXP impl_ta_ADX(
       Rf_error("TA_ADX failed with error code %d", return_code);
     }
 
+    set_colnames(output, "ADX");
     shift_array(output_ptr, n, outBeg);
   }
 

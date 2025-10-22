@@ -14,6 +14,7 @@ SEXP impl_ta_APO(SEXP x_input, SEXP fast_period, SEXP slow_period, SEXP ma_type)
 SEXP impl_ta_AROONOSC(SEXP high, SEXP low, SEXP timeperiod);
 SEXP impl_ta_AROON(SEXP high, SEXP low, SEXP timeperiod);
 SEXP impl_ta_BBANDS(SEXP inReal, SEXP optTimePeriod, SEXP optNbDevUp, SEXP optNbDevDn, SEXP optMAType);
+SEXP impl_ta_BOP(SEXP open, SEXP high, SEXP low, SEXP close);
 SEXP impl_ta_CCI(SEXP high, SEXP low, SEXP close, SEXP optTimePeriod);
 SEXP impl_ta_CDL2CROWS(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
 SEXP impl_ta_CDL3BLACKCROWS(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
@@ -86,6 +87,7 @@ SEXP impl_ta_MACDFIX(SEXP inReal, SEXP optSignalPeriod);
 SEXP impl_ta_MACD(SEXP x, SEXP optFastPeriod, SEXP optSlowPeriod, SEXP optSignalPeriod);
 SEXP impl_ta_MA(SEXP x, SEXP period, SEXP matype);
 SEXP impl_ta_MFI(SEXP high, SEXP low, SEXP close, SEXP volume, SEXP timeperiod);
+SEXP impl_ta_MOM(SEXP real, SEXP timeperiod);
 SEXP impl_ta_OBV(SEXP close, SEXP volume);
 SEXP impl_ta_RSI(SEXP inReal, SEXP optTimePeriod);
 SEXP impl_ta_SAREXT(SEXP high, SEXP low, SEXP start_value, SEXP offset_on_reverse, SEXP accel_init_long, SEXP accel_long, SEXP accel_max_long, SEXP accel_init_short, SEXP accel_short, SEXP accel_max_short);
@@ -94,6 +96,7 @@ SEXP impl_ta_STOCHF(SEXP high, SEXP low, SEXP close, SEXP fastk_period, SEXP fas
 SEXP impl_ta_STOCHRSI(SEXP real, SEXP timeperiod, SEXP fastk_period, SEXP fastd_period, SEXP fastd_matype, SEXP offset_by_RSI);
 SEXP impl_ta_STOCH(SEXP high, SEXP low, SEXP close, SEXP fastk_period, SEXP slowk_period, SEXP slowk_matype, SEXP slowd_period, SEXP slowd_matype);
 SEXP impl_ta_ULTOSC(SEXP high, SEXP low, SEXP close, SEXP timeperiod1, SEXP timeperiod2, SEXP timeperiod3);
+SEXP impl_ta_WILLR(SEXP high, SEXP low, SEXP close, SEXP timeperiod);
 SEXP initialize_ta_lib();
 SEXP shutdown_ta_lib();
 // clang-format on

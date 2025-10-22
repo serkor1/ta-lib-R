@@ -18,6 +18,7 @@
 //   - If n < lookback, we return all NA and warn.
 
 #include "lib.h"
+#include "names.h"
 #include "shift.h"
 #include "ta_func.h"
 #include <R.h>
@@ -45,7 +46,7 @@ SEXP impl_ta_ADXR(
 
   // clang-format off
   SEXP output = PROTECT(
-    allocVector(REALSXP, n)
+    allocMatrix(REALSXP, n, 1)
   ); protect_count++;
   double *restrict output_ptr = REAL(output);
   // clang-format on
@@ -82,6 +83,7 @@ SEXP impl_ta_ADXR(
       Rf_error("TA_ADXE failed with error code %d", return_code);
     }
 
+    set_colnames(output, "ADXR");
     shift_array(output_ptr, n, outBeg);
   }
 
