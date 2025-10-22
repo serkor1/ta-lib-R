@@ -122,6 +122,8 @@ fast_stochastic.plotly <- function(
 	fastk = 5,
 	fastd = SMA(n = 10),
 	## splice:optional-plotly:start
+	lower = 20,
+	upper = 80,
 	## splice:optional-plotly:end
 	...
 ) {
@@ -177,8 +179,8 @@ fast_stochastic.plotly <- function(
 		data = constructed_indicator,
 		x = ~idx,
 		y = ~fastd,
-		ymin = rep(20, nrow(constructed_indicator)),
-		ymax = rep(80, nrow(constructed_indicator)),
+		ymin = rep(lower, nrow(constructed_indicator)),
+		ymax = rep(upper, nrow(constructed_indicator)),
 		color = "lightgray",
 		alpha = 0.7,
 		dash = c("solid", "dot", "dot"),
