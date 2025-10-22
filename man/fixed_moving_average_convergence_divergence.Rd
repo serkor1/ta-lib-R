@@ -59,16 +59,21 @@ Other Momentum Indicator:
 \code{\link{absolute_price_oscillator}()},
 \code{\link{aroon}()},
 \code{\link{aroon_oscillator}()},
+\code{\link{average_direcitonal_movement_rating}()},
+\code{\link{average_directional_movement}()},
+\code{\link{balance_of_power}()},
 \code{\link{chande_momentum_oscillator}()},
 \code{\link{commodity_channel_index}()},
 \code{\link{extended_moving_average_convergence_divergence}()},
 \code{\link{fast_stochastic}()},
+\code{\link{momentum}()},
 \code{\link{money_flow_index}()},
 \code{\link{moving_average_convergence_divergence}()},
 \code{\link{relative_strength_index}()},
 \code{\link{stochastic}()},
 \code{\link{stochastic_relative_strength_index}()},
-\code{\link{ultimate_oscillator}()}
+\code{\link{ultimate_oscillator}()},
+\code{\link{williams_oscillator}()}
 }
 \author{
 Serkan Korkmaz
