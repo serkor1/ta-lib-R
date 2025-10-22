@@ -7,6 +7,9 @@
 #' @templateVar .fun stochastic_relative_strength_index
 #'
 ## splice:documentation:start
+#' @param fastk Time period for building the Fast-K line.
+#' @param fastd Smoothing for making the Fast-D line.
+#' @param n_rsi Time period for [relative_strength_index]
 ## splice:documentation:end
 #'
 #' @template description

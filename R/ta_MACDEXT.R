@@ -7,6 +7,9 @@
 #' @templateVar .fun extended_moving_average_convergence_divergence
 #'
 ## splice:documentation:start
+#' @param fast Number of period for the fast MA.
+#' @param slow Number of period for the slow MA.
+#' @param signal Smoothing for the signal line.
 ## splice:documentation:end
 #'
 #' @template description

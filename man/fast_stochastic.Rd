@@ -12,6 +12,10 @@ fast_stochastic(x, cols, fastk = 5, fastd = SMA(n = 10), ...)
 
 \item{cols}{An optional \link{formula} passed into \link{model.frame}. If passed into indicators based on univariate series, the function calculates indicators for each element in 'cols'. For indicators based on multivariate series, it will alter the calculation itself. See \code{vignette("talib")} for more details.}
 
+\item{fastk}{Time period for building the Fast-K line.}
+
+\item{fastd}{Smoothing for making the Fast-D line.}
+
 \item{...}{Additional parameters passed into \link{model.frame}}
 }
 \description{

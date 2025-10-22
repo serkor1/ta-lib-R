@@ -7,6 +7,7 @@
 #' @templateVar .fun fixed_moving_average_convergence_divergence
 #'
 ## splice:documentation:start
+#' @param signal Smoothing for the signal line.
 ## splice:documentation:end
 #'
 #' @template description

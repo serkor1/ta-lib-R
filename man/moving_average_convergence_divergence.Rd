@@ -19,6 +19,12 @@ moving_average_convergence_divergence(
 
 \item{cols}{An optional \link{formula} passed into \link{model.frame}. If passed into indicators based on univariate series, the function calculates indicators for each element in 'cols'. For indicators based on multivariate series, it will alter the calculation itself. See \code{vignette("talib")} for more details.}
 
+\item{fast}{Number of period for the fast MA.}
+
+\item{slow}{Number of period for the slow MA.}
+
+\item{signal}{Smoothing for the signal line.}
+
 \item{...}{Additional parameters passed into \link{model.frame}}
 }
 \description{
