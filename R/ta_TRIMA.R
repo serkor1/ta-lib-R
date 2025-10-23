@@ -116,9 +116,49 @@ triangular_moving_average.matrix <- function(
 	n = 10,
 	...
 ) {
+	## pass directly to
+	## triangular_moving_average.default to avoid
+	## shenanigans with NextMethod()
 	as.matrix(
-		NextMethod()
+		triangular_moving_average.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
+}
+
+#' @usage NULL
+#' @aliases triangular_moving_average
+#'
+#' @export
+triangular_moving_average.numeric <- function(
+	x,
+	cols,
+	n = 10,
+	...
+) {
+	## warn if 'cols' have been
+	## passed just to make sure
+	## the user knows its not possible
+	## or relevant
+	if (!missing(cols)) {
+		warning("'cols' is passed but is unused for vectors.")
+	}
+
+	## pass to 'C' directly
+	## with the input vector
+	x <- .Call(
+		"impl_ta_MA",
+		as.double(x),
+		as.integer(n),
+		5L
+	)
+
+	## 'C' returns a named matrix
+	## return the first column
+	as.double(x)
 }
 
 #' @usage NULL

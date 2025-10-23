@@ -116,9 +116,49 @@ double_exponential_moving_average.matrix <- function(
 	n = 10,
 	...
 ) {
+	## pass directly to
+	## double_exponential_moving_average.default to avoid
+	## shenanigans with NextMethod()
 	as.matrix(
-		NextMethod()
+		double_exponential_moving_average.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
+}
+
+#' @usage NULL
+#' @aliases double_exponential_moving_average
+#'
+#' @export
+double_exponential_moving_average.numeric <- function(
+	x,
+	cols,
+	n = 10,
+	...
+) {
+	## warn if 'cols' have been
+	## passed just to make sure
+	## the user knows its not possible
+	## or relevant
+	if (!missing(cols)) {
+		warning("'cols' is passed but is unused for vectors.")
+	}
+
+	## pass to 'C' directly
+	## with the input vector
+	x <- .Call(
+		"impl_ta_MA",
+		as.double(x),
+		as.integer(n),
+		3L
+	)
+
+	## 'C' returns a named matrix
+	## return the first column
+	as.double(x)
 }
 
 #' @usage NULL
