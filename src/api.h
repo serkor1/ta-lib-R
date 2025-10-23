@@ -96,6 +96,8 @@ SEXP impl_ta_OBV(SEXP close, SEXP volume);
 SEXP impl_ta_PDI(SEXP high, SEXP low, SEXP close, SEXP timeperiod);
 SEXP impl_ta_PDM(SEXP high, SEXP low, SEXP timeperiod);
 SEXP impl_ta_PPO(SEXP real, SEXP fastperiod, SEXP slowperiod, SEXP ma_type);
+SEXP impl_ta_ROCR(SEXP in_real, SEXP timeperiod);
+SEXP impl_ta_ROC(SEXP in_real, SEXP timeperiod);
 SEXP impl_ta_RSI(SEXP inReal, SEXP optTimePeriod);
 SEXP impl_ta_SAREXT(SEXP high, SEXP low, SEXP start_value, SEXP offset_on_reverse, SEXP accel_init_long, SEXP accel_long, SEXP accel_max_long, SEXP accel_init_short, SEXP accel_short, SEXP accel_max_short);
 SEXP impl_ta_SAR(SEXP high, SEXP low, SEXP acceleration, SEXP maximum);

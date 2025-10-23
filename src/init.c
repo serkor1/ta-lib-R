@@ -102,6 +102,8 @@ static const R_CallMethodDef CallEntries[] = {
     CALLDEF(impl_ta_PDI, 4),
     CALLDEF(impl_ta_PDM, 3),
     CALLDEF(impl_ta_PPO, 4),
+    CALLDEF(impl_ta_ROCR, 2),
+    CALLDEF(impl_ta_ROC, 2),
     CALLDEF(impl_ta_RSI, 2),
     CALLDEF(impl_ta_SAREXT, 10),
     CALLDEF(impl_ta_SAR, 4),
