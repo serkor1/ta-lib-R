@@ -6,12 +6,12 @@
 
 ## 1) alias and function similarity
 ##    checks this ensures that
-##    ADX and average_directional_movement produces the same results
+##    ADX and average_directional_movement_index produces the same results
 testthat::test_that(desc = 'Alias and function similarity', code = {
 	## 1) test that the alias and
 	##    function returns the same values
 	output <- ADX(SPY)
-	alias <- average_directional_movement(SPY)
+	alias <- average_directional_movement_index(SPY)
 
 	## 1.1) check if the values
 	##      are equal

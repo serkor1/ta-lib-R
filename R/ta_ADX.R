@@ -4,33 +4,33 @@
 #' @title Average Directional Movement Index
 #' @templateVar .title Average Directional Movement Index
 #' @templateVar .author Serkan Korkmaz
-#' @templateVar .fun average_directional_movement
+#' @templateVar .fun average_directional_movement_index
 #'
 ## splice:documentation:start
 ## splice:documentation:end
 #'
 #' @template description
-average_directional_movement <- function(
+average_directional_movement_index <- function(
 	x,
 	cols,
 	n = 10,
 	...
 ) {
-	UseMethod("average_directional_movement")
+	UseMethod("average_directional_movement_index")
 }
 
 #' @export
 #' @usage NULL
-#' @rdname average_directional_movement
+#' @rdname average_directional_movement_index
 #'
-#' @aliases average_directional_movement
-ADX <- average_directional_movement
+#' @aliases average_directional_movement_index
+ADX <- average_directional_movement_index
 
 #' @usage NULL
-#' @aliases average_directional_movement
+#' @aliases average_directional_movement_index
 #'
 #' @export
-average_directional_movement.default <- function(
+average_directional_movement_index.default <- function(
 	x,
 	cols,
 	n = 10,
@@ -75,10 +75,10 @@ average_directional_movement.default <- function(
 }
 
 #' @usage NULL
-#' @aliases average_directional_movement
+#' @aliases average_directional_movement_index
 #'
 #' @export
-average_directional_movement.data.frame <- function(
+average_directional_movement_index.data.frame <- function(
 	x,
 	cols,
 	n = 10,
@@ -90,10 +90,10 @@ average_directional_movement.data.frame <- function(
 }
 
 #' @usage NULL
-#' @aliases average_directional_movement
+#' @aliases average_directional_movement_index
 #'
 #' @export
-average_directional_movement.matrix <- function(
+average_directional_movement_index.matrix <- function(
 	x,
 	cols,
 	n = 10,
@@ -105,10 +105,10 @@ average_directional_movement.matrix <- function(
 }
 
 #' @usage NULL
-#' @aliases average_directional_movement
+#' @aliases average_directional_movement_index
 #'
 #' @export
-average_directional_movement.plotly <- function(
+average_directional_movement_index.plotly <- function(
 	x,
 	cols,
 	n = 10,
@@ -137,7 +137,7 @@ average_directional_movement.plotly <- function(
 
 	## construct indicator
 	## from the series
-	constructed_indicator <- average_directional_movement(
+	constructed_indicator <- average_directional_movement_index(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
