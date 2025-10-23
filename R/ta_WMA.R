@@ -29,7 +29,7 @@ weighted_moving_average <- function(
 			{
 				list(
 					n = if (missing(n)) 10L else as.integer(n),
-					maType = as.integer(2L)
+					maType = 2L
 				)
 			}
 		)

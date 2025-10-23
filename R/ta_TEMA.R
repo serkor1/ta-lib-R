@@ -29,7 +29,7 @@ triple_exponential_moving_average <- function(
 			{
 				list(
 					n = if (missing(n)) 10L else as.integer(n),
-					maType = as.integer(4L)
+					maType = 4L
 				)
 			}
 		)

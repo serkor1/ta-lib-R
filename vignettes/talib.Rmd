@@ -50,9 +50,9 @@ The simple moving average can be calculated over a specified range via `...` whi
 tail(
   talib::SMA(
     x = talib::BTC,
-    cols = ~low + high,
-    ## calculate simple moving average
-    ## up and until the 100th indices
+    cols = ~low,
+    # calculate simple moving average
+    # up and until the 100th indices
     subset = 1:nrow(talib::BTC) <= 100
   )
 )
@@ -75,7 +75,7 @@ The charting functionality mimicks the behaviour of `plot()` and `lines()` where
   ## add SMA
   talib::indicator(
     talib::SMA,
-    cols = ~high + low
+    cols = ~high
   )
 
   ## add acceleration bands
@@ -83,5 +83,4 @@ The charting functionality mimicks the behaviour of `plot()` and `lines()` where
     talib::ACCBANDS
   )
 }
-
 ```
