@@ -12,6 +12,7 @@
 #include "MAType.h"
 #include "R_ext/Error.h"
 #include "lib.h"
+#include "names.h"
 #include "shift.h"
 #include <Rinternals.h>
 #include <ta_libc.h>
@@ -40,7 +41,7 @@ SEXP impl_ta_MA(
   // output vector
   // clang-format off
   SEXP output = PROTECT(
-    allocVector(REALSXP, n)
+    allocMatrix(REALSXP, n, 1)
   ); protection_count++;
   double *output_ptr = REAL(output);
   // clang-format on
@@ -79,6 +80,10 @@ SEXP impl_ta_MA(
       UNPROTECT(protection_count);
       Rf_error("TA_MA failed: return code %d", return_code);
     }
+
+    // determine column name
+    const char *name = MAType_acronym(MAType);
+    set_colnames(output, name);
 
     // shift values
     shift_array(output_ptr, n, outBeg);

@@ -1,126 +1,101 @@
 #' @export
 #' @family Overlap Study
-#' @title Double Exponential Moving Average (DEMA)
 #'
-#' @templateVar .title Double Exponential Moving Average (DEMA)
+#' @title Double Exponential Moving Average
+#' @templateVar .title Double Exponential Moving Average
 #' @templateVar .author Serkan Korkmaz
-#' @templateVar .fun DEMA
+#' @templateVar .fun double_exponential_moving_average
+#'
+#' @returns
+#' A [data.frame]- or [matrix]-object:
+#'
+#' \describe{
+#'  \item{DEMA <[double]>}{Values}
+#' }
 #'
 #' @template description
-DEMA <- function(
+double_exponential_moving_average <- function(
 	x,
 	cols,
 	n = 10,
 	...
 ) {
-	## if 'x' is missing
-	## its safe to assume that
-	## the user is calling via
-	## indicator()
+	## if 'x' is missing double_exponential_moving_average functions
+	## as a Moving Average Specification
 	if (missing(x)) {
-		## construct the
-		## call
-		call <- match.call(expand.dots = FALSE)
-		call$n <- n
-
-		## construct ma specification
-		## class
+		## construct Moving Average specification
+		## from call
 		x <- structure(
 			{
-				map_maType_call(
-					call
+				list(
+					n = if (missing(n)) 10L else as.integer(n),
+					maType = as.integer(3L)
 				)
-			},
-			class = c("ma_specification")
+			}
 		)
 
 		return(x)
 	}
-
-	UseMethod("DEMA")
+	UseMethod("double_exponential_moving_average")
 }
 
 #' @export
-#'
 #' @usage NULL
+#' @rdname double_exponential_moving_average
 #'
-#' @rdname DEMA
-#' @aliases DEMA
-double_exponential_moving_average <- DEMA
+#' @aliases double_exponential_moving_average
+DEMA <- double_exponential_moving_average
 
-#' @rdname DEMA
 #' @usage NULL
+#' @aliases double_exponential_moving_average
+#'
 #' @export
-DEMA.default <- function(
+double_exponential_moving_average.default <- function(
 	x,
 	cols,
 	n = 10,
 	...
 ) {
-	## default behaviour is to
-	## check if its a numeric vector
-	##
-	## No coercing here as it might
-	## lead to overflow
-	x <- series(
+	## validate 'cols'-argument
+	## if explicitly passed
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series
+	## from input
+	constructed_series <- series(
 		x = cols,
-		default = ~open,
+		default = ~close,
 		data = x,
 		...
 	)
 
-	## 0) validate input
-	##    and stop the script
-	##    if conditions are not
-	##    met
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(constructed_series)
 
-	x <- vapply(
-		as.list(x),
-		FUN = function(x) {
-			.Call(
-				"impl_ta_MA",
-				x,
-				as.integer(n),
-				3L
-			)
-		},
-		FUN.VALUE = double(nrow(x)),
-		USE.NAMES = TRUE
-	)
-
-	colnames(x) <- paste0("dema_", colnames(x))
-
-	as.data.frame(x)
-}
-
-#' @rdname DEMA
-#' @usage NULL
-#' @export
-DEMA.numeric <- function(
-	x,
-	cols,
-	n = 10,
-	...
-) {
-	if (!missing(cols)) {
-		warning(
-			"'cols' have been passed but is unused in for vectors"
-		)
-	}
-
-	.Call(
+	## calculate indicator and
+	## return as data.frame
+	x <- .Call(
 		"impl_ta_MA",
-		as.double(x),
+		as.double(constructed_series[[1]]),
 		as.integer(n),
 		3L
 	)
+
+	## readd rownames
+	rownames(x) <- x_names
+
+	## return indicator
+	x
 }
 
-
-#' @rdname DEMA
 #' @usage NULL
+#' @aliases double_exponential_moving_average
+#'
 #' @export
-DEMA.data.frame <- function(
+double_exponential_moving_average.data.frame <- function(
 	x,
 	cols,
 	n = 10,
@@ -131,10 +106,11 @@ DEMA.data.frame <- function(
 	)
 }
 
-#' @rdname DEMA
 #' @usage NULL
+#' @aliases double_exponential_moving_average
+#'
 #' @export
-DEMA.matrix <- function(
+double_exponential_moving_average.matrix <- function(
 	x,
 	cols,
 	n = 10,
@@ -145,57 +121,61 @@ DEMA.matrix <- function(
 	)
 }
 
-#' @rdname DEMA
 #' @usage NULL
+#' @aliases double_exponential_moving_average
+#'
 #' @export
-DEMA.plotly <- function(
+double_exponential_moving_average.plotly <- function(
 	x,
 	cols,
 	n = 10,
 	...
 ) {
-	## prepare univariate
-	## series for DEMA
-	x <- as.data.frame(
-		series(
-			x = x,
-			formula = cols,
-			default = ~open,
-			...
-		)
-	)
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
 
-	## calculator indicator
-	## and return as data.frame
-	.indicator <- DEMA.default(
-		x = x,
-		cols = rebuild_formula(
-			x = names(x)
-		),
-		n = 10
-	)
-
-	## add x-axis conditional on whether
-	## the data have been subsetted or not
-	.indicator$idx <- add_idx(
-		x
-	)
-
-	for (i in 1:ncol(x)) {
-		local({
-			j <- i
-			.plotting_environment$main <- plotly::add_trace(
-				.plotting_environment$main,
-				data = .indicator,
-				x = ~idx,
-				y = ~ .indicator[[j]],
-				type = "scatter",
-				mode = "lines",
-				name = sprintf("DEMA(%d)", n),
-				inherit = FALSE
-			)
-		})
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
 	}
 
-	.plotting_environment$main
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
+		x = x,
+		formula = cols,
+		default = ~close,
+		...
+	)
+
+	## construct indicator
+	## from the series
+	constructed_indicator <- double_exponential_moving_average(
+		x = constructed_series,
+		cols = rebuild_formula(
+			names(constructed_series)
+		),
+		n = n
+	)
+
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
+	)
+
+	## construct {plotly}-object
+	plotly_object <- .plotting_environment[["main"]] <- plotly::add_trace(
+		.plotting_environment[["main"]],
+		data = constructed_indicator,
+		x = ~idx,
+		y = constructed_indicator[["DEMA"]],
+		type = "scatter",
+		mode = "lines",
+		name = sprintf("DEMA(%d)", n),
+		inherit = FALSE
+	)
+
+	plotly_object
 }
