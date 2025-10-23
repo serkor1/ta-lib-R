@@ -115,9 +115,51 @@ $FUN.matrix <- function(
 	cols,
 	n = 10, 
 	...) { 
+
+		## pass directly to 
+		## $FUN.default to avoid
+		## shenanigans with NextMethod()
 		as.matrix(
-			NextMethod()
-			) 
+			$FUN.default(
+				x = x,
+				cols = cols,
+				n = n,
+				...
+			)
+		) 
+}
+
+#' @usage NULL
+#' @aliases $FUN
+#' 
+#' @export
+$FUN.numeric <- function(
+	x, 
+	cols,
+	n = 10, 
+	...) {
+
+		## warn if 'cols' have been
+		## passed just to make sure
+		## the user knows its not possible
+		## or relevant
+		if (!missing(cols)) {
+			warning("'cols' is passed but is unused for vectors.")
+		}
+
+		## pass to 'C' directly
+		## with the input vector
+		x <- .Call(
+			"impl_ta_MA",
+			as.double(x),
+			as.integer(n),
+			$DEFAULT_FORMULA
+		)
+
+		## 'C' returns a named matrix
+		## return the first column
+		as.double(x)
+
 }
 
 #' @usage NULL
