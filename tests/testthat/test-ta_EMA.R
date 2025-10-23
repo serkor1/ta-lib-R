@@ -6,12 +6,12 @@
 
 ## 1) alias and function similarity
 ##    checks this ensures that
-##    T3_moving_average and T3 produces the same results
+##    EMA and exponential_moving_average produces the same results
 testthat::test_that(desc = 'Alias and function similarity', code = {
 	## 1) test that the alias and
 	##    function returns the same values
-	output <- T3_moving_average(SPY)
-	alias <- T3(SPY)
+	output <- EMA(SPY)
+	alias <- exponential_moving_average(SPY)
 
 	## 1.1) check if the values
 	##      are equal
@@ -26,12 +26,12 @@ testthat::test_that(desc = 'Alias and function similarity', code = {
 ##
 ## 2.1) data.frame checks
 testthat::test_that(desc = '{plotly}-methods for <data.frame>', code = {
-	## 1) check that T3_moving_average can
+	## 1) check that EMA can
 	##    use {plotly} without any issues
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(T3_moving_average)
+			indicator(EMA)
 		}
 	)
 
@@ -44,12 +44,12 @@ testthat::test_that(desc = '{plotly}-methods for <data.frame>', code = {
 
 ## 2.2) matrix checks
 testthat::test_that(desc = '{plotly}-methods for <matrix>', code = {
-	## 1) check that T3_moving_average can
+	## 1) check that EMA can
 	##    use {plotly} without any issues
 	output <- testthat::expect_no_error(
 		{
 			chart(SPY)
-			indicator(T3_moving_average)
+			indicator(EMA)
 		}
 	)
 
@@ -68,7 +68,7 @@ testthat::test_that(desc = 'Class in, class out (<matrix>)', code = {
 	## 1) check that the output class
 	##    matches the input class
 	testthat::expect_true(
-		inherits(T3_moving_average(SPY), class(SPY))
+		inherits(EMA(SPY), class(SPY))
 	)
 })
 
@@ -77,7 +77,7 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 	## 1) check that the output class
 	##    matches the input class
 	testthat::expect_true(
-		inherits(T3_moving_average(BTC), class(BTC))
+		inherits(EMA(BTC), class(BTC))
 	)
 })
 
@@ -89,12 +89,12 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 ##          series() function
 testthat::test_that(desc = 'Default calls', code = {
 	testthat::expect_equal(
-		object = T3_moving_average(
+		object = EMA(
 			BTC
 		),
-		expected = T3_moving_average(
+		expected = EMA(
 			BTC,
-			cols = ~open
+			cols = ~close
 		)
 	)
 })
@@ -103,7 +103,7 @@ testthat::test_that(desc = 'Default calls', code = {
 ##    matches the output length
 testthat::test_that(desc = 'Equal length of input and output', code = {
 	testthat::expect_equal(
-		object = nrow(T3_moving_average(
+		object = nrow(EMA(
 			BTC
 		)),
 		expected = nrow(BTC)

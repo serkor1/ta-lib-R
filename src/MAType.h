@@ -15,4 +15,11 @@ static TA_MAType as_MAType(SEXP x) {
   return (TA_MAType)x_;
 }
 
+static inline const char *MAType_acronym(TA_MAType t) {
+  static const char *const k[] = {"SMA",   "EMA",  "WMA",  "DEMA", "TEMA",
+                                  "TRIMA", "KAMA", "MAMA", "T3"};
+  unsigned u = (unsigned)t;
+  return u < (sizeof k / sizeof k[0]) ? k[u] : "INVALID";
+}
+
 #endif // _MATYPE_H

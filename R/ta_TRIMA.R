@@ -1,125 +1,101 @@
 #' @export
 #' @family Overlap Study
-#' @title Triangular Moving Average (TRIMA)
 #'
-#' @templateVar .title Triangular Moving Average (TRIMA)
+#' @title Triangular Moving Average
+#' @templateVar .title Triangular Moving Average
 #' @templateVar .author Serkan Korkmaz
-#' @templateVar .fun TRIMA
+#' @templateVar .fun triangular_moving_average
+#'
+#' @returns
+#' A [data.frame]- or [matrix]-object:
+#'
+#' \describe{
+#'  \item{TRIMA <[double]>}{Values}
+#' }
 #'
 #' @template description
-TRIMA <- function(
+triangular_moving_average <- function(
 	x,
 	cols,
 	n = 10,
 	...
 ) {
-	## if 'x' is missing
-	## its safe to assume that
-	## the user is calling via
-	## indicator()
+	## if 'x' is missing triangular_moving_average functions
+	## as a Moving Average Specification
 	if (missing(x)) {
-		## construct the
-		## call
-		call <- match.call(expand.dots = FALSE)
-		call$n <- n
-
-		## construct ma specification
-		## class
+		## construct Moving Average specification
+		## from call
 		x <- structure(
 			{
-				map_maType_call(
-					call
+				list(
+					n = if (missing(n)) 10L else as.integer(n),
+					maType = as.integer(5L)
 				)
-			},
-			class = c("ma_specification")
+			}
 		)
 
 		return(x)
 	}
-
-	UseMethod("TRIMA")
+	UseMethod("triangular_moving_average")
 }
 
 #' @export
-#'
 #' @usage NULL
+#' @rdname triangular_moving_average
 #'
-#' @rdname TRIMA
-#' @aliases TRIMA
-triangular_moving_average <- TRIMA
+#' @aliases triangular_moving_average
+TRIMA <- triangular_moving_average
 
-#' @rdname TRIMA
 #' @usage NULL
+#' @aliases triangular_moving_average
+#'
 #' @export
-TRIMA.default <- function(
+triangular_moving_average.default <- function(
 	x,
 	cols,
 	n = 10,
 	...
 ) {
-	## default behaviour is to
-	## check if its a numeric vector
-	##
-	## No coercing here as it might
-	## lead to overflow
-	x <- series(
+	## validate 'cols'-argument
+	## if explicitly passed
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series
+	## from input
+	constructed_series <- series(
 		x = cols,
-		default = ~open,
+		default = ~close,
 		data = x,
 		...
 	)
 
-	## 0) validate input
-	##    and stop the script
-	##    if conditions are not
-	##    met
-	x <- vapply(
-		as.list(x),
-		FUN = function(x) {
-			.Call(
-				"impl_ta_MA",
-				x,
-				as.integer(n),
-				5L
-			)
-		},
-		FUN.VALUE = double(nrow(x)),
-		USE.NAMES = TRUE
-	)
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(constructed_series)
 
-	colnames(x) <- paste0("trima_", colnames(x))
-
-	as.data.frame(x)
-}
-
-#' @rdname TRIMA
-#' @usage NULL
-#' @export
-TRIMA.numeric <- function(
-	x,
-	cols,
-	n = 10,
-	...
-) {
-	if (!missing(cols)) {
-		warning(
-			"'cols' have been passed but is unused in for vectors"
-		)
-	}
-
-	.Call(
+	## calculate indicator and
+	## return as data.frame
+	x <- .Call(
 		"impl_ta_MA",
-		as.double(x),
+		as.double(constructed_series[[1]]),
 		as.integer(n),
 		5L
 	)
+
+	## readd rownames
+	rownames(x) <- x_names
+
+	## return indicator
+	x
 }
 
-
-#' @rdname TRIMA
 #' @usage NULL
+#' @aliases triangular_moving_average
+#'
 #' @export
-TRIMA.data.frame <- function(
+triangular_moving_average.data.frame <- function(
 	x,
 	cols,
 	n = 10,
@@ -130,10 +106,11 @@ TRIMA.data.frame <- function(
 	)
 }
 
-#' @rdname TRIMA
 #' @usage NULL
+#' @aliases triangular_moving_average
+#'
 #' @export
-TRIMA.matrix <- function(
+triangular_moving_average.matrix <- function(
 	x,
 	cols,
 	n = 10,
@@ -144,57 +121,61 @@ TRIMA.matrix <- function(
 	)
 }
 
-#' @rdname TRIMA
 #' @usage NULL
+#' @aliases triangular_moving_average
+#'
 #' @export
-TRIMA.plotly <- function(
+triangular_moving_average.plotly <- function(
 	x,
 	cols,
 	n = 10,
 	...
 ) {
-	## prepare univariate
-	## series for TRIMA
-	x <- as.data.frame(
-		series(
-			x = x,
-			formula = cols,
-			default = ~open,
-			...
-		)
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
+		x = x,
+		formula = cols,
+		default = ~close,
+		...
 	)
 
-	## calculator indicator
-	## and return as data.frame
-	.indicator <- TRIMA.default(
-		x = x,
+	## construct indicator
+	## from the series
+	constructed_indicator <- triangular_moving_average(
+		x = constructed_series,
 		cols = rebuild_formula(
-			x = names(x)
+			names(constructed_series)
 		),
 		n = n
 	)
 
-	## add x-axis conditional on whether
-	## the data have been subsetted or not
-	.indicator$idx <- add_idx(
-		x
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
 	)
 
-	for (i in 1:ncol(x)) {
-		local({
-			j <- i
-			.plotting_environment$main <- plotly::add_trace(
-				.plotting_environment$main,
-				data = .indicator,
-				x = ~idx,
-				y = ~ .indicator[[j]],
-				type = "scatter",
-				mode = "lines",
-				name = sprintf("TRIMA(%d)", n),
-				inherit = FALSE
-			)
-		})
-	}
+	## construct {plotly}-object
+	plotly_object <- .plotting_environment[["main"]] <- plotly::add_trace(
+		.plotting_environment[["main"]],
+		data = constructed_indicator,
+		x = ~idx,
+		y = constructed_indicator[["TRIMA"]],
+		type = "scatter",
+		mode = "lines",
+		name = sprintf("TRIMA(%d)", n),
+		inherit = FALSE
+	)
 
-	.plotting_environment$main
+	plotly_object
 }

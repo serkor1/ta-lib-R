@@ -67,19 +67,19 @@ utils::tail(output)
 }
 \seealso{
 Other Overlap Study: 
-\code{\link{DEMA}()},
-\code{\link{EMA}()},
-\code{\link{KAMA}()},
-\code{\link{MAMA}()},
-\code{\link{SMA}()},
-\code{\link{T3}()},
-\code{\link{TEMA}()},
-\code{\link{TRIMA}()},
-\code{\link{WMA}()},
 \code{\link{acceleration_bands}()},
+\code{\link{double_exponential_moving_average}()},
+\code{\link{exponential_moving_average}()},
 \code{\link{extended_parabolic_sar}()},
 \code{\link{ht_trendline}()},
-\code{\link{parabolic_sar}()}
+\code{\link{kaufman_adaptive_moving_average}()},
+\code{\link{mesa_adaptive_moving_average}()},
+\code{\link{parabolic_sar}()},
+\code{\link{simple_moving_average}()},
+\code{\link{t3_exponential_moving_average}()},
+\code{\link{triangular_moving_average}()},
+\code{\link{triple_exponential_moving_average}()},
+\code{\link{weighted_moving_average}()}
 }
 \author{
 Serkan Korkmaz

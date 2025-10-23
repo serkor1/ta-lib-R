@@ -1,125 +1,101 @@
 #' @export
 #' @family Overlap Study
-#' @title Weighted Moving Average (WMA)
 #'
-#' @templateVar .title Weighted Moving Average (WMA)
+#' @title Weighted Moving Average
+#' @templateVar .title Weighted Moving Average
 #' @templateVar .author Serkan Korkmaz
-#' @templateVar .fun WMA
+#' @templateVar .fun weighted_moving_average
+#'
+#' @returns
+#' A [data.frame]- or [matrix]-object:
+#'
+#' \describe{
+#'  \item{WMA <[double]>}{Values}
+#' }
 #'
 #' @template description
-WMA <- function(
+weighted_moving_average <- function(
 	x,
 	cols,
 	n = 10,
 	...
 ) {
-	## if 'x' is missing
-	## its safe to assume that
-	## the user is calling via
-	## indicator()
+	## if 'x' is missing weighted_moving_average functions
+	## as a Moving Average Specification
 	if (missing(x)) {
-		## construct the
-		## call
-		call <- match.call(expand.dots = FALSE)
-		call$n <- n
-
-		## construct ma specification
-		## class
+		## construct Moving Average specification
+		## from call
 		x <- structure(
 			{
-				map_maType_call(
-					call
+				list(
+					n = if (missing(n)) 10L else as.integer(n),
+					maType = as.integer(2L)
 				)
-			},
-			class = c("ma_specification")
+			}
 		)
 
 		return(x)
 	}
-
-	UseMethod("WMA")
+	UseMethod("weighted_moving_average")
 }
 
 #' @export
-#'
 #' @usage NULL
+#' @rdname weighted_moving_average
 #'
-#' @rdname WMA
-#' @aliases WMA
-weighted_moving_average <- WMA
+#' @aliases weighted_moving_average
+WMA <- weighted_moving_average
 
-#' @rdname WMA
 #' @usage NULL
+#' @aliases weighted_moving_average
+#'
 #' @export
-WMA.default <- function(
+weighted_moving_average.default <- function(
 	x,
 	cols,
 	n = 10,
 	...
 ) {
-	## default behaviour is to
-	## check if its a numeric vector
-	##
-	## No coercing here as it might
-	## lead to overflow
-	x <- series(
+	## validate 'cols'-argument
+	## if explicitly passed
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series
+	## from input
+	constructed_series <- series(
 		x = cols,
-		default = ~open,
+		default = ~close,
 		data = x,
 		...
 	)
 
-	## 0) validate input
-	##    and stop the script
-	##    if conditions are not
-	##    met
-	x <- vapply(
-		as.list(x),
-		FUN = function(x) {
-			.Call(
-				"impl_ta_MA",
-				x,
-				as.integer(n),
-				2L
-			)
-		},
-		FUN.VALUE = double(nrow(x)),
-		USE.NAMES = TRUE
-	)
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(constructed_series)
 
-	colnames(x) <- paste0("wma_", colnames(x))
-
-	as.data.frame(x)
-}
-
-#' @rdname WMA
-#' @usage NULL
-#' @export
-WMA.numeric <- function(
-	x,
-	cols,
-	n = 10,
-	...
-) {
-	if (!missing(cols)) {
-		warning(
-			"'cols' have been passed but is unused in for vectors"
-		)
-	}
-
-	.Call(
+	## calculate indicator and
+	## return as data.frame
+	x <- .Call(
 		"impl_ta_MA",
-		as.double(x),
+		as.double(constructed_series[[1]]),
 		as.integer(n),
 		2L
 	)
+
+	## readd rownames
+	rownames(x) <- x_names
+
+	## return indicator
+	x
 }
 
-
-#' @rdname WMA
 #' @usage NULL
+#' @aliases weighted_moving_average
+#'
 #' @export
-WMA.data.frame <- function(
+weighted_moving_average.data.frame <- function(
 	x,
 	cols,
 	n = 10,
@@ -130,10 +106,11 @@ WMA.data.frame <- function(
 	)
 }
 
-#' @rdname WMA
 #' @usage NULL
+#' @aliases weighted_moving_average
+#'
 #' @export
-WMA.matrix <- function(
+weighted_moving_average.matrix <- function(
 	x,
 	cols,
 	n = 10,
@@ -144,57 +121,61 @@ WMA.matrix <- function(
 	)
 }
 
-#' @rdname WMA
 #' @usage NULL
+#' @aliases weighted_moving_average
+#'
 #' @export
-WMA.plotly <- function(
+weighted_moving_average.plotly <- function(
 	x,
 	cols,
 	n = 10,
 	...
 ) {
-	## prepare univariate
-	## series for WMA
-	x <- as.data.frame(
-		series(
-			x = x,
-			formula = cols,
-			default = ~open,
-			...
-		)
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
+		x = x,
+		formula = cols,
+		default = ~close,
+		...
 	)
 
-	## calculator indicator
-	## and return as data.frame
-	.indicator <- WMA.default(
-		x = x,
+	## construct indicator
+	## from the series
+	constructed_indicator <- weighted_moving_average(
+		x = constructed_series,
 		cols = rebuild_formula(
-			x = names(x)
+			names(constructed_series)
 		),
 		n = n
 	)
 
-	## add x-axis conditional on whether
-	## the data have been subsetted or not
-	.indicator$idx <- add_idx(
-		x
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
 	)
 
-	for (i in 1:ncol(x)) {
-		local({
-			j <- i
-			.plotting_environment$main <- plotly::add_trace(
-				.plotting_environment$main,
-				data = .indicator,
-				x = ~idx,
-				y = ~ .indicator[[j]],
-				type = "scatter",
-				mode = "lines",
-				name = sprintf("WMA(%d)", n),
-				inherit = FALSE
-			)
-		})
-	}
+	## construct {plotly}-object
+	plotly_object <- .plotting_environment[["main"]] <- plotly::add_trace(
+		.plotting_environment[["main"]],
+		data = constructed_indicator,
+		x = ~idx,
+		y = constructed_indicator[["WMA"]],
+		type = "scatter",
+		mode = "lines",
+		name = sprintf("WMA(%d)", n),
+		inherit = FALSE
+	)
 
-	.plotting_environment$main
+	plotly_object
 }
