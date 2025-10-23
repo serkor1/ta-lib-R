@@ -91,6 +91,8 @@ Other Momentum Indicator:
 \code{\link{percentage_price_oscillator}()},
 \code{\link{plus_directional_indicator}()},
 \code{\link{plus_directional_movement}()},
+\code{\link{rate_of_change}()},
+\code{\link{ratio_of_change}()},
 \code{\link{relative_strength_index}()},
 \code{\link{stochastic}()},
 \code{\link{triple_exponential_average}()},
