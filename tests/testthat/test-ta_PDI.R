@@ -101,11 +101,23 @@ testthat::test_that(desc = 'Default calls', code = {
 
 ## 5) check that the lenght of the input
 ##    matches the output length
-testthat::test_that(desc = 'Equal length of input and output', code = {
+##
+## 5.1) <data.frame> object
+testthat::test_that(desc = 'Equal length of input and output for <data.frame>', code = {
 	testthat::expect_equal(
 		object = nrow(PDI(
 			BTC
 		)),
 		expected = nrow(BTC)
+	)
+})
+
+## 5.2) <matrix> object
+testthat::test_that(desc = 'Equal length of input and output for <matrix>', code = {
+	testthat::expect_equal(
+		object = nrow(PDI(
+			SPY
+		)),
+		expected = nrow(SPY)
 	)
 })
