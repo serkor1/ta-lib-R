@@ -29,7 +29,7 @@ $FUN <- function(
 				{
 				list(
 					n = if (missing(n)) 10L else as.integer(n),
-					maType = as.integer($DEFAULT_FORMULA)
+					maType = $DEFAULT_FORMULA
 				)	
 				}
 			)
@@ -118,7 +118,7 @@ $FUN.matrix <- function(
 		as.matrix(
 			NextMethod()
 			) 
-			}
+}
 
 #' @usage NULL
 #' @aliases $FUN
