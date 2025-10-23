@@ -4,33 +4,33 @@
 #' @title Average Directional Movement Index Rating
 #' @templateVar .title Average Directional Movement Index Rating
 #' @templateVar .author Serkan Korkmaz
-#' @templateVar .fun average_direcitonal_movement_rating
+#' @templateVar .fun average_direcitonal_movement_index_rating
 #'
 ## splice:documentation:start
 ## splice:documentation:end
 #'
 #' @template description
-average_direcitonal_movement_rating <- function(
+average_direcitonal_movement_index_rating <- function(
 	x,
 	cols,
 	n = 10,
 	...
 ) {
-	UseMethod("average_direcitonal_movement_rating")
+	UseMethod("average_direcitonal_movement_index_rating")
 }
 
 #' @export
 #' @usage NULL
-#' @rdname average_direcitonal_movement_rating
+#' @rdname average_direcitonal_movement_index_rating
 #'
-#' @aliases average_direcitonal_movement_rating
-ADXR <- average_direcitonal_movement_rating
+#' @aliases average_direcitonal_movement_index_rating
+ADXR <- average_direcitonal_movement_index_rating
 
 #' @usage NULL
-#' @aliases average_direcitonal_movement_rating
+#' @aliases average_direcitonal_movement_index_rating
 #'
 #' @export
-average_direcitonal_movement_rating.default <- function(
+average_direcitonal_movement_index_rating.default <- function(
 	x,
 	cols,
 	n = 10,
@@ -75,10 +75,10 @@ average_direcitonal_movement_rating.default <- function(
 }
 
 #' @usage NULL
-#' @aliases average_direcitonal_movement_rating
+#' @aliases average_direcitonal_movement_index_rating
 #'
 #' @export
-average_direcitonal_movement_rating.data.frame <- function(
+average_direcitonal_movement_index_rating.data.frame <- function(
 	x,
 	cols,
 	n = 10,
@@ -90,10 +90,10 @@ average_direcitonal_movement_rating.data.frame <- function(
 }
 
 #' @usage NULL
-#' @aliases average_direcitonal_movement_rating
+#' @aliases average_direcitonal_movement_index_rating
 #'
 #' @export
-average_direcitonal_movement_rating.matrix <- function(
+average_direcitonal_movement_index_rating.matrix <- function(
 	x,
 	cols,
 	n = 10,
@@ -105,10 +105,10 @@ average_direcitonal_movement_rating.matrix <- function(
 }
 
 #' @usage NULL
-#' @aliases average_direcitonal_movement_rating
+#' @aliases average_direcitonal_movement_index_rating
 #'
 #' @export
-average_direcitonal_movement_rating.plotly <- function(
+average_direcitonal_movement_index_rating.plotly <- function(
 	x,
 	cols,
 	n = 10,
@@ -137,7 +137,7 @@ average_direcitonal_movement_rating.plotly <- function(
 
 	## construct indicator
 	## from the series
-	constructed_indicator <- average_direcitonal_movement_rating(
+	constructed_indicator <- average_direcitonal_movement_index_rating(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
