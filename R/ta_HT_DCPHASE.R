@@ -1,5 +1,5 @@
 #' @export
-#' @family Overlap Study
+#' @family Cycle Indicator
 #'
 #' @title Hilbert Transform - Dominant Cycle Phase
 #' @templateVar .title Hilbert Transform - Dominant Cycle Phase

@@ -1,5 +1,5 @@
 #' @export
-#' @family Overlap Study
+#' @family Cycle Indicator
 #'
 #' @title Hilbert Transform - Phasor Components
 #' @templateVar .title Hilbert Transform - Phasor Components

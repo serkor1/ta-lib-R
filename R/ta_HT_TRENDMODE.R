@@ -1,5 +1,5 @@
 #' @export
-#' @family Overlap Study
+#' @family Cycle Indicator
 #'
 #' @title Hilbert Transform - Trend vs Cycle Mode
 #' @templateVar .title Hilbert Transform - Trend vs Cycle Mode

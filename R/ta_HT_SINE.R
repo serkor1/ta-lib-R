@@ -1,5 +1,5 @@
 #' @export
-#' @family Overlap Study
+#' @family Cycle Indicator
 #'
 #' @title Hilbert Transform - SineWave
 #' @templateVar .title Hilbert Transform - SineWave
