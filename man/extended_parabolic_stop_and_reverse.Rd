@@ -24,6 +24,22 @@ extended_parabolic_stop_and_reverse(
 
 \item{cols}{An optional \link{formula} passed into \link{model.frame}. If passed into indicators based on univariate series, the function calculates indicators for each element in 'cols'. For indicators based on multivariate series, it will alter the calculation itself. See \code{vignette("talib")} for more details.}
 
+\item{init}{Start value and direction. 0 for Auto, >0 for Long, <0 for Short}
+
+\item{offset}{offset added/removed to initial stop on short/long reversal}
+
+\item{init_long}{Acceleration Factor initial value for the Long direction}
+
+\item{long}{Acceleration Factor for the Long direction}
+
+\item{max_long}{Acceleration Factor maximum value for the Long direction}
+
+\item{init_short}{Acceleration Factor initial value for the Short direction}
+
+\item{short}{Acceleration Factor for the Short direction}
+
+\item{max_short}{Acceleration Factor maximum value for the Short direction}
+
 \item{...}{Additional parameters passed into \link{model.frame}}
 }
 \description{

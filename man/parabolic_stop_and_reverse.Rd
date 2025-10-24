@@ -12,6 +12,10 @@ parabolic_stop_and_reverse(x, cols, acceleration = 0.5, maximum = 0.75, ...)
 
 \item{cols}{An optional \link{formula} passed into \link{model.frame}. If passed into indicators based on univariate series, the function calculates indicators for each element in 'cols'. For indicators based on multivariate series, it will alter the calculation itself. See \code{vignette("talib")} for more details.}
 
+\item{acceleration}{Acceleration factor used up to the maximum value}
+
+\item{maximum}{Acceleration factor maximum value}
+
 \item{...}{Additional parameters passed into \link{model.frame}}
 }
 \description{

@@ -12,6 +12,12 @@ bollinger_bands(x, cols, ma = SMA(n = 10), std_up = 2, std_down = 2, ...)
 
 \item{cols}{An optional \link{formula} passed into \link{model.frame}. If passed into indicators based on univariate series, the function calculates indicators for each element in 'cols'. For indicators based on multivariate series, it will alter the calculation itself. See \code{vignette("talib")} for more details.}
 
+\item{ma}{Moving average specification}
+
+\item{std_up}{Deviation multiplier for upper band}
+
+\item{std_down}{Deviation multiplier for lower band}
+
 \item{...}{Additional parameters passed into \link{model.frame}}
 }
 \description{

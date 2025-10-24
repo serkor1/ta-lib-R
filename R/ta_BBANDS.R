@@ -7,6 +7,9 @@
 #' @templateVar .fun bollinger_bands
 #'
 ## splice:documentation:start
+#' @param ma Moving average specification
+#' @param std_up Deviation multiplier for upper band
+#' @param std_down Deviation multiplier for lower band
 ## splice:documentation:end
 #'
 #' @template description

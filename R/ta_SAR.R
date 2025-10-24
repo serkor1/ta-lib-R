@@ -7,6 +7,8 @@
 #' @templateVar .fun parabolic_stop_and_reverse
 #'
 ## splice:documentation:start
+#' @param acceleration  Acceleration factor used up to the maximum value
+#' @param maximum Acceleration factor maximum value
 ## splice:documentation:end
 #'
 #' @template description

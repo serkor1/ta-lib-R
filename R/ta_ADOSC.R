@@ -7,6 +7,8 @@
 #' @templateVar .fun chaikin_accumulation_distribution_oscillator
 #'
 ## splice:documentation:start
+#' @param fast Period for the fast MA
+#' @param slow Period for the slow MA
 ## splice:documentation:end
 #'
 #' @template description

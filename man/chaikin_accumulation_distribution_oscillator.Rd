@@ -12,6 +12,10 @@ chaikin_accumulation_distribution_oscillator(x, cols, fast = 3, slow = 10, ...)
 
 \item{cols}{An optional \link{formula} passed into \link{model.frame}. If passed into indicators based on univariate series, the function calculates indicators for each element in 'cols'. For indicators based on multivariate series, it will alter the calculation itself. See \code{vignette("talib")} for more details.}
 
+\item{fast}{Period for the fast MA}
+
+\item{slow}{Period for the slow MA}
+
 \item{...}{Additional parameters passed into \link{model.frame}}
 }
 \description{
