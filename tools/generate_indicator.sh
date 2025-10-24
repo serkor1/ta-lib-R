@@ -3,8 +3,8 @@ set -euo pipefail
 
 ## usage: ./generate_indicators.sh <FAMILY> <TITLE> <FUN> [SIGNATURE] <DEFAULT_FORMULA> [ALIAS] [OUTFILE]
 
-FAMILY="${1:?}"; TITLE="${2:?}"; FUN="${3:?}"
-shift 3
+TEMPLATE="${1:-indicator_template.R}"; FAMILY="${2:?}"; TITLE="${3:?}"; FUN="${4:?}"
+shift 4
 
 SIGNATURE=""
 if (($# == 0)); then
@@ -20,7 +20,7 @@ fi
 ALIAS="${1:-$FUN}"
 OUT="${2:-R/ta_${ALIAS}.R}"
 
-TEMPLATE="tools/templates/indicator_template.R"
+TEMPLATE="tools/templates/${TEMPLATE}"
 
 tmp1="$(mktemp)"; tmp2="$(mktemp)"
 trap 'rm -f "$tmp1" "$tmp2"' EXIT
