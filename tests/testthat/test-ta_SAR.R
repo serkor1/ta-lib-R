@@ -6,12 +6,12 @@
 
 ## 1) alias and function similarity
 ##    checks this ensures that
-##    SAR and parabolic_sar produces the same results
+##    SAR and parabolic_stop_and_reverse produces the same results
 testthat::test_that(desc = 'Alias and function similarity', code = {
 	## 1) test that the alias and
 	##    function returns the same values
 	output <- SAR(SPY)
-	alias <- parabolic_sar(SPY)
+	alias <- parabolic_stop_and_reverse(SPY)
 
 	## 1.1) check if the values
 	##      are equal

@@ -2,144 +2,113 @@
 #' @family Overlap Study
 #'
 #' @title Parabolic Stop and Reverse (SAR) - Extended
-#'
 #' @templateVar .title Parabolic Stop and Reverse (SAR) - Extended
 #' @templateVar .author Serkan Korkmaz
-#' @templateVar .fun extended_parabolic_sar
+#' @templateVar .fun extended_parabolic_stop_and_reverse
 #'
-#' @param start_value Start value and direction. 0 for Auto, >0 for Long, <0 for Short.
-#' @param offset_on_reverse Percent offset added/removed to initial stop on short/long reversal
-#' @param acceleration_init_long Acceleration Factor initial value for the Long direction
-#' @param acceleration_long Acceleration Factor for the Long direction
-#' @param acceleration_max_long Acceleration Factor maximum value for the Long direction
-#' @param accelration_init_short Acceleration Factor initial value for the Short direction
-#' @param acceleration_short Acceleration Factor for the Short direction
-#' @param acceleration_max_short Acceleration Factor maximum value for the Short direction
-#'
-#' @returns
-#' A [data.frame]- or [matrix]-object with the format:
-#'
-#' \describe{
-#'  \item{upper}{[double]. The lower band.}
-#'  \item{middle}{[double]. The middle band.}
-#'  \item{lower}{[double]. The upper band.}
-#' }
+## splice:documentation:start
+## splice:documentation:end
 #'
 #' @template description
-extended_parabolic_sar <- function(
+extended_parabolic_stop_and_reverse <- function(
 	x,
 	cols,
-	start_value = 0,
-	offset_on_reverse = 0,
-	acceleration_init_long = 0,
-	acceleration_long = 0,
-	acceleration_max_long = 0,
-	accelration_init_short = 0,
-	acceleration_short = 0,
-	acceleration_max_short = 0,
+	init = 0,
+	offset = 0,
+	init_long = 0,
+	long = 0,
+	max_long = 0,
+	init_short = 0,
+	short = 0,
+	max_short = 0,
 	...
 ) {
-	UseMethod(
-		generic = "extended_parabolic_sar"
-	)
+	UseMethod("extended_parabolic_stop_and_reverse")
 }
 
 #' @export
-#'
 #' @usage NULL
+#' @rdname extended_parabolic_stop_and_reverse
 #'
-#' @rdname extended_parabolic_sar
-#' @aliases extended_parabolic_sar
-SAREXT <- extended_parabolic_sar
+#' @aliases extended_parabolic_stop_and_reverse
+SAREXT <- extended_parabolic_stop_and_reverse
 
 #' @usage NULL
-#' @aliases extended_parabolic_sar
+#' @aliases extended_parabolic_stop_and_reverse
+#'
 #' @export
-extended_parabolic_sar.default <- function(
+extended_parabolic_stop_and_reverse.default <- function(
 	x,
 	cols,
-	start_value = 0,
-	offset_on_reverse = 0,
-	acceleration_init_long = 0,
-	acceleration_long = 0,
-	acceleration_max_long = 0,
-	accelration_init_short = 0,
-	acceleration_short = 0,
-	acceleration_max_short = 0,
+	init = 0,
+	offset = 0,
+	init_long = 0,
+	long = 0,
+	max_long = 0,
+	init_short = 0,
+	short = 0,
+	max_short = 0,
 	...
 ) {
-	## check input
-	## cols if passed
+	## validate 'cols'-argument
+	## if explicitly passed
 	if (!missing(cols)) {
-		assert(
-			is.formula(cols),
-			paste0(
-				"'cols' has to be <",
-				class(~s),
-				">. ",
-				"Got <",
-				class(cols),
-				">."
-			)
-		)
-		assert(
-			length(all.vars(cols)) == 2,
-			paste0(
-				"'cols' has to be length 2. ",
-				"Got length ",
-				length(all.vars(cols))
-			)
-		)
+		assert_formula(cols)
 	}
 
-	## default behaviour is to
-	## coerce to a `matrix` check that
-	## it is double and then pass to
-	## C-side.
-	HL <- series(
+	## construct series
+	## from input
+	constructed_series <- series(
 		x = cols,
 		default = ~ high + low,
 		data = x,
 		...
 	)
 
-	## 1) pass `x` assuming that it
-	##    follows OHLC-V structure
-	output <- as.data.frame(
-		.Call(
-			"impl_ta_SAREXT",
-			HL[[1]],
-			HL[[2]],
-			start_value,
-			offset_on_reverse,
-			acceleration_init_long,
-			acceleration_long,
-			acceleration_max_long,
-			accelration_init_short,
-			acceleration_short,
-			acceleration_max_short
-		)
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
+
+	## calculate indicator and
+	## return as data.frame
+	x <- .Call(
+		"impl_ta_SAREXT",
+		## splice:call:start
+		constructed_series[[1]],
+		constructed_series[[2]],
+		init,
+		offset,
+		init_long,
+		long,
+		max_long,
+		init_short,
+		short,
+		max_short
+		## splice:call:end
 	)
 
-	colnames(output)[1] <- "SAR"
+	## readd rownames
+	rownames(x) <- x_names
 
-	return(output)
+	## return indicator
+	x
 }
 
 #' @usage NULL
-#' @aliases extended_parabolic_sar
+#' @aliases extended_parabolic_stop_and_reverse
+#'
 #' @export
-extended_parabolic_sar.data.frame <- function(
+extended_parabolic_stop_and_reverse.data.frame <- function(
 	x,
 	cols,
-	start_value = 0,
-	offset_on_reverse = 0,
-	acceleration_init_long = 0,
-	acceleration_long = 0,
-	acceleration_max_long = 0,
-	accelration_init_short = 0,
-	acceleration_short = 0,
-	acceleration_max_short = 0,
+	init = 0,
+	offset = 0,
+	init_long = 0,
+	long = 0,
+	max_long = 0,
+	init_short = 0,
+	short = 0,
+	max_short = 0,
 	...
 ) {
 	as.data.frame(
@@ -148,19 +117,20 @@ extended_parabolic_sar.data.frame <- function(
 }
 
 #' @usage NULL
-#' @aliases extended_parabolic_sar
+#' @aliases extended_parabolic_stop_and_reverse
+#'
 #' @export
-extended_parabolic_sar.matrix <- function(
+extended_parabolic_stop_and_reverse.matrix <- function(
 	x,
 	cols,
-	start_value = 0,
-	offset_on_reverse = 0,
-	acceleration_init_long = 0,
-	acceleration_long = 0,
-	acceleration_max_long = 0,
-	accelration_init_short = 0,
-	acceleration_short = 0,
-	acceleration_max_short = 0,
+	init = 0,
+	offset = 0,
+	init_long = 0,
+	long = 0,
+	max_long = 0,
+	init_short = 0,
+	short = 0,
+	max_short = 0,
 	...
 ) {
 	as.matrix(
@@ -169,60 +139,70 @@ extended_parabolic_sar.matrix <- function(
 }
 
 #' @usage NULL
-#' @aliases extended_parabolic_sar
+#' @aliases extended_parabolic_stop_and_reverse
+#'
 #' @export
-extended_parabolic_sar.plotly <- function(
+extended_parabolic_stop_and_reverse.plotly <- function(
 	x,
 	cols,
-	start_value = 0,
-	offset_on_reverse = 0,
-	acceleration_init_long = 0,
-	acceleration_long = 0,
-	acceleration_max_long = 0,
-	accelration_init_short = 0,
-	acceleration_short = 0,
-	acceleration_max_short = 0,
+	init = 0,
+	offset = 0,
+	init_long = 0,
+	long = 0,
+	max_long = 0,
+	init_short = 0,
+	short = 0,
+	max_short = 0,
+	## splice:optional-plotly:start
+	## splice:optional-plotly:end
 	...
 ) {
-	## prepare series
-	## from
-	HL <- series(
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
 		x = x,
 		formula = cols,
 		default = ~ high + low,
 		...
 	)
 
-	.indicator <- as.data.frame(
-		.Call(
-			"impl_ta_SAREXT",
-			HL[[1]],
-			HL[[2]],
-			start_value,
-			offset_on_reverse,
-			acceleration_init_long,
-			acceleration_long,
-			acceleration_max_long,
-			accelration_init_short,
-			acceleration_short,
-			acceleration_max_short
-		)
+	## construct indicator
+	## from the series
+	constructed_indicator <- extended_parabolic_stop_and_reverse(
+		x = constructed_series,
+		cols = rebuild_formula(
+			names(constructed_series)
+		),
+		init = init,
+		offset = offset,
+		init_long = init_long,
+		long = long,
+		max_long = max_long,
+		init_short = init_short,
+		short = short,
+		max_short = max_short
 	)
 
-	colnames(.indicator)[1] <- "SAR"
-
-	## add x-axis conditional on whether
-	## the data have been subsetted or not
-	.indicator$idx <- add_idx(
-		HL
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
 	)
 
-	## calculate colors for
-	## the chart
-
+	## construct {plotly}-object
+	## splice:plotly-assembly:start
 	## identify bullish
 	## signals
-	bull <- (.indicator$SAR < as.numeric(HL[[2L]]))
+	bull <- (constructed_indicator$SAR < as.numeric(constructed_series[[2L]]))
 	chart_theme <- .chart_theme()
 	## determine colors
 	##
@@ -234,9 +214,9 @@ extended_parabolic_sar.plotly <- function(
 
 	## constuct chart
 	## element
-	.plotting_environment$main <- plotly::add_trace(
-		.plotting_environment$main,
-		data = .indicator,
+	plotly_object <- .plotting_environment[["main"]] <- plotly::add_trace(
+		.plotting_environment[["main"]],
+		data = constructed_indicator,
 		x = ~idx,
 		y = ~SAR,
 		type = "scatter",
@@ -256,6 +236,7 @@ extended_parabolic_sar.plotly <- function(
 			)
 		)
 	)
+	## splice:plotly-assembly:end
 
-	.plotting_environment$main
+	plotly_object
 }

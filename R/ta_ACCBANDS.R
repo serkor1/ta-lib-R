@@ -6,18 +6,8 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun acceleration_bands
 #'
-#'
-## input start
-#' @returns
-#' A [data.frame]- or [matrix]-object:
-#'
-#' \describe{
-#'  \item{upper <[double]>}{The upper band.}
-#'  \item{middle <[double]>}{The middle band.}
-#'  \item{lower <[double]>}{The lower band.}
-#' }
-#'
-## input end
+## splice:documentation:start
+## splice:documentation:end
 #'
 #' @template description
 acceleration_bands <- function(
@@ -52,10 +42,6 @@ acceleration_bands.default <- function(
 		assert_formula(cols)
 	}
 
-	## extract rownames
-	## for later attachment
-	x_names <- rownames(x)
-
 	## construct series
 	## from input
 	constructed_series <- series(
@@ -65,16 +51,20 @@ acceleration_bands.default <- function(
 		...
 	)
 
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		"impl_ta_ACCBANDS",
-		## input start
+		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
 		as.integer(n)
-		## input end
+		## splice:call:end
 	)
 
 	## readd rownames
@@ -122,6 +112,8 @@ acceleration_bands.plotly <- function(
 	x,
 	cols,
 	n = 10,
+	## splice:optional-plotly:start
+	## splice:optional-plotly:end
 	...
 ) {
 	## check that input value
@@ -150,7 +142,7 @@ acceleration_bands.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = 10
+		n = n
 	)
 
 	## add conditional idx
@@ -159,22 +151,22 @@ acceleration_bands.plotly <- function(
 	)
 
 	## construct {plotly}-object
-	## input start
-	plotly_object <- .plotting_environment$main <- add_ribbons(
-		plotly_object = .plotting_environment$main,
+	## splice:plotly-assembly:start
+	plotly_object <- .plotting_environment[["main"]] <- add_ribbons(
+		plotly_object = .plotting_environment[["main"]],
 		data = constructed_indicator,
 		x = ~idx,
 		y = ~middle,
 		ymin = ~lower,
 		ymax = ~upper,
+		color = 'steelblue',
+		alpha = 0.5,
 		showlegend = TRUE,
 		legendgroup = 'acceleration_band',
 		name = c("Acceleration Bands", "B", "C"),
-		color = "steelblue",
-		alpha = 0.5,
 		dash = NULL
 	)
-	## input end
+	## splice:plotly-assembly:end
 
 	plotly_object
 }

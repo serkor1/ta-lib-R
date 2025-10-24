@@ -2,85 +2,78 @@
 #' @family Overlap Study
 #'
 #' @title Hilbert Transform - Instantaneous Trendline
-#'
 #' @templateVar .title Hilbert Transform - Instantaneous Trendline
 #' @templateVar .author Serkan Korkmaz
-#' @templateVar .fun ht_trendline
+#' @templateVar .fun trendline
+#'
+## splice:documentation:start
+## splice:documentation:end
 #'
 #' @template description
-ht_trendline <- function(
+trendline <- function(
 	x,
 	cols,
 	...
 ) {
-	UseMethod("ht_trendline")
+	UseMethod("trendline")
 }
 
 #' @export
-#'
 #' @usage NULL
+#' @rdname trendline
 #'
-#' @rdname ht_trendline
-#' @aliases ht_trendline
-HT_TRENDLINE <- ht_trendline
+#' @aliases trendline
+HT_TRENDLINE <- trendline
 
 #' @usage NULL
-#' @aliases ht_trendline
+#' @aliases trendline
+#'
 #' @export
-ht_trendline.default <- function(
+trendline.default <- function(
 	x,
 	cols,
 	...
 ) {
+	## validate 'cols'-argument
+	## if explicitly passed
 	if (!missing(cols)) {
-		## check for formula
-		assert(
-			is.formula(cols),
-			paste0(
-				"'cols' has to be <",
-				class(~s),
-				">.",
-				"Got <",
-				class(cols),
-				">."
-			)
-		)
-
-		assert(
-			length(all.vars(cols)) == 1,
-			paste0(
-				"'cols' has to be length 1. ",
-				"Got length ",
-				length(all.vars(cols))
-			)
-		)
+		assert_formula(cols)
 	}
 
-	## extract series
-	x <- series(
+	## construct series
+	## from input
+	constructed_series <- series(
 		x = cols,
-		default = ~open,
+		default = ~close,
 		data = x,
 		...
 	)
 
-	x <- as.data.frame(
-		.Call(
-			"impl_ta_HT_TRENDLINE",
-			x[[1]]
-		)
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
+
+	## calculate indicator and
+	## return as data.frame
+	x <- .Call(
+		"impl_ta_HT_TRENDLINE",
+		## splice:call:start
+		constructed_series[[1]]
+		## splice:call:end
 	)
 
-	colnames(x)[1] <- "ht_trendline"
+	## readd rownames
+	rownames(x) <- x_names
 
-	return(x)
+	## return indicator
+	x
 }
 
-
 #' @usage NULL
-#' @aliases ht_trendline
+#' @aliases trendline
+#'
 #' @export
-ht_trendline.data.frame <- function(
+trendline.data.frame <- function(
 	x,
 	cols,
 	...
@@ -91,43 +84,10 @@ ht_trendline.data.frame <- function(
 }
 
 #' @usage NULL
-#' @aliases ht_trendline
+#' @aliases trendline
+#'
 #' @export
-ht_trendline.numeric <- function(
-	x,
-	cols,
-	...
-) {
-	## determine branch
-	## if its a matrix call
-	## matrix method and end the function
-	##
-	## NOTE: this is necessary as matrix are
-	##       internally doubles
-	if (is.matrix(x)) {
-		output <- NextMethod()
-
-		return(output)
-	}
-
-	## treat 'x' as a vector
-	##
-	if (!missing(cols)) {
-		warning(
-			"'cols' have been passed but is unused in for vectors"
-		)
-	}
-
-	.Call(
-		"impl_ta_HT_TRENDLINE",
-		x
-	)
-}
-
-#' @usage NULL
-#' @aliases ht_trendline
-#' @export
-ht_trendline.matrix <- function(
+trendline.matrix <- function(
 	x,
 	cols,
 	...
@@ -137,57 +97,63 @@ ht_trendline.matrix <- function(
 	)
 }
 
-
-#' @rdname ht_trendline
 #' @usage NULL
+#' @aliases trendline
+#'
 #' @export
-ht_trendline.plotly <- function(
+trendline.plotly <- function(
 	x,
 	cols,
+	## splice:optional-plotly:start
+	## splice:optional-plotly:end
 	...
 ) {
-	## prepare univariate series
-	## for the trendline
-	x <- as.data.frame(
-		series(
-			x = x,
-			formula = cols,
-			default = ~open,
-			...
-		)
-	)
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
 
-	## calculate trendline indicator
-	## and return as data.frame
-	.indicator <- ht_trendline.default(
-		x = x,
-		cols = rebuild_formula(
-			names(x)
-		)
-	)
-
-	## add idx conditional
-	## on whether idx is passed
-	.indicator$idx <- add_idx(
-		x
-	)
-
-	## construct plotly object
-	for (i in 1:ncol(x)) {
-		local({
-			j <- i
-			.plotting_environment$main <- plotly::add_trace(
-				.plotting_environment$main,
-				data = .indicator,
-				x = ~idx,
-				y = ~ .indicator[, j],
-				type = "scatter",
-				mode = "lines",
-				name = "Trendline",
-				inherit = FALSE
-			)
-		})
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
 	}
 
-	.plotting_environment$main
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
+		x = x,
+		formula = cols,
+		default = ~close,
+		...
+	)
+
+	## construct indicator
+	## from the series
+	constructed_indicator <- trendline(
+		x = constructed_series,
+		cols = rebuild_formula(
+			names(constructed_series)
+		)
+	)
+
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
+	)
+
+	## construct {plotly}-object
+	## splice:plotly-assembly:start
+	plotly_object <- .plotting_environment[["main"]] <- plotly::add_trace(
+		.plotting_environment[["main"]],
+		data = constructed_indicator,
+		x = ~idx,
+		y = ~TRENDLINE,
+		type = "scatter",
+		mode = "lines",
+		name = "Trendline",
+		inherit = FALSE
+	)
+	## splice:plotly-assembly:end
+
+	plotly_object
 }

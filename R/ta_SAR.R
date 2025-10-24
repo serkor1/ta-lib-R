@@ -2,114 +2,89 @@
 #' @family Overlap Study
 #'
 #' @title Parabolic Stop and Reverse (SAR)
-#'
 #' @templateVar .title Parabolic Stop and Reverse (SAR)
 #' @templateVar .author Serkan Korkmaz
-#' @templateVar .fun parabolic_sar
+#' @templateVar .fun parabolic_stop_and_reverse
 #'
-#' @param acceleration Acceleration Factor used up to the Maximum value
-#' @param maximum Acceleration Factor Maximum value
-#'
-#' @returns
-#' A [data.frame]- or [matrix]-object with the format:
-#'
-#' \describe{
-#'  \item{upper}{[double]. The lower band.}
-#'  \item{middle}{[double]. The middle band.}
-#'  \item{lower}{[double]. The upper band.}
-#' }
+## splice:documentation:start
+## splice:documentation:end
 #'
 #' @template description
-parabolic_sar <- function(
+parabolic_stop_and_reverse <- function(
 	x,
 	cols,
-	acceleration = 0.02,
-	maximum = 0.2,
+	acceleration = 0.5,
+	maximum = 0.75,
 	...
 ) {
-	UseMethod(
-		generic = "parabolic_sar"
-	)
+	UseMethod("parabolic_stop_and_reverse")
 }
 
 #' @export
-#'
 #' @usage NULL
+#' @rdname parabolic_stop_and_reverse
 #'
-#' @rdname parabolic_sar
-#' @aliases parabolic_sar
-SAR <- parabolic_sar
+#' @aliases parabolic_stop_and_reverse
+SAR <- parabolic_stop_and_reverse
 
 #' @usage NULL
-#' @aliases parabolic_sar
+#' @aliases parabolic_stop_and_reverse
+#'
 #' @export
-parabolic_sar.default <- function(
+parabolic_stop_and_reverse.default <- function(
 	x,
 	cols,
-	acceleration = 0.02,
-	maximum = 0.2,
+	acceleration = 0.5,
+	maximum = 0.75,
 	...
 ) {
-	## check input
-	## cols if passed
+	## validate 'cols'-argument
+	## if explicitly passed
 	if (!missing(cols)) {
-		assert(
-			is.formula(cols),
-			paste0(
-				"'cols' has to be <",
-				class(~s),
-				">. ",
-				"Got <",
-				class(cols),
-				">."
-			)
-		)
-		assert(
-			length(all.vars(cols)) == 2,
-			paste0(
-				"'cols' has to be length 2. ",
-				"Got length ",
-				length(all.vars(cols))
-			)
-		)
+		assert_formula(cols)
 	}
 
-	## default behaviour is to
-	## coerce to a `matrix` check that
-	## it is double and then pass to
-	## C-side.
-	HL <- series(
+	## construct series
+	## from input
+	constructed_series <- series(
 		x = cols,
 		default = ~ high + low,
 		data = x,
 		...
 	)
 
-	## 1) pass `x` assuming that it
-	##    follows OHLC-V structure
-	output <- as.data.frame(
-		.Call(
-			"impl_ta_SAR",
-			HL[[1]],
-			HL[[2]],
-			as.double(acceleration),
-			as.double(maximum)
-		)
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
+
+	## calculate indicator and
+	## return as data.frame
+	x <- .Call(
+		"impl_ta_SAR",
+		## splice:call:start
+		constructed_series[[1]],
+		constructed_series[[2]],
+		as.double(acceleration),
+		as.double(maximum)
+		## splice:call:end
 	)
 
-	colnames(output)[1] <- "SAR"
+	## readd rownames
+	rownames(x) <- x_names
 
-	return(output)
+	## return indicator
+	x
 }
 
 #' @usage NULL
-#' @aliases parabolic_sar
+#' @aliases parabolic_stop_and_reverse
+#'
 #' @export
-parabolic_sar.data.frame <- function(
+parabolic_stop_and_reverse.data.frame <- function(
 	x,
 	cols,
-	acceleration = 0.02,
-	maximum = 0.2,
+	acceleration = 0.5,
+	maximum = 0.75,
 	...
 ) {
 	as.data.frame(
@@ -118,13 +93,14 @@ parabolic_sar.data.frame <- function(
 }
 
 #' @usage NULL
-#' @aliases parabolic_sar
+#' @aliases parabolic_stop_and_reverse
+#'
 #' @export
-parabolic_sar.matrix <- function(
+parabolic_stop_and_reverse.matrix <- function(
 	x,
 	cols,
-	acceleration = 0.02,
-	maximum = 0.2,
+	acceleration = 0.5,
+	maximum = 0.75,
 	...
 ) {
 	as.matrix(
@@ -133,51 +109,59 @@ parabolic_sar.matrix <- function(
 }
 
 #' @usage NULL
-#' @aliases parabolic_sar
+#' @aliases parabolic_stop_and_reverse
+#'
 #' @export
-parabolic_sar.plotly <- function(
+parabolic_stop_and_reverse.plotly <- function(
 	x,
 	cols,
-	acceleration = 0.02,
-	maximum = 0.2,
+	acceleration = 0.5,
+	maximum = 0.75,
+	## splice:optional-plotly:start
+	## splice:optional-plotly:end
 	...
 ) {
-	## prepare series
-	## from
-	HL <- series(
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
 		x = x,
 		formula = cols,
 		default = ~ high + low,
 		...
 	)
 
-	.indicator <- as.data.frame(
-		.Call(
-			"impl_ta_SAR",
-			HL[[1]],
-			HL[[2]],
-			as.double(acceleration),
-			as.double(maximum)
-		)
+	## construct indicator
+	## from the series
+	constructed_indicator <- parabolic_stop_and_reverse(
+		x = constructed_series,
+		cols = rebuild_formula(
+			names(constructed_series)
+		),
+		acceleration = acceleration,
+		maximum = maximum
 	)
 
-	colnames(.indicator)[1] <- "SAR"
-
-	## add x-axis conditional on whether
-	## the data have been subsetted or not
-	.indicator$idx <- add_idx(
-		HL
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
 	)
 
-	chart_theme <- .chart_theme()
-
-	## calculate colors for
-	## the chart
-
+	## construct {plotly}-object
+	## splice:plotly-assembly:start
 	## identify bullish
 	## signals
-	bull <- (.indicator$SAR < as.numeric(HL[[2L]]))
-
+	bull <- (constructed_indicator$SAR < as.numeric(constructed_series[[2L]]))
+	chart_theme <- .chart_theme()
 	## determine colors
 	##
 	colors <- ifelse(
@@ -188,17 +172,17 @@ parabolic_sar.plotly <- function(
 
 	## constuct chart
 	## element
-	.plotting_environment$main <- plotly::add_trace(
-		.plotting_environment$main,
-		data = .indicator,
+	plotly_object <- .plotting_environment[["main"]] <- plotly::add_trace(
+		.plotting_environment[["main"]],
+		data = constructed_indicator,
 		x = ~idx,
 		y = ~SAR,
 		type = "scatter",
 		mode = "markers",
 		name = sprintf(
-			"PSAR(%f,%f)",
-			acceleration,
-			maximum
+			"EPSAR(%f,%f)",
+			1,
+			1
 		),
 		inherit = FALSE,
 		marker = list(
@@ -210,6 +194,7 @@ parabolic_sar.plotly <- function(
 			)
 		)
 	)
+	## splice:plotly-assembly:end
 
-	.plotting_environment$main
+	plotly_object
 }
