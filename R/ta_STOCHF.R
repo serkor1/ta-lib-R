@@ -46,10 +46,6 @@ fast_stochastic.default <- function(
 		assert_formula(cols)
 	}
 
-	## extract rownames
-	## for later attachment
-	x_names <- rownames(x)
-
 	## construct series
 	## from input
 	constructed_series <- series(
@@ -58,6 +54,10 @@ fast_stochastic.default <- function(
 		data = x,
 		...
 	)
+
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
 
 	## calculate indicator and
 	## return as data.frame

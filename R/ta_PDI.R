@@ -42,10 +42,6 @@ plus_directional_indicator.default <- function(
 		assert_formula(cols)
 	}
 
-	## extract rownames
-	## for later attachment
-	x_names <- rownames(x)
-
 	## construct series
 	## from input
 	constructed_series <- series(
@@ -54,6 +50,10 @@ plus_directional_indicator.default <- function(
 		data = x,
 		...
 	)
+
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
 
 	## calculate indicator and
 	## return as data.frame
