@@ -2,7 +2,7 @@
 % Please edit documentation in R/ta_CDLCONCEALBABYSWALL.R
 \name{concealing_baby_swallow}
 \alias{concealing_baby_swallow}
-\alias{CDLBABYSWALL}
+\alias{CDLCONCEALBABYSWALL}
 \title{Concealing Baby Swallow}
 \usage{
 concealing_baby_swallow(x, cols, ...)
@@ -13,11 +13,6 @@ concealing_baby_swallow(x, cols, ...)
 \item{cols}{An optional \link{formula} passed into \link{model.frame}. If passed into indicators based on univariate series, the function calculates indicators for each element in 'cols'. For indicators based on multivariate series, it will alter the calculation itself. See \code{vignette("talib")} for more details.}
 
 \item{...}{Additional parameters passed into \link{model.frame}}
-}
-\value{
-\describe{
-\item{concealing_baby_swallow}{1 for bullish, -1 for bearish and 0 for no pattern}
-}
 }
 \description{
 The \code{concealing_baby_swallow()} is a generic S3 function that builds upon 'type-safe'-esque workflows limited to classes in in base \code{R}, and the package-wide

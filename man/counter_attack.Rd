@@ -14,11 +14,6 @@ counter_attack(x, cols, ...)
 
 \item{...}{Additional parameters passed into \link{model.frame}}
 }
-\value{
-\describe{
-\item{counter_attack}{1 for bullish, -1 for bearish and 0 for no pattern}
-}
-}
 \description{
 The \code{counter_attack()} is a generic S3 function that builds upon 'type-safe'-esque workflows limited to classes in in base \code{R}, and the package-wide
 dependencies. Ie. \link{class} in, \link{class} out. Each method is a soft wrapper of \link{model.frame} and therefore the OHLC-V series must be coercible to a \link{data.frame}.

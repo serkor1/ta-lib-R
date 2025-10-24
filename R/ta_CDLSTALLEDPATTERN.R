@@ -2,93 +2,164 @@
 #' @family Pattern Recognition
 #'
 #' @title Stalled Pattern
-#'
 #' @templateVar .title Stalled Pattern
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun stalled_pattern
 #'
-#' @template description
+## splice:documentation:start
+## splice:documentation:end
 #'
-#' @returns
-#' \describe{
-#'  \item{stalled_pattern}{-1 for bearish reversal, 0 for no pattern}
-#' }
-stalled_pattern <- function(x, cols, ...) UseMethod("stalled_pattern")
+#' @template description
+stalled_pattern <- function(
+	x,
+	cols,
+	...
+) {
+	UseMethod("stalled_pattern")
+}
 
 #' @export
 #' @usage NULL
 #' @rdname stalled_pattern
+#'
 #' @aliases stalled_pattern
 CDLSTALLEDPATTERN <- stalled_pattern
 
+#' @usage NULL
+#' @aliases stalled_pattern
+#'
 #' @export
-stalled_pattern.default <- function(x, cols, ...) {
+stalled_pattern.default <- function(
+	x,
+	cols,
+	...
+) {
+	## get normalization option
+	normalize <- as.logical(
+		getOption("talib.normalize", TRUE)
+	)
+
+	## validate 'cols'-argument
+	## if explicitly passed
 	if (!missing(cols)) {
-		assert(
-			is.formula(cols),
-			paste0(
-				"'cols' has to be <",
-				class(~s),
-				">. Got <",
-				class(cols),
-				">."
-			)
-		)
-		assert(
-			length(all.vars(cols)) == 4,
-			paste0(
-				"'cols' has to be length 4. Got length ",
-				length(all.vars(cols))
-			)
-		)
+		assert_formula(cols)
 	}
-	OHLC <- series(
+
+	## construct series
+	## from input
+	constructed_series <- series(
 		x = cols,
 		default = ~ open + high + low + close,
 		data = x,
 		...
 	)
-	x <- as.data.frame(.Call(
-		"impl_ta_CDLSTALLEDPATTERN",
-		OHLC[[1]],
-		OHLC[[2]],
-		OHLC[[3]],
-		OHLC[[4]],
-		as.logical(getOption("talib.normalize", TRUE))
-	))
-	colnames(x) <- "stalled_pattern"
+
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
+
+	## calculate indicator and
+	## return as data.frame
+	x <- as.matrix(
+		.Call(
+			"impl_ta_CDLSTALLEDPATTERN",
+			constructed_series[[1]],
+			constructed_series[[2]],
+			constructed_series[[3]],
+			constructed_series[[4]],
+			normalize
+		)
+	)
+
+	## add column name
+	colnames(x) <- "CDLSTALLEDPATTERN"
+
+	## readd rownames
+	rownames(x) <- x_names
+
+	## return indicator
 	x
 }
 
+#' @usage NULL
+#' @aliases stalled_pattern
+#'
 #' @export
-stalled_pattern.data.frame <- function(x, cols, ...) as.data.frame(NextMethod())
+stalled_pattern.data.frame <- function(
+	x,
+	cols,
+	...
+) {
+	as.data.frame(
+		NextMethod()
+	)
+}
+
+#' @usage NULL
+#' @aliases stalled_pattern
+#'
 #' @export
-stalled_pattern.matrix <- function(x, cols, ...) as.matrix(NextMethod())
+stalled_pattern.matrix <- function(
+	x,
+	cols,
+	...
+) {
+	as.matrix(
+		NextMethod()
+	)
+}
+
+#' @usage NULL
+#' @aliases stalled_pattern
+#'
 #' @export
-stalled_pattern.plotly <- function(x, cols, ...) {
-	OHLC <- series(
+stalled_pattern.plotly <- function(
+	x,
+	cols,
+	...
+) {
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
 		x = x,
 		formula = cols,
 		default = ~ open + high + low + close,
 		...
 	)
-	.indicator <- stalled_pattern.default(
-		x = OHLC,
-		cols = ~ open + high + low + close
+
+	## construct indicator
+	## from the series
+	constructed_indicator <- stalled_pattern(
+		x = constructed_series,
+		cols = rebuild_formula(
+			names(constructed_series)
+		)
 	)
 
-	## add x-axis conditional on whether
-	## the data have been subsetted or not
-	.indicator$idx <- add_idx(
-		OHLC
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
 	)
 
-	.plotting_environment$main <- pattern(
-		.plotting_environment$main,
-		.indicator,
-		OHLC[[2]],
-		OHLC[[3]],
-		"stalled_pattern"
+	## construct {plotly}-object
+	plotly_object <- .plotting_environment[["main"]] <- pattern(
+		p = .plotting_environment[["main"]],
+		x = constructed_indicator,
+		high = constructed_series[[2]],
+		low = constructed_series[[3]],
+		pattern_name = "stalled_pattern",
+		agnostic = FALSE
 	)
-	.plotting_environment$main
+
+	plotly_object
 }

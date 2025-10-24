@@ -2,17 +2,14 @@
 #' @family Pattern Recognition
 #'
 #' @title Morning Star
-#'
 #' @templateVar .title Morning Star
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun morning_star
 #'
-#' @template description
+## splice:documentation:start
+## splice:documentation:end
 #'
-#' @returns
-#' \describe{
-#'  \item{morning_star}{1 for bullish, -1 for bearish and 0 for no pattern}
-#' }
+#' @template description
 morning_star <- function(
 	x,
 	cols,
@@ -25,11 +22,13 @@ morning_star <- function(
 #' @export
 #' @usage NULL
 #' @rdname morning_star
+#'
 #' @aliases morning_star
 CDLMORNINGSTAR <- morning_star
 
 #' @usage NULL
 #' @aliases morning_star
+#'
 #' @export
 morning_star.default <- function(
 	x,
@@ -37,86 +36,137 @@ morning_star.default <- function(
 	eps = 0,
 	...
 ) {
+	## get normalization option
+	normalize <- as.logical(
+		getOption("talib.normalize", TRUE)
+	)
+
+	## validate 'cols'-argument
+	## if explicitly passed
 	if (!missing(cols)) {
-		assert(
-			is.formula(cols),
-			paste0(
-				"'cols' has to be <",
-				class(~s),
-				">. Got <",
-				class(cols),
-				">."
-			)
-		)
-		assert(
-			length(all.vars(cols)) == 4,
-			paste0(
-				"'cols' has to be length 4. Got length ",
-				length(all.vars(cols))
-			)
-		)
+		assert_formula(cols)
 	}
-	OHLC <- series(
+
+	## construct series
+	## from input
+	constructed_series <- series(
 		x = cols,
 		default = ~ open + high + low + close,
 		data = x,
 		...
 	)
-	x <- as.data.frame(.Call(
-		"impl_ta_CDLMORNINGSTAR",
-		OHLC[[1]],
-		OHLC[[2]],
-		OHLC[[3]],
-		OHLC[[4]],
-		as.numeric(eps),
-		as.logical(getOption("talib.normalize", TRUE))
-	))
-	colnames(x) <- "morning_star"
-	return(x)
+
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
+
+	## calculate indicator and
+	## return as data.frame
+	x <- as.matrix(
+		.Call(
+			"impl_ta_CDLMORNINGSTAR",
+			constructed_series[[1]],
+			constructed_series[[2]],
+			constructed_series[[3]],
+			constructed_series[[4]],
+			eps = eps,
+			normalize
+		)
+	)
+
+	## add column name
+	colnames(x) <- "CDLMORNINGSTAR"
+
+	## readd rownames
+	rownames(x) <- x_names
+
+	## return indicator
+	x
 }
 
 #' @usage NULL
 #' @aliases morning_star
+#'
 #' @export
-morning_star.data.frame <- function(x, cols, eps = 0, ...) {
-	as.data.frame(NextMethod())
+morning_star.data.frame <- function(
+	x,
+	cols,
+	eps = 0,
+	...
+) {
+	as.data.frame(
+		NextMethod()
+	)
 }
 
 #' @usage NULL
 #' @aliases morning_star
+#'
 #' @export
-morning_star.matrix <- function(x, cols, eps = 0, ...) {
-	as.matrix(NextMethod())
+morning_star.matrix <- function(
+	x,
+	cols,
+	eps = 0,
+	...
+) {
+	as.matrix(
+		NextMethod()
+	)
 }
 
 #' @usage NULL
 #' @aliases morning_star
+#'
 #' @export
-morning_star.plotly <- function(x, cols, eps = 0, ...) {
-	OHLC <- series(
+morning_star.plotly <- function(
+	x,
+	cols,
+	eps = 0,
+	...
+) {
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
 		x = x,
 		formula = cols,
 		default = ~ open + high + low + close,
 		...
 	)
-	.indicator <- morning_star.default(
-		x = OHLC,
-		cols = ~ open + high + low + close,
+
+	## construct indicator
+	## from the series
+	constructed_indicator <- morning_star(
+		x = constructed_series,
+		cols = rebuild_formula(
+			names(constructed_series)
+		),
 		eps = eps
 	)
 
-	## add x-axis conditional on whether
-	## the data have been subsetted or not
-	.indicator$idx <- add_idx(
-		OHLC
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
 	)
 
-	.plotting_environment$main <- pattern(
-		p = .plotting_environment$main,
-		x = .indicator,
-		high = OHLC[[2]],
-		low = OHLC[[3]],
-		pattern_name = "morning_star"
+	## construct {plotly}-object
+	plotly_object <- .plotting_environment[["main"]] <- pattern(
+		p = .plotting_environment[["main"]],
+		x = constructed_indicator,
+		high = constructed_series[[2]],
+		low = constructed_series[[3]],
+		pattern_name = "morning_star",
+		agnostic = FALSE
 	)
-	.plotting_environment$main
+
+	plotly_object
 }

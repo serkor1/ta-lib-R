@@ -2,95 +2,164 @@
 #' @family Pattern Recognition
 #'
 #' @title Separating Lines
-#'
 #' @templateVar .title Separating Lines
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun separating_lines
 #'
-#' @template description
+## splice:documentation:start
+## splice:documentation:end
 #'
-#' @returns
-#' \describe{
-#'  \item{separating_lines}{1 for bullish continuation, -1 for bearish continuation, 0 for no pattern}
-#' }
-separating_lines <- function(x, cols, ...) UseMethod("separating_lines")
+#' @template description
+separating_lines <- function(
+	x,
+	cols,
+	...
+) {
+	UseMethod("separating_lines")
+}
 
 #' @export
 #' @usage NULL
 #' @rdname separating_lines
+#'
 #' @aliases separating_lines
 CDLSEPARATINGLINES <- separating_lines
 
+#' @usage NULL
+#' @aliases separating_lines
+#'
 #' @export
-separating_lines.default <- function(x, cols, ...) {
+separating_lines.default <- function(
+	x,
+	cols,
+	...
+) {
+	## get normalization option
+	normalize <- as.logical(
+		getOption("talib.normalize", TRUE)
+	)
+
+	## validate 'cols'-argument
+	## if explicitly passed
 	if (!missing(cols)) {
-		assert(
-			is.formula(cols),
-			paste0(
-				"'cols' has to be <",
-				class(~s),
-				">. Got <",
-				class(cols),
-				">."
-			)
-		)
-		assert(
-			length(all.vars(cols)) == 4,
-			paste0(
-				"'cols' has to be length 4. Got length ",
-				length(all.vars(cols))
-			)
-		)
+		assert_formula(cols)
 	}
-	OHLC <- series(
+
+	## construct series
+	## from input
+	constructed_series <- series(
 		x = cols,
 		default = ~ open + high + low + close,
 		data = x,
 		...
 	)
-	x <- as.data.frame(.Call(
-		"impl_ta_CDLSEPARATINGLINES",
-		OHLC[[1]],
-		OHLC[[2]],
-		OHLC[[3]],
-		OHLC[[4]],
-		as.logical(getOption("talib.normalize", TRUE))
-	))
-	colnames(x) <- "separating_lines"
+
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
+
+	## calculate indicator and
+	## return as data.frame
+	x <- as.matrix(
+		.Call(
+			"impl_ta_CDLSEPARATINGLINES",
+			constructed_series[[1]],
+			constructed_series[[2]],
+			constructed_series[[3]],
+			constructed_series[[4]],
+			normalize
+		)
+	)
+
+	## add column name
+	colnames(x) <- "CDLSEPARATINGLINES"
+
+	## readd rownames
+	rownames(x) <- x_names
+
+	## return indicator
 	x
 }
 
+#' @usage NULL
+#' @aliases separating_lines
+#'
 #' @export
-separating_lines.data.frame <- function(x, cols, ...) {
-	as.data.frame(NextMethod())
+separating_lines.data.frame <- function(
+	x,
+	cols,
+	...
+) {
+	as.data.frame(
+		NextMethod()
+	)
 }
+
+#' @usage NULL
+#' @aliases separating_lines
+#'
 #' @export
-separating_lines.matrix <- function(x, cols, ...) as.matrix(NextMethod())
+separating_lines.matrix <- function(
+	x,
+	cols,
+	...
+) {
+	as.matrix(
+		NextMethod()
+	)
+}
+
+#' @usage NULL
+#' @aliases separating_lines
+#'
 #' @export
-separating_lines.plotly <- function(x, cols, ...) {
-	OHLC <- series(
+separating_lines.plotly <- function(
+	x,
+	cols,
+	...
+) {
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
 		x = x,
 		formula = cols,
 		default = ~ open + high + low + close,
 		...
 	)
-	.indicator <- separating_lines.default(
-		x = OHLC,
-		cols = ~ open + high + low + close
+
+	## construct indicator
+	## from the series
+	constructed_indicator <- separating_lines(
+		x = constructed_series,
+		cols = rebuild_formula(
+			names(constructed_series)
+		)
 	)
 
-	## add x-axis conditional on whether
-	## the data have been subsetted or not
-	.indicator$idx <- add_idx(
-		OHLC
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
 	)
 
-	.plotting_environment$main <- pattern(
-		.plotting_environment$main,
-		.indicator,
-		OHLC[[2]],
-		OHLC[[3]],
-		"separating_lines"
+	## construct {plotly}-object
+	plotly_object <- .plotting_environment[["main"]] <- pattern(
+		p = .plotting_environment[["main"]],
+		x = constructed_indicator,
+		high = constructed_series[[2]],
+		low = constructed_series[[3]],
+		pattern_name = "separating_lines",
+		agnostic = FALSE
 	)
-	.plotting_environment$main
+
+	plotly_object
 }

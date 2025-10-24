@@ -2,93 +2,164 @@
 #' @family Pattern Recognition
 #'
 #' @title Short Line Candle
-#'
 #' @templateVar .title Short Line Candle
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun short_line
 #'
-#' @template description
+## splice:documentation:start
+## splice:documentation:end
 #'
-#' @returns
-#' \describe{
-#'  \item{short_line}{1 white, -1 black, 0 no short line}
-#' }
-short_line <- function(x, cols, ...) UseMethod("short_line")
+#' @template description
+short_line <- function(
+	x,
+	cols,
+	...
+) {
+	UseMethod("short_line")
+}
 
 #' @export
 #' @usage NULL
 #' @rdname short_line
+#'
 #' @aliases short_line
 CDLSHORTLINE <- short_line
 
+#' @usage NULL
+#' @aliases short_line
+#'
 #' @export
-short_line.default <- function(x, cols, ...) {
+short_line.default <- function(
+	x,
+	cols,
+	...
+) {
+	## get normalization option
+	normalize <- as.logical(
+		getOption("talib.normalize", TRUE)
+	)
+
+	## validate 'cols'-argument
+	## if explicitly passed
 	if (!missing(cols)) {
-		assert(
-			is.formula(cols),
-			paste0(
-				"'cols' has to be <",
-				class(~s),
-				">. Got <",
-				class(cols),
-				">."
-			)
-		)
-		assert(
-			length(all.vars(cols)) == 4,
-			paste0(
-				"'cols' has to be length 4. Got length ",
-				length(all.vars(cols))
-			)
-		)
+		assert_formula(cols)
 	}
-	OHLC <- series(
+
+	## construct series
+	## from input
+	constructed_series <- series(
 		x = cols,
 		default = ~ open + high + low + close,
 		data = x,
 		...
 	)
-	x <- as.data.frame(.Call(
-		"impl_ta_CDLSHORTLINE",
-		OHLC[[1]],
-		OHLC[[2]],
-		OHLC[[3]],
-		OHLC[[4]],
-		as.logical(getOption("talib.normalize", TRUE))
-	))
-	colnames(x) <- "short_line"
+
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
+
+	## calculate indicator and
+	## return as data.frame
+	x <- as.matrix(
+		.Call(
+			"impl_ta_CDLSHORTLINE",
+			constructed_series[[1]],
+			constructed_series[[2]],
+			constructed_series[[3]],
+			constructed_series[[4]],
+			normalize
+		)
+	)
+
+	## add column name
+	colnames(x) <- "CDLSHORTLINE"
+
+	## readd rownames
+	rownames(x) <- x_names
+
+	## return indicator
 	x
 }
 
+#' @usage NULL
+#' @aliases short_line
+#'
 #' @export
-short_line.data.frame <- function(x, cols, ...) as.data.frame(NextMethod())
+short_line.data.frame <- function(
+	x,
+	cols,
+	...
+) {
+	as.data.frame(
+		NextMethod()
+	)
+}
+
+#' @usage NULL
+#' @aliases short_line
+#'
 #' @export
-short_line.matrix <- function(x, cols, ...) as.matrix(NextMethod())
+short_line.matrix <- function(
+	x,
+	cols,
+	...
+) {
+	as.matrix(
+		NextMethod()
+	)
+}
+
+#' @usage NULL
+#' @aliases short_line
+#'
 #' @export
-short_line.plotly <- function(x, cols, ...) {
-	OHLC <- series(
+short_line.plotly <- function(
+	x,
+	cols,
+	...
+) {
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
 		x = x,
 		formula = cols,
 		default = ~ open + high + low + close,
 		...
 	)
-	.indicator <- short_line.default(
-		x = OHLC,
-		cols = ~ open + high + low + close
+
+	## construct indicator
+	## from the series
+	constructed_indicator <- short_line(
+		x = constructed_series,
+		cols = rebuild_formula(
+			names(constructed_series)
+		)
 	)
 
-	## add x-axis conditional on whether
-	## the data have been subsetted or not
-	.indicator$idx <- add_idx(
-		OHLC
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
 	)
 
-	.plotting_environment$main <- pattern(
-		.plotting_environment$main,
-		.indicator,
-		OHLC[[2]],
-		OHLC[[3]],
-		"short_line"
+	## construct {plotly}-object
+	plotly_object <- .plotting_environment[["main"]] <- pattern(
+		p = .plotting_environment[["main"]],
+		x = constructed_indicator,
+		high = constructed_series[[2]],
+		low = constructed_series[[3]],
+		pattern_name = "short_line",
+		agnostic = TRUE
 	)
-	.plotting_environment$main
+
+	plotly_object
 }

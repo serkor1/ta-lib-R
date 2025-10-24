@@ -2,92 +2,164 @@
 #' @family Pattern Recognition
 #'
 #' @title Tristar
-#'
 #' @templateVar .title Tristar
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun tristar
 #'
-#' @template description
+## splice:documentation:start
+## splice:documentation:end
 #'
-#' @returns
-#' \describe{
-#'  \item{tristar}{1 for bullish, -1 for bearish, 0 for no pattern}
-#' }
-tristar <- function(x, cols, ...) UseMethod("tristar")
+#' @template description
+tristar <- function(
+	x,
+	cols,
+	...
+) {
+	UseMethod("tristar")
+}
 
 #' @export
 #' @usage NULL
 #' @rdname tristar
+#'
 #' @aliases tristar
 CDLTRISTAR <- tristar
 
 #' @usage NULL
 #' @aliases tristar
+#'
 #' @export
-tristar.default <- function(x, cols, ...) {
+tristar.default <- function(
+	x,
+	cols,
+	...
+) {
+	## get normalization option
+	normalize <- as.logical(
+		getOption("talib.normalize", TRUE)
+	)
+
+	## validate 'cols'-argument
+	## if explicitly passed
 	if (!missing(cols)) {
-		assert(
-			is.formula(cols),
-			paste0(
-				"'cols' has to be <",
-				class(~s),
-				">. Got <",
-				class(cols),
-				">."
-			)
-		)
-		assert(
-			length(all.vars(cols)) == 4,
-			paste0(
-				"'cols' has to be length 4. Got length ",
-				length(all.vars(cols))
-			)
-		)
+		assert_formula(cols)
 	}
-	OHLC <- series(
+
+	## construct series
+	## from input
+	constructed_series <- series(
 		x = cols,
 		default = ~ open + high + low + close,
 		data = x,
 		...
 	)
-	x <- as.data.frame(.Call(
-		"impl_ta_CDLTRISTAR",
-		OHLC[[1]],
-		OHLC[[2]],
-		OHLC[[3]],
-		OHLC[[4]],
-		as.logical(getOption("talib.normalize", TRUE))
-	))
-	colnames(x) <- "tristar"
+
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
+
+	## calculate indicator and
+	## return as data.frame
+	x <- as.matrix(
+		.Call(
+			"impl_ta_CDLTRISTAR",
+			constructed_series[[1]],
+			constructed_series[[2]],
+			constructed_series[[3]],
+			constructed_series[[4]],
+			normalize
+		)
+	)
+
+	## add column name
+	colnames(x) <- "CDLTRISTAR"
+
+	## readd rownames
+	rownames(x) <- x_names
+
+	## return indicator
 	x
 }
 
+#' @usage NULL
+#' @aliases tristar
+#'
 #' @export
-tristar.data.frame <- function(x, cols, ...) as.data.frame(NextMethod())
+tristar.data.frame <- function(
+	x,
+	cols,
+	...
+) {
+	as.data.frame(
+		NextMethod()
+	)
+}
+
+#' @usage NULL
+#' @aliases tristar
+#'
 #' @export
-tristar.matrix <- function(x, cols, ...) as.matrix(NextMethod())
+tristar.matrix <- function(
+	x,
+	cols,
+	...
+) {
+	as.matrix(
+		NextMethod()
+	)
+}
+
+#' @usage NULL
+#' @aliases tristar
+#'
 #' @export
-tristar.plotly <- function(x, cols, ...) {
-	OHLC <- series(
+tristar.plotly <- function(
+	x,
+	cols,
+	...
+) {
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
 		x = x,
 		formula = cols,
 		default = ~ open + high + low + close,
 		...
 	)
-	.indicator <- tristar.default(x = OHLC, cols = ~ open + high + low + close)
 
-	## add x-axis conditional on whether
-	## the data have been subsetted or not
-	.indicator$idx <- add_idx(
-		OHLC
+	## construct indicator
+	## from the series
+	constructed_indicator <- tristar(
+		x = constructed_series,
+		cols = rebuild_formula(
+			names(constructed_series)
+		)
 	)
 
-	.plotting_environment$main <- pattern(
-		.plotting_environment$main,
-		.indicator,
-		OHLC[[2]],
-		OHLC[[3]],
-		"tristar"
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
 	)
-	.plotting_environment$main
+
+	## construct {plotly}-object
+	plotly_object <- .plotting_environment[["main"]] <- pattern(
+		p = .plotting_environment[["main"]],
+		x = constructed_indicator,
+		high = constructed_series[[2]],
+		low = constructed_series[[3]],
+		pattern_name = "tristar",
+		agnostic = FALSE
+	)
+
+	plotly_object
 }

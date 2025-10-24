@@ -2,105 +2,88 @@
 #' @family Pattern Recognition
 #'
 #' @title Concealing Baby Swallow
-#'
 #' @templateVar .title Concealing Baby Swallow
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun concealing_baby_swallow
 #'
-#' @template description
+## splice:documentation:start
+## splice:documentation:end
 #'
-#' @returns
-#' \describe{
-#'  \item{concealing_baby_swallow}{1 for bullish, -1 for bearish and 0 for no pattern}
-#' }
+#' @template description
 concealing_baby_swallow <- function(
 	x,
 	cols,
 	...
 ) {
-	UseMethod(
-		"concealing_baby_swallow"
-	)
+	UseMethod("concealing_baby_swallow")
 }
 
 #' @export
-#'
 #' @usage NULL
-#'
 #' @rdname concealing_baby_swallow
+#'
 #' @aliases concealing_baby_swallow
-CDLBABYSWALL <- concealing_baby_swallow
+CDLCONCEALBABYSWALL <- concealing_baby_swallow
 
 #' @usage NULL
 #' @aliases concealing_baby_swallow
+#'
 #' @export
 concealing_baby_swallow.default <- function(
 	x,
 	cols,
 	...
 ) {
-	## validate input
-	## asssuming everyting
-	## is numerical values
-	if (!missing(cols)) {
-		## check if formula
-		assert(
-			is.formula(cols),
-			paste0(
-				"'cols' has to be <",
-				class(~s),
-				">. ",
-				"Got <",
-				class(cols),
-				">."
-			)
-		)
+	## get normalization option
+	normalize <- as.logical(
+		getOption("talib.normalize", TRUE)
+	)
 
-		## check if formula has the expected
-		## length
-		assert(
-			length(all.vars(cols)) == 4,
-			paste0(
-				"'cols' has to be length 4. ",
-				"Got length ",
-				length(all.vars(cols))
-			)
-		)
+	## validate 'cols'-argument
+	## if explicitly passed
+	if (!missing(cols)) {
+		assert_formula(cols)
 	}
 
-	## construct OHLC-series
-	## from 'x'
-	OHLC <- series(
+	## construct series
+	## from input
+	constructed_series <- series(
 		x = cols,
 		default = ~ open + high + low + close,
 		data = x,
 		...
 	)
 
-	## construct data.frame
-	## from source
-	x <- as.data.frame(
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
+
+	## calculate indicator and
+	## return as data.frame
+	x <- as.matrix(
 		.Call(
 			"impl_ta_CDLCONCEALBABYSWALL",
-			OHLC[[1]],
-			OHLC[[2]],
-			OHLC[[3]],
-			OHLC[[4]],
-			as.logical(
-				getOption("talib.normalize", TRUE)
-			)
+			constructed_series[[1]],
+			constructed_series[[2]],
+			constructed_series[[3]],
+			constructed_series[[4]],
+			normalize
 		)
 	)
 
-	## set column names
-	colnames(x) <- "concealing_baby_swallow"
+	## add column name
+	colnames(x) <- "CDLCONCEALBABYSWALL"
 
-	## return value
-	return(x)
+	## readd rownames
+	rownames(x) <- x_names
+
+	## return indicator
+	x
 }
 
 #' @usage NULL
 #' @aliases concealing_baby_swallow
+#'
 #' @export
 concealing_baby_swallow.data.frame <- function(
 	x,
@@ -114,6 +97,7 @@ concealing_baby_swallow.data.frame <- function(
 
 #' @usage NULL
 #' @aliases concealing_baby_swallow
+#'
 #' @export
 concealing_baby_swallow.matrix <- function(
 	x,
@@ -127,44 +111,55 @@ concealing_baby_swallow.matrix <- function(
 
 #' @usage NULL
 #' @aliases concealing_baby_swallow
+#'
 #' @export
 concealing_baby_swallow.plotly <- function(
 	x,
 	cols,
 	...
 ) {
-	## prepare OHLC series
-	OHLC <- series(
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
 		x = x,
 		formula = cols,
 		default = ~ open + high + low + close,
 		...
 	)
 
-	## calculate pattern
-	## indicators
-	.indicator <- concealing_baby_swallow.default(
-		x = OHLC,
+	## construct indicator
+	## from the series
+	constructed_indicator <- concealing_baby_swallow(
+		x = constructed_series,
 		cols = rebuild_formula(
-			names(OHLC)
+			names(constructed_series)
 		)
 	)
 
-	## add x-axis conditional on whether
-	## the data have been subsetted or not
-	.indicator$idx <- add_idx(
-		OHLC
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
 	)
 
-	## chart patterns
-	.plotting_environment$main <- pattern(
-		p = .plotting_environment$main,
-		x = .indicator,
-		high = OHLC[[2]],
-		low = OHLC[[3]],
-		pattern_name = "Conceal Baby Swallow",
+	## construct {plotly}-object
+	plotly_object <- .plotting_environment[["main"]] <- pattern(
+		p = .plotting_environment[["main"]],
+		x = constructed_indicator,
+		high = constructed_series[[2]],
+		low = constructed_series[[3]],
+		pattern_name = "concealing_baby_swallow",
 		agnostic = FALSE
 	)
 
-	.plotting_environment$main
+	plotly_object
 }

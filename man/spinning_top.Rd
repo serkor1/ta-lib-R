@@ -14,11 +14,6 @@ spinning_top(x, cols, ...)
 
 \item{...}{Additional parameters passed into \link{model.frame}}
 }
-\value{
-\describe{
-\item{spinning_top}{1 white, -1 black, 0 no spinning top}
-}
-}
 \description{
 The \code{spinning_top()} is a generic S3 function that builds upon 'type-safe'-esque workflows limited to classes in in base \code{R}, and the package-wide
 dependencies. Ie. \link{class} in, \link{class} out. Each method is a soft wrapper of \link{model.frame} and therefore the OHLC-V series must be coercible to a \link{data.frame}.

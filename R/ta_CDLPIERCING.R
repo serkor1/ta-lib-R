@@ -2,106 +2,164 @@
 #' @family Pattern Recognition
 #'
 #' @title Piercing
-#'
 #' @templateVar .title Piercing
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun piercing
 #'
-#' @template description
+## splice:documentation:start
+## splice:documentation:end
 #'
-#' @returns
-#' \describe{
-#'  \item{piercing}{1 for bullish, -1 for bearish and 0 for no pattern}
-#' }
-piercing <- function(x, cols, ...) {
+#' @template description
+piercing <- function(
+	x,
+	cols,
+	...
+) {
 	UseMethod("piercing")
 }
 
 #' @export
 #' @usage NULL
 #' @rdname piercing
+#'
 #' @aliases piercing
 CDLPIERCING <- piercing
 
 #' @usage NULL
 #' @aliases piercing
+#'
 #' @export
-piercing.default <- function(x, cols, ...) {
+piercing.default <- function(
+	x,
+	cols,
+	...
+) {
+	## get normalization option
+	normalize <- as.logical(
+		getOption("talib.normalize", TRUE)
+	)
+
+	## validate 'cols'-argument
+	## if explicitly passed
 	if (!missing(cols)) {
-		assert(
-			is.formula(cols),
-			paste0(
-				"'cols' has to be <",
-				class(~s),
-				">. Got <",
-				class(cols),
-				">."
-			)
-		)
-		assert(
-			length(all.vars(cols)) == 4,
-			paste0(
-				"'cols' has to be length 4. Got length ",
-				length(all.vars(cols))
-			)
-		)
+		assert_formula(cols)
 	}
-	OHLC <- series(
+
+	## construct series
+	## from input
+	constructed_series <- series(
 		x = cols,
 		default = ~ open + high + low + close,
 		data = x,
 		...
 	)
-	x <- as.data.frame(.Call(
-		"impl_ta_CDLPIERCING",
-		OHLC[[1]],
-		OHLC[[2]],
-		OHLC[[3]],
-		OHLC[[4]],
-		as.logical(getOption("talib.normalize", TRUE))
-	))
-	colnames(x) <- "piercing"
-	return(x)
+
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
+
+	## calculate indicator and
+	## return as data.frame
+	x <- as.matrix(
+		.Call(
+			"impl_ta_CDLPIERCING",
+			constructed_series[[1]],
+			constructed_series[[2]],
+			constructed_series[[3]],
+			constructed_series[[4]],
+			normalize
+		)
+	)
+
+	## add column name
+	colnames(x) <- "CDLPIERCING"
+
+	## readd rownames
+	rownames(x) <- x_names
+
+	## return indicator
+	x
 }
 
 #' @usage NULL
 #' @aliases piercing
+#'
 #' @export
-piercing.data.frame <- function(x, cols, ...) {
-	as.data.frame(NextMethod())
+piercing.data.frame <- function(
+	x,
+	cols,
+	...
+) {
+	as.data.frame(
+		NextMethod()
+	)
 }
 
 #' @usage NULL
 #' @aliases piercing
+#'
 #' @export
-piercing.matrix <- function(x, cols, ...) {
-	as.matrix(NextMethod())
+piercing.matrix <- function(
+	x,
+	cols,
+	...
+) {
+	as.matrix(
+		NextMethod()
+	)
 }
 
 #' @usage NULL
 #' @aliases piercing
+#'
 #' @export
-piercing.plotly <- function(x, cols, ...) {
-	OHLC <- series(
+piercing.plotly <- function(
+	x,
+	cols,
+	...
+) {
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
 		x = x,
 		formula = cols,
 		default = ~ open + high + low + close,
 		...
 	)
-	.indicator <- piercing.default(x = OHLC, cols = ~ open + high + low + close)
 
-	## add x-axis conditional on whether
-	## the data have been subsetted or not
-	.indicator$idx <- add_idx(
-		OHLC
+	## construct indicator
+	## from the series
+	constructed_indicator <- piercing(
+		x = constructed_series,
+		cols = rebuild_formula(
+			names(constructed_series)
+		)
 	)
 
-	.plotting_environment$main <- pattern(
-		p = .plotting_environment$main,
-		x = .indicator,
-		high = OHLC[[2]],
-		low = OHLC[[3]],
-		pattern_name = "piercing"
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
 	)
-	.plotting_environment$main
+
+	## construct {plotly}-object
+	plotly_object <- .plotting_environment[["main"]] <- pattern(
+		p = .plotting_environment[["main"]],
+		x = constructed_indicator,
+		high = constructed_series[[2]],
+		low = constructed_series[[3]],
+		pattern_name = "piercing",
+		agnostic = TRUE
+	)
+
+	plotly_object
 }
