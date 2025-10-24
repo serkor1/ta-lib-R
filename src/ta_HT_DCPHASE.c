@@ -7,6 +7,7 @@
 //   Returns dominant cycle phase (degrees) as a numeric vector.
 //   Length equals input; leading elements are NA (padded using shift_array).
 #include "lib.h"
+#include "names.h"
 #include "shift.h"
 #include <R.h>
 #include <Rinternals.h>
@@ -16,7 +17,7 @@ SEXP impl_ta_HT_DCPHASE(SEXP inReal) {
   const int n = LENGTH(inReal);
   double *restrict src = REAL(inReal);
 
-  SEXP result = PROTECT(allocVector(REALSXP, n));
+  SEXP result = PROTECT(allocMatrix(REALSXP, n, 1));
   double *restrict out = REAL(result);
 
   // check wether the minimum
@@ -46,6 +47,7 @@ SEXP impl_ta_HT_DCPHASE(SEXP inReal) {
     out + outBeg);
   // clang-format on
 
+  set_colnames(result, "DCPHASE");
   shift_array(out, n, outBeg);
 
   UNPROTECT(1);

@@ -6,12 +6,12 @@
 
 ## 1) alias and function similarity
 ##    checks this ensures that
-##    HT_TRENDMODE and ht_trendmode produces the same results
+##    HT_TRENDMODE and trend_cycle_mode produces the same results
 testthat::test_that(desc = 'Alias and function similarity', code = {
 	## 1) test that the alias and
 	##    function returns the same values
 	output <- HT_TRENDMODE(SPY)
-	alias <- ht_trendmode(SPY)
+	alias <- trend_cycle_mode(SPY)
 
 	## 1.1) check if the values
 	##      are equal
@@ -94,7 +94,7 @@ testthat::test_that(desc = 'Default calls', code = {
 		),
 		expected = HT_TRENDMODE(
 			BTC,
-			cols = ~open
+			cols = ~close
 		)
 	)
 })

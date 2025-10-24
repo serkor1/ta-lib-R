@@ -7,6 +7,7 @@
 //   Returns the smoothed dominant cycle period per bar as a numeric vector.
 //   Length equals input; leading elements are NA (padded using shift_array).
 #include "lib.h"
+#include "names.h"
 #include "shift.h"
 #include <R.h>
 #include <Rinternals.h>
@@ -19,7 +20,7 @@ SEXP impl_ta_HT_DCPERIOD(SEXP inReal) {
   double *restrict src = REAL(inReal);
 
   // 2) Allocate full-length output. We write at offset outBeg and then pad.
-  SEXP result = PROTECT(allocVector(REALSXP, n));
+  SEXP result = PROTECT(allocMatrix(REALSXP, n, 1));
   double *restrict out = REAL(result);
 
   // check wether the minimum
@@ -55,6 +56,7 @@ SEXP impl_ta_HT_DCPERIOD(SEXP inReal) {
   // n.
   //    This also covers ret != TA_SUCCESS by NA-padding the whole vector when
   //    outBeg>=n.
+  set_colnames(result, "DCPERIOD");
   shift_array(out, n, outBeg);
 
   UNPROTECT(1);

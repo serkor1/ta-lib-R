@@ -6,12 +6,12 @@
 
 ## 1) alias and function similarity
 ##    checks this ensures that
-##    HT_PHASOR and ht_phasor produces the same results
+##    HT_PHASOR and phasor_components produces the same results
 testthat::test_that(desc = 'Alias and function similarity', code = {
 	## 1) test that the alias and
 	##    function returns the same values
 	output <- HT_PHASOR(SPY)
-	alias <- ht_phasor(SPY)
+	alias <- phasor_components(SPY)
 
 	## 1.1) check if the values
 	##      are equal
@@ -94,7 +94,7 @@ testthat::test_that(desc = 'Default calls', code = {
 		),
 		expected = HT_PHASOR(
 			BTC,
-			cols = ~open
+			cols = ~close
 		)
 	)
 })
