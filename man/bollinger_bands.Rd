@@ -5,27 +5,14 @@
 \alias{BBANDS}
 \title{Bollinger Bands}
 \usage{
-bollinger_bands(x, cols, ma = SMA(n = 10), up = 2, down = 2, ...)
+bollinger_bands(x, cols, ma = SMA(n = 10), std_up = 2, std_down = 2, ...)
 }
 \arguments{
 \item{x}{An OHLC-V series that is coercible to \link{data.frame}. The function assumes that all columns are named in lowercase and order invariant.}
 
 \item{cols}{An optional \link{formula} passed into \link{model.frame}. If passed into indicators based on univariate series, the function calculates indicators for each element in 'cols'. For indicators based on multivariate series, it will alter the calculation itself. See \code{vignette("talib")} for more details.}
 
-\item{ma}{A function call to a moving average function.}
-
-\item{up, down}{A pair of \link{double} for upper and lower standard deviations.}
-
 \item{...}{Additional parameters passed into \link{model.frame}}
-}
-\value{
-A \link{data.frame}- or \link{matrix}-object with the format:
-
-\describe{
-\item{upper}{\link{double}. The lower band.}
-\item{middle}{\link{double}. The middle band.}
-\item{lower}{\link{double}. The upper band.}
-}
 }
 \description{
 The \code{bollinger_bands()} is a generic S3 function that builds upon 'type-safe'-esque workflows limited to classes in in base \code{R}, and the package-wide
@@ -70,13 +57,13 @@ Other Overlap Study:
 \code{\link{acceleration_bands}()},
 \code{\link{double_exponential_moving_average}()},
 \code{\link{exponential_moving_average}()},
-\code{\link{extended_parabolic_sar}()},
-\code{\link{ht_trendline}()},
+\code{\link{extended_parabolic_stop_and_reverse}()},
 \code{\link{kaufman_adaptive_moving_average}()},
 \code{\link{mesa_adaptive_moving_average}()},
-\code{\link{parabolic_sar}()},
+\code{\link{parabolic_stop_and_reverse}()},
 \code{\link{simple_moving_average}()},
 \code{\link{t3_exponential_moving_average}()},
+\code{\link{trendline}()},
 \code{\link{triangular_moving_average}()},
 \code{\link{triple_exponential_moving_average}()},
 \code{\link{weighted_moving_average}()}
