@@ -6,12 +6,12 @@
 
 ## 1) alias and function similarity
 ##    checks this ensures that
-##    HT_DCPERIOD and ht_dcperiod produces the same results
+##    HT_DCPERIOD and dominant_cycle_period produces the same results
 testthat::test_that(desc = 'Alias and function similarity', code = {
 	## 1) test that the alias and
 	##    function returns the same values
 	output <- HT_DCPERIOD(SPY)
-	alias <- ht_dcperiod(SPY)
+	alias <- dominant_cycle_period(SPY)
 
 	## 1.1) check if the values
 	##      are equal
@@ -94,7 +94,7 @@ testthat::test_that(desc = 'Default calls', code = {
 		),
 		expected = HT_DCPERIOD(
 			BTC,
-			cols = ~open
+			cols = ~close
 		)
 	)
 })

@@ -6,12 +6,12 @@
 
 ## 1) alias and function similarity
 ##    checks this ensures that
-##    HT_SINE and ht_sine_wave produces the same results
+##    HT_SINE and sine_wave produces the same results
 testthat::test_that(desc = 'Alias and function similarity', code = {
 	## 1) test that the alias and
 	##    function returns the same values
 	output <- HT_SINE(SPY)
-	alias <- ht_sine_wave(SPY)
+	alias <- sine_wave(SPY)
 
 	## 1.1) check if the values
 	##      are equal
@@ -94,7 +94,7 @@ testthat::test_that(desc = 'Default calls', code = {
 		),
 		expected = HT_SINE(
 			BTC,
-			cols = ~open
+			cols = ~close
 		)
 	)
 })

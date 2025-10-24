@@ -9,6 +9,7 @@
 //   shift_array).
 #include "R_ext/Arith.h"
 #include "lib.h"
+#include "names.h"
 #include "shift.h"
 #include <R.h>
 #include <Rinternals.h>
@@ -19,7 +20,7 @@ SEXP impl_ta_HT_TRENDMODE(SEXP inReal) {
   double *restrict src = REAL(inReal);
 
   // Integer vector because TA_HT_TRENDMODE outputs int[ ].
-  SEXP result = PROTECT(allocVector(INTSXP, n));
+  SEXP result = PROTECT(allocMatrix(INTSXP, n, 1));
   int *restrict out = INTEGER(result);
 
   // check wether the minimum
@@ -50,6 +51,7 @@ SEXP impl_ta_HT_TRENDMODE(SEXP inReal) {
   // clang-format on
 
   // Pad with NA_INTEGER for the leading lookback window.
+  set_colnames(result, "TRENDMODE");
   shift_array(out, n, outBeg);
 
   UNPROTECT(1);
