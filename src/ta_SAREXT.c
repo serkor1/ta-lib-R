@@ -18,6 +18,7 @@
 #include "R_ext/Error.h"
 #include "Rinternals.h"
 #include "lib.h"
+#include "names.h"
 #include "shift.h"
 #include <ta_libc.h>
 
@@ -52,7 +53,7 @@ SEXP impl_ta_SAREXT(
   const double a_s = REAL(accel_short)[0];
   const double a_max_s = REAL(accel_max_short)[0];
 
-  SEXP result = PROTECT(allocVector(REALSXP, n));
+  SEXP result = PROTECT(allocMatrix(REALSXP, n, 1));
   protect_count++;
   double *restrict out_ptr = REAL(result);
 
@@ -93,6 +94,7 @@ SEXP impl_ta_SAREXT(
       Rf_error("TA_SAREXT failed: return code %d", rc);
     }
 
+    set_colnames(result, "SAR");
     shift_array(out_ptr, n, outBeg);
   }
 

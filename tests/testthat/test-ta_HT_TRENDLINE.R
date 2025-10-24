@@ -6,12 +6,12 @@
 
 ## 1) alias and function similarity
 ##    checks this ensures that
-##    HT_TRENDLINE and ht_trendline produces the same results
+##    HT_TRENDLINE and trendline produces the same results
 testthat::test_that(desc = 'Alias and function similarity', code = {
 	## 1) test that the alias and
 	##    function returns the same values
 	output <- HT_TRENDLINE(SPY)
-	alias <- ht_trendline(SPY)
+	alias <- trendline(SPY)
 
 	## 1.1) check if the values
 	##      are equal
@@ -94,7 +94,7 @@ testthat::test_that(desc = 'Default calls', code = {
 		),
 		expected = HT_TRENDLINE(
 			BTC,
-			cols = ~open
+			cols = ~close
 		)
 	)
 })

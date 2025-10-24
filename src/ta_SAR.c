@@ -12,6 +12,7 @@
 #include "R_ext/Error.h"
 #include "Rinternals.h"
 #include "lib.h"
+#include "names.h"
 #include "shift.h"
 #include <ta_libc.h>
 
@@ -31,7 +32,7 @@ SEXP impl_ta_SAR(
   const double acc = REAL(acceleration)[0];
   const double maxv = REAL(maximum)[0];
 
-  SEXP result = PROTECT(allocVector(REALSXP, n));
+  SEXP result = PROTECT(allocMatrix(REALSXP, n, 1));
   protect_count++;
   double *restrict out_ptr = REAL(result);
 
@@ -65,6 +66,7 @@ SEXP impl_ta_SAR(
       Rf_error("TA_SAR failed: return code %d", rc);
     }
 
+    set_colnames(result, "SAR");
     shift_array(out_ptr, n, outBeg);
   }
 

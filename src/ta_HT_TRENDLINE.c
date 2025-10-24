@@ -10,6 +10,7 @@
 #include "R_ext/Error.h"
 #include "R_ext/Print.h"
 #include "lib.h"
+#include "names.h"
 #include "shift.h"
 #include <R.h>
 #include <Rinternals.h>
@@ -20,7 +21,7 @@ SEXP impl_ta_HT_TRENDLINE(SEXP inReal) {
   const int n = LENGTH(inReal);
   double *restrict src = REAL(inReal);
 
-  SEXP result = PROTECT(allocVector(REALSXP, n));
+  SEXP result = PROTECT(allocMatrix(REALSXP, n, 1));
   double *restrict out = REAL(result);
 
   // check wether the minimum
@@ -51,6 +52,7 @@ SEXP impl_ta_HT_TRENDLINE(SEXP inReal) {
   // clang-format on
 
   // shift
+  set_colnames(result, "TRENDLINE");
   shift_array(out, n, outBeg);
 
   UNPROTECT(1);
