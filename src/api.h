@@ -36,6 +36,7 @@ SEXP impl_ta_CDLDOJISTAR(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normal
 SEXP impl_ta_CDLDRAGONFLYDOJI(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
 SEXP impl_ta_CDLENGULFING(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
 SEXP impl_ta_CDLEVENINGDOJISTAR(SEXP open, SEXP high, SEXP low, SEXP close, SEXP penetration, SEXP normalize_flag);
+SEXP impl_ta_CDLEVENINGSTAR(SEXP open, SEXP high, SEXP low, SEXP close, SEXP penetration, SEXP normalize_flag);
 SEXP impl_ta_CDLGAPSIDESIDEWHITE(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
 SEXP impl_ta_CDLGRAVESTONEDOJI(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
 SEXP impl_ta_CDLHAMMER(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
@@ -51,6 +52,7 @@ SEXP impl_ta_CDLINNECK(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normaliz
 SEXP impl_ta_CDLINVERTEDHAMMER(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
 SEXP impl_ta_CDLKICKINGBYLENGTH(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
 SEXP impl_ta_CDLKICKING(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
+SEXP impl_ta_CDLLADDERBOTTOM(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
 SEXP impl_ta_CDLLONGLEGGEDDOJI(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
 SEXP impl_ta_CDLLONGLINE(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
 SEXP impl_ta_CDLMARUBOZU(SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag);
