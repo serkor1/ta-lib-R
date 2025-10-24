@@ -1,5 +1,5 @@
 #' @export
-#' @family Volumne Indicator
+#' @family Volume Indicator
 #'
 #' @title On-Balance Volume
 #' @templateVar .title On-Balance Volume

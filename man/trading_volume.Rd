@@ -59,6 +59,12 @@ utils::tail(output)
  )
 }
 }
+\seealso{
+Other Volume Indicator: 
+\code{\link{chaikin_accumulation_distribution_line}()},
+\code{\link{chaikin_accumulation_distribution_oscillator}()},
+\code{\link{on_balance_volume}()}
+}
 \author{
 Serkan Korkmaz
 }

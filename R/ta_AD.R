@@ -1,5 +1,5 @@
 #' @export
-#' @family Volumne Indicator
+#' @family Volume Indicator
 #'
 #' @title Chaikin A/D Line
 #' @templateVar .title Chaikin A/D Line

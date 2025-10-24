@@ -16,7 +16,7 @@ generate_indicator <- function(
 		args = c(
 			'tools/generate_indicator.sh',
 			'indicator_template.R',
-			paste0("'", 'Volumne Indicator', "'"),
+			paste0("'", 'Volume Indicator', "'"),
 			paste0("'", title, "'"),
 			paste0("'", fun, "'"),
 			paste0("'", signature, "'"),

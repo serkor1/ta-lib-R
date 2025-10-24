@@ -53,14 +53,15 @@ utils::tail(output)
 }
 }
 \seealso{
-Other Volumne Indicator: 
+Other Volume Indicator: 
 \code{\link{chaikin_accumulation_distribution_line}()},
-\code{\link{on_balance_volume}()}
+\code{\link{on_balance_volume}()},
+\code{\link{trading_volume}()}
 }
 \author{
 Serkan Korkmaz
 }
-\concept{Volumne Indicator}
+\concept{Volume Indicator}
 \concept{algorithmic trading}
 \concept{finance}
 \concept{technical analysis}
