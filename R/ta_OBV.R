@@ -1,94 +1,82 @@
 #' @export
-#' @family Volume Indicator
+#' @family Volumne Indicator
 #'
 #' @title On-Balance Volume
-#'
 #' @templateVar .title On-Balance Volume
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun on_balance_volume
+#'
+## splice:documentation:start
+## splice:documentation:end
 #'
 #' @template description
 on_balance_volume <- function(
 	x,
 	cols,
-	n = 10,
 	...
 ) {
 	UseMethod("on_balance_volume")
 }
 
 #' @export
-#'
 #' @usage NULL
-#'
 #' @rdname on_balance_volume
+#'
 #' @aliases on_balance_volume
 OBV <- on_balance_volume
 
 #' @usage NULL
 #' @aliases on_balance_volume
+#'
 #' @export
 on_balance_volume.default <- function(
 	x,
 	cols,
-	n = 10,
 	...
 ) {
-	## check input
-	## cols if passed
+	## validate 'cols'-argument
+	## if explicitly passed
 	if (!missing(cols)) {
-		assert(
-			is.formula(cols),
-			paste0(
-				"'cols' has to be <",
-				class(~s),
-				">. ",
-				"Got <",
-				class(cols),
-				">."
-			)
-		)
-		assert(
-			length(all.vars(cols)) == 2,
-			paste0(
-				"'cols' has to be length 2. ",
-				"Got length ",
-				length(all.vars(cols))
-			)
-		)
+		assert_formula(cols)
 	}
 
-	CV <- series(
+	## construct series
+	## from input
+	constructed_series <- series(
 		x = cols,
 		default = ~ close + volume,
 		data = x,
 		...
 	)
 
-	assert(n >= 2)
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
 
-	## 1) pass `x` assuming that it
-	##    follows OHLC-V structure
-	output <- as.data.frame(
-		.Call(
-			"impl_ta_OBV",
-			CV[[1]],
-			CV[[2]]
-		)
+	## calculate indicator and
+	## return as data.frame
+	x <- .Call(
+		"impl_ta_OBV",
+		## splice:call:start
+		constructed_series[[1]],
+		constructed_series[[2]]
+		## splice:call:end
 	)
 
-	colnames(output)[1] <- "OBV"
+	## readd rownames
+	rownames(x) <- x_names
 
-	return(output)
+	## return indicator
+	x
 }
 
 #' @usage NULL
 #' @aliases on_balance_volume
+#'
 #' @export
 on_balance_volume.data.frame <- function(
 	x,
 	cols,
-	n = 10,
 	...
 ) {
 	as.data.frame(
@@ -98,11 +86,11 @@ on_balance_volume.data.frame <- function(
 
 #' @usage NULL
 #' @aliases on_balance_volume
+#'
 #' @export
 on_balance_volume.matrix <- function(
 	x,
 	cols,
-	n = 10,
 	...
 ) {
 	as.matrix(
@@ -112,41 +100,52 @@ on_balance_volume.matrix <- function(
 
 #' @usage NULL
 #' @aliases on_balance_volume
+#'
 #' @export
 on_balance_volume.plotly <- function(
 	x,
 	cols,
-	n = 10,
+	## splice:optional-plotly:start
+	## splice:optional-plotly:end
 	...
 ) {
-	## prepare series
-	## from
-	CV <- series(
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
 		x = x,
 		formula = cols,
 		default = ~ close + volume,
 		...
 	)
 
-	## calculate on balance volume
-	## and return as data.frame
-	.indicator <- on_balance_volume.default(
-		x = CV,
+	## construct indicator
+	## from the series
+	constructed_indicator <- on_balance_volume(
+		x = constructed_series,
 		cols = rebuild_formula(
-			x = names(CV)
-		),
-		n = n
+			names(constructed_series)
+		)
 	)
 
-	## add x-axis conditional on whether
-	## the data have been subsetted or not
-	.indicator$idx <- add_idx(
-		CV
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
 	)
 
-	## construct plot
+	## construct {plotly}-object
+	## splice:plotly-assembly:start
 	plotly_object <- subchart(
-		data = .indicator,
+		data = constructed_indicator,
 		y = ~OBV,
 		type = "scatter",
 		mode = "lines",
@@ -166,6 +165,7 @@ on_balance_volume.plotly <- function(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
+	## splice:plotly-assembly:end
 
 	plotly_object
 }

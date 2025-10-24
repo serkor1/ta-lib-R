@@ -6,12 +6,12 @@
 
 ## 1) alias and function similarity
 ##    checks this ensures that
-##    ADOSC and chaikin_AD_oscillator produces the same results
+##    ADOSC and chaikin_accumulation_distribution_oscillator produces the same results
 testthat::test_that(desc = 'Alias and function similarity', code = {
 	## 1) test that the alias and
 	##    function returns the same values
 	output <- ADOSC(SPY)
-	alias <- chaikin_AD_oscillator(SPY)
+	alias <- chaikin_accumulation_distribution_oscillator(SPY)
 
 	## 1.1) check if the values
 	##      are equal

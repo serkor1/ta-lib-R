@@ -1,43 +1,35 @@
 #' @export
-#' @family Volume Indicator
+#' @family Volumne Indicator
 #'
 #' @title Chaikin A/D Line
 #' @templateVar .title Chaikin A/D Line
 #' @templateVar .author Serkan Korkmaz
-#' @templateVar .fun chaikin_AD_line
+#' @templateVar .fun chaikin_accumulation_distribution_line
 #'
-#'
-## input start
-#' @returns
-#' A [data.frame]- or [matrix]-object:
-#'
-#' \describe{
-#'  \item{AD <[double]>}{Chaikin A/D Line}
-#' }
-#'
-## input end
+## splice:documentation:start
+## splice:documentation:end
 #'
 #' @template description
-chaikin_AD_line <- function(
+chaikin_accumulation_distribution_line <- function(
 	x,
 	cols,
 	...
 ) {
-	UseMethod("chaikin_AD_line")
+	UseMethod("chaikin_accumulation_distribution_line")
 }
 
 #' @export
 #' @usage NULL
-#' @rdname chaikin_AD_line
+#' @rdname chaikin_accumulation_distribution_line
 #'
-#' @aliases chaikin_AD_line
-AD <- chaikin_AD_line
+#' @aliases chaikin_accumulation_distribution_line
+AD <- chaikin_accumulation_distribution_line
 
 #' @usage NULL
-#' @aliases chaikin_AD_line
+#' @aliases chaikin_accumulation_distribution_line
 #'
 #' @export
-chaikin_AD_line.default <- function(
+chaikin_accumulation_distribution_line.default <- function(
 	x,
 	cols,
 	...
@@ -48,10 +40,6 @@ chaikin_AD_line.default <- function(
 		assert_formula(cols)
 	}
 
-	## extract rownames
-	## for later attachment
-	x_names <- rownames(x)
-
 	## construct series
 	## from input
 	constructed_series <- series(
@@ -61,30 +49,34 @@ chaikin_AD_line.default <- function(
 		...
 	)
 
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		"impl_ta_AD",
-		## input start
+		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
 		constructed_series[[4]]
-		## input end
+		## splice:call:end
 	)
 
 	## readd rownames
 	rownames(x) <- x_names
 
 	## return indicator
-	return(x)
+	x
 }
 
 #' @usage NULL
-#' @aliases chaikin_AD_line
+#' @aliases chaikin_accumulation_distribution_line
 #'
 #' @export
-chaikin_AD_line.data.frame <- function(
+chaikin_accumulation_distribution_line.data.frame <- function(
 	x,
 	cols,
 	...
@@ -95,10 +87,10 @@ chaikin_AD_line.data.frame <- function(
 }
 
 #' @usage NULL
-#' @aliases chaikin_AD_line
+#' @aliases chaikin_accumulation_distribution_line
 #'
 #' @export
-chaikin_AD_line.matrix <- function(
+chaikin_accumulation_distribution_line.matrix <- function(
 	x,
 	cols,
 	...
@@ -109,12 +101,14 @@ chaikin_AD_line.matrix <- function(
 }
 
 #' @usage NULL
-#' @aliases chaikin_AD_line
+#' @aliases chaikin_accumulation_distribution_line
 #'
 #' @export
-chaikin_AD_line.plotly <- function(
+chaikin_accumulation_distribution_line.plotly <- function(
 	x,
 	cols,
+	## splice:optional-plotly:start
+	## splice:optional-plotly:end
 	...
 ) {
 	## check that input value
@@ -138,7 +132,7 @@ chaikin_AD_line.plotly <- function(
 
 	## construct indicator
 	## from the series
-	constructed_indicator <- chaikin_AD_line(
+	constructed_indicator <- chaikin_accumulation_distribution_line(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
@@ -151,7 +145,7 @@ chaikin_AD_line.plotly <- function(
 	)
 
 	## construct {plotly}-object
-	## input start
+	## splice:plotly-assembly:start
 	plotly_object <- subchart(
 		data = constructed_indicator,
 		y = ~AD,
@@ -171,7 +165,7 @@ chaikin_AD_line.plotly <- function(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## input end
+	## splice:plotly-assembly:end
 
 	plotly_object
 }

@@ -59,12 +59,6 @@ utils::tail(output)
  )
 }
 }
-\seealso{
-Other Volume Indicator: 
-\code{\link{chaikin_AD_line}()},
-\code{\link{chaikin_AD_oscillator}()},
-\code{\link{on_balance_volume}()}
-}
 \author{
 Serkan Korkmaz
 }

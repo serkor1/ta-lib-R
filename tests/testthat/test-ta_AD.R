@@ -6,12 +6,12 @@
 
 ## 1) alias and function similarity
 ##    checks this ensures that
-##    AD and chaikin_AD_line produces the same results
+##    AD and chaikin_accumulation_distribution_line produces the same results
 testthat::test_that(desc = 'Alias and function similarity', code = {
 	## 1) test that the alias and
 	##    function returns the same values
 	output <- AD(SPY)
-	alias <- chaikin_AD_line(SPY)
+	alias <- chaikin_accumulation_distribution_line(SPY)
 
 	## 1.1) check if the values
 	##      are equal
