@@ -20,7 +20,7 @@ fi
 ALIAS="${1:-$FUN}"
 OUT="${2:-R/ta_${ALIAS}.R}"
 
-TEMPLATE="tools/indicator_template.R"
+TEMPLATE="tools/templates/indicator_template.R"
 
 tmp1="$(mktemp)"; tmp2="$(mktemp)"
 trap 'rm -f "$tmp1" "$tmp2"' EXIT
