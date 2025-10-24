@@ -16,15 +16,6 @@ acceleration_bands(x, cols, n = 10, ...)
 
 \item{...}{Additional parameters passed into \link{model.frame}}
 }
-\value{
-A \link{data.frame}- or \link{matrix}-object:
-
-\describe{
-\item{upper <\link{double}>}{The upper band.}
-\item{middle <\link{double}>}{The middle band.}
-\item{lower <\link{double}>}{The lower band.}
-}
-}
 \description{
 The \code{acceleration_bands()} is a generic S3 function that builds upon 'type-safe'-esque workflows limited to classes in in base \code{R}, and the package-wide
 dependencies. Ie. \link{class} in, \link{class} out. Each method is a soft wrapper of \link{model.frame} and therefore the OHLC-V series must be coercible to a \link{data.frame}.
@@ -68,13 +59,13 @@ Other Overlap Study:
 \code{\link{bollinger_bands}()},
 \code{\link{double_exponential_moving_average}()},
 \code{\link{exponential_moving_average}()},
-\code{\link{extended_parabolic_sar}()},
-\code{\link{ht_trendline}()},
+\code{\link{extended_parabolic_stop_and_reverse}()},
 \code{\link{kaufman_adaptive_moving_average}()},
 \code{\link{mesa_adaptive_moving_average}()},
-\code{\link{parabolic_sar}()},
+\code{\link{parabolic_stop_and_reverse}()},
 \code{\link{simple_moving_average}()},
 \code{\link{t3_exponential_moving_average}()},
+\code{\link{trendline}()},
 \code{\link{triangular_moving_average}()},
 \code{\link{triple_exponential_moving_average}()},
 \code{\link{weighted_moving_average}()}
