@@ -2,106 +2,164 @@
 #' @family Pattern Recognition
 #'
 #' @title On-Neck
-#'
 #' @templateVar .title On-Neck
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun on_neck
 #'
-#' @template description
+## splice:documentation:start
+## splice:documentation:end
 #'
-#' @returns
-#' \describe{
-#'  \item{on_neck}{1 for bullish, -1 for bearish and 0 for no pattern}
-#' }
-on_neck <- function(x, cols, ...) {
+#' @template description
+on_neck <- function(
+	x,
+	cols,
+	...
+) {
 	UseMethod("on_neck")
 }
 
 #' @export
 #' @usage NULL
 #' @rdname on_neck
+#'
 #' @aliases on_neck
 CDLONNECK <- on_neck
 
 #' @usage NULL
 #' @aliases on_neck
+#'
 #' @export
-on_neck.default <- function(x, cols, ...) {
+on_neck.default <- function(
+	x,
+	cols,
+	...
+) {
+	## get normalization option
+	normalize <- as.logical(
+		getOption("talib.normalize", TRUE)
+	)
+
+	## validate 'cols'-argument
+	## if explicitly passed
 	if (!missing(cols)) {
-		assert(
-			is.formula(cols),
-			paste0(
-				"'cols' has to be <",
-				class(~s),
-				">. Got <",
-				class(cols),
-				">."
-			)
-		)
-		assert(
-			length(all.vars(cols)) == 4,
-			paste0(
-				"'cols' has to be length 4. Got length ",
-				length(all.vars(cols))
-			)
-		)
+		assert_formula(cols)
 	}
-	OHLC <- series(
+
+	## construct series
+	## from input
+	constructed_series <- series(
 		x = cols,
 		default = ~ open + high + low + close,
 		data = x,
 		...
 	)
-	x <- as.data.frame(.Call(
-		"impl_ta_CDLONNECK",
-		OHLC[[1]],
-		OHLC[[2]],
-		OHLC[[3]],
-		OHLC[[4]],
-		as.logical(getOption("talib.normalize", TRUE))
-	))
-	colnames(x) <- "on_neck"
-	return(x)
+
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
+
+	## calculate indicator and
+	## return as data.frame
+	x <- as.matrix(
+		.Call(
+			"impl_ta_CDLONNECK",
+			constructed_series[[1]],
+			constructed_series[[2]],
+			constructed_series[[3]],
+			constructed_series[[4]],
+			normalize
+		)
+	)
+
+	## add column name
+	colnames(x) <- "CDLONNECK"
+
+	## readd rownames
+	rownames(x) <- x_names
+
+	## return indicator
+	x
 }
 
 #' @usage NULL
 #' @aliases on_neck
+#'
 #' @export
-on_neck.data.frame <- function(x, cols, ...) {
-	as.data.frame(NextMethod())
+on_neck.data.frame <- function(
+	x,
+	cols,
+	...
+) {
+	as.data.frame(
+		NextMethod()
+	)
 }
 
 #' @usage NULL
 #' @aliases on_neck
+#'
 #' @export
-on_neck.matrix <- function(x, cols, ...) {
-	as.matrix(NextMethod())
+on_neck.matrix <- function(
+	x,
+	cols,
+	...
+) {
+	as.matrix(
+		NextMethod()
+	)
 }
 
 #' @usage NULL
 #' @aliases on_neck
+#'
 #' @export
-on_neck.plotly <- function(x, cols, ...) {
-	OHLC <- series(
+on_neck.plotly <- function(
+	x,
+	cols,
+	...
+) {
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
 		x = x,
 		formula = cols,
 		default = ~ open + high + low + close,
 		...
 	)
-	.indicator <- on_neck.default(x = OHLC, cols = ~ open + high + low + close)
 
-	## add x-axis conditional on whether
-	## the data have been subsetted or not
-	.indicator$idx <- add_idx(
-		OHLC
+	## construct indicator
+	## from the series
+	constructed_indicator <- on_neck(
+		x = constructed_series,
+		cols = rebuild_formula(
+			names(constructed_series)
+		)
 	)
 
-	.plotting_environment$main <- pattern(
-		p = .plotting_environment$main,
-		x = .indicator,
-		high = OHLC[[2]],
-		low = OHLC[[3]],
-		pattern_name = "on_neck"
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
 	)
-	.plotting_environment$main
+
+	## construct {plotly}-object
+	plotly_object <- .plotting_environment[["main"]] <- pattern(
+		p = .plotting_environment[["main"]],
+		x = constructed_indicator,
+		high = constructed_series[[2]],
+		low = constructed_series[[3]],
+		pattern_name = "on_neck",
+		agnostic = FALSE
+	)
+
+	plotly_object
 }

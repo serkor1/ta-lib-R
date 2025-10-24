@@ -2,38 +2,33 @@
 #' @family Pattern Recognition
 #'
 #' @title Dark Cloud Cover
-#'
 #' @templateVar .title Dark Cloud Cover
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun dark_cloud_cover
 #'
-#' @template description
+## splice:documentation:start
+## splice:documentation:end
 #'
-#' @returns
-#' \describe{
-#'  \item{dark_cloud_cover}{1 for bullish, -1 for bearish and 0 for no pattern}
-#' }
+#' @template description
 dark_cloud_cover <- function(
 	x,
 	cols,
 	eps = 0,
 	...
 ) {
-	UseMethod(
-		"dark_cloud_cover"
-	)
+	UseMethod("dark_cloud_cover")
 }
 
 #' @export
-#'
 #' @usage NULL
-#'
 #' @rdname dark_cloud_cover
+#'
 #' @aliases dark_cloud_cover
 CDLDARKCLOUDCOVER <- dark_cloud_cover
 
 #' @usage NULL
 #' @aliases dark_cloud_cover
+#'
 #' @export
 dark_cloud_cover.default <- function(
 	x,
@@ -41,69 +36,57 @@ dark_cloud_cover.default <- function(
 	eps = 0,
 	...
 ) {
-	## validate input
-	## asssuming everyting
-	## is numerical values
-	if (!missing(cols)) {
-		## check if formula
-		assert(
-			is.formula(cols),
-			paste0(
-				"'cols' has to be <",
-				class(~s),
-				">. ",
-				"Got <",
-				class(cols),
-				">."
-			)
-		)
+	## get normalization option
+	normalize <- as.logical(
+		getOption("talib.normalize", TRUE)
+	)
 
-		## check if formula has the expected
-		## length
-		assert(
-			length(all.vars(cols)) == 4,
-			paste0(
-				"'cols' has to be length 4. ",
-				"Got length ",
-				length(all.vars(cols))
-			)
-		)
+	## validate 'cols'-argument
+	## if explicitly passed
+	if (!missing(cols)) {
+		assert_formula(cols)
 	}
 
-	## construct OHLC-series
-	## from 'x'
-	OHLC <- series(
+	## construct series
+	## from input
+	constructed_series <- series(
 		x = cols,
 		default = ~ open + high + low + close,
 		data = x,
 		...
 	)
 
-	## construct data.frame
-	## from source
-	x <- as.data.frame(
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
+
+	## calculate indicator and
+	## return as data.frame
+	x <- as.matrix(
 		.Call(
 			"impl_ta_CDLDARKCLOUDCOVER",
-			OHLC[[1]],
-			OHLC[[2]],
-			OHLC[[3]],
-			OHLC[[4]],
-			as.double(eps),
-			as.logical(
-				getOption("talib.normalize", TRUE)
-			)
+			constructed_series[[1]],
+			constructed_series[[2]],
+			constructed_series[[3]],
+			constructed_series[[4]],
+			eps = eps,
+			normalize
 		)
 	)
 
-	## set column names
-	colnames(x) <- "dark_cloud_cover"
+	## add column name
+	colnames(x) <- "CDLDARKCLOUDCOVER"
 
-	## return value
-	return(x)
+	## readd rownames
+	rownames(x) <- x_names
+
+	## return indicator
+	x
 }
 
 #' @usage NULL
 #' @aliases dark_cloud_cover
+#'
 #' @export
 dark_cloud_cover.data.frame <- function(
 	x,
@@ -118,6 +101,7 @@ dark_cloud_cover.data.frame <- function(
 
 #' @usage NULL
 #' @aliases dark_cloud_cover
+#'
 #' @export
 dark_cloud_cover.matrix <- function(
 	x,
@@ -132,44 +116,57 @@ dark_cloud_cover.matrix <- function(
 
 #' @usage NULL
 #' @aliases dark_cloud_cover
+#'
 #' @export
 dark_cloud_cover.plotly <- function(
 	x,
 	cols,
+	eps = 0,
 	...
 ) {
-	## prepare OHLC series
-	OHLC <- series(
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
 		x = x,
 		formula = cols,
 		default = ~ open + high + low + close,
 		...
 	)
 
-	## calculate pattern
-	## indicators
-	.indicator <- dark_cloud_cover.default(
-		x = OHLC,
+	## construct indicator
+	## from the series
+	constructed_indicator <- dark_cloud_cover(
+		x = constructed_series,
 		cols = rebuild_formula(
-			names(OHLC)
-		)
+			names(constructed_series)
+		),
+		eps = eps
 	)
 
-	## add x-axis conditional on whether
-	## the data have been subsetted or not
-	.indicator$idx <- add_idx(
-		OHLC
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
 	)
 
-	## chart patterns
-	.plotting_environment$main <- pattern(
-		p = .plotting_environment$main,
-		x = .indicator,
-		high = OHLC[[2]],
-		low = OHLC[[3]],
-		pattern_name = "Dark Cloud Cover",
+	## construct {plotly}-object
+	plotly_object <- .plotting_environment[["main"]] <- pattern(
+		p = .plotting_environment[["main"]],
+		x = constructed_indicator,
+		high = constructed_series[[2]],
+		low = constructed_series[[3]],
+		pattern_name = "dark_cloud_cover",
 		agnostic = FALSE
 	)
 
-	.plotting_environment$main
+	plotly_object
 }

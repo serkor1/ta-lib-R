@@ -1,35 +1,35 @@
 #' @export
 #' @family Pattern Recognition
 #'
-#' @title Tasuki Gap
-#' @templateVar .title Tasuki Gap
+#' @title Kicking Baby Length
+#' @templateVar .title Kicking Baby Length
 #' @templateVar .author Serkan Korkmaz
-#' @templateVar .fun tasuki_gap
+#' @templateVar .fun kicking_baby_length
 #'
 ## splice:documentation:start
 ## splice:documentation:end
 #'
 #' @template description
-tasuki_gap <- function(
+kicking_baby_length <- function(
 	x,
 	cols,
 	...
 ) {
-	UseMethod("tasuki_gap")
+	UseMethod("kicking_baby_length")
 }
 
 #' @export
 #' @usage NULL
-#' @rdname tasuki_gap
+#' @rdname kicking_baby_length
 #'
-#' @aliases tasuki_gap
-CDLTASUKIGAP <- tasuki_gap
+#' @aliases kicking_baby_length
+CDLKICKINGBYLENGTH <- kicking_baby_length
 
 #' @usage NULL
-#' @aliases tasuki_gap
+#' @aliases kicking_baby_length
 #'
 #' @export
-tasuki_gap.default <- function(
+kicking_baby_length.default <- function(
 	x,
 	cols,
 	...
@@ -62,7 +62,7 @@ tasuki_gap.default <- function(
 	## return as data.frame
 	x <- as.matrix(
 		.Call(
-			"impl_ta_CDLTASUKIGAP",
+			"impl_ta_CDLKICKINGBYLENGTH",
 			constructed_series[[1]],
 			constructed_series[[2]],
 			constructed_series[[3]],
@@ -72,7 +72,7 @@ tasuki_gap.default <- function(
 	)
 
 	## add column name
-	colnames(x) <- "CDLTASUKIGAP"
+	colnames(x) <- "CDLKICKINGBYLENGTH"
 
 	## readd rownames
 	rownames(x) <- x_names
@@ -82,10 +82,10 @@ tasuki_gap.default <- function(
 }
 
 #' @usage NULL
-#' @aliases tasuki_gap
+#' @aliases kicking_baby_length
 #'
 #' @export
-tasuki_gap.data.frame <- function(
+kicking_baby_length.data.frame <- function(
 	x,
 	cols,
 	...
@@ -96,10 +96,10 @@ tasuki_gap.data.frame <- function(
 }
 
 #' @usage NULL
-#' @aliases tasuki_gap
+#' @aliases kicking_baby_length
 #'
 #' @export
-tasuki_gap.matrix <- function(
+kicking_baby_length.matrix <- function(
 	x,
 	cols,
 	...
@@ -110,10 +110,10 @@ tasuki_gap.matrix <- function(
 }
 
 #' @usage NULL
-#' @aliases tasuki_gap
+#' @aliases kicking_baby_length
 #'
 #' @export
-tasuki_gap.plotly <- function(
+kicking_baby_length.plotly <- function(
 	x,
 	cols,
 	...
@@ -139,7 +139,7 @@ tasuki_gap.plotly <- function(
 
 	## construct indicator
 	## from the series
-	constructed_indicator <- tasuki_gap(
+	constructed_indicator <- kicking_baby_length(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
@@ -157,8 +157,8 @@ tasuki_gap.plotly <- function(
 		x = constructed_indicator,
 		high = constructed_series[[2]],
 		low = constructed_series[[3]],
-		pattern_name = "tasuki_gap",
-		agnostic = FALSE
+		pattern_name = "kicking_baby_length",
+		agnostic = TRUE
 	)
 
 	plotly_object

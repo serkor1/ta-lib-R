@@ -2,95 +2,164 @@
 #' @family Pattern Recognition
 #'
 #' @title Rising/Falling Three Methods
-#'
 #' @templateVar .title Rising/Falling Three Methods
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun rise_fall_3_methods
 #'
-#' @template description
+## splice:documentation:start
+## splice:documentation:end
 #'
-#' @returns
-#' \describe{
-#'  \item{rise_fall_3_methods}{1 for bullish continuation, -1 for bearish continuation, 0 for no pattern}
-#' }
-rise_fall_3_methods <- function(x, cols, ...) UseMethod("rise_fall_3_methods")
+#' @template description
+rise_fall_3_methods <- function(
+	x,
+	cols,
+	...
+) {
+	UseMethod("rise_fall_3_methods")
+}
 
 #' @export
 #' @usage NULL
 #' @rdname rise_fall_3_methods
+#'
 #' @aliases rise_fall_3_methods
 CDLRISEFALL3METHODS <- rise_fall_3_methods
 
+#' @usage NULL
+#' @aliases rise_fall_3_methods
+#'
 #' @export
-rise_fall_3_methods.default <- function(x, cols, ...) {
+rise_fall_3_methods.default <- function(
+	x,
+	cols,
+	...
+) {
+	## get normalization option
+	normalize <- as.logical(
+		getOption("talib.normalize", TRUE)
+	)
+
+	## validate 'cols'-argument
+	## if explicitly passed
 	if (!missing(cols)) {
-		assert(
-			is.formula(cols),
-			paste0(
-				"'cols' has to be <",
-				class(~s),
-				">. Got <",
-				class(cols),
-				">."
-			)
-		)
-		assert(
-			length(all.vars(cols)) == 4,
-			paste0(
-				"'cols' has to be length 4. Got length ",
-				length(all.vars(cols))
-			)
-		)
+		assert_formula(cols)
 	}
-	OHLC <- series(
+
+	## construct series
+	## from input
+	constructed_series <- series(
 		x = cols,
 		default = ~ open + high + low + close,
 		data = x,
 		...
 	)
-	x <- as.data.frame(.Call(
-		"impl_ta_CDLRISEFALL3METHODS",
-		OHLC[[1]],
-		OHLC[[2]],
-		OHLC[[3]],
-		OHLC[[4]],
-		as.logical(getOption("talib.normalize", TRUE))
-	))
-	colnames(x) <- "rise_fall_3_methods"
+
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
+
+	## calculate indicator and
+	## return as data.frame
+	x <- as.matrix(
+		.Call(
+			"impl_ta_CDLRISEFALL3METHODS",
+			constructed_series[[1]],
+			constructed_series[[2]],
+			constructed_series[[3]],
+			constructed_series[[4]],
+			normalize
+		)
+	)
+
+	## add column name
+	colnames(x) <- "CDLRISEFALL3METHODS"
+
+	## readd rownames
+	rownames(x) <- x_names
+
+	## return indicator
 	x
 }
 
+#' @usage NULL
+#' @aliases rise_fall_3_methods
+#'
 #' @export
-rise_fall_3_methods.data.frame <- function(x, cols, ...) {
-	as.data.frame(NextMethod())
+rise_fall_3_methods.data.frame <- function(
+	x,
+	cols,
+	...
+) {
+	as.data.frame(
+		NextMethod()
+	)
 }
+
+#' @usage NULL
+#' @aliases rise_fall_3_methods
+#'
 #' @export
-rise_fall_3_methods.matrix <- function(x, cols, ...) as.matrix(NextMethod())
+rise_fall_3_methods.matrix <- function(
+	x,
+	cols,
+	...
+) {
+	as.matrix(
+		NextMethod()
+	)
+}
+
+#' @usage NULL
+#' @aliases rise_fall_3_methods
+#'
 #' @export
-rise_fall_3_methods.plotly <- function(x, cols, ...) {
-	OHLC <- series(
+rise_fall_3_methods.plotly <- function(
+	x,
+	cols,
+	...
+) {
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
 		x = x,
 		formula = cols,
 		default = ~ open + high + low + close,
 		...
 	)
-	.indicator <- rise_fall_3_methods.default(
-		x = OHLC,
-		cols = ~ open + high + low + close
+
+	## construct indicator
+	## from the series
+	constructed_indicator <- rise_fall_3_methods(
+		x = constructed_series,
+		cols = rebuild_formula(
+			names(constructed_series)
+		)
 	)
 
-	## add x-axis conditional on whether
-	## the data have been subsetted or not
-	.indicator$idx <- add_idx(
-		OHLC
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
 	)
 
-	.plotting_environment$main <- pattern(
-		.plotting_environment$main,
-		.indicator,
-		OHLC[[2]],
-		OHLC[[3]],
-		"rise_fall_3_methods"
+	## construct {plotly}-object
+	plotly_object <- .plotting_environment[["main"]] <- pattern(
+		p = .plotting_environment[["main"]],
+		x = constructed_indicator,
+		high = constructed_series[[2]],
+		low = constructed_series[[3]],
+		pattern_name = "rise_fall_3_methods",
+		agnostic = FALSE
 	)
-	.plotting_environment$main
+
+	plotly_object
 }

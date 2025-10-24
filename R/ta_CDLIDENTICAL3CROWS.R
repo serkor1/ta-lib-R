@@ -1,35 +1,35 @@
 #' @export
 #' @family Pattern Recognition
 #'
-#' @title Tasuki Gap
-#' @templateVar .title Tasuki Gap
+#' @title Identical Three Crows
+#' @templateVar .title Identical Three Crows
 #' @templateVar .author Serkan Korkmaz
-#' @templateVar .fun tasuki_gap
+#' @templateVar .fun three_identical_crows
 #'
 ## splice:documentation:start
 ## splice:documentation:end
 #'
 #' @template description
-tasuki_gap <- function(
+three_identical_crows <- function(
 	x,
 	cols,
 	...
 ) {
-	UseMethod("tasuki_gap")
+	UseMethod("three_identical_crows")
 }
 
 #' @export
 #' @usage NULL
-#' @rdname tasuki_gap
+#' @rdname three_identical_crows
 #'
-#' @aliases tasuki_gap
-CDLTASUKIGAP <- tasuki_gap
+#' @aliases three_identical_crows
+CDLIDENTICAL3CROWS <- three_identical_crows
 
 #' @usage NULL
-#' @aliases tasuki_gap
+#' @aliases three_identical_crows
 #'
 #' @export
-tasuki_gap.default <- function(
+three_identical_crows.default <- function(
 	x,
 	cols,
 	...
@@ -62,7 +62,7 @@ tasuki_gap.default <- function(
 	## return as data.frame
 	x <- as.matrix(
 		.Call(
-			"impl_ta_CDLTASUKIGAP",
+			"impl_ta_CDLIDENTICAL3CROWS",
 			constructed_series[[1]],
 			constructed_series[[2]],
 			constructed_series[[3]],
@@ -72,7 +72,7 @@ tasuki_gap.default <- function(
 	)
 
 	## add column name
-	colnames(x) <- "CDLTASUKIGAP"
+	colnames(x) <- "CDLIDENTICAL3CROWS"
 
 	## readd rownames
 	rownames(x) <- x_names
@@ -82,10 +82,10 @@ tasuki_gap.default <- function(
 }
 
 #' @usage NULL
-#' @aliases tasuki_gap
+#' @aliases three_identical_crows
 #'
 #' @export
-tasuki_gap.data.frame <- function(
+three_identical_crows.data.frame <- function(
 	x,
 	cols,
 	...
@@ -96,10 +96,10 @@ tasuki_gap.data.frame <- function(
 }
 
 #' @usage NULL
-#' @aliases tasuki_gap
+#' @aliases three_identical_crows
 #'
 #' @export
-tasuki_gap.matrix <- function(
+three_identical_crows.matrix <- function(
 	x,
 	cols,
 	...
@@ -110,10 +110,10 @@ tasuki_gap.matrix <- function(
 }
 
 #' @usage NULL
-#' @aliases tasuki_gap
+#' @aliases three_identical_crows
 #'
 #' @export
-tasuki_gap.plotly <- function(
+three_identical_crows.plotly <- function(
 	x,
 	cols,
 	...
@@ -139,7 +139,7 @@ tasuki_gap.plotly <- function(
 
 	## construct indicator
 	## from the series
-	constructed_indicator <- tasuki_gap(
+	constructed_indicator <- three_identical_crows(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
@@ -157,7 +157,7 @@ tasuki_gap.plotly <- function(
 		x = constructed_indicator,
 		high = constructed_series[[2]],
 		low = constructed_series[[3]],
-		pattern_name = "tasuki_gap",
+		pattern_name = "three_identical_crows",
 		agnostic = FALSE
 	)
 

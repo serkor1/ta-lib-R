@@ -2,17 +2,14 @@
 #' @family Pattern Recognition
 #'
 #' @title Upside/Downside Gap Three Methods
-#'
 #' @templateVar .title Upside/Downside Gap Three Methods
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun xside_gap_3_methods
 #'
-#' @template description
+## splice:documentation:start
+## splice:documentation:end
 #'
-#' @returns
-#' \describe{
-#'  \item{xside_gap_3_methods}{1 for bullish continuation, -1 for bearish continuation, 0 for no pattern}
-#' }
+#' @template description
 xside_gap_3_methods <- function(
 	x,
 	cols,
@@ -24,98 +21,145 @@ xside_gap_3_methods <- function(
 #' @export
 #' @usage NULL
 #' @rdname xside_gap_3_methods
+#'
 #' @aliases xside_gap_3_methods
 CDLXSIDEGAP3METHODS <- xside_gap_3_methods
 
 #' @usage NULL
 #' @aliases xside_gap_3_methods
+#'
 #' @export
 xside_gap_3_methods.default <- function(
 	x,
 	cols,
 	...
 ) {
+	## get normalization option
+	normalize <- as.logical(
+		getOption("talib.normalize", TRUE)
+	)
+
+	## validate 'cols'-argument
+	## if explicitly passed
 	if (!missing(cols)) {
-		assert(
-			is.formula(cols),
-			paste0(
-				"'cols' has to be <",
-				class(~s),
-				">. Got <",
-				class(cols),
-				">."
-			)
-		)
-		assert(
-			length(all.vars(cols)) == 4,
-			paste0(
-				"'cols' has to be length 4. Got length ",
-				length(all.vars(cols))
-			)
-		)
+		assert_formula(cols)
 	}
 
-	OHLC <- series(
+	## construct series
+	## from input
+	constructed_series <- series(
 		x = cols,
 		default = ~ open + high + low + close,
 		data = x,
 		...
 	)
 
-	x <- as.data.frame(.Call(
-		"impl_ta_CDLXSIDEGAP3METHODS",
-		OHLC[[1]],
-		OHLC[[2]],
-		OHLC[[3]],
-		OHLC[[4]],
-		as.logical(getOption("talib.normalize", TRUE))
-	))
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
 
-	colnames(x) <- "xside_gap_3_methods"
-	return(x)
+	## calculate indicator and
+	## return as data.frame
+	x <- as.matrix(
+		.Call(
+			"impl_ta_CDLXSIDEGAP3METHODS",
+			constructed_series[[1]],
+			constructed_series[[2]],
+			constructed_series[[3]],
+			constructed_series[[4]],
+			normalize
+		)
+	)
+
+	## add column name
+	colnames(x) <- "CDLXSIDEGAP3METHODS"
+
+	## readd rownames
+	rownames(x) <- x_names
+
+	## return indicator
+	x
 }
 
 #' @usage NULL
 #' @aliases xside_gap_3_methods
+#'
 #' @export
-xside_gap_3_methods.data.frame <- function(x, cols, ...) {
-	as.data.frame(NextMethod())
+xside_gap_3_methods.data.frame <- function(
+	x,
+	cols,
+	...
+) {
+	as.data.frame(
+		NextMethod()
+	)
 }
 
 #' @usage NULL
 #' @aliases xside_gap_3_methods
+#'
 #' @export
-xside_gap_3_methods.matrix <- function(x, cols, ...) {
-	as.matrix(NextMethod())
+xside_gap_3_methods.matrix <- function(
+	x,
+	cols,
+	...
+) {
+	as.matrix(
+		NextMethod()
+	)
 }
 
 #' @usage NULL
 #' @aliases xside_gap_3_methods
+#'
 #' @export
-xside_gap_3_methods.plotly <- function(x, cols, ...) {
-	OHLC <- series(
+xside_gap_3_methods.plotly <- function(
+	x,
+	cols,
+	...
+) {
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
 		x = x,
 		formula = cols,
 		default = ~ open + high + low + close,
 		...
 	)
-	.indicator <- xside_gap_3_methods.default(
-		x = OHLC,
-		cols = ~ open + high + low + close
+
+	## construct indicator
+	## from the series
+	constructed_indicator <- xside_gap_3_methods(
+		x = constructed_series,
+		cols = rebuild_formula(
+			names(constructed_series)
+		)
 	)
 
-	## add x-axis conditional on whether
-	## the data have been subsetted or not
-	.indicator$idx <- add_idx(
-		OHLC
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
 	)
 
-	.plotting_environment$main <- pattern(
-		p = .plotting_environment$main,
-		x = .indicator,
-		high = OHLC[[2]],
-		low = OHLC[[3]],
-		pattern_name = "xside_gap_3_methods"
+	## construct {plotly}-object
+	plotly_object <- .plotting_environment[["main"]] <- pattern(
+		p = .plotting_environment[["main"]],
+		x = constructed_indicator,
+		high = constructed_series[[2]],
+		low = constructed_series[[3]],
+		pattern_name = "xside_gap_3_methods",
+		agnostic = FALSE
 	)
-	.plotting_environment$main
+
+	plotly_object
 }

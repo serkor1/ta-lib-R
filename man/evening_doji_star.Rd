@@ -5,7 +5,7 @@
 \alias{CDLEVENINGDOJISTAR}
 \title{Evening Doji Star}
 \usage{
-evening_doji_star(x, cols, eps = 0.1, ...)
+evening_doji_star(x, cols, eps = 0, ...)
 }
 \arguments{
 \item{x}{An OHLC-V series that is coercible to \link{data.frame}. The function assumes that all columns are named in lowercase and order invariant.}
@@ -15,11 +15,6 @@ evening_doji_star(x, cols, eps = 0.1, ...)
 \item{eps}{A \link{double} of \link{length} 1. Percentage of penetration of a candle within another candle.}
 
 \item{...}{Additional parameters passed into \link{model.frame}}
-}
-\value{
-\describe{
-\item{evening_doji_star}{1 for bullish, -1 for bearish and 0 for no pattern}
-}
 }
 \description{
 The \code{evening_doji_star()} is a generic S3 function that builds upon 'type-safe'-esque workflows limited to classes in in base \code{R}, and the package-wide
