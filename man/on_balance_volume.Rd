@@ -5,14 +5,12 @@
 \alias{OBV}
 \title{On-Balance Volume}
 \usage{
-on_balance_volume(x, cols, n = 10, ...)
+on_balance_volume(x, cols, ...)
 }
 \arguments{
 \item{x}{An OHLC-V series that is coercible to \link{data.frame}. The function assumes that all columns are named in lowercase and order invariant.}
 
 \item{cols}{An optional \link{formula} passed into \link{model.frame}. If passed into indicators based on univariate series, the function calculates indicators for each element in 'cols'. For indicators based on multivariate series, it will alter the calculation itself. See \code{vignette("talib")} for more details.}
-
-\item{n}{An \link{integer} of \link{length} 1.}
 
 \item{...}{Additional parameters passed into \link{model.frame}}
 }
@@ -55,15 +53,14 @@ utils::tail(output)
 }
 }
 \seealso{
-Other Volume Indicator: 
-\code{\link{chaikin_AD_line}()},
-\code{\link{chaikin_AD_oscillator}()},
-\code{\link{trading_volume}()}
+Other Volumne Indicator: 
+\code{\link{chaikin_accumulation_distribution_line}()},
+\code{\link{chaikin_accumulation_distribution_oscillator}()}
 }
 \author{
 Serkan Korkmaz
 }
-\concept{Volume Indicator}
+\concept{Volumne Indicator}
 \concept{algorithmic trading}
 \concept{finance}
 \concept{technical analysis}

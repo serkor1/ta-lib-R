@@ -1,48 +1,37 @@
 #' @export
-#' @family Volume Indicator
+#' @family Volumne Indicator
 #'
 #' @title Chaikin A/D Oscillator
 #' @templateVar .title Chaikin A/D Oscillator
 #' @templateVar .author Serkan Korkmaz
-#' @templateVar .fun chaikin_AD_oscillator
+#' @templateVar .fun chaikin_accumulation_distribution_oscillator
 #'
-#'
-## input start
-#' @param fast An <[integer]> of [length] 1. The window size passed into the fast moving average (MA).
-#' @param slow An <[integer]> of [length] 1. The window size passed into the slow moving average (MA).
-#'
-#' @returns
-#' A [data.frame]- or [matrix]-object:
-#'
-#' \describe{
-#'  \item{ADOSC <[double]>}{Chaikin A/D Oscillator}
-#' }
-#'
-## input end
+## splice:documentation:start
+## splice:documentation:end
 #'
 #' @template description
-chaikin_AD_oscillator <- function(
+chaikin_accumulation_distribution_oscillator <- function(
 	x,
 	cols,
 	fast = 3,
 	slow = 10,
 	...
 ) {
-	UseMethod("chaikin_AD_oscillator")
+	UseMethod("chaikin_accumulation_distribution_oscillator")
 }
 
 #' @export
 #' @usage NULL
-#' @rdname chaikin_AD_oscillator
+#' @rdname chaikin_accumulation_distribution_oscillator
 #'
-#' @aliases chaikin_AD_oscillator
-ADOSC <- chaikin_AD_oscillator
+#' @aliases chaikin_accumulation_distribution_oscillator
+ADOSC <- chaikin_accumulation_distribution_oscillator
 
 #' @usage NULL
-#' @aliases chaikin_AD_oscillator
+#' @aliases chaikin_accumulation_distribution_oscillator
 #'
 #' @export
-chaikin_AD_oscillator.default <- function(
+chaikin_accumulation_distribution_oscillator.default <- function(
 	x,
 	cols,
 	fast = 3,
@@ -55,10 +44,6 @@ chaikin_AD_oscillator.default <- function(
 		assert_formula(cols)
 	}
 
-	## extract rownames
-	## for later attachment
-	x_names <- rownames(x)
-
 	## construct series
 	## from input
 	constructed_series <- series(
@@ -68,18 +53,22 @@ chaikin_AD_oscillator.default <- function(
 		...
 	)
 
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(x)
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		"impl_ta_ADOSC",
-		## input start
+		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
 		constructed_series[[4]],
 		as.integer(fast),
 		as.integer(slow)
-		## input end
+		## splice:call:end
 	)
 
 	## readd rownames
@@ -90,10 +79,10 @@ chaikin_AD_oscillator.default <- function(
 }
 
 #' @usage NULL
-#' @aliases chaikin_AD_oscillator
+#' @aliases chaikin_accumulation_distribution_oscillator
 #'
 #' @export
-chaikin_AD_oscillator.data.frame <- function(
+chaikin_accumulation_distribution_oscillator.data.frame <- function(
 	x,
 	cols,
 	fast = 3,
@@ -106,10 +95,10 @@ chaikin_AD_oscillator.data.frame <- function(
 }
 
 #' @usage NULL
-#' @aliases chaikin_AD_oscillator
+#' @aliases chaikin_accumulation_distribution_oscillator
 #'
 #' @export
-chaikin_AD_oscillator.matrix <- function(
+chaikin_accumulation_distribution_oscillator.matrix <- function(
 	x,
 	cols,
 	fast = 3,
@@ -122,14 +111,16 @@ chaikin_AD_oscillator.matrix <- function(
 }
 
 #' @usage NULL
-#' @aliases chaikin_AD_oscillator
+#' @aliases chaikin_accumulation_distribution_oscillator
 #'
 #' @export
-chaikin_AD_oscillator.plotly <- function(
+chaikin_accumulation_distribution_oscillator.plotly <- function(
 	x,
 	cols,
 	fast = 3,
 	slow = 10,
+	## splice:optional-plotly:start
+	## splice:optional-plotly:end
 	...
 ) {
 	## check that input value
@@ -153,13 +144,13 @@ chaikin_AD_oscillator.plotly <- function(
 
 	## construct indicator
 	## from the series
-	constructed_indicator <- chaikin_AD_oscillator(
+	constructed_indicator <- chaikin_accumulation_distribution_oscillator(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		fast = 3,
-		slow = 10
+		fast = fast,
+		slow = slow
 	)
 
 	## add conditional idx
@@ -168,34 +159,19 @@ chaikin_AD_oscillator.plotly <- function(
 	)
 
 	## construct {plotly}-object
-	## input start
+	## splice:plotly-assembly:start
 	plotly_object <- subchart(
 		data = constructed_indicator,
 		y = ~ADOSC,
 		type = "scatter",
 		mode = "lines",
-		name = "AD",
-		legendgroup = "ChaikinOscillator",
 		showlegend = FALSE
-	)
-
-	plotly_object <- plotly::add_lines(
-		p = plotly_object,
-		x = constructed_indicator$idx,
-		y = 0,
-		line = list(
-			dash = "dot"
-		),
-		showlegend = FALSE,
-		hoverinfo = "skip",
-		legendgroup = "ChaikinOscillator",
-		name = "Zero"
 	)
 
 	if (main_chart_exists()) {
 		plotly_object <- add_title(
 			x = plotly_object,
-			text = "Chaikin A/D Oscillator"
+			text = "Chaikin A/D Line"
 		)
 	}
 
@@ -203,7 +179,7 @@ chaikin_AD_oscillator.plotly <- function(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## input end
+	## splice:plotly-assembly:end
 
 	plotly_object
 }

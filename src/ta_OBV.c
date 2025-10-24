@@ -11,6 +11,7 @@
 #include "R_ext/Error.h"
 #include "Rinternals.h"
 #include "lib.h"
+#include "names.h"
 #include "shift.h"
 #include <ta_libc.h>
 
@@ -26,7 +27,7 @@ SEXP impl_ta_OBV(
   const double *restrict close_ptr = REAL(close);
   const double *restrict volume_ptr = REAL(volume);
 
-  SEXP result = PROTECT(allocVector(REALSXP, n));
+  SEXP result = PROTECT(allocMatrix(REALSXP, n, 1));
   protect_count++;
   double *restrict out_ptr = REAL(result);
 
@@ -56,6 +57,7 @@ SEXP impl_ta_OBV(
     }
 
     // Align to full length
+    set_colnames(result, "OBV");
     shift_array(out_ptr, n, outBeg);
   }
 
