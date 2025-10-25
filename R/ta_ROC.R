@@ -53,7 +53,7 @@ rate_of_change.default <- function(
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(x)
+	x_names <- rownames(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
