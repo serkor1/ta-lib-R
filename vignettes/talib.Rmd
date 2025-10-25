@@ -2,7 +2,7 @@
 title: "{talib}: R bindings to TA-Lib"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{talib}
+  %\VignetteIndexEntry{{talib}: R bindings to TA-Lib}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -12,75 +12,144 @@ vignette: >
 options(talib.chart.dark = FALSE)
 
 knitr::opts_chunk$set(
-  collapse      = TRUE,
-  comment       = "#>",
-  out.width     = "100%",
-  out.height    = "680",
-  fig.align     = "center"
+	collapse = TRUE,
+	comment = "#>",
+	out.width = "100%",
+	out.height = "680",
+	fig.align = "center"
 )
 ```
 
-```{r setup}
-library(talib)
-```
-
-[{talib}](https://github.com/serkor1/curly-giggle) is wrapper of the 'C' library [TA-Lib](https://github.com/TA-Lib/ta-lib). 
-The library supports indicators for Technical Analysis, including algorithmic candlestick pattern recognition.
-
-The implementation has been extended to include interactive financial charts with a [{plotly}](https://github.com/plotly)-backend. All indicators in [{talib}](https://github.com/serkor1/curly-giggle)
-are soft-wrappers of `model.frame` for added flexibility.
+[{talib}](https://github.com/serkor1/ta-lib-R/) is an R package for Technical Analysis (TA) and interactive financial charts. The package is a wrapper of [TA-Lib](https://github.com/TA-Lib/ta-lib) and supports over 200 indicators, including candlestick patterns.
 
 ## Basic usage
 
-### Simple Moving Averages
+In this section I will show how to calculate and chart different indicators using Bitcoin (BTC). BTC is a built-in `data.frame` using the [{cryptoQuotes}](https://github.com/serkor1/cryptoQuotes)-package and has the following form:
 
-Below is an example on calculating the simple moving average of the Bitcoin (BTC):
-
-```{r SMA(simple)}
-tail(
-  talib::SMA(
-    x = talib::BTC
-  )
+```{r}
+str(
+	talib::BTC
 )
 ```
 
-The simple moving average can be calculated over a specified range via `...` which gets forwarded to `model.frame`, and calculated for multiple prices, as follows:
+The focus of this section will be Bollinger Bands and Harami patterns. All remaining indicators and candlestick patterns behaves in the same manner.
 
-```{r SMA(flexible)}
-tail(
-  talib::SMA(
-    x = talib::BTC,
-    cols = ~low,
-    # calculate simple moving average
-    # up and until the 100th indices
-    subset = 1:nrow(talib::BTC) <= 100
-  )
+> **NOTE:** All functions expects that a permutation of either `open`, `high`, `low`, `close` and/or `volume` exists (case sensitive). But this depends on the specific functions; for indicators that only uses `high` and `low`, the remaining columns needs not to be present in the data. Column names must follow OHLC-V conventions unless remapped via the `cols`-argument.
+
+### Indicators
+
+All indicator functions in [{talib}](https://github.com/serkor1/ta-lib-R/) assumes that the input argument `x` is an OHLC-V object coercible to `data.frame`; the `BTC` can passed directly into the function:  
+
+```{r Bollinger Bands (default)}
+{
+	cat("Bollinger Bands")
+	tail(
+		talib::bollinger_bands(
+			x = talib::BTC
+		)
+	)
+}
+```
+
+Internally, `bollinger_bands()` calls `model.frame` with a prespecified `formula` corresponding to the default calculation method of the indicator. You can modify this by passing a different variable through the `cols`-argument as follows:
+
+```{r Bollinger Bands (custom)}
+{
+	cat("Bollinger Bands")
+	tail(
+		talib::bollinger_bands(
+			x = talib::BTC,
+			cols = ~high
+		)
+	)
+}
+```
+
+The Harami pattern, and all candlestick patterns in general, returns a `matrix` of \<integers\>: -1 for bearish patterns, 1 for bullish pattern and 0 for no pattern. See below:
+
+```{r Harami}
+{
+	cat("Harami Patterns")
+	tail(
+		talib::harami(
+			talib::BTC
+		)
+	)
+}
+```
+
+The pattern is rare, so let us find occurrences instead:
+
+```{r Harami(assigned)}
+## assign the Harami
+## pattern
+x <- talib::harami(
+	talib::BTC
 )
+```
+
+```{r Harami(Bullish)}
+## locate bullish Harami
+## patterns
+{
+	cat("Bullish Harami")
+	talib::BTC[
+		which(x == 1),
+	]
+}
+```
+
+```{r Harami(Bearish)}
+## locate bearish Harami
+## patterns
+{
+	cat("Bearish Harami")
+	talib::BTC[
+		which(x == -1),
+	]
+}
 ```
 
 ### Charting indicators
 
-> **Information:** Please refer to the `charting` vignette
+In this section I will focus on the basics of charting. The charting uses [{plotly}](https://github.com/plotly/plotly.R) internally which also enables manual drawing of support and resistance lines.
+
+> **Information:** Please refer to `vignette(topic = "charting", package = "talib")`
 > for a more detailed description of the charting.
 
-The charting functionality mimicks the behaviour of `plot()` and `lines()` where each is called separately. 
+The charting functionality mimicks the behaviour of `plot()` and `lines()` where each is called separately. There are two main charting functions in [{talib}](https://github.com/serkor1/ta-lib-R/): `chart()` and `indicator()`. Below I will expand the analysis by adding Moving Average Convergence/Divergence indicators to the chart:
 
 ```{r chart(basic)}
 {
-  ## candlestick chart
-  talib::chart(
-    talib::BTC
-  )
+	## main candlestick
+	## chart
+	talib::chart(
+		talib::BTC
+	)
 
-  ## add SMA
-  talib::indicator(
-    talib::SMA,
-    cols = ~high
-  )
+	## add bollinger bands
+	## to the chart
+	talib::indicator(
+		talib::bollinger_bands
+	)
 
-  ## add acceleration bands
-  talib::indicator(
-    talib::ACCBANDS
-  )
+	## add identified harami
+	## patterns
+	talib::indicator(
+		talib::harami
+	)
+
+	## add moving average
+	## convergence/divergence
+	## to the chart
+	talib::indicator(
+		talib::moving_average_convergence_divergence
+	)
 }
 ```
+
+One thing to note here is that `indicator()` internally calls the [{plotly}](https://github.com/plotly/plotly.R)-methods for each indicator which determines whether the indicator is main-chart indicator or sub-chart indicator.
+
+## Contributing and bug reports
+
+The underlying library, [TA-Lib](https://github.com/TA-Lib/ta-lib), is a long-standing and well-known library but this R wrapper is still in its early stage. All contributions, suggestions, and bug reports are welcome.
