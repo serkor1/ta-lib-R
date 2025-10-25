@@ -14,6 +14,20 @@ hanging_man(x, cols, ...)
 
 \item{...}{Additional parameters passed into \link{model.frame}}
 }
+\value{
+An object of same \link{class} and \link{length} of \code{x}:
+
+\describe{
+\item{CDLHANGINGMAN (\link{integer})}{Hanging Man pattern}
+}
+
+Pattern codes depend on \code{options(talib.normalize)}:
+\itemize{
+\item If \code{TRUE}: \code{1} = identified pattern; \code{-1} = identified bearish pattern.
+\item If \code{FALSE}: \code{100} = identified pattern; \code{-100} = identified bearish pattern.
+\item \code{0} = no pattern.
+}
+}
 \description{
 The \code{hanging_man()} is a generic S3 function that builds upon 'type-safe'-esque workflows limited to classes in in base \code{R}, and the package-wide
 dependencies. Ie. \link{class} in, \link{class} out. Each method is a soft wrapper of \link{model.frame} and therefore the OHLC-V series must be coercible to a \link{data.frame}.

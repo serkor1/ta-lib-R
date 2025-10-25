@@ -7,10 +7,10 @@
 #' @templateVar .fun $FUN
 #' 
 #' @returns
-#' A [data.frame]- or [matrix]-object:
+#' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{$ALIAS <[double]>}{Values}
+#'  \item{$ALIAS ([double])}{$TITLE}
 #' }
 #'
 #' @template description

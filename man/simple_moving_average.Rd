@@ -17,10 +17,10 @@ simple_moving_average(x, cols, n = 10, ...)
 \item{...}{Additional parameters passed into \link{model.frame}}
 }
 \value{
-A \link{data.frame}- or \link{matrix}-object:
+An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{SMA <\link{double}>}{Values}
+\item{SMA (\link{double})}{Simple Moving Average}
 }
 }
 \description{

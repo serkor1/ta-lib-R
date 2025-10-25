@@ -7,10 +7,10 @@
 #' @templateVar .fun t3_exponential_moving_average
 #'
 #' @returns
-#' A [data.frame]- or [matrix]-object:
+#' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{T3 <[double]>}{Values}
+#'  \item{T3 ([double])}{Triple Exponential Moving Average (T3)}
 #' }
 #'
 #' @template description

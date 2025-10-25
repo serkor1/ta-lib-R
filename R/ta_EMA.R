@@ -7,10 +7,10 @@
 #' @templateVar .fun exponential_moving_average
 #'
 #' @returns
-#' A [data.frame]- or [matrix]-object:
+#' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{EMA <[double]>}{Values}
+#'  \item{EMA ([double])}{Exponential Moving Average}
 #' }
 #'
 #' @template description

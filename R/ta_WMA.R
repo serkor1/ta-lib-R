@@ -7,10 +7,10 @@
 #' @templateVar .fun weighted_moving_average
 #'
 #' @returns
-#' A [data.frame]- or [matrix]-object:
+#' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{WMA <[double]>}{Values}
+#'  \item{WMA ([double])}{Weighted Moving Average}
 #' }
 #'
 #' @template description

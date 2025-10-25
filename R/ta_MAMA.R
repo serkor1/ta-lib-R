@@ -7,10 +7,10 @@
 #' @templateVar .fun mesa_adaptive_moving_average
 #'
 #' @returns
-#' A [data.frame]- or [matrix]-object:
+#' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{MAMA <[double]>}{Values}
+#'  \item{MAMA ([double])}{MESA Adaptive Moving Average}
 #' }
 #'
 #' @template description

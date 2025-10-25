@@ -6,8 +6,19 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun concealing_baby_swallow
 #'
-## splice:documentation:start
-## splice:documentation:end
+#' @returns
+#' An object of same [class] and [length] of `x`:
+#'
+#' \describe{
+#'  \item{CDLCONCEALBABYSWALL ([integer])}{Concealing Baby Swallow pattern}
+#' }
+#'
+#' Pattern codes depend on `options(talib.normalize)`:
+#'
+#' * If `TRUE`: `1` = identified pattern; `-1` = identified bearish pattern.
+#' * If `FALSE`: `100` = identified pattern; `-100` = identified bearish pattern.
+#' * `0` = no pattern.
+#'
 #'
 #' @template description
 concealing_baby_swallow <- function(

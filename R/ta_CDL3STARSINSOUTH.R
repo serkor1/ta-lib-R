@@ -6,8 +6,19 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun three_stars_in_the_south
 #'
-## splice:documentation:start
-## splice:documentation:end
+#' @returns
+#' An object of same [class] and [length] of `x`:
+#'
+#' \describe{
+#'  \item{CDL3STARSINSOUTH ([integer])}{Three Stars in the South pattern}
+#' }
+#'
+#' Pattern codes depend on `options(talib.normalize)`:
+#'
+#' * If `TRUE`: `1` = identified pattern; `-1` = identified bearish pattern.
+#' * If `FALSE`: `100` = identified pattern; `-100` = identified bearish pattern.
+#' * `0` = no pattern.
+#'
 #'
 #' @template description
 three_stars_in_the_south <- function(

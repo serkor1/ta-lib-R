@@ -7,10 +7,10 @@
 #' @templateVar .fun triangular_moving_average
 #'
 #' @returns
-#' A [data.frame]- or [matrix]-object:
+#' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{TRIMA <[double]>}{Values}
+#'  \item{TRIMA ([double])}{Triangular Moving Average}
 #' }
 #'
 #' @template description

@@ -17,10 +17,10 @@ t3_exponential_moving_average(x, cols, n = 10, ...)
 \item{...}{Additional parameters passed into \link{model.frame}}
 }
 \value{
-A \link{data.frame}- or \link{matrix}-object:
+An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{T3 <\link{double}>}{Values}
+\item{T3 (\link{double})}{Triple Exponential Moving Average (T3)}
 }
 }
 \description{

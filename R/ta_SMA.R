@@ -7,10 +7,10 @@
 #' @templateVar .fun simple_moving_average
 #'
 #' @returns
-#' A [data.frame]- or [matrix]-object:
+#' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{SMA <[double]>}{Values}
+#'  \item{SMA ([double])}{Simple Moving Average}
 #' }
 #'
 #' @template description

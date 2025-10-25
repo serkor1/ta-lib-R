@@ -17,10 +17,10 @@ kaufman_adaptive_moving_average(x, cols, n = 10, ...)
 \item{...}{Additional parameters passed into \link{model.frame}}
 }
 \value{
-A \link{data.frame}- or \link{matrix}-object:
+An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{KAMA <\link{double}>}{Values}
+\item{KAMA (\link{double})}{Kaufman Adaptive Moving Average}
 }
 }
 \description{

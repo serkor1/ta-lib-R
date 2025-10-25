@@ -7,10 +7,10 @@
 #' @templateVar .fun kaufman_adaptive_moving_average
 #'
 #' @returns
-#' A [data.frame]- or [matrix]-object:
+#' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{KAMA <[double]>}{Values}
+#'  \item{KAMA ([double])}{Kaufman Adaptive Moving Average}
 #' }
 #'
 #' @template description
