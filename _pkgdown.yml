@@ -16,23 +16,23 @@ template:
 reference:
 - title: Candlestick Patterns
   desc: |
-    The collenction of Candlestick Patterns
+    The collection of Candlestick Patterns. 
 - contents: has_concept('Pattern Recognition')
 - title: Momentum Indicators
   desc: |
-    The collenction of momentum indicators
+    The collection of Momentum Indicators.
 - contents: has_concept('Momentum Indicator')
 - title: Overlap Studies
   desc: |
-    The collenction of Overlap Studies
+    The collection of Overlap Studies.
 - contents: has_concept('Overlap Study')
 - title: Cycle Indicators
   desc: |
-    The collenction of Cycle Indicators
+    The collection of Cycle Indicators.
 - contents: has_concept('Cycle Indicator')
 - title: Volume Indicators
   desc: |
-    The collenction of Volume Indicators
+    The collection of Volume Indicators.
 - contents: has_concept('Volume Indicator')
 - title: Financial Charts
   desc: |
