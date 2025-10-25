@@ -63,11 +63,21 @@ The aliases are exported but are not a part of the documentation, but they behav
 
 ## Basic Usage
 
-Below are an example on how to use [{talib}](https://serkor1.github.io/ta-lib-R/) to calculate an indicator and charting it.
+Below are an example on how to use [{talib}](https://serkor1.github.io/ta-lib-R/) to calculate an indicator, identify a candlestick pattern and charting it all together.
 
 ### Indicators
 
-```{r, echo = TRUE}
+```{r pattern, echo = TRUE}
+## identify Harami 
+## patterns
+tail(
+	talib::harami(
+		talib::BTC
+	)
+)
+```
+
+```{r indicator, echo = TRUE}
 ## calculate bollinger
 ## bands
 tail(
@@ -79,24 +89,29 @@ tail(
 
 ### Charting
 
-```{r charting, fig.align='center', echo=TRUE}
+Below is an example on how to use `chart()` and `indicator()`. 
 
+```{r charting, fig.align = 'center', echo = TRUE}
 {
-	## main chart
-	talib::chart(
-		talib::BTC,
-		## optional idx-argument
-		## for adding dates to chart
-		idx = rownames(talib::BTC)
-	)
+	## construct the chart
+	## with the default values
+	## (candlesticks by default)
+	talib::chart(talib::BTC)
 
-	## add bollinger bands
-	## to chart
+	## chart the bollinger bands
 	talib::indicator(
 		talib::bollinger_bands
 	)
-}
 
+	## identify 'Harami'-patterns
+	## from the last 66 candles and
+	## chart 
+	talib::indicator(
+		talib::harami,
+		data = talib::BTC,
+		subset = 1:nrow(talib::BTC) %in% 300:nrow(talib::BTC)
+	)
+}
 ```
 
 ## Installation

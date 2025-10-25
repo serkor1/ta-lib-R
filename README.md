@@ -68,10 +68,27 @@ above.
 ## Basic Usage
 
 Below are an example on how to use
-[{talib}](https://serkor1.github.io/ta-lib-R/) to calculate an indicator
-and charting it.
+[{talib}](https://serkor1.github.io/ta-lib-R/) to calculate an
+indicator, identify a candlestick pattern and charting it all together.
 
 ### Indicators
+
+``` r
+## identify Harami 
+## patterns
+tail(
+    talib::harami(
+        talib::BTC
+    )
+)
+#>                     CDLHARAMI
+#> 2024-12-26 01:00:00         0
+#> 2024-12-27 01:00:00         0
+#> 2024-12-28 01:00:00         0
+#> 2024-12-29 01:00:00         0
+#> 2024-12-30 01:00:00         0
+#> 2024-12-31 01:00:00         0
+```
 
 ``` r
 ## calculate bollinger
@@ -92,21 +109,27 @@ tail(
 
 ### Charting
 
+Below is an example on how to use `chart()` and `indicator()`.
+
 ``` r
-
 {
-    ## main chart
-    talib::chart(
-        talib::BTC,
-        ## optional idx-argument
-        ## for adding dates to chart
-        idx = rownames(talib::BTC)
-    )
+    ## construct the chart
+    ## with the default values
+    ## (candlesticks by default)
+    talib::chart(talib::BTC)
 
-    ## add bollinger bands
-    ## to chart
+    ## chart the bollinger bands
     talib::indicator(
         talib::bollinger_bands
+    )
+
+    ## identify 'Harami'-patterns
+    ## from the last 66 candles and
+    ## chart 
+    talib::indicator(
+        talib::harami,
+        data = talib::BTC,
+        subset = 1:nrow(talib::BTC) %in% 300:nrow(talib::BTC)
     )
 }
 ```
