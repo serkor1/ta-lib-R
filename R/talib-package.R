@@ -22,22 +22,52 @@ NULL
 #' @usage NULL
 NULL
 
+## roxygen documentation
+## functions
+generate_returns_section <- function(x) {
+	## the function takes an object
+	## created from talib::foo(talib::BTC) and
+	## converts the resulting data.fram to
+	##
+	## \describe{
+	##    \item{column_names}{type}
+	## }
+	##
 
-generate_return <- function(x) {
-	nm <- colnames(x)
-	ty <- vapply(
-		x,
-		function(col) paste(typeof(col), collapse = "/"),
-		character(1)
+	## 1) extract column names
+	##    'as is'
+	column_names <- colnames(x)
+
+	## 2) extract 'typeof' instead
+	##    of 'class' to get the C-compatible
+	##    type
+	type <- vapply(
+		X = x,
+		FUN = function(col) {
+			paste(typeof(col), collapse = "/")
+		},
+		FUN.VALUE = character(1)
 	)
+
+	## 3) construct the items as
+	##    \item{column_names}{type}
 	items <- paste0(
 		"\\item{",
-		nm,
+		column_names,
 		"}",
 		"{[",
-		ty,
+		type,
 		"]}"
 	)
 
-	paste0("\\describe{\n", paste(items, collapse = "\n"), "\n}")
+	## 4) return as:
+	##    \describe{
+	##    	\item{column_names}{type}
+	##    }
+	##
+	paste0(
+		"\\describe{\n",
+		paste(items, collapse = "\n"),
+		"\n}"
+	)
 }
