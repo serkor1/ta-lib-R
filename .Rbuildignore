@@ -8,6 +8,8 @@ Makefile
 air.toml
 data-raw
 man-roxygen
+NOTES.md
+sandbox
 
 ## TA-Lib
 
@@ -18,6 +20,7 @@ man-roxygen
 ^src/ta-lib/src/tools/gen_code/gen_code
 ^src/ta-lib/src/tools/gen_code/mcpp.exe
 ^src/ta-lib/src/tools/ta_regtest/.libs/ta_regtest
+^src/ta-lib/src/tools/ta_regtest/ta_regtest
 
 ### Hidden files
 ^src/ta-lib/.editorconfig
