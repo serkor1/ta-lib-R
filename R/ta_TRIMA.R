@@ -6,14 +6,8 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun triangular_moving_average
 #'
-#' @returns
-#' An object of same [class] and [length] of `x`:
-#'
-#' \describe{
-#'  \item{TRIMA ([double])}{Triangular Moving Average}
-#' }
-#'
 #' @template description
+#' @template returns
 triangular_moving_average <- function(
 	x,
 	cols,

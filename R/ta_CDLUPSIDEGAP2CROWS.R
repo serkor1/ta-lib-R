@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLUPSIDEGAP2CROWS ([integer])}{Upside Gap Two Crows pattern}
+#'  \item{CDLUPSIDEGAP2CROWS}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

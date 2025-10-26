@@ -18,7 +18,7 @@ concealing_baby_swallow(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLCONCEALBABYSWALL (\link{integer})}{Concealing Baby Swallow pattern}
+\item{CDLCONCEALBABYSWALL}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

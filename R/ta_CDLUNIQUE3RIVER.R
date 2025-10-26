@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLUNIQUE3RIVER ([integer])}{Unique Three River pattern}
+#'  \item{CDLUNIQUE3RIVER}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

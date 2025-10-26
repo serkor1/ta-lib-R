@@ -10,6 +10,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @template returns
 ultimate_oscillator <- function(
 	x,
 	cols,

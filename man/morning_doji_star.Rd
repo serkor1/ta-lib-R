@@ -20,7 +20,7 @@ morning_doji_star(x, cols, eps = 0, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLMORNINGDOJISTAR (\link{integer})}{Morning Doji Star pattern}
+\item{CDLMORNINGDOJISTAR}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

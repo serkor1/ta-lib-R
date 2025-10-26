@@ -18,7 +18,7 @@ gravestone_doji(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLGRAVESTONEDOJI (\link{integer})}{Gravestone Doji pattern}
+\item{CDLGRAVESTONEDOJI}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

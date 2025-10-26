@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLRISEFALL3METHODS ([integer])}{Rising/Falling Three Methods pattern}
+#'  \item{CDLRISEFALL3METHODS}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

@@ -11,6 +11,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @template returns
 fixed_moving_average_convergence_divergence <- function(
 	x,
 	cols,

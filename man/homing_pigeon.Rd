@@ -18,7 +18,7 @@ homing_pigeon(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLHOMINGPIGEON (\link{integer})}{Homing Pigeon pattern}
+\item{CDLHOMINGPIGEON}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

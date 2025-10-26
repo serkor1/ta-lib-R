@@ -20,7 +20,7 @@ weighted_moving_average(x, cols, n = 10, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{WMA (\link{double})}{Weighted Moving Average}
+\item{WMA}{\link{double}}
 }
 }
 \description{

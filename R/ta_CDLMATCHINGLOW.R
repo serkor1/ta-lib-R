@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLMATCHINGLOW ([integer])}{Matching Low pattern}
+#'  \item{CDLMATCHINGLOW}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

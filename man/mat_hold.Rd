@@ -20,7 +20,7 @@ mat_hold(x, cols, eps = 0, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLMATHOLD (\link{integer})}{Mat Hold pattern}
+\item{CDLMATHOLD}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

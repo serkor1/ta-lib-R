@@ -18,7 +18,7 @@ harami_cross(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLHARAMICROSS (\link{integer})}{Harami Cross pattern}
+\item{CDLHARAMICROSS}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

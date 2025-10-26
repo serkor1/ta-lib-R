@@ -10,6 +10,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @template returns
 plus_directional_indicator <- function(
 	x,
 	cols,

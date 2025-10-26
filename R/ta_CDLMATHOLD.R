@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLMATHOLD ([integer])}{Mat Hold pattern}
+#'  \item{CDLMATHOLD}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

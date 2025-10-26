@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLEVENINGDOJISTAR ([integer])}{Evening Doji Star pattern}
+#'  \item{CDLEVENINGDOJISTAR}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

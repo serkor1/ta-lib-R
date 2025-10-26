@@ -18,7 +18,7 @@ stick_sandwich(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLSTICKSANDWICH (\link{integer})}{Stick Sandwich pattern}
+\item{CDLSTICKSANDWICH}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

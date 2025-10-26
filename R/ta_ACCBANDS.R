@@ -10,6 +10,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @template returns
 acceleration_bands <- function(
 	x,
 	cols,

@@ -6,14 +6,8 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun t3_exponential_moving_average
 #'
-#' @returns
-#' An object of same [class] and [length] of `x`:
-#'
-#' \describe{
-#'  \item{T3 ([double])}{Triple Exponential Moving Average (T3)}
-#' }
-#'
 #' @template description
+#' @template returns
 t3_exponential_moving_average <- function(
 	x,
 	cols,

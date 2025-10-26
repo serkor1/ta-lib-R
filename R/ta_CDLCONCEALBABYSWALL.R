@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLCONCEALBABYSWALL ([integer])}{Concealing Baby Swallow pattern}
+#'  \item{CDLCONCEALBABYSWALL}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

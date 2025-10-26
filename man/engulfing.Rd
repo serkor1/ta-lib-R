@@ -18,7 +18,7 @@ engulfing(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLENGULFING (\link{integer})}{Engulfing pattern}
+\item{CDLENGULFING}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

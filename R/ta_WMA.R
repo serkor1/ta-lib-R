@@ -6,14 +6,8 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun weighted_moving_average
 #'
-#' @returns
-#' An object of same [class] and [length] of `x`:
-#'
-#' \describe{
-#'  \item{WMA ([double])}{Weighted Moving Average}
-#' }
-#'
 #' @template description
+#' @template returns
 weighted_moving_average <- function(
 	x,
 	cols,

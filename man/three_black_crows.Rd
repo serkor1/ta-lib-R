@@ -18,7 +18,7 @@ three_black_crows(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDL3BLACKCROWS (\link{integer})}{Three Black Crows pattern}
+\item{CDL3BLACKCROWS}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

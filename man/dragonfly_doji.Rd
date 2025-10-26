@@ -18,7 +18,7 @@ dragonfly_doji(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLDRAGONFLYDOJI (\link{integer})}{Dragonfly Doji pattern}
+\item{CDLDRAGONFLYDOJI}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

@@ -10,6 +10,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @template returns
 directional_movement_index <- function(
 	x,
 	cols,

@@ -13,6 +13,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @template returns
 extended_moving_average_convergence_divergence <- function(
 	x,
 	cols,

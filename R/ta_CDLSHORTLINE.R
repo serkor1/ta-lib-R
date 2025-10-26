@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLSHORTLINE ([integer])}{Short Line Candle pattern}
+#'  \item{CDLSHORTLINE}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

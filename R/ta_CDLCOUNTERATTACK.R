@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLCOUNTERATTACK ([integer])}{Counter Attack pattern}
+#'  \item{CDLCOUNTERATTACK}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

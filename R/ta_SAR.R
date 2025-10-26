@@ -12,6 +12,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @template returns
 parabolic_stop_and_reverse <- function(
 	x,
 	cols,

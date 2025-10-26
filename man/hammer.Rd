@@ -18,7 +18,7 @@ hammer(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLHAMMER (\link{integer})}{Hammer pattern}
+\item{CDLHAMMER}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLSTALLEDPATTERN ([integer])}{Stalled Pattern pattern}
+#'  \item{CDLSTALLEDPATTERN}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

@@ -18,7 +18,7 @@ high_wave(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLHIGHWAVE (\link{integer})}{High Wave pattern}
+\item{CDLHIGHWAVE}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

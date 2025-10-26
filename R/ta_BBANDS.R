@@ -13,6 +13,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @template returns
 bollinger_bands <- function(
 	x,
 	cols,

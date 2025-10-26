@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDL3WHITESOLDIERS ([integer])}{Three White Soldiers pattern}
+#'  \item{CDL3WHITESOLDIERS}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

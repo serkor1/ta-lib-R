@@ -10,6 +10,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @template returns
 sine_wave <- function(
 	x,
 	cols,

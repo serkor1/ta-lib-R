@@ -20,7 +20,7 @@ evening_star(x, cols, eps = 0, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLEVENINGSTAR (\link{integer})}{Evening Star pattern}
+\item{CDLEVENINGSTAR}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

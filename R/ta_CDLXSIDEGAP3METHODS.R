@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLXSIDEGAP3METHODS ([integer])}{Upside/Downside Gap Three Methods pattern}
+#'  \item{CDLXSIDEGAP3METHODS}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

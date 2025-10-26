@@ -20,7 +20,7 @@ mesa_adaptive_moving_average(x, cols, n = 10, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{MAMA (\link{double})}{MESA Adaptive Moving Average}
+\item{MAMA}{\link{double}}
 }
 }
 \description{

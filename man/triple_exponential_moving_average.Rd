@@ -20,7 +20,7 @@ triple_exponential_moving_average(x, cols, n = 10, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{TEMA (\link{double})}{Triple Exponential Moving Average}
+\item{TEMA}{\link{double}}
 }
 }
 \description{

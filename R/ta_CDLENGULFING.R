@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLENGULFING ([integer])}{Engulfing pattern}
+#'  \item{CDLENGULFING}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

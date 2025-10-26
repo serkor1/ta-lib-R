@@ -1,356 +1,523 @@
-DT <- data.table::data.table(
-	title = c(
-		# 58
-		'Abandoned Baby',
-		'Advance Block',
-		'Belt Hold',
-		'Break Away',
-		'Closing Marubozu',
-		'Concealing Baby Swallow',
-		'Counter Attack',
-		'Dark Cloud Cover',
-		'Doji',
-		'Doji Star',
-		'Dragonfly Doji',
-		'Engulfing',
-		'Evening Doji Star',
-		'Up/Down-gap side-by-side white lines',
-		'Gravestone Doji',
-		'Hammer',
-		'Hanging Man',
-		'Harami',
-		'Harami Cross',
-		'High Wave',
-		'Hikkake',
-		'Hikkake Modified',
-		'Homing Pigeon',
-		'In Neck',
-		'Inverted Hammer',
-		'Kicking',
-		'Kicking Baby Length',
-		'Long Legged Doji',
-		'Long Line',
-		'Marubozu',
-		'Mat Hold',
-		'Matching Low',
-		'Morning Doji Star',
-		'Morning Star',
-		'On-Neck',
-		'Piercing',
-		'Rickshaw Man',
-		'Rising/Falling Three Methods',
-		'Separating Lines',
-		'Shooting Star',
-		'Short Line Candle',
-		'Spinning Top',
-		'Stalled Pattern',
-		'Stick Sandwich',
-		'Takuri',
-		'Tasuki Gap',
-		'Three Black Crows',
-		'Identical Three Crows',
-		'Three Inside',
-		'Three-Line Strike',
-		'Three Outside',
-		'Three Stars in the South',
-		'Three White Soldiers',
-		'Thrusting',
-		'Tristar',
-		'Two Crows',
-		'Unique Three River',
-		'Upside Gap Two Crows',
-		'Upside/Downside Gap Three Methods',
-		'Ladder Bottom',
-		'Evening Star'
-	),
-	fun = c(
-		# 58
-		'abandoned_baby',
-		'advance_block',
-		'belt_hold',
-		'break_away',
-		'closing_marubozu',
-		'concealing_baby_swallow',
-		'counter_attack',
-		'dark_cloud_cover',
-		'doji',
-		'doji_star',
-		'dragonfly_doji',
-		'engulfing',
-		'evening_doji_star',
-		'gaps_side_white',
-		'gravestone_doji',
-		'hammer',
-		'hanging_man',
-		'harami',
-		'harami_cross',
-		'high_wave',
-		'hikakke',
-		'hikakke_mod',
-		'homing_pigeon',
-		'in_neck',
-		'inverted_hammer',
-		'kicking',
-		'kicking_baby_length',
-		'long_legged_doji',
-		'long_line',
-		'marubozu',
-		'mat_hold',
-		'matching_low',
-		'morning_doji_star',
-		'morning_star',
-		'on_neck',
-		'piercing',
-		'rickshaw_man',
-		'rise_fall_3_methods',
-		'separating_lines',
-		'shooting_star',
-		'short_line',
-		'spinning_top',
-		'stalled_pattern',
-		'stick_sandwich',
-		'takuri',
-		'tasuki_gap',
-		'three_black_crows',
-		'three_identical_crows',
-		'three_inside',
-		'three_line_strike',
-		'three_outside',
-		'three_stars_in_the_south',
-		'three_white_soldiers',
-		'thrusting',
-		'tristar',
-		'two_crows',
-		'unique_3_river',
-		'upside_gap_2_crows',
-		'xside_gap_3_methods',
-		'ladder_bottom',
-		'evening_star'
-	),
-	signature = c(
-		# 57
-		'eps=0',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'eps=0',
-		'',
-		'',
-		'',
-		'',
-		'eps=0',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'eps=0',
-		'',
-		'eps=0',
-		'eps=0',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'',
-		'eps=0'
-	),
-	alias = c(
-		# 58
-		'CDLABANDONEDBABY',
-		'CDLADVANCEBLOCK',
-		'CDLBELTHOLD',
-		'CDLBREAKAWAY',
-		'CDLCLOSINGMARUBOZU',
-		'CDLCONCEALBABYSWALL',
-		'CDLCOUNTERATTACK',
-		'CDLDARKCLOUDCOVER',
-		'CDLDOJI',
-		'CDLDOJISTAR',
-		'CDLDRAGONFLYDOJI',
-		'CDLENGULFING',
-		'CDLEVENINGDOJISTAR',
-		'CDLGAPSIDESIDEWHITE',
-		'CDLGRAVESTONEDOJI',
-		'CDLHAMMER',
-		'CDLHANGINGMAN',
-		'CDLHARAMI',
-		'CDLHARAMICROSS',
-		'CDLHIGHWAVE',
-		'CDLHIKKAKE',
-		'CDLHIKKAKEMOD',
-		'CDLHOMINGPIGEON',
-		'CDLINNECK',
-		'CDLINVERTEDHAMMER',
-		'CDLKICKING',
-		'CDLKICKINGBYLENGTH',
-		'CDLLONGLEGGEDDOJI',
-		'CDLLONGLINE',
-		'CDLMARUBOZU',
-		'CDLMATHOLD',
-		'CDLMATCHINGLOW',
-		'CDLMORNINGDOJISTAR',
-		'CDLMORNINGSTAR',
-		'CDLONNECK',
-		'CDLPIERCING',
-		'CDLRICKSHAWMAN',
-		'CDLRISEFALL3METHODS',
-		'CDLSEPARATINGLINES',
-		'CDLSHOOTINGSTAR',
-		'CDLSHORTLINE',
-		'CDLSPINNINGTOP',
-		'CDLSTALLEDPATTERN',
-		'CDLSTICKSANDWICH',
-		'CDLTAKURI',
-		'CDLTASUKIGAP',
-		'CDL3BLACKCROWS',
-		'CDLIDENTICAL3CROWS',
-		'CDL3INSIDE',
-		'CDL3LINESTRIKE',
-		'CDL3OUTSIDE',
-		'CDL3STARSINSOUTH',
-		'CDL3WHITESOLDIERS',
-		'CDLTHRUSTING',
-		'CDLTRISTAR',
-		'CDL2CROWS',
-		'CDLUNIQUE3RIVER',
-		'CDLUPSIDEGAP2CROWS',
-		'CDLXSIDEGAP3METHODS',
-		'CDLLADDERBOTTOM',
-		'CDLEVENINGSTAR'
-	),
-	agnostic = c(
-		# 57
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'TRUE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'TRUE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'TRUE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'TRUE',
-		'TRUE',
-		'TRUE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'TRUE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'TRUE',
-		'TRUE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE',
-		'FALSE'
-	)
+## script: Generate Candlestick Patterns
+## objective:
+##
+## Generate all available candlestick patterns
+## based on the templates
+##
+## author: Serkan Korkmaz
+##
+## 1) define all candlestick
+##    patterns as list
+metadata <- list()
+
+metadata[[1]] <- list(
+	title = 'Abandoned Baby',
+	fun = 'abandoned_baby',
+	signature = 'eps = 0',
+	alias = 'CDLABANDONEDBABY',
+	agnostic = FALSE
 )
 
+metadata[[2]] <- list(
+	title = 'Advance Block',
+	fun = 'advance_block',
+	signature = '',
+	alias = 'CDLADVANCEBLOCK',
+	agnostic = FALSE
+)
 
-generate_indicator <- function(
-	title,
-	fun,
-	signature,
-	default_formula,
-	alias
+metadata[[3]] <- list(
+	title = 'Belt Hold',
+	fun = 'belt_hold',
+	signature = '',
+	alias = 'CDLBELTHOLD',
+	agnostic = FALSE
+)
+
+metadata[[4]] <- list(
+	title = 'Break Away',
+	fun = 'break_away',
+	signature = '',
+	alias = 'CDLBREAKAWAY',
+	agnostic = FALSE
+)
+
+metadata[[5]] <- list(
+	title = 'Closing Marubozu',
+	fun = 'closing_marubozu',
+	signature = '',
+	alias = 'CDLCLOSINGMARUBOZU',
+	agnostic = TRUE
+)
+
+metadata[[6]] <- list(
+	title = 'Concealing Baby Swallow',
+	fun = 'concealing_baby_swallow',
+	signature = '',
+	alias = 'CDLCONCEALBABYSWALL',
+	agnostic = FALSE
+)
+
+metadata[[7]] <- list(
+	title = 'Counter Attack',
+	fun = 'counter_attack',
+	signature = '',
+	alias = 'CDLCOUNTERATTACK',
+	agnostic = FALSE
+)
+
+metadata[[8]] <- list(
+	title = 'Dark Cloud Cover',
+	fun = 'dark_cloud_cover',
+	signature = 'eps = 0',
+	alias = 'CDLDARKCLOUDCOVER',
+	agnostic = FALSE
+)
+
+metadata[[9]] <- list(
+	title = 'Doji',
+	fun = 'doji',
+	signature = '',
+	alias = 'CDLDOJI',
+	agnostic = TRUE
+)
+
+metadata[[10]] <- list(
+	title = 'Doji Star',
+	fun = 'doji_star',
+	signature = '',
+	alias = 'CDLDOJISTAR',
+	agnostic = FALSE
+)
+
+metadata[[11]] <- list(
+	title = 'Dragonfly Doji',
+	fun = 'dragonfly_doji',
+	signature = '',
+	alias = 'CDLDRAGONFLYDOJI',
+	agnostic = FALSE
+)
+
+metadata[[12]] <- list(
+	title = 'Engulfing',
+	fun = 'engulfing',
+	signature = '',
+	alias = 'CDLENGULFING',
+	agnostic = FALSE
+)
+
+metadata[[13]] <- list(
+	title = 'Evening Doji Star',
+	fun = 'evening_doji_star',
+	signature = 'eps = 0',
+	alias = 'CDLEVENINGDOJISTAR',
+	agnostic = FALSE
+)
+
+metadata[[14]] <- list(
+	title = 'Up/Down-gap side-by-side white lines',
+	fun = 'gaps_side_white',
+	signature = '',
+	alias = 'CDLGAPSIDESIDEWHITE',
+	agnostic = FALSE
+)
+
+metadata[[15]] <- list(
+	title = 'Gravestone Doji',
+	fun = 'gravestone_doji',
+	signature = '',
+	alias = 'CDLGRAVESTONEDOJI',
+	agnostic = FALSE
+)
+
+metadata[[16]] <- list(
+	title = 'Hammer',
+	fun = 'hammer',
+	signature = '',
+	alias = 'CDLHAMMER',
+	agnostic = FALSE
+)
+
+metadata[[17]] <- list(
+	title = 'Hanging Man',
+	fun = 'hanging_man',
+	signature = '',
+	alias = 'CDLHANGINGMAN',
+	agnostic = FALSE
+)
+
+metadata[[18]] <- list(
+	title = 'Harami',
+	fun = 'harami',
+	signature = '',
+	alias = 'CDLHARAMI',
+	agnostic = FALSE
+)
+
+metadata[[19]] <- list(
+	title = 'Harami Cross',
+	fun = 'harami_cross',
+	signature = '',
+	alias = 'CDLHARAMICROSS',
+	agnostic = FALSE
+)
+
+metadata[[20]] <- list(
+	title = 'High Wave',
+	fun = 'high_wave',
+	signature = '',
+	alias = 'CDLHIGHWAVE',
+	agnostic = TRUE
+)
+
+metadata[[21]] <- list(
+	title = 'Hikkake',
+	fun = 'hikakke',
+	signature = '',
+	alias = 'CDLHIKKAKE',
+	agnostic = FALSE
+)
+
+metadata[[22]] <- list(
+	title = 'Hikkake Modified',
+	fun = 'hikakke_mod',
+	signature = '',
+	alias = 'CDLHIKKAKEMOD',
+	agnostic = FALSE
+)
+
+metadata[[23]] <- list(
+	title = 'Homing Pigeon',
+	fun = 'homing_pigeon',
+	signature = '',
+	alias = 'CDLHOMINGPIGEON',
+	agnostic = FALSE
+)
+
+metadata[[24]] <- list(
+	title = 'In Neck',
+	fun = 'in_neck',
+	signature = '',
+	alias = 'CDLINNECK',
+	agnostic = FALSE
+)
+
+metadata[[25]] <- list(
+	title = 'Inverted Hammer',
+	fun = 'inverted_hammer',
+	signature = '',
+	alias = 'CDLINVERTEDHAMMER',
+	agnostic = FALSE
+)
+
+metadata[[26]] <- list(
+	title = 'Kicking',
+	fun = 'kicking',
+	signature = '',
+	alias = 'CDLKICKING',
+	agnostic = FALSE
+)
+
+metadata[[27]] <- list(
+	title = 'Kicking Baby Length',
+	fun = 'kicking_baby_length',
+	signature = '',
+	alias = 'CDLKICKINGBYLENGTH',
+	agnostic = TRUE
+)
+
+metadata[[28]] <- list(
+	title = 'Long Legged Doji',
+	fun = 'long_legged_doji',
+	signature = '',
+	alias = 'CDLLONGLEGGEDDOJI',
+	agnostic = TRUE
+)
+
+metadata[[29]] <- list(
+	title = 'Long Line',
+	fun = 'long_line',
+	signature = '',
+	alias = 'CDLLONGLINE',
+	agnostic = TRUE
+)
+
+metadata[[30]] <- list(
+	title = 'Marubozu',
+	fun = 'marubozu',
+	signature = '',
+	alias = 'CDLMARUBOZU',
+	agnostic = FALSE
+)
+
+metadata[[31]] <- list(
+	title = 'Mat Hold',
+	fun = 'mat_hold',
+	signature = 'eps=0',
+	alias = 'CDLMATHOLD',
+	agnostic = FALSE
+)
+
+metadata[[32]] <- list(
+	title = 'Matching Low',
+	fun = 'matching_low',
+	signature = '',
+	alias = 'CDLMATCHINGLOW',
+	agnostic = FALSE
+)
+
+metadata[[33]] <- list(
+	title = 'Morning Doji Star',
+	fun = 'morning_doji_star',
+	signature = 'eps=0',
+	alias = 'CDLMORNINGDOJISTAR',
+	agnostic = FALSE
+)
+
+metadata[[34]] <- list(
+	title = 'Morning Star',
+	fun = 'morning_star',
+	signature = 'eps = 0',
+	alias = 'CDLMORNINGSTAR',
+	agnostic = FALSE
+)
+
+metadata[[35]] <- list(
+	title = 'On-Neck',
+	fun = 'on_neck',
+	signature = '',
+	alias = 'CDLONNECK',
+	agnostic = FALSE
+)
+
+metadata[[36]] <- list(
+	title = 'Piercing',
+	fun = 'piercing',
+	signature = '',
+	alias = 'CDLPIERCING',
+	agnostic = TRUE
+)
+
+metadata[[37]] <- list(
+	title = 'Rickshaw Man',
+	fun = 'rickshaw_man',
+	signature = '',
+	alias = 'CDLRICKSHAWMAN',
+	agnostic = FALSE
+)
+
+metadata[[38]] <- list(
+	title = 'Rising/Falling Three Methods',
+	fun = 'rise_fall_3_methods',
+	signature = '',
+	alias = 'CDLRISEFALL3METHODS',
+	agnostic = FALSE
+)
+
+metadata[[39]] <- list(
+	title = 'Separating Lines',
+	fun = 'separating_lines',
+	signature = '',
+	alias = 'CDLSEPARATINGLINES',
+	agnostic = FALSE
+)
+
+metadata[[40]] <- list(
+	title = 'Shooting Star',
+	fun = 'shooting_star',
+	signature = '',
+	alias = 'CDLSHOOTINGSTAR',
+	agnostic = TRUE
+)
+
+metadata[[41]] <- list(
+	title = 'Short Line Candle',
+	fun = 'short_line',
+	signature = '',
+	alias = 'CDLSHORTLINE',
+	agnostic = TRUE
+)
+
+metadata[[42]] <- list(
+	title = 'Spinning Top',
+	fun = 'spinning_top',
+	signature = '',
+	alias = 'CDLSPINNINGTOP',
+	agnostic = FALSE
+)
+
+metadata[[43]] <- list(
+	title = 'Stalled Pattern',
+	fun = 'stalled_pattern',
+	signature = '',
+	alias = 'CDLSTALLEDPATTERN',
+	agnostic = FALSE
+)
+
+metadata[[44]] <- list(
+	title = 'Stick Sandwich',
+	fun = 'stick_sandwich',
+	signature = '',
+	alias = 'CDLSTICKSANDWICH',
+	agnostic = FALSE
+)
+
+metadata[[45]] <- list(
+	title = 'Takuri',
+	fun = 'takuri',
+	signature = '',
+	alias = 'CDLTAKURI',
+	agnostic = FALSE
+)
+
+metadata[[46]] <- list(
+	title = 'Tasuki Gap',
+	fun = 'tasuki_gap',
+	signature = '',
+	alias = 'CDLTASUKIGAP',
+	agnostic = FALSE
+)
+
+metadata[[47]] <- list(
+	title = 'Three Black Crows',
+	fun = 'three_black_crows',
+	signature = '',
+	alias = 'CDL3BLACKCROWS',
+	agnostic = FALSE
+)
+
+metadata[[48]] <- list(
+	title = 'Identical Three Crows',
+	fun = 'three_identical_crows',
+	signature = '',
+	alias = 'CDLIDENTICAL3CROWS',
+	agnostic = FALSE
+)
+
+metadata[[49]] <- list(
+	title = 'Three Inside',
+	fun = 'three_inside',
+	signature = '',
+	alias = 'CDL3INSIDE',
+	agnostic = FALSE
+)
+
+metadata[[50]] <- list(
+	title = 'Three-Line Strike',
+	fun = 'three_line_strike',
+	signature = '',
+	alias = 'CDL3LINESTRIKE',
+	agnostic = FALSE
+)
+
+metadata[[51]] <- list(
+	title = 'Three Outside',
+	fun = 'three_outside',
+	signature = '',
+	alias = 'CDL3OUTSIDE',
+	agnostic = FALSE
+)
+
+metadata[[52]] <- list(
+	title = 'Three Stars in the South',
+	fun = 'three_stars_in_the_south',
+	signature = '',
+	alias = 'CDL3STARSINSOUTH',
+	agnostic = FALSE
+)
+
+metadata[[53]] <- list(
+	title = 'Three White Soldiers',
+	fun = 'three_white_soldiers',
+	signature = '',
+	alias = 'CDL3WHITESOLDIERS',
+	agnostic = FALSE
+)
+
+metadata[[54]] <- list(
+	title = 'Thrusting',
+	fun = 'thrusting',
+	signature = '',
+	alias = 'CDLTHRUSTING',
+	agnostic = FALSE
+)
+
+metadata[[55]] <- list(
+	title = 'Tristar',
+	fun = 'tristar',
+	signature = '',
+	alias = 'CDLTRISTAR',
+	agnostic = FALSE
+)
+
+metadata[[56]] <- list(
+	title = 'Two Crows',
+	fun = 'two_crows',
+	signature = '',
+	alias = 'CDL2CROWS',
+	agnostic = FALSE
+)
+
+metadata[[57]] <- list(
+	title = 'Unique Three River',
+	fun = 'unique_3_river',
+	signature = '',
+	alias = 'CDLUNIQUE3RIVER',
+	agnostic = FALSE
+)
+
+metadata[[58]] <- list(
+	title = 'Upside Gap Two Crows',
+	fun = 'upside_gap_2_crows',
+	signature = '',
+	alias = 'CDLUPSIDEGAP2CROWS',
+	agnostic = FALSE
+)
+
+metadata[[59]] <- list(
+	title = 'Upside/Downside Gap Three Methods',
+	fun = 'xside_gap_3_methods',
+	signature = '',
+	alias = 'CDLXSIDEGAP3METHODS',
+	agnostic = FALSE
+)
+
+metadata[[60]] <- list(
+	title = 'Ladder Bottom',
+	fun = 'ladder_bottom',
+	signature = '',
+	alias = 'CDLLADDERBOTTOM',
+	agnostic = FALSE
+)
+
+metadata[[61]] <- list(
+	title = 'Evening Star',
+	fun = 'evening_star',
+	signature = 'eps = 0',
+	alias = 'CDLEVENINGSTAR',
+	agnostic = FALSE
+)
+
+## 2) generate a wrapper that
+##    that accepts a list
+source("tools/generators/generate_functions.R")
+
+generate <- function(
+	x
 ) {
-	system2(
-		command = "bash",
-		args = c(
-			"tools/generate_indicator.sh",
-			'candlestick_template.R',
-			's',
-			paste0("'", title, "'"),
-			paste0("'", fun, "'"),
-			paste0("'", signature, "'"),
-			paste0("'", default_formula, "'"),
-			paste0("'", alias, "'")
-		)
+	generate_candlestick(
+		title = x$title,
+		fun = x$fun,
+		signature = x$signature,
+		alias = x$alias,
+		agnostic = x$agnostic
 	)
 }
 
-
-for (i in 1:nrow(DT)) {
-	generate_indicator(
-		title = DT$title[i],
-		fun = DT$fun[i],
-		signature = DT$signature[i],
-		default_formula = DT$agnostic[i],
-		alias = DT$alias[i]
+## 3) execute algorithm
+##    and celebrate
+for (x in metadata) {
+	generate(
+		x
 	)
 }

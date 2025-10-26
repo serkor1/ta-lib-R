@@ -18,7 +18,7 @@ three_white_soldiers(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDL3WHITESOLDIERS (\link{integer})}{Three White Soldiers pattern}
+\item{CDL3WHITESOLDIERS}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

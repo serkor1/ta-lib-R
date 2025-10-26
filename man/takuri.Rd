@@ -18,7 +18,7 @@ takuri(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLTAKURI (\link{integer})}{Takuri pattern}
+\item{CDLTAKURI}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

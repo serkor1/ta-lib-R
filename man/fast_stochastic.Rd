@@ -18,6 +18,14 @@ fast_stochastic(x, cols, fastk = 5, fastd = SMA(n = 10), ...)
 
 \item{...}{Additional parameters passed into \link{model.frame}}
 }
+\value{
+An object of same \link{class} and \link{length} of \code{x}:
+
+\describe{
+\item{fastk}{\link{double}}
+\item{fastd}{\link{double}}
+}
+}
 \description{
 The \code{fast_stochastic()} is a generic S3 function that builds upon 'type-safe'-esque workflows limited to classes in in base \code{R}, and the package-wide
 dependencies. Ie. \link{class} in, \link{class} out. Each method is a soft wrapper of \link{model.frame} and therefore the OHLC-V series must be coercible to a \link{data.frame}.

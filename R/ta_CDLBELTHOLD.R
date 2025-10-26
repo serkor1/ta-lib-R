@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLBELTHOLD ([integer])}{Belt Hold pattern}
+#'  \item{CDLBELTHOLD}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

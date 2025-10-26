@@ -18,7 +18,7 @@ spinning_top(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLSPINNINGTOP (\link{integer})}{Spinning Top pattern}
+\item{CDLSPINNINGTOP}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

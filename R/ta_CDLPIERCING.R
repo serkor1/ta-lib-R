@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLPIERCING ([integer])}{Piercing pattern}
+#'  \item{CDLPIERCING}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLHANGINGMAN ([integer])}{Hanging Man pattern}
+#'  \item{CDLHANGINGMAN}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

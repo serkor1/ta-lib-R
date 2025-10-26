@@ -79,4 +79,11 @@ unit-tests: ## Generate, or update, unit-tests
 
 	$(MAKE) fmt
 
-
+gen-code: ## Generate R wrappers and unit-tests
+	@Rscript ./tools/generators/generate_cycle_indicator.R
+	@Rscript ./tools/generators/generate_candlestick.R
+	@Rscript ./tools/generators/generate_momentum.R
+	@Rscript ./tools/generators/generate_moving_average.R
+	@Rscript ./tools/generators/generate_overlapstudy.R
+	@Rscript ./tools/generators/generate_volume_indicator.R
+	$(MAKE) unit-tests

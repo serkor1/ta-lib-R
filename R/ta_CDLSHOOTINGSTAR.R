@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLSHOOTINGSTAR ([integer])}{Shooting Star pattern}
+#'  \item{CDLSHOOTINGSTAR}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

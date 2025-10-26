@@ -10,6 +10,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @template returns
 on_balance_volume <- function(
 	x,
 	cols,

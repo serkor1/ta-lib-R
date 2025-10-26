@@ -10,6 +10,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @template returns
 average_direcitonal_movement_index_rating <- function(
 	x,
 	cols,

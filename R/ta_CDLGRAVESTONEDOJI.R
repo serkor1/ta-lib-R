@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLGRAVESTONEDOJI ([integer])}{Gravestone Doji pattern}
+#'  \item{CDLGRAVESTONEDOJI}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

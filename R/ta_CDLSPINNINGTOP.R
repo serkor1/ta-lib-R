@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLSPINNINGTOP ([integer])}{Spinning Top pattern}
+#'  \item{CDLSPINNINGTOP}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

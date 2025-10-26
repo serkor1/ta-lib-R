@@ -13,6 +13,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @template returns
 stochastic_relative_strength_index <- function(
 	x,
 	cols,

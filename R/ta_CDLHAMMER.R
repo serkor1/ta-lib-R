@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLHAMMER ([integer])}{Hammer pattern}
+#'  \item{CDLHAMMER}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

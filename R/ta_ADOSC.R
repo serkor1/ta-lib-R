@@ -12,6 +12,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @template returns
 chaikin_accumulation_distribution_oscillator <- function(
 	x,
 	cols,

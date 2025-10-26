@@ -18,7 +18,7 @@ doji_star(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLDOJISTAR (\link{integer})}{Doji Star pattern}
+\item{CDLDOJISTAR}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

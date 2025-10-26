@@ -18,7 +18,7 @@ break_away(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLBREAKAWAY (\link{integer})}{Break Away pattern}
+\item{CDLBREAKAWAY}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

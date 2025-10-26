@@ -10,6 +10,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @template returns
 phasor_components <- function(
 	x,
 	cols,

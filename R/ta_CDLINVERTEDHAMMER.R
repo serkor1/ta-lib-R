@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLINVERTEDHAMMER ([integer])}{Inverted Hammer pattern}
+#'  \item{CDLINVERTEDHAMMER}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

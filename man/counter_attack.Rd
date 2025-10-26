@@ -18,7 +18,7 @@ counter_attack(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLCOUNTERATTACK (\link{integer})}{Counter Attack pattern}
+\item{CDLCOUNTERATTACK}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

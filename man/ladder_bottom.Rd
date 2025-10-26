@@ -18,7 +18,7 @@ ladder_bottom(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLLADDERBOTTOM (\link{integer})}{Ladder Bottom pattern}
+\item{CDLLADDERBOTTOM}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

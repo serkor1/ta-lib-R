@@ -10,6 +10,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @template returns
 aroon_oscillator <- function(
 	x,
 	cols,

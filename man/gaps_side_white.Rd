@@ -18,7 +18,7 @@ gaps_side_white(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLGAPSIDESIDEWHITE (\link{integer})}{Up/Down-gap side-by-side white lines pattern}
+\item{CDLGAPSIDESIDEWHITE}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

@@ -10,6 +10,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @template returns
 $FUN <- function(
 	x, 
 	cols, $SIG_FORMALS

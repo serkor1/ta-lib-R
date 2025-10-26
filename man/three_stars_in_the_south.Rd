@@ -18,7 +18,7 @@ three_stars_in_the_south(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDL3STARSINSOUTH (\link{integer})}{Three Stars in the South pattern}
+\item{CDL3STARSINSOUTH}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

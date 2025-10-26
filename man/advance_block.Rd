@@ -18,7 +18,7 @@ advance_block(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLADVANCEBLOCK (\link{integer})}{Advance Block pattern}
+\item{CDLADVANCEBLOCK}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

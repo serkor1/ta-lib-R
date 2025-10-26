@@ -18,7 +18,7 @@ stalled_pattern(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLSTALLEDPATTERN (\link{integer})}{Stalled Pattern pattern}
+\item{CDLSTALLEDPATTERN}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

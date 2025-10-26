@@ -18,7 +18,7 @@ upside_gap_2_crows(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLUPSIDEGAP2CROWS (\link{integer})}{Upside Gap Two Crows pattern}
+\item{CDLUPSIDEGAP2CROWS}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

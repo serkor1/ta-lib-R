@@ -18,7 +18,7 @@ three_outside(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDL3OUTSIDE (\link{integer})}{Three Outside pattern}
+\item{CDL3OUTSIDE}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

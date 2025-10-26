@@ -18,7 +18,7 @@ kicking_baby_length(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLKICKINGBYLENGTH (\link{integer})}{Kicking Baby Length pattern}
+\item{CDLKICKINGBYLENGTH}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

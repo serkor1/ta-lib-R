@@ -18,7 +18,7 @@ inverted_hammer(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLINVERTEDHAMMER (\link{integer})}{Inverted Hammer pattern}
+\item{CDLINVERTEDHAMMER}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

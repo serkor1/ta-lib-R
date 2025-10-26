@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDL3INSIDE ([integer])}{Three Inside pattern}
+#'  \item{CDL3INSIDE}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

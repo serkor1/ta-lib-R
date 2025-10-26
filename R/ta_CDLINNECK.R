@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLINNECK ([integer])}{In Neck pattern}
+#'  \item{CDLINNECK}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

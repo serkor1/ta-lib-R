@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLDOJI ([integer])}{Doji pattern}
+#'  \item{CDLDOJI}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

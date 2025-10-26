@@ -13,6 +13,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @template returns
 percentage_price_oscillator <- function(
 	x,
 	cols,

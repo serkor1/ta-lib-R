@@ -10,6 +10,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @template returns
 ratio_of_change <- function(
 	x,
 	cols,

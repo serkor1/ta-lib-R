@@ -18,7 +18,7 @@ belt_hold(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLBELTHOLD (\link{integer})}{Belt Hold pattern}
+\item{CDLBELTHOLD}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLLADDERBOTTOM ([integer])}{Ladder Bottom pattern}
+#'  \item{CDLLADDERBOTTOM}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

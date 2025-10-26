@@ -18,7 +18,7 @@ rise_fall_3_methods(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLRISEFALL3METHODS (\link{integer})}{Rising/Falling Three Methods pattern}
+\item{CDLRISEFALL3METHODS}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

@@ -18,7 +18,7 @@ xside_gap_3_methods(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLXSIDEGAP3METHODS (\link{integer})}{Upside/Downside Gap Three Methods pattern}
+\item{CDLXSIDEGAP3METHODS}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

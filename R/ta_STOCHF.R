@@ -12,6 +12,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @template returns
 fast_stochastic <- function(
 	x,
 	cols,

@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLSEPARATINGLINES ([integer])}{Separating Lines pattern}
+#'  \item{CDLSEPARATINGLINES}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

@@ -10,6 +10,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @template returns
 commodity_channel_index <- function(
 	x,
 	cols,

@@ -18,7 +18,7 @@ hanging_man(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLHANGINGMAN (\link{integer})}{Hanging Man pattern}
+\item{CDLHANGINGMAN}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

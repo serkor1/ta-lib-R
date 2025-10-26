@@ -1,77 +1,69 @@
 ## script: Generate 'Overlap Study'-indicators
 ## objective:
+##
+## There is no signature or default formula
+## here. The functions are all based on close
+## and has no further arguments
+##
 ## author:
 ##
 ##
 ## 1) define generator function
-generate_indicator <- function(
-	title,
-	fun,
-	signature,
-	default_formula,
-	alias
+meta <- list()
+
+## Hilbert Transform - Dominant Cycle Period: metadata
+meta[[1]] <- list(
+	title = 'Hilbert Transform - Dominant Cycle Period',
+	fun = 'dominant_cycle_period',
+	alias = 'HT_DCPERIOD'
+)
+
+## Hilbert Transform - Dominant Cycle Phase: metadata
+meta[[2]] <- list(
+	title = 'Hilbert Transform - Dominant Cycle Phase',
+	fun = 'dominant_cycle_phase',
+	alias = 'HT_DCPHASE'
+)
+
+## Hilbert Transform - Phasor Components: metadata
+meta[[3]] <- list(
+	title = 'Hilbert Transform - Phasor Components',
+	fun = 'phasor_components',
+	alias = 'HT_PHASOR'
+)
+
+## Hilbert Transform - SineWave: metadata
+meta[[4]] <- list(
+	title = 'Hilbert Transform - SineWave',
+	fun = 'sine_wave',
+	alias = 'HT_SINE'
+)
+
+## Hilbert Transform - Trend vs Cycle Mode: metadata
+meta[[5]] <- list(
+	title = 'Hilbert Transform - Trend vs Cycle Mode',
+	fun = 'trend_cycle_mode',
+	alias = 'HT_TRENDMODE'
+)
+
+## 2) generate a wrapper that
+##    that accepts a list
+source("tools/generators/generate_functions.R")
+
+generate <- function(
+	x
 ) {
-	system2(
-		command = "bash",
-		args = c(
-			'tools/generate_indicator.sh',
-			'indicator_template.R',
-			paste0("'", 'Cycle Indicator', "'"),
-			paste0("'", title, "'"),
-			paste0("'", fun, "'"),
-			paste0("'", signature, "'"),
-			paste0("'", default_formula, "'"),
-			paste0("'", alias, "'")
-		)
+	generate_cycle_indicator(
+		title = x$title,
+		fun = x$fun,
+		alias = x$alias
 	)
 }
 
-## 2) define function signatures
-DT <- data.table::data.table(
-	title = c(
-		'Hilbert Transform - Dominant Cycle Period',
-		'Hilbert Transform - Dominant Cycle Phase',
-		'Hilbert Transform - Phasor Components',
-		'Hilbert Transform - SineWave',
-		'Hilbert Transform - Trend vs Cycle Mode'
-	),
-	fun = c(
-		'dominant_cycle_period',
-		'dominant_cycle_phase',
-		'phasor_components',
-		'sine_wave',
-		'trend_cycle_mode'
-	),
-	signature = c(
-		'',
-		'',
-		'',
-		'',
-		''
-	),
-	default_formula = c(
-		'~close',
-		'~close',
-		'~close',
-		'~close',
-		'~close'
-	),
-	alias = c(
-		'HT_DCPERIOD',
-		'HT_DCPHASE',
-		'HT_PHASOR',
-		'HT_SINE',
-		'HT_TRENDMODE'
-	)
-)
-
-## 3) run
-for (i in 1:nrow(DT)) {
-	generate_indicator(
-		title = DT$title[i],
-		fun = DT$fun[i],
-		signature = DT$signature[i],
-		default_formula = DT$default_formula[i],
-		alias = DT$alias[i]
+## 3) execute algorithm
+##    and celebrate
+for (x in meta) {
+	generate(
+		x
 	)
 }

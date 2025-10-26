@@ -21,3 +21,23 @@ NULL
 #' @keywords internal
 #' @usage NULL
 NULL
+
+
+generate_return <- function(x) {
+	nm <- colnames(x)
+	ty <- vapply(
+		x,
+		function(col) paste(typeof(col), collapse = "/"),
+		character(1)
+	)
+	items <- paste0(
+		"\\item{",
+		nm,
+		"}",
+		"{[",
+		ty,
+		"]}"
+	)
+
+	paste0("\\describe{\n", paste(items, collapse = "\n"), "\n}")
+}

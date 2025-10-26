@@ -18,7 +18,7 @@ closing_marubozu(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLCLOSINGMARUBOZU (\link{integer})}{Closing Marubozu pattern}
+\item{CDLCLOSINGMARUBOZU}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

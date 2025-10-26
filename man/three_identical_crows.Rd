@@ -18,7 +18,7 @@ three_identical_crows(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLIDENTICAL3CROWS (\link{integer})}{Identical Three Crows pattern}
+\item{CDLIDENTICAL3CROWS}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

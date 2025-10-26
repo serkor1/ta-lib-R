@@ -6,14 +6,8 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun mesa_adaptive_moving_average
 #'
-#' @returns
-#' An object of same [class] and [length] of `x`:
-#'
-#' \describe{
-#'  \item{MAMA ([double])}{MESA Adaptive Moving Average}
-#' }
-#'
 #' @template description
+#' @template returns
 mesa_adaptive_moving_average <- function(
 	x,
 	cols,

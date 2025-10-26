@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDL3LINESTRIKE ([integer])}{Three-Line Strike pattern}
+#'  \item{CDL3LINESTRIKE}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

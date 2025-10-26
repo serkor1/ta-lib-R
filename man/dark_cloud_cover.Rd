@@ -20,7 +20,7 @@ dark_cloud_cover(x, cols, eps = 0, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLDARKCLOUDCOVER (\link{integer})}{Dark Cloud Cover pattern}
+\item{CDLDARKCLOUDCOVER}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

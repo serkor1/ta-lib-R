@@ -18,7 +18,7 @@ in_neck(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLINNECK (\link{integer})}{In Neck pattern}
+\item{CDLINNECK}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

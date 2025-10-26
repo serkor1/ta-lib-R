@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLSTICKSANDWICH ([integer])}{Stick Sandwich pattern}
+#'  \item{CDLSTICKSANDWICH}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

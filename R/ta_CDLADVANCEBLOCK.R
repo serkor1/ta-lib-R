@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLADVANCEBLOCK ([integer])}{Advance Block pattern}
+#'  \item{CDLADVANCEBLOCK}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

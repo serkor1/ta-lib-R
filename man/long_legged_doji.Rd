@@ -18,7 +18,7 @@ long_legged_doji(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLLONGLEGGEDDOJI (\link{integer})}{Long Legged Doji pattern}
+\item{CDLLONGLEGGEDDOJI}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLTASUKIGAP ([integer])}{Tasuki Gap pattern}
+#'  \item{CDLTASUKIGAP}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

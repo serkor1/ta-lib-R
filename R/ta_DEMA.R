@@ -6,14 +6,8 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun double_exponential_moving_average
 #'
-#' @returns
-#' An object of same [class] and [length] of `x`:
-#'
-#' \describe{
-#'  \item{DEMA ([double])}{Double Exponential Moving Average}
-#' }
-#'
 #' @template description
+#' @template returns
 double_exponential_moving_average <- function(
 	x,
 	cols,

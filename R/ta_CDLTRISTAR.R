@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLTRISTAR ([integer])}{Tristar pattern}
+#'  \item{CDLTRISTAR}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

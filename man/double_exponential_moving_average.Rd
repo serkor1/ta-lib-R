@@ -20,7 +20,7 @@ double_exponential_moving_average(x, cols, n = 10, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{DEMA (\link{double})}{Double Exponential Moving Average}
+\item{DEMA}{\link{double}}
 }
 }
 \description{

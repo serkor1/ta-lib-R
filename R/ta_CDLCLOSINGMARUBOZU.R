@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLCLOSINGMARUBOZU ([integer])}{Closing Marubozu pattern}
+#'  \item{CDLCLOSINGMARUBOZU}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

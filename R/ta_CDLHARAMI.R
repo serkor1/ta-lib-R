@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLHARAMI ([integer])}{Harami pattern}
+#'  \item{CDLHARAMI}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

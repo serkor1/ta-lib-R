@@ -18,7 +18,7 @@ tristar(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLTRISTAR (\link{integer})}{Tristar pattern}
+\item{CDLTRISTAR}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

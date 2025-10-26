@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLTAKURI ([integer])}{Takuri pattern}
+#'  \item{CDLTAKURI}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

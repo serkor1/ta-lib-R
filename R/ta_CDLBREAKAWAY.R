@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLBREAKAWAY ([integer])}{Break Away pattern}
+#'  \item{CDLBREAKAWAY}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

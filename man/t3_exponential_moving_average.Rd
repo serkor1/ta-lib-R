@@ -20,7 +20,7 @@ t3_exponential_moving_average(x, cols, n = 10, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{T3 (\link{double})}{Triple Exponential Moving Average (T3)}
+\item{T3}{\link{double}}
 }
 }
 \description{

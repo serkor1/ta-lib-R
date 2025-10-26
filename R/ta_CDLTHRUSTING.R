@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLTHRUSTING ([integer])}{Thrusting pattern}
+#'  \item{CDLTHRUSTING}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

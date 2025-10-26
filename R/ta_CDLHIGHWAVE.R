@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLHIGHWAVE ([integer])}{High Wave pattern}
+#'  \item{CDLHIGHWAVE}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

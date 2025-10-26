@@ -6,14 +6,8 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun triple_exponential_moving_average
 #'
-#' @returns
-#' An object of same [class] and [length] of `x`:
-#'
-#' \describe{
-#'  \item{TEMA ([double])}{Triple Exponential Moving Average}
-#' }
-#'
 #' @template description
+#' @template returns
 triple_exponential_moving_average <- function(
 	x,
 	cols,

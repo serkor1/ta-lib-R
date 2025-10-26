@@ -18,7 +18,7 @@ three_line_strike(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDL3LINESTRIKE (\link{integer})}{Three-Line Strike pattern}
+\item{CDL3LINESTRIKE}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

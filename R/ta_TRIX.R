@@ -10,6 +10,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @template returns
 triple_exponential_average <- function(
 	x,
 	cols,

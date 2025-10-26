@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLLONGLINE ([integer])}{Long Line pattern}
+#'  \item{CDLLONGLINE}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

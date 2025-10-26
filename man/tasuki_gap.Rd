@@ -18,7 +18,7 @@ tasuki_gap(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLTASUKIGAP (\link{integer})}{Tasuki Gap pattern}
+\item{CDLTASUKIGAP}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

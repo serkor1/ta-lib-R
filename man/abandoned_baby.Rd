@@ -20,7 +20,7 @@ abandoned_baby(x, cols, eps = 0, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLABANDONEDBABY (\link{integer})}{Abandoned Baby pattern}
+\item{CDLABANDONEDBABY}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

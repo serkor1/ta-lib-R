@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLHIKKAKE ([integer])}{Hikkake pattern}
+#'  \item{CDLHIKKAKE}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

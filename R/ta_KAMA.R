@@ -6,14 +6,8 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun kaufman_adaptive_moving_average
 #'
-#' @returns
-#' An object of same [class] and [length] of `x`:
-#'
-#' \describe{
-#'  \item{KAMA ([double])}{Kaufman Adaptive Moving Average}
-#' }
-#'
 #' @template description
+#' @template returns
 kaufman_adaptive_moving_average <- function(
 	x,
 	cols,

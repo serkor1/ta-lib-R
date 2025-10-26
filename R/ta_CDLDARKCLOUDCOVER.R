@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLDARKCLOUDCOVER ([integer])}{Dark Cloud Cover pattern}
+#'  \item{CDLDARKCLOUDCOVER}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

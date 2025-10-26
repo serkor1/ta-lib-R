@@ -18,7 +18,7 @@ on_neck(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLONNECK (\link{integer})}{On-Neck pattern}
+\item{CDLONNECK}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

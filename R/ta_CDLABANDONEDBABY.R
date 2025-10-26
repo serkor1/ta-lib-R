@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLABANDONEDBABY ([integer])}{Abandoned Baby pattern}
+#'  \item{CDLABANDONEDBABY}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

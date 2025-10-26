@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLKICKINGBYLENGTH ([integer])}{Kicking Baby Length pattern}
+#'  \item{CDLKICKINGBYLENGTH}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLGAPSIDESIDEWHITE ([integer])}{Up/Down-gap side-by-side white lines pattern}
+#'  \item{CDLGAPSIDESIDEWHITE}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

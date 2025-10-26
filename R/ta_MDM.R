@@ -10,6 +10,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @template returns
 minus_directional_movement <- function(
 	x,
 	cols,

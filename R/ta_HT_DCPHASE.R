@@ -10,6 +10,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @template returns
 dominant_cycle_phase <- function(
 	x,
 	cols,

@@ -18,7 +18,7 @@ separating_lines(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLSEPARATINGLINES (\link{integer})}{Separating Lines pattern}
+\item{CDLSEPARATINGLINES}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

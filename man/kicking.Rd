@@ -18,7 +18,7 @@ kicking(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLKICKING (\link{integer})}{Kicking pattern}
+\item{CDLKICKING}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

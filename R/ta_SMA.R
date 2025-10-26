@@ -6,14 +6,8 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun simple_moving_average
 #'
-#' @returns
-#' An object of same [class] and [length] of `x`:
-#'
-#' \describe{
-#'  \item{SMA ([double])}{Simple Moving Average}
-#' }
-#'
 #' @template description
+#' @template returns
 simple_moving_average <- function(
 	x,
 	cols,

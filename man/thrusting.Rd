@@ -18,7 +18,7 @@ thrusting(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLTHRUSTING (\link{integer})}{Thrusting pattern}
+\item{CDLTHRUSTING}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

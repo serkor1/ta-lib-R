@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLKICKING ([integer])}{Kicking pattern}
+#'  \item{CDLKICKING}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

@@ -6,14 +6,8 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun $FUN
 #' 
-#' @returns
-#' An object of same [class] and [length] of `x`:
-#'
-#' \describe{
-#'  \item{$ALIAS ([double])}{$TITLE}
-#' }
-#'
 #' @template description
+#' @template returns
 $FUN <- function(
 	x, 
 	cols, 

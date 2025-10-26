@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLRICKSHAWMAN ([integer])}{Rickshaw Man pattern}
+#'  \item{CDLRICKSHAWMAN}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:

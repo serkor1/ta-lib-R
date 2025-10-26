@@ -18,7 +18,7 @@ short_line(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLSHORTLINE (\link{integer})}{Short Line Candle pattern}
+\item{CDLSHORTLINE}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{$ALIAS ([integer])}{$TITLE pattern}
+#'  \item{$ALIAS}{[integer]}
 #' }
 #' 
 #' Pattern codes depend on `options(talib.normalize)`:

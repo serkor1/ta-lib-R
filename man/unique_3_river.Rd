@@ -18,7 +18,7 @@ unique_3_river(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLUNIQUE3RIVER (\link{integer})}{Unique Three River pattern}
+\item{CDLUNIQUE3RIVER}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

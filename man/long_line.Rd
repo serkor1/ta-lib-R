@@ -18,7 +18,7 @@ long_line(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLLONGLINE (\link{integer})}{Long Line pattern}
+\item{CDLLONGLINE}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

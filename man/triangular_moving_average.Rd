@@ -20,7 +20,7 @@ triangular_moving_average(x, cols, n = 10, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{TRIMA (\link{double})}{Triangular Moving Average}
+\item{TRIMA}{\link{double}}
 }
 }
 \description{

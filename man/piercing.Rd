@@ -18,7 +18,7 @@ piercing(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{CDLPIERCING (\link{integer})}{Piercing pattern}
+\item{CDLPIERCING}{\link{integer}}
 }
 
 Pattern codes depend on \code{options(talib.normalize)}:

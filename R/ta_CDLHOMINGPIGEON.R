@@ -10,7 +10,7 @@
 #' An object of same [class] and [length] of `x`:
 #'
 #' \describe{
-#'  \item{CDLHOMINGPIGEON ([integer])}{Homing Pigeon pattern}
+#'  \item{CDLHOMINGPIGEON}{[integer]}
 #' }
 #'
 #' Pattern codes depend on `options(talib.normalize)`:
