@@ -1,59 +1,64 @@
-// Interface to ta_HT_TRENDMODE (Hilbert Transform - Trend vs Cycle Mode)
-//
-// Parameters
-//   inReal : numeric vector of source prices.
+// interface to ta_HT_TRENDMODE.c
 //
 // Description
-//   Returns an integer vector (0 = cycle mode, 1 = trend mode) per bar.
-//   Length equals input; leading elements are NA_INTEGER (padded via
-//   shift_array).
-#include "R_ext/Arith.h"
+//   R wrapper for TA_HT_TRENDMODE. Returns trend vs. cycle mode flags.
+//
+// Parameters
+//   real: numeric vector of prices (length n)
+//
+// Returns
+//   n x 1 INTEGER matrix with column "trend_mode", values are typically 0/1,
+//   padded with NA_INTEGER for the initial lookback.
+
+#include "R_ext/Error.h"
+#include "Rinternals.h"
 #include "lib.h"
 #include "names.h"
 #include "shift.h"
-#include <R.h>
-#include <Rinternals.h>
 #include <ta_libc.h>
 
-SEXP impl_ta_HT_TRENDMODE(SEXP inReal) {
-  const int n = LENGTH(inReal);
-  double *restrict src = REAL(inReal);
+// clang-format off
+SEXP impl_ta_HT_TRENDMODE(SEXP real) {
+  // clang-format on
+  int protect_count = 0;
 
-  // Integer vector because TA_HT_TRENDMODE outputs int[ ].
+  const int n = LENGTH(real);
+  const double *restrict real_ptr = REAL(real);
+
   SEXP result = PROTECT(allocMatrix(INTSXP, n, 1));
-  int *restrict out = INTEGER(result);
+  protect_count++;
+  int *restrict out_ptr = INTEGER(result);
 
-  // check wether the minimum
-  // required matches that of
-  // the input
   const int minimum_lookback = TA_HT_TRENDMODE_Lookback();
-  if (n < minimum_lookback) {
-    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
-               minimum_lookback);
 
-    for (size_t i = 0; i < n; ++i) {
-      out[i] = NA_INTEGER;
+  if (n < minimum_lookback) {
+    Rf_warning("Input length (%d) is smaller than lookback (%d).", n,
+               minimum_lookback);
+    for (int i = 0; i < n; ++i)
+      out_ptr[i] = NA_INTEGER;
+  } else {
+    int out_begin = 0, number_of_elements = 0;
+
+    // clang-format off
+    TA_RetCode return_code = TA_HT_TRENDMODE(
+      /*startIdx  */ 0,
+      /*endIdx    */ n - 1,
+      /*inReal    */ real_ptr,
+      /*outBeg    */ &out_begin,
+      /*outNb     */ &number_of_elements,
+      /*outInteger*/ out_ptr
+    );
+    // clang-format on
+
+    if (return_code != TA_SUCCESS) {
+      UNPROTECT(protect_count);
+      Rf_error("TA_HT_TRENDMODE failed: return code %d", return_code);
     }
 
-    UNPROTECT(1);
-    return result;
+    shift_array(out_ptr, n, out_begin);
+    set_colnames(result, "TRENDMODE");
   }
 
-  int outBeg = 0, outNb = 0;
-  // clang-format off
-  TA_RetCode ret = TA_HT_TRENDMODE(
-    0,
-    n > 0 ? n - 1 : 0,
-    src,
-    &outBeg,
-    &outNb,
-    out + outBeg);
-  // clang-format on
-
-  // Pad with NA_INTEGER for the leading lookback window.
-  set_colnames(result, "TRENDMODE");
-  shift_array(out, n, outBeg);
-
-  UNPROTECT(1);
+  UNPROTECT(protect_count);
   return result;
 }
