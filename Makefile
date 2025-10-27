@@ -67,17 +67,19 @@ unit-tests: ## Generate, or update, unit-tests
 	@GEN=./tools/generate_unit-tests.sh; \
 	UNIT_CSV=$${UNIT_CSV:-tools/table.csv}; \
 	awk -F, 'NR==1{next} /^[[:space:]]*$$/{next} { \
-	  for(i=1;i<=3;i++){ \
+	  for(i=1;i<=4;i++){ \
 	    gsub(/^[ \t]+|[ \t]+$$/,"",$$i); \
 	    sub(/^"/,"",$$i); sub(/"$$/,"",$$i); \
 	  } \
-	  printf "%s\t%s\t%s\n", $$1,$$2,$$3 \
+	  gate=$$4; if(gate=="") gate="FALSE"; \
+	  printf "%s\t%s\t%s\t%s\n", $$1,$$2,$$3,gate \
 	}' "$$UNIT_CSV" | \
-	while IFS=$$'\t' read -r f alias cols; do \
-	  "$$GEN" "$$f" "$$alias" "$$cols"; \
+	while IFS=$$'\t' read -r f alias cols gate; do \
+	  "$$GEN" "$$f" "$$alias" "$$cols" "$$gate"; \
 	done
 
 	$(MAKE) fmt
+
 
 gen-code: ## Generate R wrappers and unit-tests
 	@Rscript ./tools/generators/generate_cycle_indicator.R

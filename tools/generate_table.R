@@ -74,6 +74,20 @@ container <- as.data.frame(
 	)
 )
 
+container$MA <- container$V1 %in%
+	c(
+		"SMA",
+		"EMA",
+		"WMA",
+		"DEMA",
+		"TEMA",
+		"TRIMA",
+		"KAMA",
+		"MAMA",
+		"T3"
+	)
+
+
 write.table(
 	x = container,
 	file = "tools/table.csv",

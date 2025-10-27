@@ -132,3 +132,32 @@ testthat::test_that(desc = 'Equal length of input and output for <matrix>', code
 })
 
 EOF
+
+## 2) add tests conditional on whether its moving averages
+##    Modify generate_table.R if there are more MAs
+if [[ "${4^^}" == "TRUE" ]]; then
+  cat >> "tests/testthat/test-ta_${1}.R" <<EOF
+
+## 6) vectors
+testthat::test_that(desc = '<double> methods', code = {
+	## 1) test that the alias and 
+    ##    function returns the same values
+    output <- $1(SPY[,1])
+    alias  <- $2(SPY[,1])
+
+    ## 1.1) check if the values
+	##      are equal
+	testthat::expect_equal(
+		object   = output,
+		expected = alias
+	)
+
+	testthat::expect_equal(
+		object = length($1(
+			SPY[,1]
+		)),
+		expected = nrow(SPY)
+	)
+})
+EOF
+fi

@@ -121,3 +121,26 @@ testthat::test_that(desc = 'Equal length of input and output for <matrix>', code
 		expected = nrow(SPY)
 	)
 })
+
+
+## 6) vectors
+testthat::test_that(desc = '<double> methods', code = {
+	## 1) test that the alias and
+	##    function returns the same values
+	output <- TRIMA(SPY[, 1])
+	alias <- triangular_moving_average(SPY[, 1])
+
+	## 1.1) check if the values
+	##      are equal
+	testthat::expect_equal(
+		object = output,
+		expected = alias
+	)
+
+	testthat::expect_equal(
+		object = length(TRIMA(
+			SPY[, 1]
+		)),
+		expected = nrow(SPY)
+	)
+})
