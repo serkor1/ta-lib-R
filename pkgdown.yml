@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   charting: charting.html
   talib: talib.html
-last_built: 2025-10-27T16:42Z
+last_built: 2025-10-27T18:39Z
 urls:
   reference: https://serkor1.github.io/ta-lib-R/reference
   article: https://serkor1.github.io/ta-lib-R/articles
