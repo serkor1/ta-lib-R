@@ -80,19 +80,6 @@ is.plotly <- function(x) {
 	inherits(x, "plotly")
 }
 
-reclass <- function(x, ...) {
-	class(x) <- c(class(x), ...)
-}
-
-## list operations
-flatten <- function(x) {
-	if (!inherits(x, "list")) {
-		list(x)
-	} else {
-		unlist(c(lapply(x, flatten)), recursive = FALSE)
-	}
-}
-
 ## extract input name
 input_name <- function(x) {
 	if (is.call(x) && as.character(x[[1L]]) %in% c("::", ":::")) {
