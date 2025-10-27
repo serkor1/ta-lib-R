@@ -20,9 +20,9 @@ acceleration_bands(x, cols, n = 10, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{lower}{\link{double}}
-\item{middle}{\link{double}}
 \item{upper}{\link{double}}
+\item{middle}{\link{double}}
+\item{lower}{\link{double}}
 }
 }
 \description{
