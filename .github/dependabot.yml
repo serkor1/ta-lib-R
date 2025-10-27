@@ -12,5 +12,4 @@ updates:
     assignees:
       - "serkor"
     commit-message:
-      "update"
-      prefix: ":hammer: TA-Lib "
+      prefix: ":hammer: TA-Lib update"
