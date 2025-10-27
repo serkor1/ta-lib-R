@@ -34,6 +34,10 @@ reference:
   desc: |
     The collection of Volume Indicators.
 - contents: has_concept('Volume Indicator')
+- title: Volatility Indicators
+  desc: |
+    The collection of Volatility Indicators.
+- contents: has_concept('Volatility Indicator')
 - title: Financial Charts
   desc: |
     Charting functions
