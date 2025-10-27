@@ -158,3 +158,22 @@ generate_volume_indicator <- function(
 		signature = signature
 	)
 }
+
+## 7) generate volatility indicator
+generate_volatility_indicator <- function(
+	title,
+	fun,
+	alias,
+	default_formula,
+	signature
+) {
+	impl_generate_indicator(
+		template = 'indicator_template.R',
+		family = 'Volatility Indicator',
+		title = title,
+		alias = alias,
+		fun = fun,
+		default_formula = default_formula,
+		signature = signature
+	)
+}
