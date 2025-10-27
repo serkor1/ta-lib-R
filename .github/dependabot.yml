@@ -10,6 +10,6 @@ updates:
     schedule:
       interval: "monthly"
     assignees:
-      - "serkor"
+      - "serkor1"
     commit-message:
-      prefix: ":hammer: TA-Lib update"
+      prefix: ":hammer: TA-Lib"
