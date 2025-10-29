@@ -113,6 +113,8 @@ SEXP impl_ta_TRIX(SEXP real, SEXP timeperiod);
 SEXP impl_ta_ULTOSC(SEXP high, SEXP low, SEXP close, SEXP timeperiod1, SEXP timeperiod2, SEXP timeperiod3);
 SEXP impl_ta_WILLR(SEXP high, SEXP low, SEXP close, SEXP timeperiod);
 SEXP initialize_ta_lib();
+SEXP reset_candle_setting();
+SEXP set_candle_setting(SEXP s_settingType, SEXP s_rangeType, SEXP s_avgPeriod, SEXP s_factor);
 SEXP shutdown_ta_lib();
 // clang-format on
 
