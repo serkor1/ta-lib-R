@@ -110,3 +110,104 @@ has_arg <- function(name) {
 		eval(substitute(!missing(name)), sys.frame(sys.parent()))
 	}
 }
+
+## candle settings
+
+## general setup
+impl_candle_setting <- function(
+	setting = 1L,
+	range_type = 0L,
+	N,
+	alpha
+) {
+	.Call(
+		"set_candle_setting",
+		as.integer(setting),
+		as.integer(range_type),
+		as.integer(N),
+		as.double(alpha)
+	)
+}
+
+candlestick_setting <- function() {
+	## 0 RealBody, 1 HighLow, 2 Shadows
+	## BodyLong
+	impl_candle_setting(
+		setting = 0L,
+		range_type = 0L,
+		N = getOption("talib.BodyLong.N", 10L),
+		alpha = getOption("talib.BodyLong.alpha", 1.0)
+	)
+	## BodyVeryLong
+	impl_candle_setting(
+		setting = 1L,
+		range_type = 0L,
+		N = getOption("talib.BodyVeryLong.N", 10L),
+		alpha = getOption("talib.BodyVeryLong.alpha", 3.0)
+	)
+	## BodyShort
+	impl_candle_setting(
+		setting = 2L,
+		range_type = 0L,
+		N = getOption("talib.BodyShort.N", 10L),
+		alpha = getOption("talib.BodyShort.alpha", 1.0)
+	)
+	## BodyDoji
+	impl_candle_setting(
+		setting = 3L,
+		range_type = 1L,
+		N = getOption("talib.BodyDoji.N", 10L),
+		alpha = getOption("talib.BodyDoji.alpha", 0.1)
+	)
+	## ShadowLong
+	impl_candle_setting(
+		setting = 4L,
+		range_type = 0L,
+		N = getOption("talib.ShadowLong.N", 0L),
+		alpha = getOption("talib.ShadowLong.alpha", 1.0)
+	)
+	## ShadowVeryLong
+	impl_candle_setting(
+		setting = 5L,
+		range_type = 0L,
+		N = getOption("talib.ShadowVeryLong.N", 0L),
+		alpha = getOption("talib.ShadowVeryLong.alpha", 2.0)
+	)
+	## ShadowShort
+	impl_candle_setting(
+		setting = 6L,
+		range_type = 2L,
+		N = getOption("talib.ShadowShort.N", 10L),
+		alpha = getOption("talib.ShadowShort.alpha", 1.0)
+	)
+	## ShadowVeryShort
+	impl_candle_setting(
+		setting = 7L,
+		range_type = 1L,
+		N = getOption("talib.ShadowVeryShort.N", 10L),
+		alpha = getOption("talib.ShadowVeryShort.alpha", 0.1)
+	)
+	## Near
+	impl_candle_setting(
+		setting = 8L,
+		range_type = 1L,
+		N = getOption("talib.Near.N", 5L),
+		alpha = getOption("talib.Near.alpha", 0.2)
+	)
+	## Far
+	impl_candle_setting(
+		setting = 9L,
+		range_type = 1L,
+		N = getOption("talib.Far.N", 5L),
+		alpha = getOption("talib.Far.alpha", 0.6)
+	)
+	## Equal
+	impl_candle_setting(
+		setting = 10L,
+		range_type = 1L,
+		N = getOption("talib.Equal.N", 5L),
+		alpha = getOption("talib.Equal.alpha", 0.05)
+	)
+
+	invisible(NULL)
+}
