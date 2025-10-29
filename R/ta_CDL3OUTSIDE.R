@@ -19,8 +19,8 @@
 #' * If `FALSE`: `100` = identified pattern; `-100` = identified bearish pattern.
 #' * `0` = no pattern.
 #'
-#'
 #' @template description
+#' @template candlestick
 three_outside <- function(
 	x,
 	cols,
@@ -45,6 +45,13 @@ three_outside.default <- function(
 	cols,
 	...
 ) {
+	## get candlestick pattern
+	## options
+	##
+	## NOTE: this adds an overhead
+	##       of ~60% (from 50 microseconds to 80 microseconds) it needs to be set outside of the function without bloating the number of functions
+	candlestick_setting()
+
 	## get normalization option
 	normalize <- as.logical(
 		getOption("talib.normalize", TRUE)
