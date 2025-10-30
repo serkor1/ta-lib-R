@@ -1,75 +1,77 @@
 // interface to ta_ATR.c
 //
-// Description
-//   R wrapper for TA_ATR. Computes Average True Range with a given timeperiod.
-//
 // Parameters
-//   high, low, close: numeric vectors (same length)
-//   timeperiod      : integer SEXP (default 14 in TA-Lib if set upstream)
+//   inHigh        : numeric vector of highs   (length n)
+//   inLow         : numeric vector of lows    (length n)
+//   inClose       : numeric vector of closes  (length n)
+//   optTimePeriod : integer time period
 //
 // Returns
-//   n x 1 REAL matrix with column "atr", padded with NA_REAL for
-//   the initial lookback. ATR has an unstable period in TA-Lib.
+//   numeric vector (n x 1) "ATR"
 //
-// References
-//   TA-Lib volatility group notes on ATR/NATR/TRANGE.
-//   :contentReference[oaicite:1]{index=1}
-
-#include "R_ext/Error.h"
-#include "Rinternals.h"
+#include "container.h"
 #include "lib.h"
 #include "names.h"
 #include "shift.h"
+#include <R.h>
+#include <Rinternals.h>
 #include <ta_libc.h>
 
 // clang-format off
-SEXP impl_ta_ATR(SEXP high, SEXP low, SEXP close, SEXP timeperiod) {
+SEXP impl_ta_ATR(
+  SEXP inHigh,
+  SEXP inLow,
+  SEXP inClose,
+  SEXP optTimePeriod) {
   // clang-format on
   int protect_count = 0;
 
-  const int n = LENGTH(high);
-  const double *restrict high_ptr = REAL(high);
-  const double *restrict low_ptr = REAL(low);
-  const double *restrict close_ptr = REAL(close);
-  const int period = INTEGER(timeperiod)[0];
+  const double *restrict high_ptr = REAL(inHigh);
+  const double *restrict low_ptr = REAL(inLow);
+  const double *restrict close_ptr = REAL(inClose);
+  const int n = LENGTH(inHigh);
 
-  SEXP result = PROTECT(allocMatrix(REALSXP, n, 1));
-  protect_count++;
-  double *restrict out_ptr = REAL(result);
+  const int time_period = INTEGER(optTimePeriod)[0];
 
-  const int minimum_lookback = TA_ATR_Lookback(period);
+  SEXP output;
+  double *output_ptr;
 
-  if (n < minimum_lookback) {
-    Rf_warning("Input length (%d) is smaller than lookback (%d).", n,
-               minimum_lookback);
-    for (int i = 0; i < n; ++i)
-      out_ptr[i] = NA_REAL;
-  } else {
-    int out_begin = 0, number_of_elements = 0;
+  const int lookback = TA_ATR_Lookback(time_period);
+
+  // clang-format off
+  const int proceed = output_container(
+    n,
+    lookback,
+    1,
+    &output,
+    &output_ptr,
+    &protect_count
+  );
+  // clang-format on
+
+  if (proceed) {
+    int start_idx = 0, end_idx = 0;
 
     // clang-format off
     TA_RetCode return_code = TA_ATR(
-      /*startIdx*/ 0,
-      /*endIdx  */ n - 1,
-      /*inHigh  */ high_ptr,
-      /*inLow   */ low_ptr,
-      /*inClose */ close_ptr,
-      /*optPer  */ period,
-      /*outBeg  */ &out_begin,
-      /*outNb   */ &number_of_elements,
-      /*outReal */ out_ptr
+      0,
+      n - 1,
+      high_ptr,
+      low_ptr,
+      close_ptr,
+      time_period,
+      &start_idx,
+      &end_idx,
+      output_ptr
     );
     // clang-format on
 
-    if (return_code != TA_SUCCESS) {
-      UNPROTECT(protect_count);
-      Rf_error("TA_ATR failed: return code %d", return_code);
-    }
-
-    shift_array(out_ptr, n, out_begin);
-    set_colnames(result, "ATR");
+    check_output(return_code, protect_count);
+    shift_array(output_ptr, n, start_idx);
   }
 
+  set_colnames(output, "ATR");
+
   UNPROTECT(protect_count);
-  return result;
+  return output;
 }
