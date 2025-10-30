@@ -40,22 +40,22 @@ SEXP impl_ta_PPO(
   const int lookback = TA_PPO_Lookback(fast_period, slow_period, ma_type);
 
   const int proceed =
-      output_container(n, lookback, 1, &output, &output_ptr, &protect_count);
+    output_container(n, lookback, 1, &output, &output_ptr, &protect_count);
 
   if (proceed) {
     int start_idx = 0, end_idx = 0;
 
     // clang-format off
     TA_RetCode return_code = TA_PPO(
-      /*startIdx     */ 0,
-      /*endIdx       */ n - 1,
-      /*inReal       */ in_real,
-      /*optInFastPrd */ fast_period,
-      /*optInSlowPrd */ slow_period,
-      /*optInMAType  */ ma_type,
-      /*outBegIdx    */ &start_idx,
-      /*outNbElement */ &end_idx,
-      /*outReal      */ output_ptr
+       0,
+       n - 1,
+       in_real,
+       fast_period,
+       slow_period,
+       ma_type,
+       &start_idx,
+       &end_idx,
+       output_ptr
     );
     // clang-format on
 

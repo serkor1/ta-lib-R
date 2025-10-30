@@ -57,15 +57,15 @@ SEXP impl_ta_AROON(
 
     // clang-format off
     TA_RetCode return_code = TA_AROON(
-      /*startIdx     */ 0,
-      /*endIdx       */ n - 1,
-      /*inHigh       */ high_ptr,
-      /*inLow        */ low_ptr,
-      /*optInTimePrd */ time_period,
-      /*outBegIdx    */ &start_idx,
-      /*outNbElement */ &end_idx,
-      /*outAroonDown */ out_aroon_down,
-      /*outAroonUp   */ out_aroon_up
+       0,
+       n - 1,
+       high_ptr,
+       low_ptr,
+       time_period,
+       &start_idx,
+       &end_idx,
+       out_aroon_down,
+       out_aroon_up
     );
     // clang-format on
 

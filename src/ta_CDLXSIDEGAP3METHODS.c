@@ -20,8 +20,8 @@
 #include "shift.h"
 #include <ta_libc.h>
 
-SEXP impl_ta_CDLXSIDEGAP3METHODS(SEXP open, SEXP high, SEXP low, SEXP close,
-                                 SEXP normalize_flag) {
+SEXP impl_ta_CDLXSIDEGAP3METHODS(
+  SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag) {
 
   int protect_count = 0;
 
@@ -46,15 +46,15 @@ SEXP impl_ta_CDLXSIDEGAP3METHODS(SEXP open, SEXP high, SEXP low, SEXP close,
 
     // clang-format off
     TA_RetCode return_code = TA_CDLXSIDEGAP3METHODS(
-      /*startIdx*/ 0,
-      /*endIdx  */ n - 1,
-      /*inOpen  */ open_ptr,
-      /*inHigh  */ high_ptr,
-      /*inLow   */ low_ptr,
-      /*inClose */ close_ptr,
-      /*outBeg  */ &output_begin_index,
-      /*outNb   */ &output_number_of_elements,
-      /*outInt  */ out_ptr
+       0,
+       n - 1,
+       open_ptr,
+       high_ptr,
+       low_ptr,
+       close_ptr,
+       &output_begin_index,
+       &output_number_of_elements,
+       out_ptr
     );
     // clang-format on
 

@@ -33,20 +33,20 @@ SEXP impl_ta_MOM(
   const int lookback = TA_MOM_Lookback(time_period);
 
   const int proceed =
-      output_container(n, lookback, 1, &output, &output_ptr, &protect_count);
+    output_container(n, lookback, 1, &output, &output_ptr, &protect_count);
 
   if (proceed) {
     int start_idx = 0, end_idx = 0;
 
     // clang-format off
     TA_RetCode return_code = TA_MOM(
-      /*startIdx     */ 0,
-      /*endIdx       */ n - 1,
-      /*inReal       */ in_real,
-      /*optInTimePrd */ time_period,
-      /*outBegIdx    */ &start_idx,
-      /*outNbElement */ &end_idx,
-      /*outReal      */ output_ptr
+       0,
+       n - 1,
+       in_real,
+       time_period,
+       &start_idx,
+       &end_idx,
+       output_ptr
     );
     // clang-format on
 

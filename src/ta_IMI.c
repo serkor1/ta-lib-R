@@ -40,21 +40,21 @@ SEXP impl_ta_IMI(
   const int lookback = TA_IMI_Lookback(time_period);
 
   const int proceed =
-      output_container(n, lookback, 1, &output, &output_ptr, &protect_count);
+    output_container(n, lookback, 1, &output, &output_ptr, &protect_count);
 
   if (proceed) {
     int start_idx = 0, end_idx = 0;
 
     // clang-format off
     TA_RetCode return_code = TA_IMI(
-      /*startIdx     */ 0,
-      /*endIdx       */ n - 1,
-      /*inOpen       */ open_ptr,
-      /*inClose      */ close_ptr,
-      /*optInTimePrd */ time_period,
-      /*outBegIdx    */ &start_idx,
-      /*outNbElement */ &end_idx,
-      /*outReal      */ output_ptr
+       0,
+       n - 1,
+       open_ptr,
+       close_ptr,
+       time_period,
+       &start_idx,
+       &end_idx,
+       output_ptr
     );
     // clang-format on
 

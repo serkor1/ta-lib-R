@@ -48,7 +48,7 @@ SEXP impl_ta_MACD(
   // clang-format on
 
   const int proceed =
-      output_container(n, lookback, 3, &output, &output_ptr, &protect_count);
+    output_container(n, lookback, 3, &output, &output_ptr, &protect_count);
 
   if (proceed) {
     int start_idx = 0, end_idx = 0;
@@ -59,17 +59,17 @@ SEXP impl_ta_MACD(
 
     // clang-format off
     TA_RetCode return_code = TA_MACD(
-      /*startIdx     */ 0,
-      /*endIdx       */ n - 1,
-      /*inReal       */ in_real,
-      /*optInFastPrd */ fast_period,
-      /*optInSlowPrd */ slow_period,
-      /*optInSignal  */ signal_period,
-      /*outBegIdx    */ &start_idx,
-      /*outNbElement */ &end_idx,
-      /*outMACD      */ output_macd,
-      /*outMACDSignal*/ output_signal,
-      /*outMACDHist  */ output_histogram
+       0,
+       n - 1,
+       in_real,
+       fast_period,
+       slow_period,
+       signal_period,
+       &start_idx,
+       &end_idx,
+       output_macd,
+       output_signal,
+       output_histogram
     );
     // clang-format on
 

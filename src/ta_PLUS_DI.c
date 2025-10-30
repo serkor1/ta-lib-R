@@ -54,15 +54,15 @@ SEXP impl_ta_PDI(
 
     // clang-format off
     TA_RetCode return_code = TA_PLUS_DI(
-      /*startIdx      */ 0,
-      /*endIdx        */ n - 1,
-      /*inHigh        */ high_ptr,
-      /*inLow         */ low_ptr,
-      /*inClose       */ close_ptr,
-      /*optInTimePeriod*/ time_period,
-      /*outBegIdx     */ &start_idx,
-      /*outNbElement  */ &end_idx,
-      /*outReal       */ output_ptr
+       0,
+       n - 1,
+       high_ptr,
+       low_ptr,
+       close_ptr,
+       time_period,
+       &start_idx,
+       &end_idx,
+       output_ptr
     );
     // clang-format on
 

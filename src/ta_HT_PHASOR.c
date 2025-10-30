@@ -50,13 +50,13 @@ SEXP impl_ta_HT_PHASOR(
 
     // clang-format off
     TA_RetCode return_code = TA_HT_PHASOR(
-      /*startIdx      */ 0,
-      /*endIdx        */ n - 1,
-      /*inReal        */ in_real,
-      /*outBegIdx     */ &start_idx,
-      /*outNbElement  */ &number_of_elements,
-      /*outInPhase    */ output_inphase,
-      /*outQuadrature */ output_quadrature
+       0,
+       n - 1,
+       in_real,
+       &start_idx,
+       &number_of_elements,
+       output_inphase,
+       output_quadrature
     );
     // clang-format on
 

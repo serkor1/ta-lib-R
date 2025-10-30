@@ -22,8 +22,8 @@
 #include <stdbool.h>
 #include <ta_libc.h>
 
-SEXP impl_ta_CDLDOJISTAR(SEXP open, SEXP high, SEXP low, SEXP close,
-                         SEXP normalize_flag) {
+SEXP impl_ta_CDLDOJISTAR(
+  SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag) {
 
   int protect_count = 0;
 
@@ -47,8 +47,10 @@ SEXP impl_ta_CDLDOJISTAR(SEXP open, SEXP high, SEXP low, SEXP close,
   // clang-format on
 
   if (n < minimum_lookback) {
-    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
-               minimum_lookback);
+    Rf_warning(
+      "Input length (%d) is smaller than required lookback (%d).",
+      n,
+      minimum_lookback);
 
     for (size_t i = 0; i < n; ++i) {
       out_ptr[i] = NA_INTEGER;

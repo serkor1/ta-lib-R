@@ -51,8 +51,10 @@ static inline int double_container(
   // same length
   if (n < lookback) {
 
-    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
-               lookback);
+    Rf_warning(
+      "Input length (%d) is smaller than required lookback (%d).",
+      n,
+      lookback);
 
     const int total = n * ncol;
     for (int i = 0; i < total; ++i) {
@@ -96,8 +98,10 @@ static inline int integer_container(
   // same length
   if (n < lookback) {
 
-    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
-               lookback);
+    Rf_warning(
+      "Input length (%d) is smaller than required lookback (%d).",
+      n,
+      lookback);
 
     const int total = n * ncol;
     for (int i = 0; i < total; ++i)
