@@ -89,9 +89,9 @@ SEXP set_candle_setting(
   // extract values to be passed
   // onto settings
   const TA_CandleSettingType settingType = INTEGER(s_settingType)[0];
-  const int rangeType = INTEGER(s_rangeType)[0];
+  const TA_RangeType rangeType = INTEGER(s_rangeType)[0];
   const int avgPeriod = INTEGER(s_avgPeriod)[0];
-  const TA_RangeType factor = REAL(s_factor)[0];
+  const double factor = REAL(s_factor)[0];
 
   // clang-format off
   TA_RetCode return_code = TA_SetCandleSettings(
