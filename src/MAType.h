@@ -10,16 +10,27 @@
 #include "Rinternals.h"
 #include "ta_defs.h"
 
-static TA_MAType as_MAType(SEXP x) {
+static inline const TA_MAType as_MAType(SEXP x) {
   int x_ = INTEGER(x)[0];
   return (TA_MAType)x_;
 }
 
-static inline const char *MAType_acronym(TA_MAType t) {
-  static const char *const k[] = {"SMA",   "EMA",  "WMA",  "DEMA", "TEMA",
-                                  "TRIMA", "KAMA", "MAMA", "T3"};
+// clang-format off
+static inline const char *_MAType_(TA_MAType t) {
+  static const char *const k[] = {
+    "SMA",   
+    "EMA",  
+    "WMA",  
+    "DEMA", 
+    "TEMA",
+    "TRIMA", 
+    "KAMA", 
+    "MAMA", 
+    "T3"
+  };
   unsigned u = (unsigned)t;
   return u < (sizeof k / sizeof k[0]) ? k[u] : "INVALID";
 }
+// clang-format on
 
 #endif // _MATYPE_H
