@@ -1,75 +1,78 @@
-// Interface to TA_SAR (Parabolic SAR)
+// interface to ta_SAR.c
 //
 // Parameters
-//   high, low        : numeric vectors (same length)
-//   acceleration     : numeric scalar (double), step (e.g., 0.02)
-//   maximum          : numeric scalar (double), max step (e.g., 0.2)
+//   inHigh         : numeric vector of highs (length n)
+//   inLow          : numeric vector of lows  (length n)
+//   optAcceleration: numeric acceleration step (e.g. 0.02)
+//   optMaximum     : numeric acceleration max (e.g. 0.20)
 //
-// Description
-//   Returns a numeric vector of length n, padded with NA_REAL for the initial
-//   lookback, then SAR values thereafter.
-
-#include "R_ext/Error.h"
-#include "Rinternals.h"
+// Returns
+//   numeric vector (n x 1) "SAR"
+//
+#include "container.h"
 #include "lib.h"
 #include "names.h"
 #include "shift.h"
+#include <R.h>
+#include <Rinternals.h>
 #include <ta_libc.h>
 
 // clang-format off
 SEXP impl_ta_SAR(
-  SEXP high,
-  SEXP low,
-  SEXP acceleration,
-  SEXP maximum) {
+  SEXP inHigh,
+  SEXP inLow,
+  SEXP optAcceleration,
+  SEXP optMaximum) {
   // clang-format on
-
   int protect_count = 0;
 
-  const int n = LENGTH(high);
-  const double *restrict high_ptr = REAL(high);
-  const double *restrict low_ptr = REAL(low);
-  const double acc = REAL(acceleration)[0];
-  const double maxv = REAL(maximum)[0];
+  const double *restrict high_ptr = REAL(inHigh);
+  const double *restrict low_ptr = REAL(inLow);
+  const int n = LENGTH(inHigh);
 
-  SEXP result = PROTECT(allocMatrix(REALSXP, n, 1));
-  protect_count++;
-  double *restrict out_ptr = REAL(result);
+  const double acceleration = REAL(optAcceleration)[0];
+  const double maximum = REAL(optMaximum)[0];
 
-  const int minimum_lookback = TA_SAR_Lookback(acc, maxv);
+  SEXP output;
+  double *output_ptr;
 
-  if (n < minimum_lookback) {
-    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
-               minimum_lookback);
-    for (int i = 0; i < n; ++i)
-      out_ptr[i] = NA_REAL;
+  const int lookback = TA_SAR_Lookback(acceleration, maximum);
 
-  } else {
-    int outBeg = 0, outNb = 0;
+  // clang-format off
+  const int proceed = output_container(
+    n,
+    lookback,
+    1,
+    &output,
+    &output_ptr,
+    &protect_count
+  );
+  // clang-format on
+
+  if (proceed) {
+    int start_idx = 0;
+    int number_of_elements = 0;
 
     // clang-format off
-    TA_RetCode rc = TA_SAR(
-      /*startIdx*/ 0,
-      /*endIdx  */ n - 1,
-      /*inHigh  */ high_ptr,
-      /*inLow   */ low_ptr,
-      /*accel   */ acc,
-      /*maximum */ maxv,
-      /*outBeg  */ &outBeg,
-      /*outNb   */ &outNb,
-      /*outReal */ out_ptr
+    TA_RetCode return_code = TA_SAR(
+      0,
+      n - 1,
+      high_ptr,
+      low_ptr,
+      acceleration,
+      maximum,
+      &start_idx,
+      &number_of_elements,
+      output_ptr
     );
     // clang-format on
 
-    if (rc != TA_SUCCESS) {
-      UNPROTECT(protect_count);
-      Rf_error("TA_SAR failed: return code %d", rc);
-    }
-
-    set_colnames(result, "SAR");
-    shift_array(out_ptr, n, outBeg);
+    check_output(return_code, protect_count);
+    shift_array(output_ptr, n, start_idx);
   }
 
+  set_colnames(output, "SAR");
+
   UNPROTECT(protect_count);
-  return result;
+  return output;
 }

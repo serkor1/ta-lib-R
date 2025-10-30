@@ -1,108 +1,90 @@
-// Interface to ta_ACCBANDS (Acceleration Bands)
+// interface to ta_ACCBANDS.c
 //
 // Parameters
-//   inHigh         : numeric vector of high prices.
-//   inLow          : numeric vector of low prices.
-//   inClose        : numeric vector of close prices.
-//   optTimePeriod  : integer, lookback period (From 2 to 100000).
+//   inHigh        : numeric vector of highs   (length n)
+//   inLow         : numeric vector of lows    (length n)
+//   inClose       : numeric vector of closes  (length n)
+//   optTimePeriod : integer time period
 //
-// Description
-//   Computes acceleration bands (upper, middle, lower) over the input series.
-//   Returns an n × 3 matrix with columns "upper","middle","lower", padded
-//   with NA_REAL where the bands are undefined.
+// Returns
+//   numeric matrix (n x 3) with columns
+//     "upper"
+//     "middle"
+//     "lower"
 //
-// Implementation
-//
-// It uses lookback function to verify the validity
-// of input vs lookback. If its invalid, it returns
-// a warning with a NA_REAL padded matrix.
-#include "R_ext/Error.h"
+#include "container.h"
 #include "lib.h"
 #include "names.h"
 #include "shift.h"
-#include "ta_func.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <ta_libc.h>
 
 // clang-format off
 SEXP impl_ta_ACCBANDS(
-  SEXP inHigh, 
-  SEXP inLow, 
+  SEXP inHigh,
+  SEXP inLow,
   SEXP inClose,
   SEXP optTimePeriod) {
   // clang-format on
-
   int protect_count = 0;
 
-  int n = LENGTH(inHigh);
+  const double *restrict high_ptr = REAL(inHigh);
+  const double *restrict low_ptr = REAL(inLow);
+  const double *restrict close_ptr = REAL(inClose);
+  const int n = LENGTH(inHigh);
 
-  double *restrict highs = REAL(inHigh);
-  double *restrict lows = REAL(inLow);
-  double *restrict closes = REAL(inClose);
-  int period = INTEGER(optTimePeriod)[0];
+  const int time_period = INTEGER(optTimePeriod)[0];
+
+  SEXP output;
+  double *output_ptr;
+
+  const int lookback = TA_ACCBANDS_Lookback(time_period);
 
   // clang-format off
-  SEXP result = PROTECT(
-    allocMatrix(REALSXP, n, 3)
+  const int proceed = output_container(
+    n,
+    lookback,
+    3,
+    &output,
+    &output_ptr,
+    &protect_count
   );
   // clang-format on
 
-  double *upper = REAL(result);
-  double *middle = upper + n;
-  double *lower = upper + 2 * n;
-  protect_count++;
+  if (proceed) {
+    int start_idx = 0;
+    int number_of_elements = 0;
 
-  // check minimum lookback
-  const int minimum_lookback = TA_ACCBANDS_Lookback(period);
-  if (n < minimum_lookback) {
-    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
-               minimum_lookback);
+    double *restrict out_upper = output_ptr;
+    double *restrict out_middle = output_ptr + n;
+    double *restrict out_lower = output_ptr + (2 * n);
 
-    for (size_t i = 0; i < n; ++i) {
-      upper[i] = middle[i] = lower[i] = NA_REAL;
-    }
-
-  } else {
-
-    int outBeg = 0, outNb = 0;
     // clang-format off
     TA_RetCode return_code = TA_ACCBANDS(
-      0, 
-      n - 1, 
-      highs, 
-      lows, 
-      closes, 
-      period, 
-      &outBeg, 
-      &outNb,
-      upper + outBeg,
-      middle + outBeg,
-      lower + outBeg
+      0,
+      n - 1,
+      high_ptr,
+      low_ptr,
+      close_ptr,
+      time_period,
+      &start_idx,
+      &number_of_elements,
+      out_upper,
+      out_middle,
+      out_lower
     );
     // clang-format on
 
-    if (return_code != TA_SUCCESS) {
-      UNPROTECT(protect_count);
-      Rf_error("Failed with error code %d", return_code);
-    }
+    check_output(return_code, protect_count);
 
-    // shift arrays
-    shift_array(upper, n, outBeg);
-    shift_array(middle, n, outBeg);
-    shift_array(lower, n, outBeg);
+    shift_array(out_upper, n, start_idx);
+    shift_array(out_middle, n, start_idx);
+    shift_array(out_lower, n, start_idx);
   }
 
-  // set column names
-  // clang-format off
-  set_colnames(
-    result, 
-    "upper", 
-    "middle", 
-    "lower"
-  );
-  // clang-format on
+  set_colnames(output, "upper", "middle", "lower");
 
   UNPROTECT(protect_count);
-  return result;
+  return output;
 }
