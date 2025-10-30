@@ -47,7 +47,7 @@ acceleration_bands.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default = ~ open + high + close,
+		default = ~ high + low + close,
 		data = x,
 		...
 	)
@@ -132,7 +132,7 @@ acceleration_bands.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ open + high + close,
+		default = ~ high + low + close,
 		...
 	)
 

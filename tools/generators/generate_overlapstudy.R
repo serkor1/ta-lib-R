@@ -47,7 +47,7 @@ meta[[5]] <- list(
 	title = 'Acceleration Bands',
 	fun = 'acceleration_bands',
 	alias = 'ACCBANDS',
-	default_formula = '~open+high+close',
+	default_formula = '~ high + low + close',
 	signature = 'n=10'
 )
 
