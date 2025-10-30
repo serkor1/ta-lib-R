@@ -6,12 +6,12 @@
 
 ## 1) alias and function similarity
 ##    checks this ensures that
-##    ADXR and average_direcitonal_movement_index_rating produces the same results
+##    ADXR and average_directional_movement_index_rating produces the same results
 testthat::test_that(desc = 'Alias and function similarity', code = {
 	## 1) test that the alias and
 	##    function returns the same values
 	output <- ADXR(SPY)
-	alias <- average_direcitonal_movement_index_rating(SPY)
+	alias <- average_directional_movement_index_rating(SPY)
 
 	## 1.1) check if the values
 	##      are equal

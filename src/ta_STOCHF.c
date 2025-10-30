@@ -1,117 +1,100 @@
-// Interface to ta_STOCHF.c (Fast Stochastic)
+// interface to ta_STOCHF.c
 //
 // Parameters
-//   high            – numeric vector of 'High' prices
-//   low             – numeric vector of 'Low' prices
-//   close           – numeric vector of 'Close' prices
-//   fastk_period    – integer lookback for %K
-//   fastd_period    – integer lookback for %D
-//   fastd_matype    – integer MA type for %D
+//   inHigh        : numeric vector of highs (length n)
+//   inLow         : numeric vector of lows  (length n)
+//   inClose       : numeric vector of closes (length n)
+//   optFastK      : integer Fast-K period
+//   optFastD      : integer Fast-D period
+//   optFastD_MA   : integer MA type for Fast-D
 //
-// Description
-//   Returns an N×2 matrix with columns 'fastk' and 'fastd', NA-filled
-//   for initial lookback.
+// Returns
+//   matrix n x 2 with columns:
+//     "fastk"
+//     "fastd"
+//
 #include "MAType.h"
+#include "container.h"
 #include "lib.h"
 #include "names.h"
+#include "shift.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <ta_libc.h>
 
 // clang-format off
 SEXP impl_ta_STOCHF(
-  SEXP high, 
-  SEXP low, 
-  SEXP close, 
-  SEXP fastk_period,
-  SEXP fastd_period, 
-  SEXP fastd_matype) {
+  SEXP inHigh,
+  SEXP inLow,
+  SEXP inClose,
+  SEXP optFastK,
+  SEXP optFastD,
+  SEXP optFastD_MA) {
   // clang-format on
+  int protect_count = 0;
 
-  int protection_count = 0;
+  const double *restrict high_ptr = REAL(inHigh);
+  const double *restrict low_ptr = REAL(inLow);
+  const double *restrict close_ptr = REAL(inClose);
+  const int n = LENGTH(inHigh);
 
-  // determine MAs
-  TA_MAType MAType = as_MAType(fastd_matype);
+  const int fast_k = INTEGER(optFastK)[0];
+  const int fast_d = INTEGER(optFastD)[0];
+  const TA_MAType fast_d_ma = as_MAType(optFastD_MA);
 
-  // periods
-  const int fastk = INTEGER(fastk_period)[0];
-  const int fastd = INTEGER(fastd_period)[0];
+  SEXP output;
+  double *output_ptr;
 
-  // data
-  const double *restrict high_ptr = REAL(high);
-  const double *restrict low_ptr = REAL(low);
-  const double *restrict close_ptr = REAL(close);
-
-  // length
-  int n = length(high);
-  int outBeg = 0, outNB = 0;
-
-  // output matrix
   // clang-format off
-  SEXP output = PROTECT(
-    allocMatrix(REALSXP,n,2)
-  ); protection_count++;
-  double *__restrict__ output_ptr = REAL(output);
-  double *__restrict__ fastk_ptr = output_ptr;
-  double *__restrict__ fastd_ptr = output_ptr + n;
-  // clang-format on
-
-  // verify lookback
-  // clang-format off
-  const int minimum_lookback = TA_STOCHF_Lookback(
-    fastk,
-    fastd, 
-    MAType
+  const int lookback = TA_STOCHF_Lookback(
+    fast_k, 
+    fast_d, 
+    fast_d_ma
   );
   // clang-format on
 
-  if (n < minimum_lookback) {
+  // clang-format off
+  const int proceed = output_container(
+    n, 
+    lookback, 
+    2, 
+    &output, 
+    &output_ptr, 
+    &protect_count
+  );
+  // clang-format on
 
-    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
-               minimum_lookback);
+  if (proceed) {
+    int start_idx = 0, end_idx = 0;
 
-    for (size_t i = 0; i < n; ++i) {
-      fastk_ptr[i] = fastd_ptr[i] = NA_REAL;
-    }
-
-  } else {
+    double *output_fastk = output_ptr;
+    double *output_fastd = output_ptr + n;
 
     // clang-format off
     TA_RetCode return_code = TA_STOCHF(
-      0, 
-      n - 1, 
-      high_ptr, 
-      low_ptr, 
-      close_ptr, 
-      fastk, 
-      fastd, 
-      MAType, 
-      &outBeg, 
-      &outNB,
-      fastk_ptr + outBeg, 
-      fastd_ptr + outBeg
+      /*startIdx     */ 0,
+      /*endIdx       */ n - 1,
+      /*inHigh       */ high_ptr,
+      /*inLow        */ low_ptr,
+      /*inClose      */ close_ptr,
+      /*optInFastK   */ fast_k,
+      /*optInFastD   */ fast_d,
+      /*optInFastDMA */ fast_d_ma,
+      /*outBegIdx    */ &start_idx,
+      /*outNbElement */ &end_idx,
+      /*outFastK     */ output_fastk,
+      /*outFastD     */ output_fastd
     );
     // clang-format on
 
-    if (return_code != TA_SUCCESS) {
-      UNPROTECT(protection_count);
-      error("TA_STOCHF failed: return code %d", return_code);
-    }
+    check_output(return_code, protect_count);
 
-    // shift values
-    shift_array(fastk_ptr, n, outBeg);
-    shift_array(fastd_ptr, n, outBeg);
+    shift_array(output_fastk, n, start_idx);
+    shift_array(output_fastd, n, start_idx);
   }
 
-  // set column names
-  // clang-format off
-  set_colnames(
-    output, 
-    "fastk", 
-    "fastd"
-  );
-  // clang-format on
+  set_colnames(output, "fastk", "fastd");
 
-  UNPROTECT(protection_count);
+  UNPROTECT(protect_count);
   return output;
 }

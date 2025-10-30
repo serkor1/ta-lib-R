@@ -1,14 +1,16 @@
-// ta_MACDFIX.c
-// Interface to TA-Lib’s TA_MACDFIX (MACD fixed 12/26)
+// interface to ta_MACDFIX.c
 //
 // Parameters
-//   inReal          : numeric vector of source prices (length n).
-//   optSignalPeriod : integer, signal MA period.
+//   inReal          : numeric vector (length n)
+//   optSignalPeriod : integer signal period
 //
-// Description
-//   Computes MACD line (EMA12–EMA26), its signal line, and the histogram
-//   using the fixed 12/26 EMA and user-specified signal period. Returns
-//   an n×3 matrix with columns "macd", "signal", "histogram".
+// Returns
+//   matrix n x 3 with columns:
+//     "macd"
+//     "signal"
+//     "histogram"
+//
+#include "container.h"
 #include "lib.h"
 #include "names.h"
 #include "shift.h"
@@ -18,74 +20,62 @@
 
 // clang-format off
 SEXP impl_ta_MACDFIX(
-  SEXP inReal, 
-  SEXP optSignalPeriod
-) {
+  SEXP inReal,
+  SEXP optSignalPeriod) {
   // clang-format on
-
   int protect_count = 0;
-  // 1) Prepare inputs
-  int n = LENGTH(inReal);
-  const double *restrict src = REAL(inReal);
-  int signalP = INTEGER(optSignalPeriod)[0];
 
-  // 2) Allocate output matrix (n rows × 3 cols)
+  const double *restrict in_real = REAL(inReal);
+  const int n = LENGTH(inReal);
+
+  const int signal_period = INTEGER(optSignalPeriod)[0];
+
+  SEXP output;
+  double *output_ptr;
+
+  const int lookback = TA_MACDFIX_Lookback(signal_period);
+
   // clang-format off
-  SEXP result = PROTECT(
-    allocMatrix(REALSXP, n, 3)
-  ); protect_count++;
-  double *restrict macd = REAL(result);
-  double *restrict signal = macd + n;
-  double *restrict histogram = macd + 2 * n;
-  // clang-format on
-
-  const int minimum_lookback = TA_MACDFIX_Lookback(signalP);
-  if (n < minimum_lookback) {
-    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
-               minimum_lookback);
-
-    for (size_t i = 0; i < n; ++i) {
-      macd[i] = signal[i] = histogram[i] = NA_REAL;
-    }
-
-  } else {
-    // 3) Call underlying TA function
-    int outBeg = 0, outNb = 0;
-    // clang-format off
-    TA_RetCode return_code = TA_MACDFIX(
-      0,
-      n - 1,
-      src,
-      signalP,
-      &outBeg, 
-      &outNb, 
-      macd + outBeg, 
-      signal + outBeg,
-      histogram + outBeg
-    );
-    // clang-format on
-
-    if (return_code != TA_SUCCESS) {
-      UNPROTECT(protect_count);
-      error("TA_MACDFIX failed with code %d", return_code);
-    }
-
-    // 4) Shift each output down by outBeg, padding with NA
-    shift_array(macd, n, outBeg);
-    shift_array(signal, n, outBeg);
-    shift_array(histogram, n, outBeg);
-  }
-
-  // set column names
-  // clang-format off
-  set_colnames(
-    result, 
-    "macd", 
-    "signal", 
-    "histogram"
+  const int proceed = output_container(
+    n, 
+    lookback, 
+    3, 
+    &output, 
+    &output_ptr, 
+    &protect_count
   );
   // clang-format on
 
+  if (proceed) {
+    int start_idx = 0, end_idx = 0;
+
+    double *output_macd = output_ptr;
+    double *output_signal = output_ptr + n;
+    double *output_histogram = output_ptr + 2 * n;
+
+    // clang-format off
+    TA_RetCode return_code = TA_MACDFIX(
+      /*startIdx     */ 0,
+      /*endIdx       */ n - 1,
+      /*inReal       */ in_real,
+      /*optInSignal  */ signal_period,
+      /*outBegIdx    */ &start_idx,
+      /*outNbElement */ &end_idx,
+      /*outMACD      */ output_macd,
+      /*outMACDSignal*/ output_signal,
+      /*outMACDHist  */ output_histogram
+    );
+    // clang-format on
+
+    check_output(return_code, protect_count);
+
+    shift_array(output_macd, n, start_idx);
+    shift_array(output_signal, n, start_idx);
+    shift_array(output_histogram, n, start_idx);
+  }
+
+  set_colnames(output, "macd", "signal", "histogram");
+
   UNPROTECT(protect_count);
-  return result;
+  return output;
 }

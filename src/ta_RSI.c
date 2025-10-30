@@ -1,62 +1,61 @@
-// Interface to ta_RSI (Relative Strength Index)
+// interface to ta_RSI.c
 //
 // Parameters
-//   inReal        : numeric vector of source prices.
-//   optTimePeriod : integer, lookback period (commonly 14).
+//   inReal        : numeric vector (length n)
+//   optTimePeriod : integer time period
 //
-// Description
-//   Computes the single‐output RSI over the series. Returns an
-//   unnamed numeric vector of length n, padded with NA_REAL.
+// Returns
+//   numeric vector (n x 1) "RSI"
+//
+#include "container.h"
 #include "lib.h"
 #include "names.h"
+#include "shift.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <ta_libc.h>
 
-SEXP impl_ta_RSI(SEXP inReal, SEXP optTimePeriod) {
+// clang-format off
+SEXP impl_ta_RSI(
+  SEXP inReal,
+  SEXP optTimePeriod) {
+  // clang-format on
   int protect_count = 0;
-  int n = LENGTH(inReal);
-  double *restrict src = REAL(inReal);
-  int period = INTEGER(optTimePeriod)[0];
 
-  SEXP result = PROTECT(allocMatrix(REALSXP, n, 1));
-  protect_count++;
-  double *rsi = REAL(result);
+  const double *restrict in_real = REAL(inReal);
+  const int n = LENGTH(inReal);
 
-  int minimum_lookback = TA_RSI_Lookback(period);
-  if (n < minimum_lookback) {
-    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
-               minimum_lookback);
+  const int time_period = INTEGER(optTimePeriod)[0];
 
-    for (size_t i = 0; i < n; ++i) {
-      rsi[i] = NA_REAL;
-    }
+  SEXP output;
+  double *output_ptr;
 
-  } else {
+  const int lookback = TA_RSI_Lookback(time_period);
 
-    int outBeg = 0, outNb = 0;
+  const int proceed =
+      output_container(n, lookback, 1, &output, &output_ptr, &protect_count);
+
+  if (proceed) {
+    int start_idx = 0, end_idx = 0;
+
     // clang-format off
     TA_RetCode return_code = TA_RSI(
-      0, 
-      n - 1, 
-      src, 
-      period, 
-      &outBeg, 
-      &outNb, 
-      rsi
+      /*startIdx     */ 0,
+      /*endIdx       */ n - 1,
+      /*inReal       */ in_real,
+      /*optInTimePrd */ time_period,
+      /*outBegIdx    */ &start_idx,
+      /*outNbElement */ &end_idx,
+      /*outReal      */ output_ptr
     );
     // clang-format on
 
-    if (return_code != TA_SUCCESS) {
-      UNPROTECT(protect_count);
-      Rf_error("Failed with error code %d", return_code);
-    }
-
-    // shift
-    shift_array(rsi, n, outBeg);
-    set_colnames(result, "RSI");
+    check_output(return_code, protect_count);
+    shift_array(output_ptr, n, start_idx);
   }
 
+  set_colnames(output, "RSI");
+
   UNPROTECT(protect_count);
-  return result;
+  return output;
 }
