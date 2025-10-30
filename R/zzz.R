@@ -44,17 +44,17 @@
 	libpath,
 	...
 ) {
+	## reset candles on
+	## detach
+	.Call(
+		"reset_candle_setting"
+	)
+
 	## shutdown TA-Lib
 	## on detach
 	.Call(
 		"shutdown_ta_lib",
 		PACKAGE = "talib"
-	)
-
-	## reset candles on
-	## detach
-	.Call(
-		"reset_candle_setting"
 	)
 }
 
@@ -62,17 +62,17 @@
 	libpath,
 	...
 ) {
+	## reset candles on
+	## unload
+	.Call(
+		"reset_candle_setting"
+	)
+
 	## shutdown TA-Lib
 	## on unload
 	.Call(
 		"shutdown_ta_lib",
 		PACKAGE = "talib"
-	)
-
-	## reset candles on
-	## unload
-	.Call(
-		"reset_candle_setting"
 	)
 }
 
