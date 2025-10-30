@@ -1,15 +1,12 @@
 // Interface to TA_OBV (On-Balance Volume)
 //
 // Parameters
-//   close  : numeric vector of close prices
-//   volume : numeric vector of volumes (same length as close)
+//   real   : numeric vector of real prices
+//   volume : numeric vector of volumes (same length as real)
 //
-// Description
-//   Computes on-balance volume. Returns a numeric vector of length n,
-//   padded with NA_REAL for the initial lookback (usually zero for OBV).
-
 #include "R_ext/Error.h"
 #include "Rinternals.h"
+#include "container.h"
 #include "lib.h"
 #include "names.h"
 #include "shift.h"
@@ -17,50 +14,69 @@
 
 // clang-format off
 SEXP impl_ta_OBV(
-  SEXP close,
+  SEXP real,
   SEXP volume) {
   // clang-format on
-
   int protect_count = 0;
 
-  const int n = LENGTH(close);
-  const double *restrict close_ptr = REAL(close);
+  // generic input
+  const double *restrict real_ptr = REAL(real);
   const double *restrict volume_ptr = REAL(volume);
+  const int n = LENGTH(real);
 
-  SEXP result = PROTECT(allocMatrix(REALSXP, n, 1));
-  protect_count++;
-  double *restrict out_ptr = REAL(result);
+  // construct container
+  SEXP output;
+  double *output_ptr;
 
-  const int minimum_lookback = TA_OBV_Lookback();
+  // initialize
+  const int lookback = TA_OBV_Lookback();
+  // clang-format off
+  const int proceed = output_container(
+    n, 
+    lookback, 
+    1, 
+    &output, 
+    &output_ptr, 
+    &protect_count
+  );
+  // clang-format on
 
-  if (n < minimum_lookback) {
-    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
-               minimum_lookback);
-    for (int i = 0; i < n; ++i)
-      out_ptr[i] = NA_REAL;
+  if (proceed) {
+    int start_idx = 0, end_idx = 0;
 
-  } else {
-    int outBeg = 0, outNb = 0;
+    // clang-format off
+    TA_RetCode return_code = TA_OBV(
+      0,
+      n - 1,
+      real_ptr,
+      volume_ptr,
+      &start_idx,
+      &end_idx,
+      output_ptr
+    );
+    // clang-format on
 
-    TA_RetCode rc = TA_OBV(
-        /*startIdx*/ 0,
-        /*endIdx  */ n - 1,
-        /*inReal  */ close_ptr,
-        /*inVol   */ volume_ptr,
-        /*outBeg  */ &outBeg,
-        /*outNb   */ &outNb,
-        /*outReal */ out_ptr);
+    // check output and return
+    // error code if not TA_SUCCESS
+    // clang-format off
+    check_output(
+      return_code, 
+      protect_count
+    );
+    // clang-format on
 
-    if (rc != TA_SUCCESS) {
-      UNPROTECT(protect_count);
-      Rf_error("TA_OBV failed: return code %d", rc);
-    }
-
-    // Align to full length
-    set_colnames(result, "OBV");
-    shift_array(out_ptr, n, outBeg);
+    // clang-format off
+    shift_array(
+      output_ptr, 
+      n, 
+      start_idx
+    );
+    // clang-format on
   }
 
+  // set column names
+  set_colnames(output, "OBV");
+
   UNPROTECT(protect_count);
-  return result;
+  return output;
 }
