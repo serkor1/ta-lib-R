@@ -1,0 +1,258 @@
+---
+title: "Candlestick Pattern Recognition"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Candlestick Pattern Recognition}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+	collapse = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	comment = "#>",
+	out.width = "100%",
+	out.height = "680",
+	fig.align = "center"
+)
+```
+
+In this vignette I will show how to identify candlestick patterns using Bitcoin (BTC). BTC is a built-in `data.frame` using the [{cryptoQuotes}](https://github.com/serkor1/cryptoQuotes)-package and has the following form:
+
+```{r}
+str(
+	talib::BTC
+)
+```
+
+The vignette will start with a quick primer on candlestick patterns, and then it will discuss two essential elements of identifying candlestick patterns: `lookbacks` and `sensitivity`.
+
+## A primer on Candlestick Patterns
+
+A candlestick consists of four elements: Open, High, Low and Close prices for the asset.
+
+```{r, echo = FALSE}
+# two example candles
+df <- data.frame(
+	date = as.Date(c("2021-01-01", "2021-01-02")),
+	open = c(30000, 31500),
+	high = c(32000, 31800),
+	low = c(29500, 30500),
+	close = c(31500, 30800)
+)
+
+mid <- (df$close + df$open) / 2
+
+
+annos <- list(
+	list(
+		x = df$date[1],
+		y = mid[1],
+		text = "Bullish body",
+		showarrow = FALSE,
+		ax = 0,
+		ay = -40,
+		arrowhead = 2,
+		arrowcolor = "#65a479",
+		font = list(size = 12)
+	),
+	list(
+		x = df$date[1],
+		y = df$high[1],
+		text = "Upper wick",
+		showarrow = FALSE,
+		ax = 0,
+		ay = -40,
+		arrowhead = 2,
+		arrowcolor = "gray40",
+		font = list(size = 12)
+	),
+	list(
+		x = df$date[1],
+		y = df$low[1],
+		text = "Lower wick",
+		showarrow = TRUE,
+		ax = 0,
+		ay = 40,
+		arrowhead = 2,
+		arrowcolor = "gray40",
+		font = list(size = 12)
+	),
+
+	list(
+		x = df$date[2],
+		y = mid[2],
+		text = "Bearish body",
+		showarrow = FALSE,
+		ax = 0,
+		ay = 40,
+		arrowhead = 2,
+		arrowcolor = "#d5695d",
+		font = list(size = 12)
+	),
+	list(
+		x = df$date[2],
+		y = df$high[2],
+		text = "Upper wick",
+		showarrow = TRUE,
+		ax = 0,
+		ay = -40,
+		arrowhead = 2,
+		arrowcolor = "gray40",
+		font = list(size = 12)
+	),
+	list(
+		x = df$date[2],
+		y = df$low[2],
+		text = "Lower wick",
+		showarrow = TRUE,
+		ax = 0,
+		ay = 40,
+		arrowhead = 2,
+		arrowcolor = "gray40",
+		font = list(size = 12)
+	)
+)
+
+
+df |>
+	plotly::plot_ly(
+		x = ~date,
+		open = ~open,
+		high = ~high,
+		low = ~low,
+		close = ~close,
+		type = "candlestick",
+		increasing = list(
+			line = list(color = "#65a479"),
+			fillcolor = "#65a479"
+		),
+		decreasing = list(
+			line = list(color = "#d5695d"),
+			fillcolor = "#d5695d"
+		)
+	) |>
+	plotly::layout(
+		title = "Two-candle primer",
+		xaxis = list(title = "Date", rangeslider = list(visible = FALSE)),
+		yaxis = list(title = "Price"),
+		annotations = annos
+	)
+```
+
+The body of the candle is the distance between the Close and Open price. If the Close price is above the Open price, then candle is bullish and therefore green. If ther Close price is below the Open price, then the candle is bearish and therefore red.
+
+The distance between the High and the body, from above and below, is the candle wick, or candle shadow. All candlestick patterns are based on some permutation of the Open, High, Low and Close, across a number of candles.
+
+## Candlestick patterns in [{talib}](https://serkor1.github.io/ta-lib-R/)
+
+In this section I will focus on three patterns: `doji()`, `harami()` and `three_outside()`. The patterns can be identified as follows:
+
+```{r}
+## construct data.frame
+## with candlestick pattern
+x <- cbind(
+	talib::doji(talib::BTC),
+	talib::harami(talib::BTC),
+	talib::three_outside(talib::BTC)
+)
+
+{
+	cat("With default options\n")
+	summary(x)
+}
+```
+
+There are a few thing to take note of here: `<NA>` and range. The `<NA>` values are a by product of the the way the candles are identified. The `doji()`, for example, uses a default lookback period of `10` when determining the significance of the shadows and the `doji()` therefore discards the first 10 candles.
+
+### Candle inclusion
+
+The default number of candles used to identify a specific can be modified with `options()`. The `doji()` and `harami()` depends on the candle bodies which can be modified as follows:
+
+```{r}
+## set included number
+## of candles
+options(
+	talib.BodyDoji.N = 5,
+	talib.BodyLong.N = 7,
+	talib.BodyShort.N = 2
+)
+
+## construct data.frame
+## with candlestick pattern
+x <- cbind(
+	talib::doji(talib::BTC),
+	talib::harami(talib::BTC),
+	talib::three_outside(talib::BTC)
+)
+
+{
+	cat("With default options\n")
+	summary(x)
+}
+```
+
+Setting the `talib.BodyDoji.N` to 5 forces `doji()` to use 5, instead of 10, candles to identify the pattern. `harami()` depends on the past `N + 1` candle bodies *and* choses the paste candles based on `max(BodyLong, BodyShort)` which in this case is 7. `three_outside()` is a fixed pattern, and depends *only* on the three candles it needs to identify the patterns.
+
+### Candle Sensitivity
+
+Doji translates to: 
+
+> "the same thing"
+
+Which in the terms of securites implies that the Open and Close price are (nearly) identical. This is, obviously, very rare and is up to interpretation. This is where candle sensitivity comes into play: 
+
+```{r}
+## set sensitivity
+## of candles
+options(
+	## default settings for bodies
+	talib.BodyDoji.N = 10,
+	talib.BodyLong.N = 10,
+	talib.BodyShort.N = 10,
+
+	## modify alpha (sensitivity)
+	talib.BodyDoji.alpha = 0.2
+)
+
+## construct data.frame
+## with candlestick pattern
+x <- cbind(
+	talib::doji(talib::BTC),
+	talib::harami(talib::BTC),
+	talib::three_outside(talib::BTC)
+)
+
+{
+	cat("With modified sensitivity options\n")
+	summary(x)
+}
+```
+
+The default setting for `doji()` is 0.1, and setting this value higher increases the identified number of doji-patterns. In this case the 0.2 value translates to the following:
+
+> Real body is like doji's body when it's shorter than 20% the average of the 10 previous candles' high-low range.
+
+### Charting
+
+```{r}
+{
+	## candlestick chart
+	talib::chart(talib::BTC)
+
+	## chart identified 'doji'-patterns
+	talib::indicator(talib::doji)
+
+	## chart identified 'harami'-patterns
+	talib::indicator(talib::harami)
+
+	## chart identified 'three outside'-patterns
+	talib::indicator(talib::three_outside)
+}
+```
+
+## Contributing and bug reports
+
+The underlying library, [TA-Lib](https://github.com/TA-Lib/ta-lib), is a long-standing and well-known library but this R wrapper is still in its early stage. All contributions, suggestions, and bug reports are welcome.
