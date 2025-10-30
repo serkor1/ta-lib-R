@@ -94,7 +94,7 @@ testthat::test_that(desc = 'Default calls', code = {
 		),
 		expected = ACCBANDS(
 			BTC,
-			cols = ~ open + high + close
+			cols = ~ high + low + close
 		)
 	)
 })

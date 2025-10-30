@@ -13,13 +13,9 @@
 //
 // Implementation
 //
-// The function does not check for equal size of the
-// of the input vectors. This is on the user.
-//
 // It uses lookback function to verify the validity
 // of input vs lookback. If its invalid, it returns
 // a warning with a NA_REAL padded matrix.
-
 #include "R_ext/Error.h"
 #include "lib.h"
 #include "names.h"
@@ -38,13 +34,20 @@ SEXP impl_ta_ACCBANDS(
   // clang-format on
 
   int protect_count = 0;
+
   int n = LENGTH(inHigh);
+
   double *restrict highs = REAL(inHigh);
   double *restrict lows = REAL(inLow);
   double *restrict closes = REAL(inClose);
   int period = INTEGER(optTimePeriod)[0];
 
-  SEXP result = PROTECT(allocMatrix(REALSXP, n, 3));
+  // clang-format off
+  SEXP result = PROTECT(
+    allocMatrix(REALSXP, n, 3)
+  );
+  // clang-format on
+
   double *upper = REAL(result);
   double *middle = upper + n;
   double *lower = upper + 2 * n;
@@ -84,6 +87,7 @@ SEXP impl_ta_ACCBANDS(
       Rf_error("Failed with error code %d", return_code);
     }
 
+    // shift arrays
     shift_array(upper, n, outBeg);
     shift_array(middle, n, outBeg);
     shift_array(lower, n, outBeg);
@@ -93,9 +97,9 @@ SEXP impl_ta_ACCBANDS(
   // clang-format off
   set_colnames(
     result, 
-    "lower", 
+    "upper", 
     "middle", 
-    "upper"
+    "lower"
   );
   // clang-format on
 
