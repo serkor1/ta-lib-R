@@ -8,24 +8,7 @@
 //   optFastPeriod : integer fast EMA period (default 3 in TA-Lib)
 //   optSlowPeriod : integer slow EMA period (default 10 in TA-Lib)
 //
-// Description
-//   ADOSC = EMA_fast(AD) - EMA_slow(AD).
-//   Returns a numeric vector of length n (unnamed). Leading NAs equal
-//   to TA_ADOSC lookback (EMA of the slower of the two periods) are padded.
-//
-// Notes
-//   - TA-Lib’s ADOSC defaults and definition per docs (volume group).
-//     The lookback equals EMA lookback of the slower period.
-//     References: TA-Lib API and volume indicator docs.
-//     https://ta-lib.org/api/ ,
-//     https://ta-lib.github.io/ta-lib-python/func_groups/volume_indicators.html
-//   - Implementation writes from index 0 and then performs one in-place
-//     shift to insert NA padding at the front.
-//
-// Micro-optimizations
-//   * Restrict-qualified pointers for better alias analysis
-//   * Single allocation, single pass over the output
-//   * Early empty/length checks avoid TA call on degenerate ranges
+#include "container.h"
 #include "lib.h"
 #include "names.h"
 #include "shift.h"
@@ -33,59 +16,89 @@
 #include <Rinternals.h>
 #include <ta_libc.h>
 
-SEXP impl_ta_ADOSC(SEXP inHigh, SEXP inLow, SEXP inClose, SEXP inVolume,
-                   SEXP optFastPeriod, SEXP optSlowPeriod) {
-  const int n = LENGTH(inHigh);
+// clang-format off
+SEXP impl_ta_ADOSC(
+  SEXP inHigh, 
+  SEXP inLow, 
+  SEXP inClose, 
+  SEXP inVolume,
+  SEXP optFastPeriod, 
+  SEXP optSlowPeriod) {
+  // clang-format on
+  int protect_count = 0;
 
-  // 0) Length checks; empty → empty.
-  if (n == 0)
-    return allocVector(REALSXP, 0);
-  if (LENGTH(inLow) != n || LENGTH(inClose) != n || LENGTH(inVolume) != n) {
-    Rf_error("ADOSC: input lengths must match.");
-  }
-
-  // 1) Read optional periods (no bounds check here; TA-Lib validates).
-  const int fastP = INTEGER(optFastPeriod)[0];
-  const int slowP = INTEGER(optSlowPeriod)[0];
-
-  // 2) Alias inputs with restrict.
+  // generic input
   const double *restrict high = REAL(inHigh);
   const double *restrict low = REAL(inLow);
   const double *restrict close = REAL(inClose);
   const double *restrict volume = REAL(inVolume);
+  const int n = LENGTH(inHigh);
 
-  // 3) Allocate full-length output.
-  SEXP result = PROTECT(allocMatrix(REALSXP, n, 1));
-  double *restrict out = REAL(result);
+  // specific input
+  const int fastP = INTEGER(optFastPeriod)[0];
+  const int slowP = INTEGER(optSlowPeriod)[0];
 
-  // 4) Call TA-Lib from index 0; write from out[0].
-  int outBeg = 0, outNb = 0;
+  // construct container
+  SEXP output;
+  double *output_ptr;
+
+  // initialize
   // clang-format off
-  const TA_RetCode ret = TA_ADOSC(
-    0,
-    n - 1, 
-    high, 
-    low, 
-    close, 
-    volume, 
+  const int lookback = TA_ADOSC_Lookback(
     fastP, 
-    slowP, 
-    &outBeg,
-    &outNb,
-    out
-);
+    slowP
+  );
+
+  const int proceed = output_container(
+    n, 
+    lookback, 
+    1, 
+    &output, 
+    &output_ptr, 
+    &protect_count
+  );
   // clang-format on
 
-  if (ret != TA_SUCCESS) {
-    UNPROTECT(1);
-    Rf_error("TA_ADOSC failed (code %d).", (int)ret);
+  if (proceed) {
+
+    int start_idx = 0, end_idx = 0;
+
+    // clang-format off
+    const TA_RetCode return_code = TA_ADOSC(
+      0,
+      n - 1, 
+      high, 
+      low, 
+      close, 
+      volume, 
+      fastP, 
+      slowP, 
+      &start_idx,
+      &end_idx,
+      output_ptr
+    );
+
+    // check output and return
+    // error code if not TA_SUCCESS
+    // clang-format off
+    check_output(
+      return_code, 
+      protect_count
+    );
+    // clang-format on
+
+    // clang-format off
+    shift_array(
+      output_ptr, 
+      n, 
+      start_idx
+    );
+    // clang-format on
   }
 
-  // 5) Normalize by padding leading NAs equal to outBeg (EMA lookback).
-  shift_array(out, n, outBeg);
+  // set column names
+  set_colnames(output, "ADOSC");
 
-  set_colnames(result, "ADOSC");
-
-  UNPROTECT(1);
-  return result;
+  UNPROTECT(protect_count);
+  return output;
 }
