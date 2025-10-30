@@ -1,129 +1,103 @@
-// Interface to ta_STOCHRSI.c (Stochastic RSI)
+// interface to ta_STOCHRSI.c
 //
 // Parameters
-//   real            – numeric vector of RSI values
-//   timeperiod      – integer lookback for RSI calculation
-//   fastk_period    – integer period for %K of StochRSI
-//   fastd_period    – integer period for %D smoothing
-//   fastd_matype    – integer MA type for %D smoothing
-//   offset          – integer value of the 'n'passed into the RSI
+//   inReal        : numeric vector (length n)
+//   optTimePeriod : integer RSI time period
+//   optFastK      : integer Fast-K period
+//   optFastD      : integer Fast-D period
+//   optFastD_MA   : integer MA type for Fast-D
 //
-// Description
-//   Returns an N×2 matrix with columns 'fastk' and 'fastd', both
-//   of the same length as input, with NA for initial lookback.
+// Returns
+//   matrix n x 2 with columns:
+//     "fastk"
+//     "fastd"
+//
+// Details
+//   This function wraps RSI from the R side, so all
+//   values are offset by the <NA> values produced
+//   otherwise all returned values are <NA>
+//
 #include "MAType.h"
+#include "container.h"
 #include "lib.h"
 #include "names.h"
+#include "shift.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <ta_libc.h>
 
 // clang-format off
 SEXP impl_ta_STOCHRSI(
-  SEXP real, 
-  SEXP timeperiod, 
-  SEXP fastk_period,
-  SEXP fastd_period, 
-  SEXP fastd_matype,
-  SEXP offset_by_RSI
-) {
+  SEXP inReal,
+  SEXP optTimePeriod,
+  SEXP optFastK,
+  SEXP optFastD,
+  SEXP optFastD_MA,
+  SEXP offset_by_RSI) {
   // clang-format on
+  int protect_count = 0;
 
-  int protection_count = 0;
+  const double *restrict in_real = REAL(inReal);
+  const int n = LENGTH(inReal);
 
-  // determine MAs
-  TA_MAType MAType = as_MAType(fastd_matype);
-
-  // periods
-  const int fastk = INTEGER(fastk_period)[0];
-  const int fastd = INTEGER(fastd_period)[0];
-  const int lag = INTEGER(timeperiod)[0];
+  const int time_period = INTEGER(optTimePeriod)[0];
+  const int fast_k = INTEGER(optFastK)[0];
+  const int fast_d = INTEGER(optFastD)[0];
+  const TA_MAType fast_d_ma = as_MAType(optFastD_MA);
   const int offset = INTEGER(offset_by_RSI)[0];
 
-  // data
-  const double *restrict series_ptr = REAL(real);
+  SEXP output;
+  double *output_ptr;
 
-  // length
-  int n = length(real);
-  int outBeg = 0, outNB = 0;
-
-  // output matrix
   // clang-format off
-  SEXP output = PROTECT(
-    allocMatrix(REALSXP, n + offset, 2)
-  ); protection_count++;
-  double *__restrict__ output_ptr = REAL(output);
-  double *__restrict__ fastk_ptr = output_ptr;
-  double *__restrict__ fastd_ptr = output_ptr + (n + offset);
+  const int lookback = TA_STOCHRSI_Lookback(
+    time_period, 
+    fast_k, 
+    fast_d, 
+    fast_d_ma) + offset;
   // clang-format on
 
-  // verify lookback
   // clang-format off
-  const int minimum_lookback = TA_STOCHRSI_Lookback(
-    lag, 
-    fastk,
-    fastd,
-    MAType
+  const int proceed = output_container(
+    n + offset, 
+    lookback, 
+    2, 
+    &output,
+    &output_ptr, 
+    &protect_count
   );
   // clang-format on
 
-  if (n < minimum_lookback) {
+  if (proceed) {
+    int start_idx = 0, end_idx = 0;
 
-    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
-               minimum_lookback);
-
-    for (size_t i = 0; i < n; ++i) {
-      fastk_ptr[i] = fastd_ptr[i] = NA_REAL;
-    }
-
-  } else {
+    double *output_fastk = output_ptr;
+    double *output_fastd = output_ptr + (n + offset);
 
     // clang-format off
     TA_RetCode return_code = TA_STOCHRSI(
-      0, 
-      n - 1, 
-      series_ptr,
-      lag, 
-      fastk, 
-      fastd, 
-      MAType, 
-      &outBeg,
-      &outNB, 
-      fastk_ptr + outBeg, 
-      fastd_ptr + outBeg
+      /*startIdx     */ 0,
+      /*endIdx       */ n - 1,
+      /*inReal       */ in_real,
+      /*optInTimePrd */ time_period,
+      /*optInFastK   */ fast_k,
+      /*optInFastD   */ fast_d,
+      /*optInFastDMA */ fast_d_ma,
+      /*outBegIdx    */ &start_idx,
+      /*outNbElement */ &end_idx,
+      /*outFastK     */ output_fastk,
+      /*outFastD     */ output_fastd
     );
     // clang-format on
 
-    if (return_code != TA_SUCCESS) {
-      UNPROTECT(protection_count);
-      error("TA_STOCHRSI failed: return code %d", return_code);
-    }
+    check_output(return_code, protect_count);
 
-    // shift values
-    // clang-format off
-    shift_array(
-      fastk_ptr, 
-      n + offset, 
-      outBeg + offset
-    );
-
-    shift_array(
-      fastd_ptr, 
-      n + offset, 
-      outBeg + offset
-    );
-    // clang-format on
+    shift_array(output_fastk, n + offset, start_idx + offset);
+    shift_array(output_fastd, n + offset, start_idx + offset);
   }
 
-  // set column names
-  // clang-format off
-  set_colnames(
-    output, 
-    "fastk", 
-    "fastd"
-  );
-  // clang-format on
+  set_colnames(output, "fastk", "fastd");
 
-  UNPROTECT(protection_count);
+  UNPROTECT(protect_count);
   return output;
 }
