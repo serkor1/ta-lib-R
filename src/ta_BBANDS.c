@@ -1,114 +1,102 @@
-// Interface to ta_BBANDS (Bollinger Bands)
+// interface to ta_BBANDS.c
 //
 // Parameters
-//   inReal         : numeric vector of source prices.
-//   optTimePeriod  : integer, lookback period (e.g. 20).
-//   optNbDevUp     : double, number of standard deviations for upper band.
-//   optNbDevDn     : double, number of standard deviations for lower band.
-//   optMAType      : integer code of TA_MAType (e.g. TA_MAType_SMA).
+//   inReal        : numeric vector (length n)
+//   optTimePeriod : integer time period
+//   optNbDevUp    : numeric number of deviations above
+//   optNbDevDn    : numeric number of deviations below
+//   optMAType     : integer MA type (see MAType.h)
 //
-// Description
-//   Computes the upper, middle, and lower Bollinger Bands over the input
-//   series. Returns an n × 3 matrix (columns "upper","middle","lower")
-//   padded with NA_REAL for values where the bands are undefined.
-
+// Returns
+//   numeric matrix (n x 3) with columns
+//     "upper"
+//     "middle"
+//     "lower"
+//
 #include "MAType.h"
+#include "container.h"
 #include "lib.h"
 #include "names.h"
 #include "shift.h"
+#include <R.h>
 #include <Rinternals.h>
 #include <ta_libc.h>
 
 // clang-format off
 SEXP impl_ta_BBANDS(
-  SEXP inReal, 
-  SEXP optTimePeriod, 
+  SEXP inReal,
+  SEXP optTimePeriod,
   SEXP optNbDevUp,
-  SEXP optNbDevDn, 
+  SEXP optNbDevDn,
   SEXP optMAType) {
-// clang-format on 
-
-  int protect_count = 0;
-  // determine MAs
-  TA_MAType maType = as_MAType(optMAType);
-
-  // periods and standard
-  // deviations
-  int period = INTEGER(optTimePeriod)[0];
-  double nbUp = REAL(optNbDevUp)[0];
-  double nbDn = REAL(optNbDevDn)[0];
-
-  // data
-  int n = LENGTH(inReal);
-  double *restrict src = REAL(inReal);
-  
-  // clang-format off
-  SEXP result = PROTECT(
-    allocMatrix(REALSXP, n, 3)
-  ); protect_count++;
-  double *upper  = REAL(result);
-  double *middle = upper + n;
-  double *lower  = upper + 2 * n;
   // clang-format on
+  int protect_count = 0;
+
+  const double *restrict in_real = REAL(inReal);
+  const int n = LENGTH(inReal);
+
+  const int time_period = INTEGER(optTimePeriod)[0];
+  const double nb_dev_up = REAL(optNbDevUp)[0];
+  const double nb_dev_dn = REAL(optNbDevDn)[0];
+  const TA_MAType moving_average = as_MAType(optMAType);
+
+  SEXP output;
+  double *output_ptr;
 
   // clang-format off
-  const int minimum_lookback = TA_BBANDS_Lookback(
-    period, 
-    nbUp, 
-    nbDn, 
-    maType
+  const int lookback = TA_BBANDS_Lookback(
+    time_period,
+    nb_dev_up,
+    nb_dev_dn,
+    moving_average
   );
   // clang-format on
 
-  if (n < minimum_lookback) {
-    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
-               minimum_lookback);
+  // clang-format off
+  const int proceed = output_container(
+    n,
+    lookback,
+    3,
+    &output,
+    &output_ptr,
+    &protect_count
+  );
+  // clang-format on
 
-    for (size_t i = 0; i < n; ++i) {
-      upper[i] = middle[i] = lower[i] = NA_REAL;
-    }
+  if (proceed) {
+    int start_idx = 0;
+    int number_of_elements = 0;
 
-  } else {
+    double *restrict out_upper = output_ptr;
+    double *restrict out_middle = output_ptr + n;
+    double *restrict out_lower = output_ptr + (2 * n);
 
-    int outBeg = 0, outNb = 0;
     // clang-format off
     TA_RetCode return_code = TA_BBANDS(
-      0, 
-      n - 1, 
-      src, 
-      period, 
-      nbUp, 
-      nbDn, 
-      maType, 
-      &outBeg, 
-      &outNb,
-      upper + outBeg, 
-      middle + outBeg, 
-      lower + outBeg
+      0,
+      n - 1,
+      in_real,
+      time_period,
+      nb_dev_up,
+      nb_dev_dn,
+      moving_average,
+      &start_idx,
+      &number_of_elements,
+      out_upper,
+      out_middle,
+      out_lower
     );
     // clang-format on
 
-    if (return_code != TA_SUCCESS) {
-      UNPROTECT(protect_count);
-      Rf_error("Failed with error code %d", return_code);
-    }
+    check_output(return_code, protect_count);
 
-    // shift arrays
-    shift_array(upper, n, outBeg);
-    shift_array(middle, n, outBeg);
-    shift_array(lower, n, outBeg);
+    shift_array(out_upper, n, start_idx);
+    shift_array(out_middle, n, start_idx);
+    shift_array(out_lower, n, start_idx);
   }
 
-  // set column names
-  // clang-format off
-  set_colnames(
-    result, 
-    "upper", 
-    "middle", 
-    "lower"
-  );
-  // clang-format on
+  set_colnames(output, "upper", "middle", "lower");
 
   UNPROTECT(protect_count);
-  return result;
+  return output;
 }
