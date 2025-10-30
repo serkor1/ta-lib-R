@@ -61,9 +61,9 @@ static void shift_double_array(double *arr, int len, int shift) {
   // 1) shift the arrayy
   //    in place
   memmove(
-      /*dest:*/ arr + shift,
-      /*src*/ arr,
-      /*n*/ (size_t)(len - shift) * sizeof(double));
+    /*dest:*/ arr + shift,
+    /*src*/ arr,
+    /*n*/ (size_t)(len - shift) * sizeof(double));
 
   // 2) add leading NAs
   //    as NA_REAL for
@@ -94,9 +94,9 @@ static void shift_int_array(int *arr, int len, int shift) {
   // 1) shift the arrayy
   //    in place
   memmove(
-      /*dest:*/ arr + shift,
-      /*src*/ arr,
-      /*n*/ (size_t)(len - shift) * sizeof(int));
+    /*dest:*/ arr + shift,
+    /*src*/ arr,
+    /*n*/ (size_t)(len - shift) * sizeof(int));
 
   // 2) add leading NAs
   //    as NA_REAL for

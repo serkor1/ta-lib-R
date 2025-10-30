@@ -11,8 +11,8 @@
 #include "shift.h"
 #include <ta_libc.h>
 
-SEXP impl_ta_CDLCONCEALBABYSWALL(SEXP open, SEXP high, SEXP low, SEXP close,
-                                 SEXP normalize_flag) {
+SEXP impl_ta_CDLCONCEALBABYSWALL(
+  SEXP open, SEXP high, SEXP low, SEXP close, SEXP normalize_flag) {
   int protect_count = 0;
 
   const double *restrict open_ptr = REAL(open);
@@ -28,16 +28,25 @@ SEXP impl_ta_CDLCONCEALBABYSWALL(SEXP open, SEXP high, SEXP low, SEXP close,
   const int minimum_lookback = TA_CDLCONCEALBABYSWALL_Lookback();
 
   if (n < minimum_lookback) {
-    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
-               minimum_lookback);
+    Rf_warning(
+      "Input length (%d) is smaller than required lookback (%d).",
+      n,
+      minimum_lookback);
     for (size_t i = 0; i < (size_t)n; ++i)
       out_ptr[i] = NA_INTEGER;
 
   } else {
     int outBeg = 0, outNb = 0;
-    TA_RetCode return_code =
-        TA_CDLCONCEALBABYSWALL(0, n - 1, open_ptr, high_ptr, low_ptr, close_ptr,
-                               &outBeg, &outNb, out_ptr);
+    TA_RetCode return_code = TA_CDLCONCEALBABYSWALL(
+      0,
+      n - 1,
+      open_ptr,
+      high_ptr,
+      low_ptr,
+      close_ptr,
+      &outBeg,
+      &outNb,
+      out_ptr);
 
     if (return_code != TA_SUCCESS) {
       UNPROTECT(protect_count);

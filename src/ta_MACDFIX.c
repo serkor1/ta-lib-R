@@ -55,15 +55,15 @@ SEXP impl_ta_MACDFIX(
 
     // clang-format off
     TA_RetCode return_code = TA_MACDFIX(
-      /*startIdx     */ 0,
-      /*endIdx       */ n - 1,
-      /*inReal       */ in_real,
-      /*optInSignal  */ signal_period,
-      /*outBegIdx    */ &start_idx,
-      /*outNbElement */ &end_idx,
-      /*outMACD      */ output_macd,
-      /*outMACDSignal*/ output_signal,
-      /*outMACDHist  */ output_histogram
+       0,
+       n - 1,
+       in_real,
+       signal_period,
+       &start_idx,
+       &end_idx,
+       output_macd,
+       output_signal,
+       output_histogram
     );
     // clang-format on
 

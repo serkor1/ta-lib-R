@@ -42,8 +42,10 @@ SEXP impl_ta_CDL3WHITESOLDIERS(
   const int minimum_lookback = TA_CDL3WHITESOLDIERS_Lookback();
 
   if (n < minimum_lookback) {
-    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
-               minimum_lookback);
+    Rf_warning(
+      "Input length (%d) is smaller than required lookback (%d).",
+      n,
+      minimum_lookback);
     for (int i = 0; i < n; ++i)
       out_ptr[i] = NA_INTEGER;
 
@@ -51,15 +53,15 @@ SEXP impl_ta_CDL3WHITESOLDIERS(
     int outBeg = 0, outNb = 0;
 
     TA_RetCode rc = TA_CDL3WHITESOLDIERS(
-        /*startIdx*/ 0,
-        /*endIdx  */ n - 1,
-        /*open    */ open_ptr,
-        /*high    */ high_ptr,
-        /*low     */ low_ptr,
-        /*close   */ close_ptr,
-        /*outBeg  */ &outBeg,
-        /*outNb   */ &outNb,
-        /*out     */ out_ptr);
+      0,
+      n - 1,
+      open_ptr,
+      high_ptr,
+      low_ptr,
+      close_ptr,
+      &outBeg,
+      &outNb,
+      out_ptr);
 
     if (rc != TA_SUCCESS) {
       UNPROTECT(protect_count);

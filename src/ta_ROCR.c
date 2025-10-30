@@ -48,13 +48,13 @@ SEXP impl_ta_ROCR(
 
     // clang-format off
     TA_RetCode return_code = TA_ROCR(
-      /*startIdx      */ 0,
-      /*endIdx        */ n - 1,
-      /*inReal        */ in_real,
-      /*optInTimePeriod*/ time_period,
-      /*outBegIdx     */ &start_idx,
-      /*outNbElement  */ &end_idx,
-      /*outReal       */ output_ptr
+       0,
+       n - 1,
+       in_real,
+       time_period,
+       &start_idx,
+       &end_idx,
+       output_ptr
     );
     // clang-format on
 

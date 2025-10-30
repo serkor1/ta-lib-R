@@ -48,7 +48,16 @@ purge: clean ## Remove TA-Lib arifacts
 	@git -C src/ta-lib clean -fdx
 
 fmt: ## Format code
-	@clang-format -style=LLVM -dump-config > .clang-format && clang-format -i src/*.c src/*.h
+	@clang-format \
+	-style='{
+		BasedOnStyle: LLVM,
+		BinPackArguments: false,
+		BinPackParameters: false,
+		AlignAfterOpenBracket: AlwaysBreak,
+		AllowAllArgumentsOnNextLine: false,
+		ContinuationIndentWidth: 2
+		}' \
+	-i src/*.c src/*.h
 	@air format R
 	@air format tests/testthat
 	@rm -rf ./.clang-format

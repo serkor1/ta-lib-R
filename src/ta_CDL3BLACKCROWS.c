@@ -52,8 +52,10 @@ SEXP impl_ta_CDL3BLACKCROWS(
   const int minimum_lookback = TA_CDL3BLACKCROWS_Lookback();
 
   if (n < minimum_lookback) {
-    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
-               minimum_lookback);
+    Rf_warning(
+      "Input length (%d) is smaller than required lookback (%d).",
+      n,
+      minimum_lookback);
 
     for (int i = 0; i < n; ++i) {
       out_ptr[i] = NA_INTEGER;

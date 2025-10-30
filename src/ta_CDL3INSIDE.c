@@ -51,17 +51,26 @@ SEXP impl_ta_CDL3INSIDE(
   const int minimum_lookback = TA_CDL3INSIDE_Lookback();
 
   if (n < minimum_lookback) {
-    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
-               minimum_lookback);
+    Rf_warning(
+      "Input length (%d) is smaller than required lookback (%d).",
+      n,
+      minimum_lookback);
     for (int i = 0; i < n; ++i) {
       out_ptr[i] = NA_INTEGER;
     }
   } else {
 
     int outBeg = 0, outNb = 0;
-    TA_RetCode return_code =
-        TA_CDL3INSIDE(0, n - 1, open_ptr, high_ptr, low_ptr, close_ptr, &outBeg,
-                      &outNb, out_ptr);
+    TA_RetCode return_code = TA_CDL3INSIDE(
+      0,
+      n - 1,
+      open_ptr,
+      high_ptr,
+      low_ptr,
+      close_ptr,
+      &outBeg,
+      &outNb,
+      out_ptr);
 
     if (return_code != TA_SUCCESS) {
       UNPROTECT(protect_count);

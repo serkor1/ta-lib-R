@@ -45,24 +45,24 @@ SEXP impl_ta_ULTOSC(
   const int lookback = TA_ULTOSC_Lookback(period1, period2, period3);
 
   const int proceed =
-      output_container(n, lookback, 1, &output, &output_ptr, &protect_count);
+    output_container(n, lookback, 1, &output, &output_ptr, &protect_count);
 
   if (proceed) {
     int start_idx = 0, end_idx = 0;
 
     // clang-format off
     TA_RetCode return_code = TA_ULTOSC(
-      /*startIdx     */ 0,
-      /*endIdx       */ n - 1,
-      /*inHigh       */ high_ptr,
-      /*inLow        */ low_ptr,
-      /*inClose      */ close_ptr,
-      /*optInPeriod1 */ period1,
-      /*optInPeriod2 */ period2,
-      /*optInPeriod3 */ period3,
-      /*outBegIdx    */ &start_idx,
-      /*outNbElement */ &end_idx,
-      /*outReal      */ output_ptr
+       0,
+       n - 1,
+       high_ptr,
+       low_ptr,
+       close_ptr,
+       period1,
+       period2,
+       period3,
+       &start_idx,
+       &end_idx,
+       output_ptr
     );
     // clang-format on
 

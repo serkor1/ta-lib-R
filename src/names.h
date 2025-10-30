@@ -8,8 +8,8 @@
 #include <R.h>
 #include <Rinternals.h>
 
-static inline void column_names(SEXP x, int n_cols,
-                                const char *const *colnames) {
+static inline void
+column_names(SEXP x, int n_cols, const char *const *colnames) {
 
   SEXP dn = PROTECT(Rf_allocVector(VECSXP, 2));
   SEXP cn = PROTECT(Rf_allocVector(STRSXP, n_cols));
