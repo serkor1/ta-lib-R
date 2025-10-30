@@ -50,13 +50,13 @@ SEXP impl_ta_HT_SINE(
 
     // clang-format off
     TA_RetCode return_code = TA_HT_SINE(
-      /*startIdx     */ 0,
-      /*endIdx       */ n - 1,
-      /*inReal       */ in_real,
-      /*outBegIdx    */ &start_idx,
-      /*outNbElement */ &number_of_elements,
-      /*outSine      */ output_sine,
-      /*outLeadSine  */ output_leadsine
+       0,
+       n - 1,
+       in_real,
+       &start_idx,
+       &number_of_elements,
+       output_sine,
+       output_leadsine
     );
     // clang-format on
 

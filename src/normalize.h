@@ -23,8 +23,8 @@
 #include <stddef.h>
 
 // normalize double arrays
-static inline void normalize_double(double *arr, int n, double factor,
-                                    int shift) {
+static inline void
+normalize_double(double *arr, int n, double factor, int shift) {
   for (size_t i = shift; i < n; ++i) {
     arr[i] /= factor;
   }

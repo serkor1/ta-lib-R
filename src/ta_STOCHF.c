@@ -72,18 +72,18 @@ SEXP impl_ta_STOCHF(
 
     // clang-format off
     TA_RetCode return_code = TA_STOCHF(
-      /*startIdx     */ 0,
-      /*endIdx       */ n - 1,
-      /*inHigh       */ high_ptr,
-      /*inLow        */ low_ptr,
-      /*inClose      */ close_ptr,
-      /*optInFastK   */ fast_k,
-      /*optInFastD   */ fast_d,
-      /*optInFastDMA */ fast_d_ma,
-      /*outBegIdx    */ &start_idx,
-      /*outNbElement */ &end_idx,
-      /*outFastK     */ output_fastk,
-      /*outFastD     */ output_fastd
+       0,
+       n - 1,
+       high_ptr,
+       low_ptr,
+       close_ptr,
+       fast_k,
+       fast_d,
+       fast_d_ma,
+       &start_idx,
+       &end_idx,
+       output_fastk,
+       output_fastd
     );
     // clang-format on
 

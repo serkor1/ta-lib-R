@@ -45,12 +45,12 @@ SEXP impl_ta_HT_DCPHASE(
 
     // clang-format off
     TA_RetCode return_code = TA_HT_DCPHASE(
-      /*startIdx     */ 0,
-      /*endIdx       */ n - 1,
-      /*inReal       */ in_real,
-      /*outBegIdx    */ &start_idx,
-      /*outNbElement */ &number_of_elements,
-      /*outReal      */ output_ptr
+       0,
+       n - 1,
+       in_real,
+       &start_idx,
+       &number_of_elements,
+       output_ptr
     );
     // clang-format on
 

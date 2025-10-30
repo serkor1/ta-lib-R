@@ -50,8 +50,10 @@ SEXP impl_ta_CDLEVENINGSTAR(
   const int minimum_lookback = TA_CDLEVENINGSTAR_Lookback(penetration_value);
 
   if (n < minimum_lookback) {
-    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
-               minimum_lookback);
+    Rf_warning(
+      "Input length (%d) is smaller than required lookback (%d).",
+      n,
+      minimum_lookback);
     for (int i = 0; i < n; ++i)
       out_ptr[i] = NA_INTEGER;
 
@@ -61,16 +63,16 @@ SEXP impl_ta_CDLEVENINGSTAR(
 
     // clang-format off
     TA_RetCode return_code = TA_CDLEVENINGSTAR(
-      /*startIdx*/ 0,
-      /*endIdx  */ n - 1,
-      /*inOpen  */ open_ptr,
-      /*inHigh  */ high_ptr,
-      /*inLow   */ low_ptr,
-      /*inClose */ close_ptr,
-      /*optInPen*/ penetration_value,
-      /*outBeg  */ &output_begin,
-      /*outNb   */ &output_count,
-      /*outInt  */ out_ptr
+       0,
+       n - 1,
+       open_ptr,
+       high_ptr,
+       low_ptr,
+       close_ptr,
+       penetration_value,
+       &output_begin,
+       &output_count,
+       out_ptr
     );
     // clang-format on
 

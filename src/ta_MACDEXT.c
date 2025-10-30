@@ -80,20 +80,20 @@ SEXP impl_ta_MACDEXT(
 
     // clang-format off
     TA_RetCode return_code = TA_MACDEXT(
-      /*startIdx        */ 0,
-      /*endIdx          */ n - 1,
-      /*inReal          */ in_real,
-      /*optInFastPeriod */ fast_period,
-      /*optInFastMAType */ fast_ma,
-      /*optInSlowPeriod */ slow_period,
-      /*optInSlowMAType */ slow_ma,
-      /*optInSignalPrd  */ signal_period,
-      /*optInSignalMA   */ signal_ma,
-      /*outBegIdx       */ &start_idx,
-      /*outNbElement    */ &end_idx,
-      /*outMACD         */ output_macd,
-      /*outMACDSignal   */ output_signal,
-      /*outMACDHist     */ output_histogram
+       0,
+       n - 1,
+       in_real,
+       fast_period,
+       fast_ma,
+       slow_period,
+       slow_ma,
+       signal_period,
+       signal_ma,
+       &start_idx,
+       &end_idx,
+       output_macd,
+       output_signal,
+       output_histogram
     );
     // clang-format on
 

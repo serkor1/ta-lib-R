@@ -80,20 +80,20 @@ SEXP impl_ta_STOCH(
 
     // clang-format off
       TA_RetCode return_code = TA_STOCH(
-        /*startIdx     */ 0,
-        /*endIdx       */ n - 1,
-        /*inHigh       */ high_ptr,
-        /*inLow        */ low_ptr,
-        /*inClose      */ close_ptr,
-        /*optInFastK   */ fast_k,
-        /*optInSlowK   */ slow_k,
-        /*optInSlowKMA */ slow_k_ma,
-        /*optInSlowD   */ slow_d,
-        /*optInSlowDMA */ slow_d_ma,
-        /*outBegIdx    */ &start_idx,
-        /*outNbElement */ &end_idx,
-        /*outSlowK     */ output_slowk,
-        /*outSlowD     */ output_slowd
+         0,
+         n - 1,
+         high_ptr,
+         low_ptr,
+         close_ptr,
+         fast_k,
+         slow_k,
+         slow_k_ma,
+         slow_d,
+         slow_d_ma,
+         &start_idx,
+         &end_idx,
+         output_slowk,
+         output_slowd
       );
     // clang-format on
 

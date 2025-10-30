@@ -53,8 +53,10 @@ SEXP impl_ta_CDLDOJI(
   // clang-format on
 
   if (n < minimum_lookback) {
-    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
-               minimum_lookback);
+    Rf_warning(
+      "Input length (%d) is smaller than required lookback (%d).",
+      n,
+      minimum_lookback);
 
     for (size_t i = 0; i < n; ++i) {
       out_ptr[i] = NA_INTEGER;

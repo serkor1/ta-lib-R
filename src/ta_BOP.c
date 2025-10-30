@@ -38,22 +38,22 @@ SEXP impl_ta_BOP(
   const int lookback = TA_BOP_Lookback();
 
   const int proceed =
-      output_container(n, lookback, 1, &output, &output_ptr, &protect_count);
+    output_container(n, lookback, 1, &output, &output_ptr, &protect_count);
 
   if (proceed) {
     int start_idx = 0, end_idx = 0;
 
     // clang-format off
     TA_RetCode return_code = TA_BOP(
-      /*startIdx     */ 0,
-      /*endIdx       */ n - 1,
-      /*inOpen       */ open_ptr,
-      /*inHigh       */ high_ptr,
-      /*inLow        */ low_ptr,
-      /*inClose      */ close_ptr,
-      /*outBegIdx    */ &start_idx,
-      /*outNbElement */ &end_idx,
-      /*outReal      */ output_ptr
+       0,
+       n - 1,
+       open_ptr,
+       high_ptr,
+       low_ptr,
+       close_ptr,
+       &start_idx,
+       &end_idx,
+       output_ptr
     );
     // clang-format on
 

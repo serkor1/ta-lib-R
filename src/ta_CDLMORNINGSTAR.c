@@ -47,8 +47,10 @@ SEXP impl_ta_CDLMORNINGSTAR(
   const int minimum_lookback = TA_CDLMORNINGSTAR_Lookback(opt_penetration);
 
   if (n < minimum_lookback) {
-    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
-               minimum_lookback);
+    Rf_warning(
+      "Input length (%d) is smaller than required lookback (%d).",
+      n,
+      minimum_lookback);
     for (int i = 0; i < n; ++i)
       out_ptr[i] = NA_INTEGER;
   } else {
@@ -56,16 +58,16 @@ SEXP impl_ta_CDLMORNINGSTAR(
 
     // clang-format off
     TA_RetCode return_code = TA_CDLMORNINGSTAR(
-      /*startIdx*/ 0,
-      /*endIdx  */ n - 1,
-      /*inOpen  */ open_ptr,
-      /*inHigh  */ high_ptr,
-      /*inLow   */ low_ptr,
-      /*inClose */ close_ptr,
-      /*optPen  */ opt_penetration,
-      /*outBeg  */ &out_begin_index,
-      /*outNb   */ &out_number_of_elements,
-      /*outInt  */ out_ptr
+       0,
+       n - 1,
+       open_ptr,
+       high_ptr,
+       low_ptr,
+       close_ptr,
+       opt_penetration,
+       &out_begin_index,
+       &out_number_of_elements,
+       out_ptr
     );
     // clang-format on
 
