@@ -6,19 +6,7 @@
 //   inClose  : numeric vector of closes (length n)
 //   inVolume : numeric vector of volumes (length n)
 //
-// Description
-//   Computes the cumulative Chaikin A/D Line.
-//   Returns a numeric vector of length n (unnamed).
-//
-// Notes
-//   - TA_AD has zero lookback and writes a contiguous output segment,
-//     reported via outBegIdx/outNbElement. We write from index 0 and
-//     then pad leading NAs by a single in-place shift for O(n) work.
-//   - See TA-Lib API calling pattern (startIdx/endIdx/outBegIdx/outNbElement).
-//     This wrapper follows that pattern and then normalizes to full length.
-//     (Docs: C/C++ API; Function list & AD)
-//     Reference: https://ta-lib.org/api/ , https://ta-lib.org/functions/ .
-//     (Also exposed in TA-Lib “volume” group.)
+#include "container.h"
 #include "lib.h"
 #include "names.h"
 #include "shift.h"
@@ -26,53 +14,78 @@
 #include <Rinternals.h>
 #include <ta_libc.h>
 
-SEXP impl_ta_AD(SEXP inHigh, SEXP inLow, SEXP inClose, SEXP inVolume) {
-  const int n = LENGTH(inHigh);
+// clang-format off
+SEXP impl_ta_AD(
+  SEXP inHigh, 
+  SEXP inLow, 
+  SEXP inClose, 
+  SEXP inVolume) {
+  // clang-format on
+  int protect_count = 0;
 
-  // 0) Fast length sanity: all inputs must match; empty -> empty.
-  if (n == 0)
-    return allocVector(REALSXP, 0);
-  if (LENGTH(inLow) != n || LENGTH(inClose) != n || LENGTH(inVolume) != n) {
-    Rf_error("AD: input lengths must match.");
-  }
-
-  // 1) Alias input buffers with restrict for better alias analysis.
+  // generic input
   const double *restrict high = REAL(inHigh);
   const double *restrict low = REAL(inLow);
   const double *restrict close = REAL(inClose);
   const double *restrict volume = REAL(inVolume);
+  const int n = LENGTH(inHigh);
 
-  // 2) Allocate full-length output; unnamed vector by contract.
-  SEXP result = PROTECT(allocMatrix(REALSXP, n, 1));
-  double *restrict out = REAL(result);
+  // construct container
+  SEXP output;
+  double *output_ptr;
 
-  // 3) Call TA-Lib over the whole range; write from index 0.
-  int outBeg = 0, outNb = 0;
+  // initialize
+  const int lookback = TA_AD_Lookback();
   // clang-format off
-  const TA_RetCode ret = TA_AD(
-    0,
-    n - 1,
-    high,
-    low, 
-    close, 
-    volume, 
-    &outBeg, 
-    &outNb,
-    out
-);
+  const int proceed = output_container(
+    n, 
+    lookback, 
+    1, 
+    &output, 
+    &output_ptr, 
+    &protect_count
+  );
   // clang-format on
 
-  if (ret != TA_SUCCESS) {
-    UNPROTECT(1);
-    Rf_error("TA_AD failed (code %d).", (int)ret);
+  if (proceed) {
+
+    int start_idx = 0, end_idx = 0;
+
+    // clang-format off
+    TA_RetCode return_code = TA_AD(
+      0, 
+      n - 1, 
+      high, 
+      low, 
+      close, 
+      volume, 
+      &start_idx, 
+      &end_idx, 
+      output_ptr
+    );
+    // clang-format on
+
+    // check output and return
+    // error code if not TA_SUCCESS
+    // clang-format off
+    check_output(
+      return_code, 
+      protect_count
+    );
+    // clang-format on
+
+    // clang-format off
+    shift_array(
+      output_ptr, 
+      n, 
+      start_idx
+    );
+    // clang-format on
   }
 
-  // 4) Normalize to input length by padding leading NAs.
-  //    This shifts [0..outNb-1] to start at index outBeg.
-  shift_array(out, n, outBeg);
+  // set column names
+  set_colnames(output, "AD");
 
-  set_colnames(result, "AD");
-
-  UNPROTECT(1);
-  return result;
+  UNPROTECT(protect_count);
+  return output;
 }
