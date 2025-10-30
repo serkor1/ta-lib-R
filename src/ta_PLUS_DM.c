@@ -1,78 +1,73 @@
 // interface to ta_PLUS_DM.c
 //
-// Description
-//   Computes the Plus Directional Movement (+DM). Returns a numeric vector
-//   of length n. Leading samples before the first computable output are padded
-//   with NA_REAL.
-//
 // Parameters
-//   high       : numeric vector of high prices
-//   low        : numeric vector of low prices
-//   timeperiod : integer SEXP for lookback (typical default 14)
+//   inHigh        : numeric vector of highs (length n)
+//   inLow         : numeric vector of lows  (length n)
+//   optTimePeriod : integer time period
 //
 // Returns
-//   A REALSXP vector of length n with +DM values, left-padded with NA_REAL.
-
-#include "R_ext/Error.h"
-#include "Rinternals.h"
+//   numeric vector (n x 1) "PDM"
+//
+#include "container.h"
 #include "lib.h"
 #include "names.h"
 #include "shift.h"
+#include <R.h>
+#include <Rinternals.h>
 #include <ta_libc.h>
 
 // clang-format off
 SEXP impl_ta_PDM(
-  SEXP high,
-  SEXP low,
-  SEXP timeperiod) {
+  SEXP inHigh,
+  SEXP inLow,
+  SEXP optTimePeriod) {
   // clang-format on
-
   int protect_count = 0;
 
-  const int n = LENGTH(high);
-  const double *restrict high_ptr = REAL(high);
-  const double *restrict low_ptr = REAL(low);
-  const int period = INTEGER(timeperiod)[0];
+  const double *restrict high_ptr = REAL(inHigh);
+  const double *restrict low_ptr = REAL(inLow);
+  const int n = LENGTH(inHigh);
 
-  SEXP result = PROTECT(allocMatrix(REALSXP, n, 1));
-  protect_count++;
-  double *restrict out_ptr = REAL(result);
+  const int time_period = INTEGER(optTimePeriod)[0];
 
-  const int minimum_lookback = TA_PLUS_DM_Lookback(period);
+  SEXP output;
+  double *output_ptr;
 
-  if (n < minimum_lookback) {
-    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
-               minimum_lookback);
-    for (int i = 0; i < n; ++i)
-      out_ptr[i] = NA_REAL;
+  const int lookback = TA_PLUS_DM_Lookback(time_period);
 
-  } else {
-    int out_beg_index = 0;
-    int out_number_of_elements = 0;
+  // clang-format off
+  const int proceed = output_container(
+    n, 
+    lookback, 
+    1, 
+    &output, 
+    &output_ptr, 
+    &protect_count
+  );
+  // clang-format on
+
+  if (proceed) {
+    int start_idx = 0, end_idx = 0;
 
     // clang-format off
     TA_RetCode return_code = TA_PLUS_DM(
-      /*startIdx        */ 0,
-      /*endIdx          */ n - 1,
-      /*inHigh          */ high_ptr,
-      /*inLow           */ low_ptr,
-      /*optInTimePeriod */ period,
-      /*outBeg          */ &out_beg_index,
-      /*outNb           */ &out_number_of_elements,
-      /*outReal         */ out_ptr
+      /*startIdx      */ 0,
+      /*endIdx        */ n - 1,
+      /*inHigh        */ high_ptr,
+      /*inLow         */ low_ptr,
+      /*optInTimePeriod*/ time_period,
+      /*outBegIdx     */ &start_idx,
+      /*outNbElement  */ &end_idx,
+      /*outReal       */ output_ptr
     );
     // clang-format on
 
-    if (return_code != TA_SUCCESS) {
-      UNPROTECT(protect_count);
-      Rf_error("TA_PLUS_DM failed: return code %d", return_code);
-    }
-
-    set_colnames(result, "PDM");
-    // Align to full length
-    shift_array(out_ptr, n, out_beg_index);
+    check_output(return_code, protect_count);
+    shift_array(output_ptr, n, start_idx);
   }
 
+  set_colnames(output, "PDM");
+
   UNPROTECT(protect_count);
-  return result;
+  return output;
 }

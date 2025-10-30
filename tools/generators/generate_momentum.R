@@ -131,7 +131,7 @@ meta[[14]] <- list(
 ## Average Directional Movement Index Rating: metadata
 meta[[15]] <- list(
 	title = 'Average Directional Movement Index Rating',
-	fun = 'average_direcitonal_movement_index_rating',
+	fun = 'average_directional_movement_index_rating',
 	alias = 'ADXR',
 	default_formula = '~ high + low + close',
 	signature = 'n=10'

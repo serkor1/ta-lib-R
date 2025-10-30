@@ -1,16 +1,17 @@
-// Interface to ta_ULTOSC.c (Ultimate Oscillator)
+// interface to ta_ULTOSC.c
 //
 // Parameters
-//   high            – numeric vector of 'High' prices
-//   low             – numeric vector of 'Low' prices
-//   close           – numeric vector of 'Close' prices
-//   timeperiod1     – integer SEXP for first lookback (e.g. 7)
-//   timeperiod2     – integer SEXP for second lookback (e.g. 14)
-//   timeperiod3     – integer SEXP for third lookback (e.g. 28)
+//   inHigh    : numeric vector of highs (length n)
+//   inLow     : numeric vector of lows  (length n)
+//   inClose   : numeric vector of closes (length n)
+//   optPeriod1: integer first period
+//   optPeriod2: integer second period
+//   optPeriod3: integer third period
 //
-// Description
-//   Returns a numeric vector of the same length as inputs containing
-//   the Ultimate Oscillator, with NA for indices before the lookback.
+// Returns
+//   numeric vector (n x 1) "ULTOSC"
+//
+#include "container.h"
 #include "lib.h"
 #include "names.h"
 #include "shift.h"
@@ -20,78 +21,56 @@
 
 // clang-format off
 SEXP impl_ta_ULTOSC(
-  SEXP high, 
-  SEXP low, 
-  SEXP close, 
-  SEXP timeperiod1,
-  SEXP timeperiod2, 
-  SEXP timeperiod3) {
+  SEXP inHigh,
+  SEXP inLow,
+  SEXP inClose,
+  SEXP optPeriod1,
+  SEXP optPeriod2,
+  SEXP optPeriod3) {
   // clang-format on
-
   int protect_count = 0;
 
-  // periods
-  int p1 = INTEGER(timeperiod1)[0];
-  int p2 = INTEGER(timeperiod2)[0];
-  int p3 = INTEGER(timeperiod3)[0];
+  const double *restrict high_ptr = REAL(inHigh);
+  const double *restrict low_ptr = REAL(inLow);
+  const double *restrict close_ptr = REAL(inClose);
+  const int n = LENGTH(inHigh);
 
-  // data
-  int n = length(high);
-  const double *__restrict__ high_ptr = REAL(high);
-  const double *__restrict__ low_ptr = REAL(low);
-  const double *__restrict__ close_ptr = REAL(close);
+  const int period1 = INTEGER(optPeriod1)[0];
+  const int period2 = INTEGER(optPeriod2)[0];
+  const int period3 = INTEGER(optPeriod3)[0];
 
-  int outBeg, outNB;
-  // clang-format off
-  SEXP output = PROTECT(
-    allocMatrix(REALSXP, n, 1)
-  ); protect_count++;
-  double *__restrict__ output_ptr = REAL(output);
-  // clang-format on
+  SEXP output;
+  double *output_ptr;
 
-  // clang-format off
-  int minimum_lookback = TA_ULTOSC_Lookback(
-    p1,
-    p2,
-    p3
-  );
-  // clang-format on
+  const int lookback = TA_ULTOSC_Lookback(period1, period2, period3);
 
-  if (n < minimum_lookback) {
-    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
-               minimum_lookback);
+  const int proceed =
+      output_container(n, lookback, 1, &output, &output_ptr, &protect_count);
 
-    for (size_t i = 0; i < n; ++i) {
-      output_ptr[i] = NA_REAL;
-    }
-
-  } else {
+  if (proceed) {
+    int start_idx = 0, end_idx = 0;
 
     // clang-format off
-    TA_RetCode ret = TA_ULTOSC(
-      0, 
-      n - 1, 
-      high_ptr , 
-      low_ptr,   
-      close_ptr, 
-      p1, 
-      p2, 
-      p3,
-      &outBeg, 
-      &outNB, 
-      output_ptr
+    TA_RetCode return_code = TA_ULTOSC(
+      /*startIdx     */ 0,
+      /*endIdx       */ n - 1,
+      /*inHigh       */ high_ptr,
+      /*inLow        */ low_ptr,
+      /*inClose      */ close_ptr,
+      /*optInPeriod1 */ period1,
+      /*optInPeriod2 */ period2,
+      /*optInPeriod3 */ period3,
+      /*outBegIdx    */ &start_idx,
+      /*outNbElement */ &end_idx,
+      /*outReal      */ output_ptr
     );
     // clang-format on
 
-    if (ret != TA_SUCCESS) {
-      UNPROTECT(protect_count);
-      error("TA_ULTOSC failed: return code %d", ret);
-    }
-
-    // shift
-    shift_array(output_ptr, n, outBeg);
-    set_colnames(output, "ULTOSC");
+    check_output(return_code, protect_count);
+    shift_array(output_ptr, n, start_idx);
   }
+
+  set_colnames(output, "ULTOSC");
 
   UNPROTECT(protect_count);
   return output;

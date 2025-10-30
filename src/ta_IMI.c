@@ -1,77 +1,69 @@
 // interface to ta_IMI.c
 //
-// Description
-// Computes Intraday Momentum Index (IMI). Writes values in [0, 100].
-// Pads leading NA_REAL up to the lookback.
-//
 // Parameters
-//   open        : numeric vector of opens
-//   close       : numeric vector of closes
-//   timeperiod  : integer SEXP lookback (default in TA-Lib is 14)
+//   inOpen        : numeric vector of opens (length n)
+//   inClose       : numeric vector of closes (length n)
+//   optTimePeriod : integer time period
 //
 // Returns
-//   Numeric vector of length n with IMI values aligned to inputs.
-//   Leading elements before the first computable index are NA_REAL.
-
-#include "R_ext/Error.h"
-#include "Rinternals.h"
+//   numeric vector (n x 1) "IMI"
+//
+// Notes
+//   TA-Lib marks IMI as an indicator with an unstable period. Inputs and range
+//   are consistent with the current TA-Lib C API.
+//   :contentReference[oaicite:1]{index=1}
+#include "container.h"
 #include "lib.h"
 #include "names.h"
 #include "shift.h"
+#include <R.h>
+#include <Rinternals.h>
 #include <ta_libc.h>
 
 // clang-format off
 SEXP impl_ta_IMI(
-  SEXP open,
-  SEXP close,
-  SEXP timeperiod) {
+  SEXP inOpen,
+  SEXP inClose,
+  SEXP optTimePeriod) {
   // clang-format on
-
   int protect_count = 0;
 
-  const int n = LENGTH(open);
-  const double *restrict open_ptr = REAL(open);
-  const double *restrict close_ptr = REAL(close);
-  const int period = INTEGER(timeperiod)[0];
+  const double *restrict open_ptr = REAL(inOpen);
+  const double *restrict close_ptr = REAL(inClose);
+  const int n = LENGTH(inOpen);
 
-  SEXP result = PROTECT(allocMatrix(REALSXP, n, 1));
-  protect_count++;
-  double *restrict out_ptr = REAL(result);
+  const int time_period = INTEGER(optTimePeriod)[0];
 
-  const int minimum_lookback = TA_IMI_Lookback(period);
+  SEXP output;
+  double *output_ptr;
 
-  if (n < minimum_lookback) {
-    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
-               minimum_lookback);
-    for (int i = 0; i < n; ++i)
-      out_ptr[i] = NA_REAL;
-  } else {
-    int output_begin_index = 0;
-    int number_of_output_elements = 0;
+  const int lookback = TA_IMI_Lookback(time_period);
+
+  const int proceed =
+      output_container(n, lookback, 1, &output, &output_ptr, &protect_count);
+
+  if (proceed) {
+    int start_idx = 0, end_idx = 0;
 
     // clang-format off
     TA_RetCode return_code = TA_IMI(
-      /*startIdx*/ 0,
-      /*endIdx  */ n - 1,
-      /*inOpen  */ open_ptr,
-      /*inClose */ close_ptr,
-      /*optInTP */ period,
-      /*outBeg  */ &output_begin_index,
-      /*outNb   */ &number_of_output_elements,
-      /*outReal */ out_ptr
+      /*startIdx     */ 0,
+      /*endIdx       */ n - 1,
+      /*inOpen       */ open_ptr,
+      /*inClose      */ close_ptr,
+      /*optInTimePrd */ time_period,
+      /*outBegIdx    */ &start_idx,
+      /*outNbElement */ &end_idx,
+      /*outReal      */ output_ptr
     );
     // clang-format on
 
-    if (return_code != TA_SUCCESS) {
-      UNPROTECT(protect_count);
-      Rf_error("TA_IMI failed: return code %d", return_code);
-    }
-
-    set_colnames(result, "IMI");
-    // Align to full length
-    shift_array(out_ptr, n, output_begin_index);
+    check_output(return_code, protect_count);
+    shift_array(output_ptr, n, start_idx);
   }
 
+  set_colnames(output, "IMI");
+
   UNPROTECT(protect_count);
-  return result;
+  return output;
 }

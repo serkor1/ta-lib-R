@@ -1,17 +1,15 @@
-// ta_CCI.c
-//
-// Interface to ta_CCI (Commodity Channel Index)
+// interface to ta_CCI.c
 //
 // Parameters
-//   high : numeric vector of highs (double).
-//   low  : numeric vector of lows  (double).
-//   close: numeric vector of closes (double).
-//   optTimePeriod : integer, period (default 14 in TA-Lib).
+//   inHigh        : numeric vector of highs (length n)
+//   inLow         : numeric vector of lows  (length n)
+//   inClose       : numeric vector of closes (length n)
+//   optTimePeriod : integer time period
 //
-// Description
-//   Computes CCI over H/L/C. Returns a double vector of length n (unnamed),
-//   with the first lookback elements padded by NA using shift_array().
-
+// Returns
+//   numeric vector (n x 1) "CCI"
+//
+#include "container.h"
 #include "lib.h"
 #include "names.h"
 #include "shift.h"
@@ -21,65 +19,58 @@
 
 // clang-format off
 SEXP impl_ta_CCI(
-    SEXP high, 
-    SEXP low, 
-    SEXP close, 
-    SEXP optTimePeriod) {
+  SEXP inHigh,
+  SEXP inLow,
+  SEXP inClose,
+  SEXP optTimePeriod) {
   // clang-format on
   int protect_count = 0;
 
-  // period
-  const int period = INTEGER(optTimePeriod)[0];
+  const double *restrict high_ptr = REAL(inHigh);
+  const double *restrict low_ptr = REAL(inLow);
+  const double *restrict close_ptr = REAL(inClose);
+  const int n = LENGTH(inHigh);
 
-  // data
-  const double *restrict high_ptr = REAL(high);
-  const double *restrict low_ptr = REAL(low);
-  const double *restrict close_ptr = REAL(close);
+  const int time_period = INTEGER(optTimePeriod)[0];
 
-  int n = LENGTH(high);
+  SEXP output;
+  double *output_ptr;
+
+  const int lookback = TA_CCI_Lookback(time_period);
 
   // clang-format off
-  SEXP output = PROTECT(
-    allocMatrix(REALSXP, n, 1)
-  ); protect_count++;
-  double *restrict output_ptr = REAL(output);
+  const int proceed = output_container(
+    n, 
+    lookback, 
+    1, 
+    &output, 
+    &output_ptr, 
+    &protect_count
+  );
   // clang-format on
 
-  const int minimum_lookback = TA_CCI_Lookback(period);
+  if (proceed) {
+    int start_idx = 0, end_idx = 0;
 
-  if (n < minimum_lookback) {
-    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
-               minimum_lookback);
-
-    for (size_t i = 0; i < n; ++i) {
-      output_ptr[i] = NA_REAL;
-    }
-
-  } else {
-
-    int outBeg = 0, outNb = 0;
     // clang-format off
     TA_RetCode return_code = TA_CCI(
-        0, 
-        n - 1, 
-        high_ptr, 
-        low_ptr, 
-        close_ptr, 
-        period, 
-        &outBeg, 
-        &outNb,
-        output_ptr
+      /*startIdx     */ 0,
+      /*endIdx       */ n - 1,
+      /*inHigh       */ high_ptr,
+      /*inLow        */ low_ptr,
+      /*inClose      */ close_ptr,
+      /*optInTimePrd */ time_period,
+      /*outBegIdx    */ &start_idx,
+      /*outNbElement */ &end_idx,
+      /*outReal      */ output_ptr
     );
     // clang-format on
 
-    if (return_code != TA_SUCCESS) {
-      UNPROTECT(protect_count);
-      Rf_error("TA_CCI failed with error code %d", return_code);
-    }
-
-    shift_array(output_ptr, n, outBeg);
-    set_colnames(output, "CCI");
+    check_output(return_code, protect_count);
+    shift_array(output_ptr, n, start_idx);
   }
+
+  set_colnames(output, "CCI");
 
   UNPROTECT(protect_count);
   return output;
