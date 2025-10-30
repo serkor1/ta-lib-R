@@ -1,16 +1,16 @@
-// Interface to TA_MA (moving average)
+// Interface to ta_MA (Moving Average)
 //
 // Parameters
-//   real            – numeric vector of inputs
-//   lag      – integer SEXP for MA period (1 to 100000)
-//   matype          – integer SEXP for MAType (0=SMA … 8=T3)
+//   real   : numeric vector of inputs
+//   lag    : integer SEXP for MA period (1 to 100000)
+//   matype : integer SEXP for MAType (0=SMA … 8=T3)
+//        0: SMA
+//        1:
+//        2:
 //
-// Description
-//   Returns a numeric vector of the same length as `real`,
-//   with NA_REAL for the first lookback samples, then the
-//   moving‐average values thereafter.
 #include "MAType.h"
 #include "R_ext/Error.h"
+#include "container.h"
 #include "lib.h"
 #include "names.h"
 #include "shift.h"
@@ -19,76 +19,77 @@
 
 // clang-format off
 SEXP impl_ta_MA(
-  SEXP x, 
+  SEXP Real, 
   SEXP period, 
   SEXP matype) {
   // clang-format on
+  int protect_count = 0;
 
-  // protection counter
-  int protection_count = 0;
+  // generic input
+  const double *restrict real_ptr = REAL(Real);
+  const int n = length(Real);
 
-  // moving average
-  TA_MAType MAType = as_MAType(matype);
+  // specific input
+  const TA_MAType MAType = as_MAType(matype);
+  const int lag = INTEGER(period)[0];
 
-  // values
-  int n = length(x);
-  int lag = INTEGER(period)[0];
-  int outBeg = 0, outNb = 0;
+  // construct container
+  SEXP output;
+  double *output_ptr;
 
-  // data
-  const double *__restrict__ x_ptr = REAL(x);
-
-  // output vector
-  // clang-format off
-  SEXP output = PROTECT(
-    allocMatrix(REALSXP, n, 1)
-  ); protection_count++;
-  double *output_ptr = REAL(output);
-  // clang-format on
+  // initialize
+  const int lookback = TA_MA_Lookback(lag, MAType);
 
   // clang-format off
-  const int minimum_lookback = TA_MA_Lookback(
-    lag, 
-    MAType
+  const int proceed = output_container(
+    n, 
+    lookback, 
+    1, 
+    &output, 
+    &output_ptr, 
+    &protect_count
   );
   // clang-format on
 
-  if (n < minimum_lookback) {
-    Rf_warning("Input length (%d) is smaller than required lookback (%d).", n,
-               minimum_lookback);
+  if (proceed) {
 
-    for (size_t i = 0; i < n; ++i) {
-      output_ptr[i] = NA_REAL;
-    }
-
-  } else {
+    int start_idx = 0, end_idx = 0;
 
     // clang-format off
     TA_RetCode return_code = TA_MA(
       0, 
       n - 1, 
-      x_ptr, 
+      real_ptr, 
       lag, 
       MAType, 
-      &outBeg, 
-      &outNb, 
+      &start_idx, 
+      &end_idx, 
       output_ptr
     );
     // clang-format on
 
-    if (return_code != TA_SUCCESS) {
-      UNPROTECT(protection_count);
-      Rf_error("TA_MA failed: return code %d", return_code);
-    }
+    // check output and return
+    // error code if not TA_SUCCESS
+    // clang-format off
+    check_output(
+      return_code, 
+      protect_count
+    );
+    // clang-format on
 
-    // determine column name
-    const char *name = MAType_acronym(MAType);
-    set_colnames(output, name);
-
-    // shift values
-    shift_array(output_ptr, n, outBeg);
+    // clang-format off
+    shift_array(
+      output_ptr, 
+      n, 
+      start_idx
+    );
+    // clang-format on
   }
 
-  UNPROTECT(protection_count);
+  // determine column name
+  const char *colname = _MAType_(MAType);
+  set_colnames(output, colname);
+
+  UNPROTECT(protect_count);
   return output;
 }
