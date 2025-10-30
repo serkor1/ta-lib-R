@@ -1,68 +1,72 @@
 // interface to ta_TRANGE.c
 //
-// Description
-//   R wrapper for TA_TRANGE. Computes True Range from high, low, close.
-//
 // Parameters
-//   high, low, close: numeric vectors (same length)
+//   inHigh  : numeric vector of highs   (length n)
+//   inLow   : numeric vector of lows    (length n)
+//   inClose : numeric vector of closes  (length n)
 //
 // Returns
-//   n x 1 REAL matrix with column "trange", padded with NA_REAL for
-//   the initial lookback.
-
-#include "R_ext/Error.h"
-#include "Rinternals.h"
+//   numeric vector (n x 1) "TRANGE"
+//
+#include "container.h"
 #include "lib.h"
 #include "names.h"
 #include "shift.h"
+#include <R.h>
+#include <Rinternals.h>
 #include <ta_libc.h>
 
 // clang-format off
-SEXP impl_ta_TRANGE(SEXP high, SEXP low, SEXP close) {
+SEXP impl_ta_TRANGE(
+  SEXP inHigh,
+  SEXP inLow,
+  SEXP inClose) {
   // clang-format on
   int protect_count = 0;
 
-  const int n = LENGTH(high);
-  const double *restrict high_ptr = REAL(high);
-  const double *restrict low_ptr = REAL(low);
-  const double *restrict close_ptr = REAL(close);
+  const double *restrict high_ptr = REAL(inHigh);
+  const double *restrict low_ptr = REAL(inLow);
+  const double *restrict close_ptr = REAL(inClose);
+  const int n = LENGTH(inHigh);
 
-  SEXP result = PROTECT(allocMatrix(REALSXP, n, 1));
-  protect_count++;
-  double *restrict out_ptr = REAL(result);
+  SEXP output;
+  double *output_ptr;
 
-  const int minimum_lookback = TA_TRANGE_Lookback();
+  const int lookback = TA_TRANGE_Lookback();
 
-  if (n < minimum_lookback) {
-    Rf_warning("Input length (%d) is smaller than lookback (%d).", n,
-               minimum_lookback);
-    for (int i = 0; i < n; ++i)
-      out_ptr[i] = NA_REAL;
-  } else {
-    int out_begin = 0, number_of_elements = 0;
+  // clang-format off
+  const int proceed = output_container(
+    n,
+    lookback,
+    1,
+    &output,
+    &output_ptr,
+    &protect_count
+  );
+  // clang-format on
+
+  if (proceed) {
+    int start_idx = 0, end_idx = 0;
 
     // clang-format off
     TA_RetCode return_code = TA_TRANGE(
-      /*startIdx*/ 0,
-      /*endIdx  */ n - 1,
-      /*inHigh  */ high_ptr,
-      /*inLow   */ low_ptr,
-      /*inClose */ close_ptr,
-      /*outBeg  */ &out_begin,
-      /*outNb   */ &number_of_elements,
-      /*outReal */ out_ptr
+      0,
+      n - 1,
+      high_ptr,
+      low_ptr,
+      close_ptr,
+      &start_idx,
+      &end_idx,
+      output_ptr
     );
     // clang-format on
 
-    if (return_code != TA_SUCCESS) {
-      UNPROTECT(protect_count);
-      Rf_error("TA_TRANGE failed: return code %d", return_code);
-    }
-
-    shift_array(out_ptr, n, out_begin);
-    set_colnames(result, "TRANGE");
+    check_output(return_code, protect_count);
+    shift_array(output_ptr, n, start_idx);
   }
 
+  set_colnames(output, "TRANGE");
+
   UNPROTECT(protect_count);
-  return result;
+  return output;
 }
