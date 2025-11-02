@@ -6,14 +6,14 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun absolute_price_oscillator
 #'
-#'
-## input start
+## splice:documentation:start
 #' @param fast something
 #' @param slow something
 #' @param ma something
-## input end
+## splice:documentation:end
 #'
 #' @template description
+#' @template returns
 absolute_price_oscillator <- function(
 	x,
 	cols,
@@ -50,10 +50,6 @@ absolute_price_oscillator.default <- function(
 		assert_formula(cols)
 	}
 
-	## extract rownames
-	## for later attachment
-	x_names <- rownames(x)
-
 	## construct series
 	## from input
 	constructed_series <- series(
@@ -63,16 +59,20 @@ absolute_price_oscillator.default <- function(
 		...
 	)
 
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(constructed_series)
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		"impl_ta_APO",
-		## input start
+		## splice:call:start
 		constructed_series[[1]],
 		as.integer(fast),
 		as.integer(slow),
 		ma$maType
-		## input end
+		## splice:call:end
 	)
 
 	## readd rownames
@@ -126,6 +126,8 @@ absolute_price_oscillator.plotly <- function(
 	fast = 7,
 	slow = 14,
 	ma = SMA(n = 10),
+	## splice:optional-plotly:start
+	## splice:optional-plotly:end
 	...
 ) {
 	## check that input value
@@ -154,9 +156,9 @@ absolute_price_oscillator.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		fast = 7,
-		slow = 14,
-		ma = SMA(n = 10)
+		fast = fast,
+		slow = slow,
+		ma = ma
 	)
 
 	## add conditional idx
@@ -165,7 +167,7 @@ absolute_price_oscillator.plotly <- function(
 	)
 
 	## construct {plotly}-object
-	## input start
+	## splice:plotly-assembly:start
 	plotly_object <- subchart(
 		data = constructed_indicator,
 		y = ~APO,
@@ -201,7 +203,7 @@ absolute_price_oscillator.plotly <- function(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## input end
+	## splice:plotly-assembly:end
 
 	plotly_object
 }
