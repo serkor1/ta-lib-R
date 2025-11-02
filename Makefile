@@ -91,11 +91,19 @@ unit-tests: ## Generate, or update, unit-tests
 
 
 gen-code: ## Generate R wrappers and unit-tests
-	@Rscript ./tools/generators/generate_cycle_indicator.R
-	@Rscript ./tools/generators/generate_candlestick.R
-	@Rscript ./tools/generators/generate_momentum.R
-	@Rscript ./tools/generators/generate_moving_average.R
-	@Rscript ./tools/generators/generate_overlapstudy.R
-	@Rscript ./tools/generators/generate_volume_indicator.R
-	@Rscript ./tools/generators/generate_volatility.R
+	@Rscript --verbose ./tools/gen_code/R/generate_cycle_indicator.R
+	@Rscript --verbose ./tools/gen_code/R/generate_candlestick_pattern.R
+	@Rscript --verbose ./tools/gen_code/R/generate_momentum_indicator.R
+	@Rscript --verbose ./tools/gen_code/R/generate_MAs.R
+	@Rscript --verbose ./tools/gen_code/R/generate_overlapstudy.R
+	@Rscript --verbose ./tools/gen_code/R/generate_volume_indicator.R
+	@Rscript --verbose ./tools/gen_code/R/generate_volatility_indicator.R
+
+	@Rscript --verbose ./tools/gen_code/C/generate_cycle_indicator.R
+	@Rscript --verbose ./tools/gen_code/C/generate_candlestick_pattern.R
+	@Rscript --verbose ./tools/gen_code/C/generate_momentum_indicator.R
+	@Rscript --verbose ./tools/gen_code/R/generate_MAs.R
+	@Rscript --verbose ./tools/gen_code/C/generate_overlapstudy.R
+	@Rscript --verbose ./tools/gen_code/C/generate_volume_indicator.R
+	@Rscript --verbose ./tools/gen_code/C/generate_volatility_indicator.R
 	$(MAKE) unit-tests

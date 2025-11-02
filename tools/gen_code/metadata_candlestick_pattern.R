@@ -1,13 +1,34 @@
-## script: Generate Candlestick Patterns
+## script: candlestick functions
 ## objective:
+## construct relevant metadata for generators downstream
 ##
-## Generate all available candlestick patterns
-## based on the templates
-##
-## author: Serkan Korkmaz
-##
-## 1) define all candlestick
-##    patterns as list
+## start script;
+## 1) load abstractions
+source("tools/gen_code/utils.R")
+
+## 1.1) construct wrappers
+generate_R <- function(x) {
+	generate_candlestick(
+		title = x$title,
+		fun = x$fun,
+		signature = x$signature,
+		alias = x$alias,
+		agnostic = x$agnostic
+	)
+}
+
+generate_C <- function(x) {
+	system2(
+		command = "bash",
+		args = c(
+			"tools/generate_core_candlestick.sh",
+			shQuote(x$alias),
+			shQuote(x$signature)
+		)
+	)
+}
+
+## 2) metadata
 metadata <- list()
 
 metadata[[1]] <- list(
@@ -497,39 +518,4 @@ metadata[[61]] <- list(
 	alias = 'CDLEVENINGSTAR',
 	agnostic = FALSE
 )
-
-## 2) generate a wrapper that
-##    that accepts a list
-source("tools/generators/generate_functions.R")
-
-generate <- function(
-	x
-) {
-	generate_candlestick(
-		title = x$title,
-		fun = x$fun,
-		signature = x$signature,
-		alias = x$alias,
-		agnostic = x$agnostic
-	)
-}
-
-## 3) execute algorithm
-##    and celebrate
-for (x in metadata) {
-	generate(
-		x
-	)
-}
-
-## 4) generate candlestick C files
-for (x in metadata) {
-	system2(
-		command = "bash",
-		args = c(
-			"tools/generate_candlestick.sh",
-			shQuote(x$alias),
-			shQuote(x$signature)
-		)
-	)
-}
+## end script;

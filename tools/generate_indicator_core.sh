@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# gen_ta_wrapper_envsubst.sh
+# generate_indicator_core.sh
 # usage:
-#   ./gen_ta_wrapper_envsubst.sh MACD > impl_ta_MACD.c
-#   TEMPLATE=tmpl.c.in ./gen_ta_wrapper_envsubst.sh ACCBANDS
+#   ./generate_indicator_core.sh MACD > impl_ta_MACD.c
+#   TEMPLATE=indicator_template.c.in ./generate_indicator_core.sh ACCBANDS
 set -euo pipefail
 
 if [ "$#" -ne 1 ]; then
@@ -11,7 +11,7 @@ if [ "$#" -ne 1 ]; then
 fi
 NAME="$1"
 
-# 1) find header (new layout first) :contentReference[oaicite:1]{index=1}
+# 1) find header (new layout first)
 if [ -f "src/ta-lib/include/ta-lib/ta_func.h" ]; then
   TA_H="src/ta-lib/include/ta-lib/ta_func.h"
 elif [ -f "src/ta-lib/include/ta_func.h" ]; then
