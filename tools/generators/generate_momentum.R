@@ -204,7 +204,7 @@ meta[[22]] <- list(
 meta[[23]] <- list(
 	title = 'Minus Directional Indicator',
 	fun = 'minus_directional_indicator',
-	alias = 'MDI',
+	alias = 'MINUS_DI',
 	default_formula = '~high + low + close',
 	signature = 'n=10'
 )
@@ -213,7 +213,7 @@ meta[[23]] <- list(
 meta[[24]] <- list(
 	title = 'Minus Directional Movement',
 	fun = 'minus_directional_movement',
-	alias = 'MDM',
+	alias = 'MINUS_DM',
 	default_formula = '~high + low',
 	signature = 'n=10'
 )
@@ -222,7 +222,7 @@ meta[[24]] <- list(
 meta[[25]] <- list(
 	title = 'Plus Directional Indicator',
 	fun = 'plus_directional_indicator',
-	alias = 'PDI',
+	alias = 'PLUS_DI',
 	default_formula = '~high + low + close',
 	signature = 'n=10'
 )
@@ -231,7 +231,7 @@ meta[[25]] <- list(
 meta[[26]] <- list(
 	title = 'Plus Directional Movement',
 	fun = 'plus_directional_movement',
-	alias = 'PDM',
+	alias = 'PLUS_DM',
 	default_formula = '~high + low',
 	signature = 'n=10'
 )
@@ -276,5 +276,19 @@ generate <- function(
 for (x in meta) {
 	generate(
 		x
+	)
+}
+
+## 4) generate candlestick C files
+for (x in meta) {
+	if (x$alias == "STOCHRSI") {
+		next()
+	}
+	system2(
+		command = "bash",
+		args = c(
+			"tools/generate_indicator_core.sh",
+			paste0(x$alias, " > src/ta_", x$alias, ".c")
+		)
 	)
 }

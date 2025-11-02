@@ -227,7 +227,7 @@ extended_parabolic_stop_and_reverse.plotly <- function(
 		.plotting_environment[["main"]],
 		data = constructed_indicator,
 		x = ~idx,
-		y = ~SAR,
+		y = ~SAREXT,
 		type = "scatter",
 		mode = "markers",
 		name = sprintf(

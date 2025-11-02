@@ -1,95 +1,103 @@
-// Interface to ta_MA (Moving Average)
+// interface to ta_MA.c
 //
 // Parameters
-//   real   : numeric vector of inputs
-//   lag    : integer SEXP for MA period (1 to 100000)
-//   matype : integer SEXP for MAType (0=SMA … 8=T3)
-//        0: SMA
-//        1:
-//        2:
+// 		double  inReal
+// 		integer optInTimePeriod
+//		integer optInMAType (MAType)
+//
+// Returns
+//      matrix (n x 1) with colum name
+//      depending on MAType, for example "SMA"
+//
+// Source
+//      https://github.com/TA-Lib/ta-lib/blob/main/src/ta_func/ta_MA.c
 //
 #include "MAType.h"
-#include "R_ext/Error.h"
 #include "container.h"
 #include "lib.h"
 #include "names.h"
 #include "shift.h"
+#include <R.h>
 #include <Rinternals.h>
 #include <ta_libc.h>
 
 // clang-format off
 SEXP impl_ta_MA(
-  SEXP Real, 
-  SEXP period, 
-  SEXP matype) {
-  // clang-format on
-  int protect_count = 0;
+	SEXP inReal,
+	SEXP optInTimePeriod,
+	SEXP optInMAType
+)
+// clang-format on
+{
+  // protection counter
+  int protection_count = 0;
 
-  // generic input
-  const double *restrict real_ptr = REAL(Real);
-  const int n = length(Real);
+  // get length of 'inReal' (assumes equal length across input)
+  const int n = LENGTH(inReal);
 
-  // specific input
-  const TA_MAType MAType = as_MAType(matype);
-  const int lag = INTEGER(period)[0];
+  // pointers to input arrays
+  const double *restrict inReal_ptr = REAL(inReal);
 
-  // construct container
+  // extract input values
+  const int optInTimePeriod_value = INTEGER(optInTimePeriod)[0];
+  const TA_MAType optInMAType_value = as_MAType(optInMAType);
+
+  // output
   SEXP output;
   double *output_ptr;
 
-  // initialize
-  const int lookback = TA_MA_Lookback(lag, MAType);
+  // calculate look back and exit
+  // the function function early if
+  // there is a mismatch
+  const int lookback = TA_MA_Lookback(optInTimePeriod_value, optInMAType_value);
 
-  // clang-format off
-  const int proceed = output_container(
-    n, 
-    lookback, 
-    1, 
-    &output, 
-    &output_ptr, 
-    &protect_count
-  );
-  // clang-format on
+  // the output container is either a INTSXP or
+  // REALSXP depending on the type and will
+  // return a matrix with <NA> if there is a mismatch
+  // between lookback and n
+  //
+  // see container.h for more details
+  const int proceed =
+    output_container(n, lookback, 1, &output, &output_ptr, &protection_count);
 
   if (proceed) {
+    int start_idx = 0;
+    int end_idx = 0;
 
-    int start_idx = 0, end_idx = 0;
+    double *real = output_ptr;
 
-    // clang-format off
+    // TA_MA returns an TA_RetCode
+    // which is TA_SUCCESS if it succeeds
+    // values in output_ptr gets populated
+    // by pointers
     TA_RetCode return_code = TA_MA(
-      0, 
-      n - 1, 
-      real_ptr, 
-      lag, 
-      MAType, 
-      &start_idx, 
-      &end_idx, 
-      output_ptr
-    );
-    // clang-format on
+      0,
+      n - 1,
+      inReal_ptr,
+      optInTimePeriod_value,
+      optInMAType_value,
+      &start_idx,
+      &end_idx,
+      real);
 
-    // check output and return
-    // error code if not TA_SUCCESS
-    // clang-format off
-    check_output(
-      return_code, 
-      protect_count
-    );
-    // clang-format on
+    // check if the output is valid
+    // and stop function with the TA_RetCode
+    // see container.h for more details
+    check_output(return_code, protection_count);
 
-    // clang-format off
-    shift_array(
-      output_ptr, 
-      n, 
-      start_idx
-    );
-    // clang-format on
+    // shift the array so it has the same number
+    // of rows as 'n' - shifted values is replaced
+    // with <NA>
+    // see shift.h for more details
+    shift_array(real, n, start_idx);
   }
 
+  // set the column names of the output
+  // see names.h for more details
   // determine column name
-  const char *colname = _MAType_(MAType);
+  const char *colname = _MAType_(optInMAType_value);
   set_colnames(output, colname);
 
-  UNPROTECT(protect_count);
+  UNPROTECT(protection_count);
   return output;
 }

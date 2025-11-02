@@ -1,14 +1,19 @@
 // interface to ta_SAR.c
 //
 // Parameters
-//   inHigh         : numeric vector of highs (length n)
-//   inLow          : numeric vector of lows  (length n)
-//   optAcceleration: numeric acceleration step (e.g. 0.02)
-//   optMaximum     : numeric acceleration max (e.g. 0.20)
+// 		double  inHigh
+// 		double  inLow
+// 		double  optInAcceleration
+//		double  optInMaximum
 //
 // Returns
-//   numeric vector (n x 1) "SAR"
+//      matrix (n x 1) with colum:
+//          "SAR"
 //
+// Source
+//      https://github.com/TA-Lib/ta-lib/blob/main/src/ta_func/ta_SAR.c
+//
+#include "MAType.h"
 #include "container.h"
 #include "lib.h"
 #include "names.h"
@@ -19,60 +24,83 @@
 
 // clang-format off
 SEXP impl_ta_SAR(
-  SEXP inHigh,
-  SEXP inLow,
-  SEXP optAcceleration,
-  SEXP optMaximum) {
-  // clang-format on
-  int protect_count = 0;
+	SEXP inHigh,
+	SEXP inLow,
+	SEXP optInAcceleration,
+	SEXP optInMaximum
+)
+// clang-format on
+{
+  // protection counter
+  int protection_count = 0;
 
-  const double *restrict high_ptr = REAL(inHigh);
-  const double *restrict low_ptr = REAL(inLow);
+  // get length of 'inHigh' (assumes equal length across input)
   const int n = LENGTH(inHigh);
 
-  const double acceleration = REAL(optAcceleration)[0];
-  const double maximum = REAL(optMaximum)[0];
+  // pointers to input arrays
+  const double *restrict inHigh_ptr = REAL(inHigh);
+  const double *restrict inLow_ptr = REAL(inLow);
 
+  // extract input values
+  const double optInAcceleration_value = REAL(optInAcceleration)[0];
+  const double optInMaximum_value = REAL(optInMaximum)[0];
+
+  // output
   SEXP output;
   double *output_ptr;
 
-  const int lookback = TA_SAR_Lookback(acceleration, maximum);
+  // calculate look back and exit
+  // the function function early if
+  // there is a mismatch
+  const int lookback =
+    TA_SAR_Lookback(optInAcceleration_value, optInMaximum_value);
 
-  // clang-format off
-  const int proceed = output_container(
-    n,
-    lookback,
-    1,
-    &output,
-    &output_ptr,
-    &protect_count
-  );
-  // clang-format on
+  // the output container is either a INTSXP or
+  // REALSXP depending on the type and will
+  // return a matrix with <NA> if there is a mismatch
+  // between lookback and n
+  //
+  // see container.h for more details
+  const int proceed =
+    output_container(n, lookback, 1, &output, &output_ptr, &protection_count);
 
   if (proceed) {
     int start_idx = 0;
-    int number_of_elements = 0;
+    int end_idx = 0;
 
-    // clang-format off
+    double *real = output_ptr;
+
+    // TA_SAR returns an TA_RetCode
+    // which is TA_SUCCESS if it succeeds
+    // values in output_ptr gets populated
+    // by pointers
     TA_RetCode return_code = TA_SAR(
       0,
       n - 1,
-      high_ptr,
-      low_ptr,
-      acceleration,
-      maximum,
+      inHigh_ptr,
+      inLow_ptr,
+      optInAcceleration_value,
+      optInMaximum_value,
       &start_idx,
-      &number_of_elements,
-      output_ptr
-    );
-    // clang-format on
+      &end_idx,
+      real);
 
-    check_output(return_code, protect_count);
-    shift_array(output_ptr, n, start_idx);
+    // check if the output is valid
+    // and stop function with the TA_RetCode
+    // see container.h for more details
+    check_output(return_code, protection_count);
+
+    // shift the array so it has the same number
+    // of rows as 'n' - shifted values is replaced
+    // with <NA>
+    // see shift.h for more details
+    shift_array(real, n, start_idx);
   }
 
+  // set the column names of the output
+  // see names.h for more details
   set_colnames(output, "SAR");
 
-  UNPROTECT(protect_count);
+  UNPROTECT(protection_count);
   return output;
 }

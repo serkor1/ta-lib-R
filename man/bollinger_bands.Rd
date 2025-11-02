@@ -24,9 +24,9 @@ bollinger_bands(x, cols, ma = SMA(n = 10), std_up = 2, std_down = 2, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{upper}{\link{double}}
-\item{middle}{\link{double}}
-\item{lower}{\link{double}}
+\item{UpperBand}{\link{double}}
+\item{MiddleBand}{\link{double}}
+\item{LowerBand}{\link{double}}
 }
 }
 \description{

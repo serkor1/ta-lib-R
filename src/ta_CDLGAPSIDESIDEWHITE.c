@@ -1,4 +1,4 @@
-// interface to ta_CDLHIGHWAVE.c
+// interface to ta_CDLGAPSIDESIDEWHITE.c
 //
 // Parameters
 //      double  inOpen
@@ -9,10 +9,10 @@
 //
 // Returns
 //      matrix (n x 1) with colum:
-//          "CDLHIGHWAVE"
+//          "CDLGAPSIDESIDEWHITE"
 //
 // Source
-//      https://github.com/TA-Lib/ta-lib/blob/main/src/ta_func/ta_CDLHIGHWAVE.c
+//      https://github.com/TA-Lib/ta-lib/blob/main/src/ta_func/ta_CDLGAPSIDESIDEWHITE.c
 //
 #include "Rinternals.h"
 #include "container.h"
@@ -23,7 +23,7 @@
 #include <ta_libc.h>
 
 // clang-format off
-SEXP impl_ta_CDLHIGHWAVE(
+SEXP impl_ta_CDLGAPSIDESIDEWHITE(
     SEXP inOpen,
     SEXP inHigh,
     SEXP inLow,
@@ -49,7 +49,7 @@ SEXP impl_ta_CDLHIGHWAVE(
     // calculate look back and exit
     // the function function early if
     // there is a mismatch
-    const int lookback = TA_CDLHIGHWAVE_Lookback();
+    const int lookback = TA_CDLGAPSIDESIDEWHITE_Lookback();
 
     // the output container is either a INTSXP or 
     // REALSXP depending on the type and will
@@ -70,11 +70,11 @@ SEXP impl_ta_CDLHIGHWAVE(
         int start_idx = 0;
         int end_idx   = 0;
 
-        // TA_CDLHIGHWAVE returns an TA_RetCode
+        // TA_CDLGAPSIDESIDEWHITE returns an TA_RetCode
         // which is TA_SUCCESS if it succeeds
         // values in output_ptr gets populated
         // by pointers
-        TA_RetCode return_code = TA_CDLHIGHWAVE(
+        TA_RetCode return_code = TA_CDLGAPSIDESIDEWHITE(
             0,
             n - 1,
             open_ptr,
@@ -98,7 +98,7 @@ SEXP impl_ta_CDLHIGHWAVE(
         // see shift.h for more details
         shift_array(output_ptr, n, start_idx);
 
-        // ta_CDLHIGHWAVE returns values as -100, 100 and 0
+        // ta_CDLGAPSIDESIDEWHITE returns values as -100, 100 and 0
         // if flag is TRUE the output values will be normalized
         // to -1, 1, 0 
         // see normalize.h for more details
@@ -109,7 +109,7 @@ SEXP impl_ta_CDLHIGHWAVE(
 
     // set the column names of the output
     // see names.h for more details
-    set_colnames(output, "CDLHIGHWAVE");
+    set_colnames(output, "CDLGAPSIDESIDEWHITE");
 
     UNPROTECT(protection_counter);
     return output;

@@ -154,7 +154,7 @@ aroon.plotly <- function(
 	## splice:plotly-assembly:start
 	plotly_object <- subchart(
 		data = constructed_indicator,
-		y = ~AROONDOWN,
+		y = ~AroonDown,
 		type = "scatter",
 		mode = "lines",
 		name = "AD",
@@ -165,7 +165,7 @@ aroon.plotly <- function(
 	plotly_object <- plotly::add_lines(
 		p = plotly_object,
 		x = ~idx,
-		y = ~AROONUP,
+		y = ~AroonUp,
 		showlegend = FALSE,
 		legendgroup = "Aroon",
 		data = constructed_indicator

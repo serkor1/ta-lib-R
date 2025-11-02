@@ -1,13 +1,21 @@
-// Interface to ta_ADOSC (Chaikin A/D Oscillator)
+// interface to ta_ADOSC.c
 //
 // Parameters
-//   inHigh        : numeric vector of highs (length n)
-//   inLow         : numeric vector of lows  (length n)
-//   inClose       : numeric vector of closes (length n)
-//   inVolume      : numeric vector of volumes (length n)
-//   optFastPeriod : integer fast EMA period (default 3 in TA-Lib)
-//   optSlowPeriod : integer slow EMA period (default 10 in TA-Lib)
+// 		double  inHigh
+// 		double  inLow
+// 		double  inClose
+// 		double  inVolume
+// 		integer optInFastPeriod
+//		integer optInSlowPeriod
 //
+// Returns
+//      matrix (n x 1) with colum:
+//          "ADOSC"
+//
+// Source
+//      https://github.com/TA-Lib/ta-lib/blob/main/src/ta_func/ta_ADOSC.c
+//
+#include "MAType.h"
 #include "container.h"
 #include "lib.h"
 #include "names.h"
@@ -18,87 +26,89 @@
 
 // clang-format off
 SEXP impl_ta_ADOSC(
-  SEXP inHigh, 
-  SEXP inLow, 
-  SEXP inClose, 
-  SEXP inVolume,
-  SEXP optFastPeriod, 
-  SEXP optSlowPeriod) {
-  // clang-format on
-  int protect_count = 0;
+	SEXP inHigh,
+	SEXP inLow,
+	SEXP inClose,
+	SEXP inVolume,
+	SEXP optInFastPeriod,
+	SEXP optInSlowPeriod
+)
+// clang-format on
+{
+  // protection counter
+  int protection_count = 0;
 
-  // generic input
-  const double *restrict high = REAL(inHigh);
-  const double *restrict low = REAL(inLow);
-  const double *restrict close = REAL(inClose);
-  const double *restrict volume = REAL(inVolume);
+  // get length of 'inHigh' (assumes equal length across input)
   const int n = LENGTH(inHigh);
 
-  // specific input
-  const int fastP = INTEGER(optFastPeriod)[0];
-  const int slowP = INTEGER(optSlowPeriod)[0];
+  // pointers to input arrays
+  const double *restrict inHigh_ptr = REAL(inHigh);
+  const double *restrict inLow_ptr = REAL(inLow);
+  const double *restrict inClose_ptr = REAL(inClose);
+  const double *restrict inVolume_ptr = REAL(inVolume);
 
-  // construct container
+  // extract input values
+  const int optInFastPeriod_value = INTEGER(optInFastPeriod)[0];
+  const int optInSlowPeriod_value = INTEGER(optInSlowPeriod)[0];
+
+  // output
   SEXP output;
   double *output_ptr;
 
-  // initialize
-  // clang-format off
-  const int lookback = TA_ADOSC_Lookback(
-    fastP, 
-    slowP
-  );
+  // calculate look back and exit
+  // the function function early if
+  // there is a mismatch
+  const int lookback =
+    TA_ADOSC_Lookback(optInFastPeriod_value, optInSlowPeriod_value);
 
-  const int proceed = output_container(
-    n, 
-    lookback, 
-    1, 
-    &output, 
-    &output_ptr, 
-    &protect_count
-  );
-  // clang-format on
+  // the output container is either a INTSXP or
+  // REALSXP depending on the type and will
+  // return a matrix with <NA> if there is a mismatch
+  // between lookback and n
+  //
+  // see container.h for more details
+  const int proceed =
+    output_container(n, lookback, 1, &output, &output_ptr, &protection_count);
 
   if (proceed) {
+    int start_idx = 0;
+    int end_idx = 0;
 
-    int start_idx = 0, end_idx = 0;
+    double *real = output_ptr;
 
-    // clang-format off
-    const TA_RetCode return_code = TA_ADOSC(
+    // TA_ADOSC returns an TA_RetCode
+    // which is TA_SUCCESS if it succeeds
+    // values in output_ptr gets populated
+    // by pointers
+    TA_RetCode return_code = TA_ADOSC(
       0,
-      n - 1, 
-      high, 
-      low, 
-      close, 
-      volume, 
-      fastP, 
-      slowP, 
+      n - 1,
+      inHigh_ptr,
+      inLow_ptr,
+      inClose_ptr,
+      inVolume_ptr,
+      optInFastPeriod_value,
+      optInSlowPeriod_value,
       &start_idx,
       &end_idx,
-      output_ptr
-    );
+      real);
 
-    // check output and return
-    // error code if not TA_SUCCESS
-    // clang-format off
-    check_output(
-      return_code, 
-      protect_count
-    );
-    // clang-format on
+    // check if the output is valid
+    // and stop function with the TA_RetCode
+    // see container.h for more details
+    check_output(return_code, protection_count);
 
-    // clang-format off
-    shift_array(
-      output_ptr, 
-      n, 
-      start_idx
-    );
-    // clang-format on
+    // shift the array so it has the same number
+    // of rows as 'n' - shifted values is replaced
+    // with <NA>
+    // see shift.h for more details
+    shift_array(real, n, start_idx);
   }
 
-  // set column names
+  // set the column names of the output
+  // see names.h for more details
   set_colnames(output, "ADOSC");
 
-  UNPROTECT(protect_count);
+  UNPROTECT(protection_count);
   return output;
 }

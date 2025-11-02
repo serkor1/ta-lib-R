@@ -1,82 +1,89 @@
-// Interface to TA_OBV (On-Balance Volume)
+// interface to ta_OBV.c
 //
 // Parameters
-//   real   : numeric vector of real prices
-//   volume : numeric vector of volumes (same length as real)
+// 		double  inReal
+// 		double  inVolume
 //
-#include "R_ext/Error.h"
-#include "Rinternals.h"
+// Returns
+//      matrix (n x 1) with colum:
+//          "OBV"
+//
+// Source
+//      https://github.com/TA-Lib/ta-lib/blob/main/src/ta_func/ta_OBV.c
+//
+#include "MAType.h"
 #include "container.h"
 #include "lib.h"
 #include "names.h"
 #include "shift.h"
+#include <R.h>
+#include <Rinternals.h>
 #include <ta_libc.h>
 
 // clang-format off
 SEXP impl_ta_OBV(
-  SEXP real,
-  SEXP volume) {
-  // clang-format on
-  int protect_count = 0;
+	SEXP inReal,
+	SEXP inVolume
+)
+// clang-format on
+{
+  // protection counter
+  int protection_count = 0;
 
-  // generic input
-  const double *restrict real_ptr = REAL(real);
-  const double *restrict volume_ptr = REAL(volume);
-  const int n = LENGTH(real);
+  // get length of 'inReal' (assumes equal length across input)
+  const int n = LENGTH(inReal);
 
-  // construct container
+  // pointers to input arrays
+  const double *restrict inReal_ptr = REAL(inReal);
+  const double *restrict inVolume_ptr = REAL(inVolume);
+
+  // output
   SEXP output;
   double *output_ptr;
 
-  // initialize
+  // calculate look back and exit
+  // the function function early if
+  // there is a mismatch
   const int lookback = TA_OBV_Lookback();
-  // clang-format off
-  const int proceed = output_container(
-    n, 
-    lookback, 
-    1, 
-    &output, 
-    &output_ptr, 
-    &protect_count
-  );
-  // clang-format on
+
+  // the output container is either a INTSXP or
+  // REALSXP depending on the type and will
+  // return a matrix with <NA> if there is a mismatch
+  // between lookback and n
+  //
+  // see container.h for more details
+  const int proceed =
+    output_container(n, lookback, 1, &output, &output_ptr, &protection_count);
 
   if (proceed) {
-    int start_idx = 0, end_idx = 0;
+    int start_idx = 0;
+    int end_idx = 0;
 
-    // clang-format off
-    TA_RetCode return_code = TA_OBV(
-      0,
-      n - 1,
-      real_ptr,
-      volume_ptr,
-      &start_idx,
-      &end_idx,
-      output_ptr
-    );
-    // clang-format on
+    double *real = output_ptr;
 
-    // check output and return
-    // error code if not TA_SUCCESS
-    // clang-format off
-    check_output(
-      return_code, 
-      protect_count
-    );
-    // clang-format on
+    // TA_OBV returns an TA_RetCode
+    // which is TA_SUCCESS if it succeeds
+    // values in output_ptr gets populated
+    // by pointers
+    TA_RetCode return_code =
+      TA_OBV(0, n - 1, inReal_ptr, inVolume_ptr, &start_idx, &end_idx, real);
 
-    // clang-format off
-    shift_array(
-      output_ptr, 
-      n, 
-      start_idx
-    );
-    // clang-format on
+    // check if the output is valid
+    // and stop function with the TA_RetCode
+    // see container.h for more details
+    check_output(return_code, protection_count);
+
+    // shift the array so it has the same number
+    // of rows as 'n' - shifted values is replaced
+    // with <NA>
+    // see shift.h for more details
+    shift_array(real, n, start_idx);
   }
 
-  // set column names
+  // set the column names of the output
+  // see names.h for more details
   set_colnames(output, "OBV");
 
-  UNPROTECT(protect_count);
+  UNPROTECT(protection_count);
   return output;
 }

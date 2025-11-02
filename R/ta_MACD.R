@@ -170,8 +170,8 @@ moving_average_convergence_divergence.plotly <- function(
 	## splice:plotly-assembly:start
 	## calculate directions for bull
 	## and bear candles
-	constructed_indicator$direction <- constructed_indicator$signal >=
-		constructed_indicator$macd
+	constructed_indicator$direction <- constructed_indicator$MACDSignal >=
+		constructed_indicator$MACD
 
 	## generate plotly object
 	## of the indicator
@@ -180,7 +180,7 @@ moving_average_convergence_divergence.plotly <- function(
 	## construct plotly object
 	plotly_object <- subchart(
 		data = constructed_indicator,
-		y = ~histogram,
+		y = ~MACDHist,
 		color = ~direction,
 		colors = c(
 			chart_theme$bull_color,
@@ -193,7 +193,7 @@ moving_average_convergence_divergence.plotly <- function(
 	plotly_object <- plotly::add_lines(
 		plotly_object,
 		x = ~idx,
-		y = ~signal,
+		y = ~MACDSignal,
 		data = constructed_indicator,
 		inherit = FALSE,
 		name = sprintf(
@@ -205,7 +205,7 @@ moving_average_convergence_divergence.plotly <- function(
 	plotly_object <- plotly::add_lines(
 		plotly_object,
 		x = ~idx,
-		y = ~macd,
+		y = ~MACD,
 		data = constructed_indicator,
 		inherit = FALSE,
 		name = sprintf(

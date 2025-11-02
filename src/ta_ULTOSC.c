@@ -1,16 +1,21 @@
 // interface to ta_ULTOSC.c
 //
 // Parameters
-//   inHigh    : numeric vector of highs (length n)
-//   inLow     : numeric vector of lows  (length n)
-//   inClose   : numeric vector of closes (length n)
-//   optPeriod1: integer first period
-//   optPeriod2: integer second period
-//   optPeriod3: integer third period
+// 		double  inHigh
+// 		double  inLow
+// 		double  inClose
+// 		integer optInTimePeriod1
+//		integer optInTimePeriod2
+//		integer optInTimePeriod3
 //
 // Returns
-//   numeric vector (n x 1) "ULTOSC"
+//      matrix (n x 1) with colum:
+//          "ULTOSC"
 //
+// Source
+//      https://github.com/TA-Lib/ta-lib/blob/main/src/ta_func/ta_ULTOSC.c
+//
+#include "MAType.h"
 #include "container.h"
 #include "lib.h"
 #include "names.h"
@@ -21,57 +26,91 @@
 
 // clang-format off
 SEXP impl_ta_ULTOSC(
-  SEXP inHigh,
-  SEXP inLow,
-  SEXP inClose,
-  SEXP optPeriod1,
-  SEXP optPeriod2,
-  SEXP optPeriod3) {
-  // clang-format on
-  int protect_count = 0;
+	SEXP inHigh,
+	SEXP inLow,
+	SEXP inClose,
+	SEXP optInTimePeriod1,
+	SEXP optInTimePeriod2,
+	SEXP optInTimePeriod3
+)
+// clang-format on
+{
+  // protection counter
+  int protection_count = 0;
 
-  const double *restrict high_ptr = REAL(inHigh);
-  const double *restrict low_ptr = REAL(inLow);
-  const double *restrict close_ptr = REAL(inClose);
+  // get length of 'inHigh' (assumes equal length across input)
   const int n = LENGTH(inHigh);
 
-  const int period1 = INTEGER(optPeriod1)[0];
-  const int period2 = INTEGER(optPeriod2)[0];
-  const int period3 = INTEGER(optPeriod3)[0];
+  // pointers to input arrays
+  const double *restrict inHigh_ptr = REAL(inHigh);
+  const double *restrict inLow_ptr = REAL(inLow);
+  const double *restrict inClose_ptr = REAL(inClose);
 
+  // extract input values
+  const int optInTimePeriod1_value = INTEGER(optInTimePeriod1)[0];
+  const int optInTimePeriod2_value = INTEGER(optInTimePeriod2)[0];
+  const int optInTimePeriod3_value = INTEGER(optInTimePeriod3)[0];
+
+  // output
   SEXP output;
   double *output_ptr;
 
-  const int lookback = TA_ULTOSC_Lookback(period1, period2, period3);
+  // calculate look back and exit
+  // the function function early if
+  // there is a mismatch
+  const int lookback = TA_ULTOSC_Lookback(
+    optInTimePeriod1_value,
+    optInTimePeriod2_value,
+    optInTimePeriod3_value);
 
+  // the output container is either a INTSXP or
+  // REALSXP depending on the type and will
+  // return a matrix with <NA> if there is a mismatch
+  // between lookback and n
+  //
+  // see container.h for more details
   const int proceed =
-    output_container(n, lookback, 1, &output, &output_ptr, &protect_count);
+    output_container(n, lookback, 1, &output, &output_ptr, &protection_count);
 
   if (proceed) {
-    int start_idx = 0, end_idx = 0;
+    int start_idx = 0;
+    int end_idx = 0;
 
-    // clang-format off
+    double *real = output_ptr;
+
+    // TA_ULTOSC returns an TA_RetCode
+    // which is TA_SUCCESS if it succeeds
+    // values in output_ptr gets populated
+    // by pointers
     TA_RetCode return_code = TA_ULTOSC(
-       0,
-       n - 1,
-       high_ptr,
-       low_ptr,
-       close_ptr,
-       period1,
-       period2,
-       period3,
-       &start_idx,
-       &end_idx,
-       output_ptr
-    );
-    // clang-format on
+      0,
+      n - 1,
+      inHigh_ptr,
+      inLow_ptr,
+      inClose_ptr,
+      optInTimePeriod1_value,
+      optInTimePeriod2_value,
+      optInTimePeriod3_value,
+      &start_idx,
+      &end_idx,
+      real);
 
-    check_output(return_code, protect_count);
-    shift_array(output_ptr, n, start_idx);
+    // check if the output is valid
+    // and stop function with the TA_RetCode
+    // see container.h for more details
+    check_output(return_code, protection_count);
+
+    // shift the array so it has the same number
+    // of rows as 'n' - shifted values is replaced
+    // with <NA>
+    // see shift.h for more details
+    shift_array(real, n, start_idx);
   }
 
+  // set the column names of the output
+  // see names.h for more details
   set_colnames(output, "ULTOSC");
 
-  UNPROTECT(protect_count);
+  UNPROTECT(protection_count);
   return output;
 }

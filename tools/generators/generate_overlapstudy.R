@@ -74,3 +74,14 @@ for (x in meta) {
 		x
 	)
 }
+
+## 4) generate candlestick C files
+for (x in meta) {
+	system2(
+		command = "bash",
+		args = c(
+			"tools/generate_indicator_core.sh",
+			paste0(x$alias, " > src/ta_", x$alias, ".c")
+		)
+	)
+}

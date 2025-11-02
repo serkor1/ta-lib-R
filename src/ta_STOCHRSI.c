@@ -1,16 +1,19 @@
 // interface to ta_STOCHRSI.c
 //
 // Parameters
-//   inReal        : numeric vector (length n)
-//   optTimePeriod : integer RSI time period
-//   optFastK      : integer Fast-K period
-//   optFastD      : integer Fast-D period
-//   optFastD_MA   : integer MA type for Fast-D
+// 		double  inReal
+// 		integer optInTimePeriod
+//		integer optInFastK_Period
+//		integer optInFastD_Period
+//		integer optInFastD_MAType (MAType)
+//    integer offset
 //
 // Returns
-//   matrix n x 2 with columns:
-//     "fastk"
-//     "fastd"
+//      matrix (n x 2) with colum:
+//          "FastK", "FastD"
+//
+// Source
+//      https://github.com/TA-Lib/ta-lib/blob/main/src/ta_func/ta_STOCHRSI.c
 //
 // Details
 //   This function wraps RSI from the R side, so all
@@ -28,76 +31,100 @@
 
 // clang-format off
 SEXP impl_ta_STOCHRSI(
-  SEXP inReal,
-  SEXP optTimePeriod,
-  SEXP optFastK,
-  SEXP optFastD,
-  SEXP optFastD_MA,
-  SEXP offset_by_RSI) {
-  // clang-format on
-  int protect_count = 0;
+	SEXP inReal,
+	SEXP optInTimePeriod,
+	SEXP optInFastK_Period,
+	SEXP optInFastD_Period,
+	SEXP optInFastD_MAType,
+  SEXP offset
+)
+// clang-format on
+{
+  // protection counter
+  int protection_count = 0;
 
-  const double *restrict in_real = REAL(inReal);
+  // get length of 'inReal' (assumes equal length across input)
   const int n = LENGTH(inReal);
 
-  const int time_period = INTEGER(optTimePeriod)[0];
-  const int fast_k = INTEGER(optFastK)[0];
-  const int fast_d = INTEGER(optFastD)[0];
-  const TA_MAType fast_d_ma = as_MAType(optFastD_MA);
-  const int offset = INTEGER(offset_by_RSI)[0];
+  // pointers to input arrays
+  const double *restrict inReal_ptr = REAL(inReal);
 
+  // extract input values
+  const int optInTimePeriod_value = INTEGER(optInTimePeriod)[0];
+  const int optInFastK_Period_value = INTEGER(optInFastK_Period)[0];
+  const int optInFastD_Period_value = INTEGER(optInFastD_Period)[0];
+  const TA_MAType optInFastD_MAType_value = as_MAType(optInFastD_MAType);
+  const int offset_value = INTEGER(offset)[0];
+
+  // output
   SEXP output;
   double *output_ptr;
 
-  // clang-format off
+  // calculate look back and exit
+  // the function function early if
+  // there is a mismatch
   const int lookback = TA_STOCHRSI_Lookback(
-    time_period, 
-    fast_k, 
-    fast_d, 
-    fast_d_ma) + offset;
-  // clang-format on
+                         optInTimePeriod_value,
+                         optInFastK_Period_value,
+                         optInFastD_Period_value,
+                         optInFastD_MAType_value) +
+                       offset_value;
 
-  // clang-format off
+  // the output container is either a INTSXP or
+  // REALSXP depending on the type and will
+  // return a matrix with <NA> if there is a mismatch
+  // between lookback and n
+  //
+  // see container.h for more details
   const int proceed = output_container(
-    n + offset, 
-    lookback, 
-    2, 
+    n + offset_value,
+    lookback,
+    2,
     &output,
-    &output_ptr, 
-    &protect_count
-  );
-  // clang-format on
+    &output_ptr,
+    &protection_count);
 
   if (proceed) {
-    int start_idx = 0, end_idx = 0;
+    int start_idx = 0;
+    int end_idx = 0;
 
-    double *output_fastk = output_ptr;
-    double *output_fastd = output_ptr + (n + offset);
+    double *fastk = output_ptr;
+    double *fastd = output_ptr + 1 * (n + offset_value);
 
-    // clang-format off
+    // TA_STOCHRSI returns an TA_RetCode
+    // which is TA_SUCCESS if it succeeds
+    // values in output_ptr gets populated
+    // by pointers
     TA_RetCode return_code = TA_STOCHRSI(
-       0,
-       n - 1,
-       in_real,
-       time_period,
-       fast_k,
-       fast_d,
-       fast_d_ma,
-       &start_idx,
-       &end_idx,
-       output_fastk,
-       output_fastd
-    );
-    // clang-format on
+      0,
+      n - 1,
+      inReal_ptr,
+      optInTimePeriod_value,
+      optInFastK_Period_value,
+      optInFastD_Period_value,
+      optInFastD_MAType_value,
+      &start_idx,
+      &end_idx,
+      fastk,
+      fastd);
 
-    check_output(return_code, protect_count);
+    // check if the output is valid
+    // and stop function with the TA_RetCode
+    // see container.h for more details
+    check_output(return_code, protection_count);
 
-    shift_array(output_fastk, n + offset, start_idx + offset);
-    shift_array(output_fastd, n + offset, start_idx + offset);
+    // shift the array so it has the same number
+    // of rows as 'n' - shifted values is replaced
+    // with <NA>
+    // see shift.h for more details
+    shift_array(fastk, n + offset_value, start_idx + offset_value);
+    shift_array(fastd, n + offset_value, start_idx + offset_value);
   }
 
-  set_colnames(output, "fastk", "fastd");
+  // set the column names of the output
+  // see names.h for more details
+  set_colnames(output, "FastK", "FastD");
 
-  UNPROTECT(protect_count);
+  UNPROTECT(protection_count);
   return output;
 }

@@ -146,7 +146,7 @@ phasor_components.plotly <- function(
 	## splice:plotly-assembly:start
 	plotly_object <- subchart(
 		data = constructed_indicator,
-		y = ~inphase,
+		y = ~InPhase,
 		type = "scatter",
 		mode = "lines",
 		name = "Inphase",
@@ -157,7 +157,7 @@ phasor_components.plotly <- function(
 		p = plotly_object,
 		data = constructed_indicator,
 		x = ~idx,
-		y = ~quadrature,
+		y = ~Quadrature,
 		name = "Quadrature",
 		legendgroup = "phasor_components"
 	)

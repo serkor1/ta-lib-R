@@ -18,7 +18,7 @@ dominant_cycle_period(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{DCPERIOD}{\link{double}}
+\item{HT_DCPERIOD}{\link{double}}
 }
 }
 \description{

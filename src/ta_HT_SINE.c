@@ -1,13 +1,16 @@
 // interface to ta_HT_SINE.c
 //
 // Parameters
-//   inReal : numeric vector (length n)
+// 		double  inReal
 //
 // Returns
-//   matrix (n x 2) with columns:
-//     "sine"
-//     "leadsine"
+//      matrix (n x 2) with colum:
+//          "Sine", "LeadSine"
 //
+// Source
+//      https://github.com/TA-Lib/ta-lib/blob/main/src/ta_func/ta_HT_SINE.c
+//
+#include "MAType.h"
 #include "container.h"
 #include "lib.h"
 #include "names.h"
@@ -18,56 +21,68 @@
 
 // clang-format off
 SEXP impl_ta_HT_SINE(
-  SEXP inReal) {
-  // clang-format on
-  int protect_count = 0;
+	SEXP inReal
+)
+// clang-format on
+{
+  // protection counter
+  int protection_count = 0;
 
-  const double *restrict in_real = REAL(inReal);
+  // get length of 'inReal' (assumes equal length across input)
   const int n = LENGTH(inReal);
 
+  // pointers to input arrays
+  const double *restrict inReal_ptr = REAL(inReal);
+
+  // output
   SEXP output;
   double *output_ptr;
 
+  // calculate look back and exit
+  // the function function early if
+  // there is a mismatch
   const int lookback = TA_HT_SINE_Lookback();
 
-  // clang-format off
-  const int proceed = output_container(
-    n,
-    lookback,
-    2,
-    &output,
-    &output_ptr,
-    &protect_count
-  );
-  // clang-format on
+  // the output container is either a INTSXP or
+  // REALSXP depending on the type and will
+  // return a matrix with <NA> if there is a mismatch
+  // between lookback and n
+  //
+  // see container.h for more details
+  const int proceed =
+    output_container(n, lookback, 2, &output, &output_ptr, &protection_count);
 
   if (proceed) {
     int start_idx = 0;
-    int number_of_elements = 0;
+    int end_idx = 0;
 
-    double *output_sine = output_ptr;
-    double *output_leadsine = output_ptr + n;
+    double *sine = output_ptr;
+    double *leadsine = output_ptr + 1 * n;
 
-    // clang-format off
-    TA_RetCode return_code = TA_HT_SINE(
-       0,
-       n - 1,
-       in_real,
-       &start_idx,
-       &number_of_elements,
-       output_sine,
-       output_leadsine
-    );
-    // clang-format on
+    // TA_HT_SINE returns an TA_RetCode
+    // which is TA_SUCCESS if it succeeds
+    // values in output_ptr gets populated
+    // by pointers
+    TA_RetCode return_code =
+      TA_HT_SINE(0, n - 1, inReal_ptr, &start_idx, &end_idx, sine, leadsine);
 
-    check_output(return_code, protect_count);
+    // check if the output is valid
+    // and stop function with the TA_RetCode
+    // see container.h for more details
+    check_output(return_code, protection_count);
 
-    shift_array(output_sine, n, start_idx);
-    shift_array(output_leadsine, n, start_idx);
+    // shift the array so it has the same number
+    // of rows as 'n' - shifted values is replaced
+    // with <NA>
+    // see shift.h for more details
+    shift_array(sine, n, start_idx);
+    shift_array(leadsine, n, start_idx);
   }
 
-  set_colnames(output, "sine", "leadsine");
+  // set the column names of the output
+  // see names.h for more details
+  set_colnames(output, "Sine", "LeadSine");
 
-  UNPROTECT(protect_count);
+  UNPROTECT(protection_count);
   return output;
 }

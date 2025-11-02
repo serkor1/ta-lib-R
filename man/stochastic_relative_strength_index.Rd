@@ -34,8 +34,8 @@ stochastic_relative_strength_index(
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{fastk}{\link{double}}
-\item{fastd}{\link{double}}
+\item{FastK}{\link{double}}
+\item{FastD}{\link{double}}
 }
 }
 \description{

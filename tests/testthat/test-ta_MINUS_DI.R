@@ -6,12 +6,12 @@
 
 ## 1) alias and function similarity
 ##    checks this ensures that
-##    MDM and minus_directional_movement produces the same results
+##    MINUS_DI and minus_directional_indicator produces the same results
 testthat::test_that(desc = 'Alias and function similarity', code = {
 	## 1) test that the alias and
 	##    function returns the same values
-	output <- MDM(SPY)
-	alias <- minus_directional_movement(SPY)
+	output <- MINUS_DI(SPY)
+	alias <- minus_directional_indicator(SPY)
 
 	## 1.1) check if the values
 	##      are equal
@@ -26,12 +26,12 @@ testthat::test_that(desc = 'Alias and function similarity', code = {
 ##
 ## 2.1) data.frame checks
 testthat::test_that(desc = '{plotly}-methods for <data.frame>', code = {
-	## 1) check that MDM can
+	## 1) check that MINUS_DI can
 	##    use {plotly} without any issues
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(MDM)
+			indicator(MINUS_DI)
 		}
 	)
 
@@ -44,12 +44,12 @@ testthat::test_that(desc = '{plotly}-methods for <data.frame>', code = {
 
 ## 2.2) matrix checks
 testthat::test_that(desc = '{plotly}-methods for <matrix>', code = {
-	## 1) check that MDM can
+	## 1) check that MINUS_DI can
 	##    use {plotly} without any issues
 	output <- testthat::expect_no_error(
 		{
 			chart(SPY)
-			indicator(MDM)
+			indicator(MINUS_DI)
 		}
 	)
 
@@ -68,7 +68,7 @@ testthat::test_that(desc = 'Class in, class out (<matrix>)', code = {
 	## 1) check that the output class
 	##    matches the input class
 	testthat::expect_true(
-		inherits(MDM(SPY), class(SPY))
+		inherits(MINUS_DI(SPY), class(SPY))
 	)
 })
 
@@ -77,7 +77,7 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 	## 1) check that the output class
 	##    matches the input class
 	testthat::expect_true(
-		inherits(MDM(BTC), class(BTC))
+		inherits(MINUS_DI(BTC), class(BTC))
 	)
 })
 
@@ -89,12 +89,12 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 ##          series() function
 testthat::test_that(desc = 'Default calls', code = {
 	testthat::expect_equal(
-		object = MDM(
+		object = MINUS_DI(
 			BTC
 		),
-		expected = MDM(
+		expected = MINUS_DI(
 			BTC,
-			cols = ~ high + low
+			cols = ~ high + low + close
 		)
 	)
 })
@@ -105,7 +105,7 @@ testthat::test_that(desc = 'Default calls', code = {
 ## 5.1) <data.frame> object
 testthat::test_that(desc = 'Equal length of input and output for <data.frame>', code = {
 	testthat::expect_equal(
-		object = nrow(MDM(
+		object = nrow(MINUS_DI(
 			BTC
 		)),
 		expected = nrow(BTC)
@@ -115,7 +115,7 @@ testthat::test_that(desc = 'Equal length of input and output for <data.frame>', 
 ## 5.2) <matrix> object
 testthat::test_that(desc = 'Equal length of input and output for <matrix>', code = {
 	testthat::expect_equal(
-		object = nrow(MDM(
+		object = nrow(MINUS_DI(
 			SPY
 		)),
 		expected = nrow(SPY)

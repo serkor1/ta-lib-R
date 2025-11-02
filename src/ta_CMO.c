@@ -1,12 +1,17 @@
 // interface to ta_CMO.c
 //
 // Parameters
-//   inReal        : numeric vector (length n)
-//   optTimePeriod : integer time period
+// 		double  inReal
+// 		integer optInTimePeriod
 //
 // Returns
-//   numeric vector (n x 1) "CMO"
+//      matrix (n x 1) with colum:
+//          "CMO"
 //
+// Source
+//      https://github.com/TA-Lib/ta-lib/blob/main/src/ta_func/ta_CMO.c
+//
+#include "MAType.h"
 #include "container.h"
 #include "lib.h"
 #include "names.h"
@@ -17,53 +22,76 @@
 
 // clang-format off
 SEXP impl_ta_CMO(
-  SEXP inReal,
-  SEXP optTimePeriod) {
-  // clang-format on
-  int protect_count = 0;
+	SEXP inReal,
+	SEXP optInTimePeriod
+)
+// clang-format on
+{
+  // protection counter
+  int protection_count = 0;
 
-  const double *restrict in_real = REAL(inReal);
+  // get length of 'inReal' (assumes equal length across input)
   const int n = LENGTH(inReal);
 
-  const int time_period = INTEGER(optTimePeriod)[0];
+  // pointers to input arrays
+  const double *restrict inReal_ptr = REAL(inReal);
 
+  // extract input values
+  const int optInTimePeriod_value = INTEGER(optInTimePeriod)[0];
+
+  // output
   SEXP output;
   double *output_ptr;
 
-  const int lookback = TA_CMO_Lookback(time_period);
+  // calculate look back and exit
+  // the function function early if
+  // there is a mismatch
+  const int lookback = TA_CMO_Lookback(optInTimePeriod_value);
 
-  // clang-format off
-  const int proceed = output_container(
-    n, 
-    lookback, 
-    1, 
-    &output,
-    &output_ptr, 
-    &protect_count
-  );
-  // clang-format on
+  // the output container is either a INTSXP or
+  // REALSXP depending on the type and will
+  // return a matrix with <NA> if there is a mismatch
+  // between lookback and n
+  //
+  // see container.h for more details
+  const int proceed =
+    output_container(n, lookback, 1, &output, &output_ptr, &protection_count);
 
   if (proceed) {
-    int start_idx = 0, end_idx = 0;
+    int start_idx = 0;
+    int end_idx = 0;
 
-    // clang-format off
+    double *real = output_ptr;
+
+    // TA_CMO returns an TA_RetCode
+    // which is TA_SUCCESS if it succeeds
+    // values in output_ptr gets populated
+    // by pointers
     TA_RetCode return_code = TA_CMO(
-       0,
-       n - 1,
-       in_real,
-       time_period,
-       &start_idx,
-       &end_idx,
-       output_ptr
-    );
-    // clang-format on
+      0,
+      n - 1,
+      inReal_ptr,
+      optInTimePeriod_value,
+      &start_idx,
+      &end_idx,
+      real);
 
-    check_output(return_code, protect_count);
-    shift_array(output_ptr, n, start_idx);
+    // check if the output is valid
+    // and stop function with the TA_RetCode
+    // see container.h for more details
+    check_output(return_code, protection_count);
+
+    // shift the array so it has the same number
+    // of rows as 'n' - shifted values is replaced
+    // with <NA>
+    // see shift.h for more details
+    shift_array(real, n, start_idx);
   }
 
+  // set the column names of the output
+  // see names.h for more details
   set_colnames(output, "CMO");
 
-  UNPROTECT(protect_count);
+  UNPROTECT(protection_count);
   return output;
 }

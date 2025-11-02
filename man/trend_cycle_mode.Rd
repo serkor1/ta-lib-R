@@ -18,7 +18,7 @@ trend_cycle_mode(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{TRENDMODE}{\link{integer}}
+\item{HT_TRENDMODE}{\link{integer}}
 }
 }
 \description{

@@ -1,33 +1,33 @@
-// interface to ta_CDLHIGHWAVE.c
+// interface to ta_{{NAME}}.c
 //
 // Parameters
-//      double  inOpen
-//      double  inClose
-//      double  inLow
-//      double  inClose
+//      double  inOpen 
+//      double  inClose  
+//      double  inLow   
+//      double  inClose {{PEN_TEMP}}
 //      bool    flag
 //
 // Returns
 //      matrix (n x 1) with colum:
-//          "CDLHIGHWAVE"
+//          "{{NAME}}"
 //
 // Source
-//      https://github.com/TA-Lib/ta-lib/blob/main/src/ta_func/ta_CDLHIGHWAVE.c
+//      https://github.com/TA-Lib/ta-lib/blob/main/src/ta_func/ta_{{NAME}}.c
 //
+#include "lib.h"
 #include "Rinternals.h"
 #include "container.h"
-#include "lib.h"
 #include "names.h"
-#include "normalize.h"
 #include "shift.h"
+#include "normalize.h"
 #include <ta_libc.h>
 
 // clang-format off
-SEXP impl_ta_CDLHIGHWAVE(
+SEXP impl_ta_{{NAME}}(
     SEXP inOpen,
     SEXP inHigh,
     SEXP inLow,
-    SEXP inClose,
+    SEXP inClose{{PEN_ARG}},
     SEXP flag
 )
 // clang-format on 
@@ -42,14 +42,14 @@ SEXP impl_ta_CDLHIGHWAVE(
     const double *restrict close_ptr = REAL(inClose);
     const int n = LENGTH(inOpen);
 
-    
+    {{PEN_READ}}
     SEXP output;
     int *output_ptr;
 
     // calculate look back and exit
     // the function function early if
     // there is a mismatch
-    const int lookback = TA_CDLHIGHWAVE_Lookback();
+    const int lookback = {{LOOKBACK}}
 
     // the output container is either a INTSXP or 
     // REALSXP depending on the type and will
@@ -70,17 +70,17 @@ SEXP impl_ta_CDLHIGHWAVE(
         int start_idx = 0;
         int end_idx   = 0;
 
-        // TA_CDLHIGHWAVE returns an TA_RetCode
+        // TA_{{NAME}} returns an TA_RetCode
         // which is TA_SUCCESS if it succeeds
         // values in output_ptr gets populated
         // by pointers
-        TA_RetCode return_code = TA_CDLHIGHWAVE(
+        TA_RetCode return_code = TA_{{NAME}}(
             0,
             n - 1,
             open_ptr,
             high_ptr,
             low_ptr,
-            close_ptr
+            close_ptr{{PEN_CALL}}
             ,
             &start_idx,
             &end_idx,
@@ -98,7 +98,7 @@ SEXP impl_ta_CDLHIGHWAVE(
         // see shift.h for more details
         shift_array(output_ptr, n, start_idx);
 
-        // ta_CDLHIGHWAVE returns values as -100, 100 and 0
+        // ta_{{NAME}} returns values as -100, 100 and 0
         // if flag is TRUE the output values will be normalized
         // to -1, 1, 0 
         // see normalize.h for more details
@@ -109,7 +109,7 @@ SEXP impl_ta_CDLHIGHWAVE(
 
     // set the column names of the output
     // see names.h for more details
-    set_colnames(output, "CDLHIGHWAVE");
+    set_colnames(output, "{{NAME}}");
 
     UNPROTECT(protection_counter);
     return output;

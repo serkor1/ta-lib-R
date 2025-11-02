@@ -148,7 +148,7 @@ trendline.plotly <- function(
 		.plotting_environment[["main"]],
 		data = constructed_indicator,
 		x = ~idx,
-		y = ~TRENDLINE,
+		y = ~HT_TRENDLINE,
 		type = "scatter",
 		mode = "lines",
 		name = "Trendline",

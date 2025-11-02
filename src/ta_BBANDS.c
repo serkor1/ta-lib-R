@@ -1,17 +1,18 @@
 // interface to ta_BBANDS.c
 //
 // Parameters
-//   inReal        : numeric vector (length n)
-//   optTimePeriod : integer time period
-//   optNbDevUp    : numeric number of deviations above
-//   optNbDevDn    : numeric number of deviations below
-//   optMAType     : integer MA type (see MAType.h)
+// 		double  inReal
+// 		integer optInTimePeriod
+//		double  optInNbDevUp
+//		double  optInNbDevDn
+//		integer optInMAType (MAType)
 //
 // Returns
-//   numeric matrix (n x 3) with columns
-//     "upper"
-//     "middle"
-//     "lower"
+//      matrix (n x 3) with colum:
+//          "UpperBand", "MiddleBand", "LowerBand"
+//
+// Source
+//      https://github.com/TA-Lib/ta-lib/blob/main/src/ta_func/ta_BBANDS.c
 //
 #include "MAType.h"
 #include "container.h"
@@ -24,79 +25,95 @@
 
 // clang-format off
 SEXP impl_ta_BBANDS(
-  SEXP inReal,
-  SEXP optTimePeriod,
-  SEXP optNbDevUp,
-  SEXP optNbDevDn,
-  SEXP optMAType) {
-  // clang-format on
-  int protect_count = 0;
+	SEXP inReal,
+	SEXP optInTimePeriod,
+	SEXP optInNbDevUp,
+	SEXP optInNbDevDn,
+	SEXP optInMAType
+)
+// clang-format on
+{
+  // protection counter
+  int protection_count = 0;
 
-  const double *restrict in_real = REAL(inReal);
+  // get length of 'inReal' (assumes equal length across input)
   const int n = LENGTH(inReal);
 
-  const int time_period = INTEGER(optTimePeriod)[0];
-  const double nb_dev_up = REAL(optNbDevUp)[0];
-  const double nb_dev_dn = REAL(optNbDevDn)[0];
-  const TA_MAType moving_average = as_MAType(optMAType);
+  // pointers to input arrays
+  const double *restrict inReal_ptr = REAL(inReal);
 
+  // extract input values
+  const int optInTimePeriod_value = INTEGER(optInTimePeriod)[0];
+  const double optInNbDevUp_value = REAL(optInNbDevUp)[0];
+  const double optInNbDevDn_value = REAL(optInNbDevDn)[0];
+  const TA_MAType optInMAType_value = as_MAType(optInMAType);
+
+  // output
   SEXP output;
   double *output_ptr;
 
-  // clang-format off
+  // calculate look back and exit
+  // the function function early if
+  // there is a mismatch
   const int lookback = TA_BBANDS_Lookback(
-    time_period,
-    nb_dev_up,
-    nb_dev_dn,
-    moving_average
-  );
-  // clang-format on
+    optInTimePeriod_value,
+    optInNbDevUp_value,
+    optInNbDevDn_value,
+    optInMAType_value);
 
-  // clang-format off
-  const int proceed = output_container(
-    n,
-    lookback,
-    3,
-    &output,
-    &output_ptr,
-    &protect_count
-  );
-  // clang-format on
+  // the output container is either a INTSXP or
+  // REALSXP depending on the type and will
+  // return a matrix with <NA> if there is a mismatch
+  // between lookback and n
+  //
+  // see container.h for more details
+  const int proceed =
+    output_container(n, lookback, 3, &output, &output_ptr, &protection_count);
 
   if (proceed) {
     int start_idx = 0;
-    int number_of_elements = 0;
+    int end_idx = 0;
 
-    double *restrict out_upper = output_ptr;
-    double *restrict out_middle = output_ptr + n;
-    double *restrict out_lower = output_ptr + (2 * n);
+    double *realupperband = output_ptr;
+    double *realmiddleband = output_ptr + 1 * n;
+    double *reallowerband = output_ptr + 2 * n;
 
-    // clang-format off
+    // TA_BBANDS returns an TA_RetCode
+    // which is TA_SUCCESS if it succeeds
+    // values in output_ptr gets populated
+    // by pointers
     TA_RetCode return_code = TA_BBANDS(
       0,
       n - 1,
-      in_real,
-      time_period,
-      nb_dev_up,
-      nb_dev_dn,
-      moving_average,
+      inReal_ptr,
+      optInTimePeriod_value,
+      optInNbDevUp_value,
+      optInNbDevDn_value,
+      optInMAType_value,
       &start_idx,
-      &number_of_elements,
-      out_upper,
-      out_middle,
-      out_lower
-    );
-    // clang-format on
+      &end_idx,
+      realupperband,
+      realmiddleband,
+      reallowerband);
 
-    check_output(return_code, protect_count);
+    // check if the output is valid
+    // and stop function with the TA_RetCode
+    // see container.h for more details
+    check_output(return_code, protection_count);
 
-    shift_array(out_upper, n, start_idx);
-    shift_array(out_middle, n, start_idx);
-    shift_array(out_lower, n, start_idx);
+    // shift the array so it has the same number
+    // of rows as 'n' - shifted values is replaced
+    // with <NA>
+    // see shift.h for more details
+    shift_array(realupperband, n, start_idx);
+    shift_array(realmiddleband, n, start_idx);
+    shift_array(reallowerband, n, start_idx);
   }
 
-  set_colnames(output, "upper", "middle", "lower");
+  // set the column names of the output
+  // see names.h for more details
+  set_colnames(output, "UpperBand", "MiddleBand", "LowerBand");
 
-  UNPROTECT(protect_count);
+  UNPROTECT(protection_count);
   return output;
 }

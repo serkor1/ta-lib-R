@@ -1,17 +1,18 @@
 // interface to ta_IMI.c
 //
 // Parameters
-//   inOpen        : numeric vector of opens (length n)
-//   inClose       : numeric vector of closes (length n)
-//   optTimePeriod : integer time period
+// 		double  inOpen
+// 		double  inClose
+// 		integer optInTimePeriod
 //
 // Returns
-//   numeric vector (n x 1) "IMI"
+//      matrix (n x 1) with colum:
+//          "IMI"
 //
-// Notes
-//   TA-Lib marks IMI as an indicator with an unstable period. Inputs and range
-//   are consistent with the current TA-Lib C API.
-//   :contentReference[oaicite:1]{index=1}
+// Source
+//      https://github.com/TA-Lib/ta-lib/blob/main/src/ta_func/ta_IMI.c
+//
+#include "MAType.h"
 #include "container.h"
 #include "lib.h"
 #include "names.h"
@@ -22,48 +23,79 @@
 
 // clang-format off
 SEXP impl_ta_IMI(
-  SEXP inOpen,
-  SEXP inClose,
-  SEXP optTimePeriod) {
-  // clang-format on
-  int protect_count = 0;
+	SEXP inOpen,
+	SEXP inClose,
+	SEXP optInTimePeriod
+)
+// clang-format on
+{
+  // protection counter
+  int protection_count = 0;
 
-  const double *restrict open_ptr = REAL(inOpen);
-  const double *restrict close_ptr = REAL(inClose);
+  // get length of 'inOpen' (assumes equal length across input)
   const int n = LENGTH(inOpen);
 
-  const int time_period = INTEGER(optTimePeriod)[0];
+  // pointers to input arrays
+  const double *restrict inOpen_ptr = REAL(inOpen);
+  const double *restrict inClose_ptr = REAL(inClose);
 
+  // extract input values
+  const int optInTimePeriod_value = INTEGER(optInTimePeriod)[0];
+
+  // output
   SEXP output;
   double *output_ptr;
 
-  const int lookback = TA_IMI_Lookback(time_period);
+  // calculate look back and exit
+  // the function function early if
+  // there is a mismatch
+  const int lookback = TA_IMI_Lookback(optInTimePeriod_value);
 
+  // the output container is either a INTSXP or
+  // REALSXP depending on the type and will
+  // return a matrix with <NA> if there is a mismatch
+  // between lookback and n
+  //
+  // see container.h for more details
   const int proceed =
-    output_container(n, lookback, 1, &output, &output_ptr, &protect_count);
+    output_container(n, lookback, 1, &output, &output_ptr, &protection_count);
 
   if (proceed) {
-    int start_idx = 0, end_idx = 0;
+    int start_idx = 0;
+    int end_idx = 0;
 
-    // clang-format off
+    double *real = output_ptr;
+
+    // TA_IMI returns an TA_RetCode
+    // which is TA_SUCCESS if it succeeds
+    // values in output_ptr gets populated
+    // by pointers
     TA_RetCode return_code = TA_IMI(
-       0,
-       n - 1,
-       open_ptr,
-       close_ptr,
-       time_period,
-       &start_idx,
-       &end_idx,
-       output_ptr
-    );
-    // clang-format on
+      0,
+      n - 1,
+      inOpen_ptr,
+      inClose_ptr,
+      optInTimePeriod_value,
+      &start_idx,
+      &end_idx,
+      real);
 
-    check_output(return_code, protect_count);
-    shift_array(output_ptr, n, start_idx);
+    // check if the output is valid
+    // and stop function with the TA_RetCode
+    // see container.h for more details
+    check_output(return_code, protection_count);
+
+    // shift the array so it has the same number
+    // of rows as 'n' - shifted values is replaced
+    // with <NA>
+    // see shift.h for more details
+    shift_array(real, n, start_idx);
   }
 
+  // set the column names of the output
+  // see names.h for more details
   set_colnames(output, "IMI");
 
-  UNPROTECT(protect_count);
+  UNPROTECT(protection_count);
   return output;
 }

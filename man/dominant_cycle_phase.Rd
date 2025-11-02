@@ -18,7 +18,7 @@ dominant_cycle_phase(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{DCPHASE}{\link{double}}
+\item{HT_DCPHASE}{\link{double}}
 }
 }
 \description{

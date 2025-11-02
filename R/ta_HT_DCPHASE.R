@@ -146,7 +146,7 @@ dominant_cycle_phase.plotly <- function(
 	## splice:plotly-assembly:start
 	plotly_object <- subchart(
 		data = constructed_indicator,
-		y = ~DCPHASE,
+		y = ~HT_DCPHASE,
 		type = "scatter",
 		mode = "lines+markers",
 		name = "DC Period"

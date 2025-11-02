@@ -1,37 +1,37 @@
 #' @export
 #' @family Momentum Indicator
 #'
-#' @title Minus Directional Movement
-#' @templateVar .title Minus Directional Movement
+#' @title Plus Directional Indicator
+#' @templateVar .title Plus Directional Indicator
 #' @templateVar .author Serkan Korkmaz
-#' @templateVar .fun minus_directional_movement
+#' @templateVar .fun plus_directional_indicator
 #'
 ## splice:documentation:start
 ## splice:documentation:end
 #'
 #' @template description
 #' @template returns
-minus_directional_movement <- function(
+plus_directional_indicator <- function(
 	x,
 	cols,
 	n = 10,
 	...
 ) {
-	UseMethod("minus_directional_movement")
+	UseMethod("plus_directional_indicator")
 }
 
 #' @export
 #' @usage NULL
-#' @rdname minus_directional_movement
+#' @rdname plus_directional_indicator
 #'
-#' @aliases minus_directional_movement
-MDM <- minus_directional_movement
+#' @aliases plus_directional_indicator
+PLUS_DI <- plus_directional_indicator
 
 #' @usage NULL
-#' @aliases minus_directional_movement
+#' @aliases plus_directional_indicator
 #'
 #' @export
-minus_directional_movement.default <- function(
+plus_directional_indicator.default <- function(
 	x,
 	cols,
 	n = 10,
@@ -47,7 +47,7 @@ minus_directional_movement.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default = ~ high + low,
+		default = ~ high + low + close,
 		data = x,
 		...
 	)
@@ -59,10 +59,11 @@ minus_directional_movement.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_MDM",
+		"impl_ta_PLUS_DI",
 		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
+		constructed_series[[3]],
 		as.integer(n)
 		## splice:call:end
 	)
@@ -75,10 +76,10 @@ minus_directional_movement.default <- function(
 }
 
 #' @usage NULL
-#' @aliases minus_directional_movement
+#' @aliases plus_directional_indicator
 #'
 #' @export
-minus_directional_movement.data.frame <- function(
+plus_directional_indicator.data.frame <- function(
 	x,
 	cols,
 	n = 10,
@@ -90,10 +91,10 @@ minus_directional_movement.data.frame <- function(
 }
 
 #' @usage NULL
-#' @aliases minus_directional_movement
+#' @aliases plus_directional_indicator
 #'
 #' @export
-minus_directional_movement.matrix <- function(
+plus_directional_indicator.matrix <- function(
 	x,
 	cols,
 	n = 10,
@@ -105,10 +106,10 @@ minus_directional_movement.matrix <- function(
 }
 
 #' @usage NULL
-#' @aliases minus_directional_movement
+#' @aliases plus_directional_indicator
 #'
 #' @export
-minus_directional_movement.plotly <- function(
+plus_directional_indicator.plotly <- function(
 	x,
 	cols,
 	n = 10,
@@ -131,13 +132,13 @@ minus_directional_movement.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ high + low,
+		default = ~ high + low + close,
 		...
 	)
 
 	## construct indicator
 	## from the series
-	constructed_indicator <- minus_directional_movement(
+	constructed_indicator <- plus_directional_indicator(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
@@ -154,7 +155,7 @@ minus_directional_movement.plotly <- function(
 	## splice:plotly-assembly:start
 	plotly_object <- subchart(
 		data = constructed_indicator,
-		y = ~MDM,
+		y = ~PLUS_DI,
 		type = "scatter",
 		mode = "lines",
 		showlegend = FALSE
@@ -163,7 +164,7 @@ minus_directional_movement.plotly <- function(
 	if (main_chart_exists()) {
 		plotly_object <- add_title(
 			x = plotly_object,
-			text = "Minus Directional Movement"
+			text = "Plus Directional Index"
 		)
 	}
 

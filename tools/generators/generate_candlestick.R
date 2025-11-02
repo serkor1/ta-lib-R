@@ -521,3 +521,15 @@ for (x in metadata) {
 		x
 	)
 }
+
+## 4) generate candlestick C files
+for (x in metadata) {
+	system2(
+		command = "bash",
+		args = c(
+			"tools/generate_candlestick.sh",
+			shQuote(x$alias),
+			shQuote(x$signature)
+		)
+	)
+}

@@ -32,33 +32,42 @@ EOF
 
 extract_signatures() {
   awk '
+    # start of an SEXP function
     /^[[:space:]]*(static[[:space:]]+)?SEXP[[:space:]]+/ {
       sig = $0
 
+      # keep reading until we hit "{" or ";"
       while (sig !~ /\{/ && sig !~ /;/) {
         if (getline <= 0) break
+        # skip pure formatter lines while collecting
+        if ($0 ~ /^[[:space:]]*\/\/[[:space:]]*clang-format[[:space:]]+(on|off)/)
+          continue
         sig = sig " " $0
       }
-      
+
+      # if the formatter marker still got attached at the end of sig, drop it
+      sub(/[[:space:]]*\/\/[[:space:]]*clang-format[[:space:]]+(on|off)[[:space:]]*$/, "", sig)
+
+      # only handle real definitions (we saw "{")
       if (sig ~ /\{/) {
-        
-        left = gsub(/\(/,"&",sig)
-        right = gsub(/\)/,"&",sig)
+        left  = gsub(/\(/, "&", sig)
+        right = gsub(/\)/, "&", sig)
         if (left == right) {
-          
-          sub(/\{.*$/,"",sig)
-          
+          sub(/\{.*$/, "", sig)
+
           gsub(/[[:space:]]+/, " ", sig)
           sub(/^[[:space:]]+/, "", sig)
           sub(/[[:space:]]+$/, "", sig)
           gsub(/\( /, "(", sig)
           gsub(/ \)/, ")", sig)
+
           printf("%s;\n", sig)
         }
       }
     }
   ' "${SRC_DIR}"/*.c | sort -u
 }
+
 
 print_footer() {
   cat <<'EOF'

@@ -46,7 +46,7 @@ extended_parabolic_stop_and_reverse(
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{SAR}{\link{double}}
+\item{SAREXT}{\link{double}}
 }
 }
 \description{

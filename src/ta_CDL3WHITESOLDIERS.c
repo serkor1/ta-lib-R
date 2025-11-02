@@ -1,80 +1,116 @@
-// Interface to TA_CDL3WHITESOLDIERS (Three Advancing White Soldiers)
+// interface to ta_CDL3WHITESOLDIERS.c
 //
 // Parameters
-//   open, high, low, close : numeric vectors (same length)
-//   normalize_flag         : logical scalar; when TRUE divide outputs by 100
+//      double  inOpen
+//      double  inClose
+//      double  inLow
+//      double  inClose
+//      bool    flag
 //
-// Description
-//   Identifies Three Advancing White Soldiers. Returns an integer vector of
-//   length n, padded with NA_INTEGER for the initial lookback. Values are
-//   (-100, 0, +100) or (-1, 0, +1) if normalized.
-
-#include "R_ext/Arith.h"
-#include "Rdefines.h"
+// Returns
+//      matrix (n x 1) with colum:
+//          "CDL3WHITESOLDIERS"
+//
+// Source
+//      https://github.com/TA-Lib/ta-lib/blob/main/src/ta_func/ta_CDL3WHITESOLDIERS.c
+//
 #include "Rinternals.h"
+#include "container.h"
 #include "lib.h"
+#include "names.h"
 #include "normalize.h"
 #include "shift.h"
-#include <stdbool.h>
 #include <ta_libc.h>
 
 // clang-format off
 SEXP impl_ta_CDL3WHITESOLDIERS(
-  SEXP open,
-  SEXP high,
-  SEXP low,
-  SEXP close,
-  SEXP normalize_flag) {
-  // clang-format on
+    SEXP inOpen,
+    SEXP inHigh,
+    SEXP inLow,
+    SEXP inClose,
+    SEXP flag
+)
+// clang-format on 
+{
+    // protection counter
+    int protection_counter = 0;
 
-  int protect_count = 0;
+    // pointers to input
+    const double *restrict open_ptr  = REAL(inOpen);
+    const double *restrict high_ptr  = REAL(inHigh);
+    const double *restrict low_ptr   = REAL(inLow);
+    const double *restrict close_ptr = REAL(inClose);
+    const int n = LENGTH(inOpen);
 
-  const double *restrict open_ptr = REAL(open);
-  const double *restrict high_ptr = REAL(high);
-  const double *restrict low_ptr = REAL(low);
-  const double *restrict close_ptr = REAL(close);
-  int n = LENGTH(open);
+    
+    SEXP output;
+    int *output_ptr;
 
-  SEXP result = PROTECT(allocVector(INTSXP, n));
-  protect_count++;
-  int *restrict out_ptr = INTEGER(result);
+    // calculate look back and exit
+    // the function function early if
+    // there is a mismatch
+    const int lookback = TA_CDL3WHITESOLDIERS_Lookback();
 
-  const int minimum_lookback = TA_CDL3WHITESOLDIERS_Lookback();
+    // the output container is either a INTSXP or 
+    // REALSXP depending on the type and will
+    // return a matrix with <NA> if there is a mismatch
+    // between lookback and n
+    //
+    // see container.h for more details
+    const int proceed = output_container(
+        n,
+        lookback,
+        1,
+        &output,
+        &output_ptr,
+        &protection_counter
+    );
 
-  if (n < minimum_lookback) {
-    Rf_warning(
-      "Input length (%d) is smaller than required lookback (%d).",
-      n,
-      minimum_lookback);
-    for (int i = 0; i < n; ++i)
-      out_ptr[i] = NA_INTEGER;
+    if (proceed) {
+        int start_idx = 0;
+        int end_idx   = 0;
 
-  } else {
-    int outBeg = 0, outNb = 0;
+        // TA_CDL3WHITESOLDIERS returns an TA_RetCode
+        // which is TA_SUCCESS if it succeeds
+        // values in output_ptr gets populated
+        // by pointers
+        TA_RetCode return_code = TA_CDL3WHITESOLDIERS(
+            0,
+            n - 1,
+            open_ptr,
+            high_ptr,
+            low_ptr,
+            close_ptr
+            ,
+            &start_idx,
+            &end_idx,
+            output_ptr
+        );
 
-    TA_RetCode rc = TA_CDL3WHITESOLDIERS(
-      0,
-      n - 1,
-      open_ptr,
-      high_ptr,
-      low_ptr,
-      close_ptr,
-      &outBeg,
-      &outNb,
-      out_ptr);
+        // check if the output is valid
+        // and stop function with the TA_RetCode
+        // see container.h for more details
+        check_output(return_code, protection_counter);
 
-    if (rc != TA_SUCCESS) {
-      UNPROTECT(protect_count);
-      Rf_error("TA_CDL3WHITESOLDIERS failed: return code %d", rc);
+        // shift the array so it has the same number
+        // of rows as 'n' - shifted values is replaced
+        // with <NA> 
+        // see shift.h for more details
+        shift_array(output_ptr, n, start_idx);
+
+        // ta_CDL3WHITESOLDIERS returns values as -100, 100 and 0
+        // if flag is TRUE the output values will be normalized
+        // to -1, 1, 0 
+        // see normalize.h for more details
+        if (LOGICAL_VALUE(flag)) {
+            normalize(output_ptr, n, 100, start_idx);
+        }
     }
 
-    shift_array(out_ptr, n, outBeg);
+    // set the column names of the output
+    // see names.h for more details
+    set_colnames(output, "CDL3WHITESOLDIERS");
 
-    if (LOGICAL_VALUE(normalize_flag)) {
-      normalize(out_ptr, n, 100, outBeg);
-    }
-  }
-
-  UNPROTECT(protect_count);
-  return result;
+    UNPROTECT(protection_counter);
+    return output;
 }

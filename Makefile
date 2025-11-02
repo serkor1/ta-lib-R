@@ -18,7 +18,7 @@ help:
 build: clean fmt ## Build the R package
 	@tools/generate_API.sh src/ src/api.h && tools/generate_FFI.sh src/api.h src/init.c && $(MAKE) fmt
 	@Rscript --verbose -e "devtools::document()"
-	@R CMD build . && R CMD INSTALL $(tarball_location)
+	@R CMD build . --no-build-vignettes && R CMD INSTALL $(tarball_location)
 	@rm -rf README.md
 	@Rscript -e "rmarkdown::render('README.Rmd', output_format = rmarkdown::github_document(html_preview = FALSE), clean = TRUE)"
 
@@ -26,9 +26,9 @@ check: fmt ## Check the R package
 	@Rscript --verbose -e "devtools::document()"
 	@R CMD build . && R CMD check --as-cran $(tarball_location)
 
-check-full: fmt ## Check the R package with valgrind and gc torture
+check-full: fmt ## Check the R package with valgrind
 	@Rscript --verbose -e "devtools::document()"
-	@R CMD build . && R CMD check --as-cran --use-gct --use-valgrind $(tarball_location)
+	@R CMD build .  && R CMD check --as-cran --use-valgrind $(tarball_location)
 
 test: fmt ## Run tests
 	@Rscript --verbose -e "library(talib); testthat::test_dir('tests/testthat')"

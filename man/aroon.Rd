@@ -20,8 +20,8 @@ aroon(x, cols, n = 10, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{AROONDOWN}{\link{double}}
-\item{AROONUP}{\link{double}}
+\item{AroonDown}{\link{double}}
+\item{AroonUp}{\link{double}}
 }
 }
 \description{

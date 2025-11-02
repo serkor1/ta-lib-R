@@ -1,19 +1,20 @@
 // interface to ta_MACDEXT.c
 //
 // Parameters
-//   inReal          : numeric vector (length n)
-//   optFastPeriod   : integer fast period
-//   optFastMAType   : integer MA type for fast period
-//   optSlowPeriod   : integer slow period
-//   optSlowMAType   : integer MA type for slow period
-//   optSignalPeriod : integer signal period
-//   optSignalMAType : integer MA type for signal
+// 		double  inReal
+// 		integer optInFastPeriod
+//		integer optInFastMAType (MAType)
+//		integer optInSlowPeriod
+//		integer optInSlowMAType (MAType)
+//		integer optInSignalPeriod
+//		integer optInSignalMAType (MAType)
 //
 // Returns
-//   matrix n x 3 with columns:
-//     "macd"
-//     "signal"
-//     "histogram"
+//      matrix (n x 3) with colum:
+//          "MACD", "MACDSignal", "MACDHist"
+//
+// Source
+//      https://github.com/TA-Lib/ta-lib/blob/main/src/ta_func/ta_MACDEXT.c
 //
 #include "MAType.h"
 #include "container.h"
@@ -26,86 +27,103 @@
 
 // clang-format off
 SEXP impl_ta_MACDEXT(
-  SEXP inReal,
-  SEXP optFastPeriod,
-  SEXP optFastMAType,
-  SEXP optSlowPeriod,
-  SEXP optSlowMAType,
-  SEXP optSignalPeriod,
-  SEXP optSignalMAType) {
-  // clang-format on
-  int protect_count = 0;
+	SEXP inReal,
+	SEXP optInFastPeriod,
+	SEXP optInFastMAType,
+	SEXP optInSlowPeriod,
+	SEXP optInSlowMAType,
+	SEXP optInSignalPeriod,
+	SEXP optInSignalMAType
+)
+// clang-format on
+{
+  // protection counter
+  int protection_count = 0;
 
-  const double *restrict in_real = REAL(inReal);
+  // get length of 'inReal' (assumes equal length across input)
   const int n = LENGTH(inReal);
 
-  const int fast_period = INTEGER(optFastPeriod)[0];
-  const TA_MAType fast_ma = as_MAType(optFastMAType);
-  const int slow_period = INTEGER(optSlowPeriod)[0];
-  const TA_MAType slow_ma = as_MAType(optSlowMAType);
-  const int signal_period = INTEGER(optSignalPeriod)[0];
-  const TA_MAType signal_ma = as_MAType(optSignalMAType);
+  // pointers to input arrays
+  const double *restrict inReal_ptr = REAL(inReal);
 
+  // extract input values
+  const int optInFastPeriod_value = INTEGER(optInFastPeriod)[0];
+  const TA_MAType optInFastMAType_value = as_MAType(optInFastMAType);
+  const int optInSlowPeriod_value = INTEGER(optInSlowPeriod)[0];
+  const TA_MAType optInSlowMAType_value = as_MAType(optInSlowMAType);
+  const int optInSignalPeriod_value = INTEGER(optInSignalPeriod)[0];
+  const TA_MAType optInSignalMAType_value = as_MAType(optInSignalMAType);
+
+  // output
   SEXP output;
   double *output_ptr;
 
-  // clang-format off
+  // calculate look back and exit
+  // the function function early if
+  // there is a mismatch
   const int lookback = TA_MACDEXT_Lookback(
-    fast_period, 
-    fast_ma, 
-    slow_period,
-    slow_ma, 
-    signal_period, 
-    signal_ma
-  );
-  // clang-format on
+    optInFastPeriod_value,
+    optInFastMAType_value,
+    optInSlowPeriod_value,
+    optInSlowMAType_value,
+    optInSignalPeriod_value,
+    optInSignalMAType_value);
 
-  // clang-format off
-  const int proceed = output_container(
-    n, 
-    lookback, 
-    3, 
-    &output,
-    &output_ptr, 
-    &protect_count
-  );
-  // clang-format on
+  // the output container is either a INTSXP or
+  // REALSXP depending on the type and will
+  // return a matrix with <NA> if there is a mismatch
+  // between lookback and n
+  //
+  // see container.h for more details
+  const int proceed =
+    output_container(n, lookback, 3, &output, &output_ptr, &protection_count);
 
   if (proceed) {
-    int start_idx = 0, end_idx = 0;
+    int start_idx = 0;
+    int end_idx = 0;
 
-    double *output_macd = output_ptr;
-    double *output_signal = output_ptr + n;
-    double *output_histogram = output_ptr + 2 * n;
+    double *macd = output_ptr;
+    double *macdsignal = output_ptr + 1 * n;
+    double *macdhist = output_ptr + 2 * n;
 
-    // clang-format off
+    // TA_MACDEXT returns an TA_RetCode
+    // which is TA_SUCCESS if it succeeds
+    // values in output_ptr gets populated
+    // by pointers
     TA_RetCode return_code = TA_MACDEXT(
-       0,
-       n - 1,
-       in_real,
-       fast_period,
-       fast_ma,
-       slow_period,
-       slow_ma,
-       signal_period,
-       signal_ma,
-       &start_idx,
-       &end_idx,
-       output_macd,
-       output_signal,
-       output_histogram
-    );
-    // clang-format on
+      0,
+      n - 1,
+      inReal_ptr,
+      optInFastPeriod_value,
+      optInFastMAType_value,
+      optInSlowPeriod_value,
+      optInSlowMAType_value,
+      optInSignalPeriod_value,
+      optInSignalMAType_value,
+      &start_idx,
+      &end_idx,
+      macd,
+      macdsignal,
+      macdhist);
 
-    check_output(return_code, protect_count);
+    // check if the output is valid
+    // and stop function with the TA_RetCode
+    // see container.h for more details
+    check_output(return_code, protection_count);
 
-    shift_array(output_macd, n, start_idx);
-    shift_array(output_signal, n, start_idx);
-    shift_array(output_histogram, n, start_idx);
+    // shift the array so it has the same number
+    // of rows as 'n' - shifted values is replaced
+    // with <NA>
+    // see shift.h for more details
+    shift_array(macd, n, start_idx);
+    shift_array(macdsignal, n, start_idx);
+    shift_array(macdhist, n, start_idx);
   }
 
-  set_colnames(output, "macd", "signal", "histogram");
+  // set the column names of the output
+  // see names.h for more details
+  set_colnames(output, "MACD", "MACDSignal", "MACDHist");
 
-  UNPROTECT(protect_count);
+  UNPROTECT(protection_count);
   return output;
 }

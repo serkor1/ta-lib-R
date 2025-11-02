@@ -18,8 +18,8 @@ phasor_components(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{inphase}{\link{double}}
-\item{quadrature}{\link{double}}
+\item{InPhase}{\link{double}}
+\item{Quadrature}{\link{double}}
 }
 }
 \description{

@@ -1,14 +1,16 @@
 // interface to ta_HT_TRENDMODE.c
 //
 // Parameters
-//   inReal : numeric vector (length n)
+// 		double  inReal
 //
 // Returns
-//   integer vector (n x 1) "TRENDMODE"
-//   Values:
-//     0 : cycle mode
-//     1 : trend mode
+//      matrix (n x 1) with colum:
+//          "HT_TRENDMODE"
 //
+// Source
+//      https://github.com/TA-Lib/ta-lib/blob/main/src/ta_func/ta_HT_TRENDMODE.c
+//
+#include "MAType.h"
 #include "container.h"
 #include "lib.h"
 #include "names.h"
@@ -19,50 +21,66 @@
 
 // clang-format off
 SEXP impl_ta_HT_TRENDMODE(
-  SEXP inReal) {
-  // clang-format on
-  int protect_count = 0;
+	SEXP inReal
+)
+// clang-format on
+{
+  // protection counter
+  int protection_count = 0;
 
-  const double *restrict in_real = REAL(inReal);
+  // get length of 'inReal' (assumes equal length across input)
   const int n = LENGTH(inReal);
 
+  // pointers to input arrays
+  const double *restrict inReal_ptr = REAL(inReal);
+
+  // output
   SEXP output;
   int *output_ptr;
 
+  // calculate look back and exit
+  // the function function early if
+  // there is a mismatch
   const int lookback = TA_HT_TRENDMODE_Lookback();
 
-  // clang-format off
-  const int proceed = output_container(
-    n,
-    lookback,
-    1,
-    &output,
-    &output_ptr,
-    &protect_count
-  );
-  // clang-format on
+  // the output container is either a INTSXP or
+  // REALSXP depending on the type and will
+  // return a matrix with <NA> if there is a mismatch
+  // between lookback and n
+  //
+  // see container.h for more details
+  const int proceed =
+    output_container(n, lookback, 1, &output, &output_ptr, &protection_count);
 
   if (proceed) {
     int start_idx = 0;
-    int number_of_elements = 0;
+    int end_idx = 0;
 
-    // clang-format off
-    TA_RetCode return_code = TA_HT_TRENDMODE(
-       0,
-       n - 1,
-       in_real,
-       &start_idx,
-       &number_of_elements,
-       output_ptr
-    );
-    // clang-format on
+    int *integer = output_ptr;
 
-    check_output(return_code, protect_count);
-    shift_array(output_ptr, n, start_idx);
+    // TA_HT_TRENDMODE returns an TA_RetCode
+    // which is TA_SUCCESS if it succeeds
+    // values in output_ptr gets populated
+    // by pointers
+    TA_RetCode return_code =
+      TA_HT_TRENDMODE(0, n - 1, inReal_ptr, &start_idx, &end_idx, integer);
+
+    // check if the output is valid
+    // and stop function with the TA_RetCode
+    // see container.h for more details
+    check_output(return_code, protection_count);
+
+    // shift the array so it has the same number
+    // of rows as 'n' - shifted values is replaced
+    // with <NA>
+    // see shift.h for more details
+    shift_array(integer, n, start_idx);
   }
 
-  set_colnames(output, "TRENDMODE");
+  // set the column names of the output
+  // see names.h for more details
+  set_colnames(output, "HT_TRENDMODE");
 
-  UNPROTECT(protect_count);
+  UNPROTECT(protection_count);
   return output;
 }

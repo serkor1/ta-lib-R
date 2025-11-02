@@ -24,8 +24,8 @@ stochastic(x, cols, fastk = 5, slowk = SMA(n = 10), slowd = SMA(n = 8), ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{slowk}{\link{double}}
-\item{slowd}{\link{double}}
+\item{SlowK}{\link{double}}
+\item{SlowD}{\link{double}}
 }
 }
 \description{

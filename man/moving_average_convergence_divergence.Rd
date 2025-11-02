@@ -31,9 +31,9 @@ moving_average_convergence_divergence(
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{macd}{\link{double}}
-\item{signal}{\link{double}}
-\item{histogram}{\link{double}}
+\item{MACD}{\link{double}}
+\item{MACDSignal}{\link{double}}
+\item{MACDHist}{\link{double}}
 }
 }
 \description{

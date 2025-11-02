@@ -18,7 +18,7 @@ trendline(x, cols, ...)
 An object of same \link{class} and \link{length} of \code{x}:
 
 \describe{
-\item{TRENDLINE}{\link{double}}
+\item{HT_TRENDLINE}{\link{double}}
 }
 }
 \description{

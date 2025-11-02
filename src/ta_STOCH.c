@@ -1,19 +1,21 @@
 // interface to ta_STOCH.c
 //
 // Parameters
-//   inHigh        : numeric vector of highs (length n)
-//   inLow         : numeric vector of lows  (length n)
-//   inClose       : numeric vector of closes (length n)
-//   optFastK      : integer Fast-K period
-//   optSlowK      : integer Slow-K period
-//   optSlowK_MA   : integer MA type for Slow-K (see MAType.h)
-//   optSlowD      : integer Slow-D period
-//   optSlowD_MA   : integer MA type for Slow-D
+// 		double  inHigh
+// 		double  inLow
+// 		double  inClose
+// 		integer optInFastK_Period
+//		integer optInSlowK_Period
+//		integer optInSlowK_MAType (MAType)
+//		integer optInSlowD_Period
+//		integer optInSlowD_MAType (MAType)
 //
 // Returns
-//   matrix n x 2 with columns:
-//     "slowk"
-//     "slowd"
+//      matrix (n x 2) with colum:
+//          "SlowK", "SlowD"
+//
+// Source
+//      https://github.com/TA-Lib/ta-lib/blob/main/src/ta_func/ta_STOCH.c
 //
 #include "MAType.h"
 #include "container.h"
@@ -26,85 +28,102 @@
 
 // clang-format off
 SEXP impl_ta_STOCH(
-  SEXP inHigh,
-  SEXP inLow,
-  SEXP inClose,
-  SEXP optFastK,
-  SEXP optSlowK,
-  SEXP optSlowK_MA,
-  SEXP optSlowD,
-  SEXP optSlowD_MA){
-  // clang-format on
-  int protect_count = 0;
+	SEXP inHigh,
+	SEXP inLow,
+	SEXP inClose,
+	SEXP optInFastK_Period,
+	SEXP optInSlowK_Period,
+	SEXP optInSlowK_MAType,
+	SEXP optInSlowD_Period,
+	SEXP optInSlowD_MAType
+)
+// clang-format on
+{
+  // protection counter
+  int protection_count = 0;
 
-  const double *restrict high_ptr = REAL(inHigh);
-  const double *restrict low_ptr = REAL(inLow);
-  const double *restrict close_ptr = REAL(inClose);
+  // get length of 'inHigh' (assumes equal length across input)
   const int n = LENGTH(inHigh);
 
-  const int fast_k = INTEGER(optFastK)[0];
-  const int slow_k = INTEGER(optSlowK)[0];
-  const TA_MAType slow_k_ma = as_MAType(optSlowK_MA);
-  const int slow_d = INTEGER(optSlowD)[0];
-  const TA_MAType slow_d_ma = as_MAType(optSlowD_MA);
+  // pointers to input arrays
+  const double *restrict inHigh_ptr = REAL(inHigh);
+  const double *restrict inLow_ptr = REAL(inLow);
+  const double *restrict inClose_ptr = REAL(inClose);
 
+  // extract input values
+  const int optInFastK_Period_value = INTEGER(optInFastK_Period)[0];
+  const int optInSlowK_Period_value = INTEGER(optInSlowK_Period)[0];
+  const TA_MAType optInSlowK_MAType_value = as_MAType(optInSlowK_MAType);
+  const int optInSlowD_Period_value = INTEGER(optInSlowD_Period)[0];
+  const TA_MAType optInSlowD_MAType_value = as_MAType(optInSlowD_MAType);
+
+  // output
   SEXP output;
   double *output_ptr;
 
-  // clang-format off
+  // calculate look back and exit
+  // the function function early if
+  // there is a mismatch
   const int lookback = TA_STOCH_Lookback(
-    fast_k, 
-    slow_k, 
-    slow_k_ma, 
-    slow_d, 
-    slow_d_ma
-  );
-  // clang-format on
+    optInFastK_Period_value,
+    optInSlowK_Period_value,
+    optInSlowK_MAType_value,
+    optInSlowD_Period_value,
+    optInSlowD_MAType_value);
 
-  // clang-format off
-  const int proceed = output_container(
-    n, 
-    lookback, 
-    2, 
-    &output, 
-    &output_ptr, 
-    &protect_count
-  );
-  // clang-format on
+  // the output container is either a INTSXP or
+  // REALSXP depending on the type and will
+  // return a matrix with <NA> if there is a mismatch
+  // between lookback and n
+  //
+  // see container.h for more details
+  const int proceed =
+    output_container(n, lookback, 2, &output, &output_ptr, &protection_count);
 
   if (proceed) {
-    int start_idx = 0, end_idx = 0;
+    int start_idx = 0;
+    int end_idx = 0;
 
-    double *output_slowk = output_ptr;
-    double *output_slowd = output_ptr + n;
+    double *slowk = output_ptr;
+    double *slowd = output_ptr + 1 * n;
 
-    // clang-format off
-      TA_RetCode return_code = TA_STOCH(
-         0,
-         n - 1,
-         high_ptr,
-         low_ptr,
-         close_ptr,
-         fast_k,
-         slow_k,
-         slow_k_ma,
-         slow_d,
-         slow_d_ma,
-         &start_idx,
-         &end_idx,
-         output_slowk,
-         output_slowd
-      );
-    // clang-format on
+    // TA_STOCH returns an TA_RetCode
+    // which is TA_SUCCESS if it succeeds
+    // values in output_ptr gets populated
+    // by pointers
+    TA_RetCode return_code = TA_STOCH(
+      0,
+      n - 1,
+      inHigh_ptr,
+      inLow_ptr,
+      inClose_ptr,
+      optInFastK_Period_value,
+      optInSlowK_Period_value,
+      optInSlowK_MAType_value,
+      optInSlowD_Period_value,
+      optInSlowD_MAType_value,
+      &start_idx,
+      &end_idx,
+      slowk,
+      slowd);
 
-    check_output(return_code, protect_count);
+    // check if the output is valid
+    // and stop function with the TA_RetCode
+    // see container.h for more details
+    check_output(return_code, protection_count);
 
-    shift_array(output_slowk, n, start_idx);
-    shift_array(output_slowd, n, start_idx);
+    // shift the array so it has the same number
+    // of rows as 'n' - shifted values is replaced
+    // with <NA>
+    // see shift.h for more details
+    shift_array(slowk, n, start_idx);
+    shift_array(slowd, n, start_idx);
   }
 
-  set_colnames(output, "slowk", "slowd");
+  // set the column names of the output
+  // see names.h for more details
+  set_colnames(output, "SlowK", "SlowD");
 
-  UNPROTECT(protect_count);
+  UNPROTECT(protection_count);
   return output;
 }

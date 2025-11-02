@@ -1,20 +1,25 @@
 // interface to ta_SAREXT.c
 //
 // Parameters
-//   inHigh                    : numeric vector of highs (length n)
-//   inLow                     : numeric vector of lows  (length n)
-//   optStartValue             : numeric start value
-//   optOffsetOnReverse        : numeric offset on reverse
-//   optAccelerationInitLong   : numeric initial long acceleration
-//   optAccelerationLong       : numeric long acceleration step
-//   optAccelerationMaxLong    : numeric long acceleration maximum
-//   optAccelerationInitShort  : numeric initial short acceleration
-//   optAccelerationShort      : numeric short acceleration step
-//   optAccelerationMaxShort   : numeric short acceleration maximum
+// 		double  inHigh
+// 		double  inLow
+// 		double  optInStartValue
+//		double  optInOffsetOnReverse
+//		double  optInAccelerationInitLong
+//		double  optInAccelerationLong
+//		double  optInAccelerationMaxLong
+//		double  optInAccelerationInitShort
+//		double  optInAccelerationShort
+//		double  optInAccelerationMaxShort
 //
 // Returns
-//   numeric vector (n x 1) "SAREXT"
+//      matrix (n x 1) with colum:
+//          "SAREXT"
 //
+// Source
+//      https://github.com/TA-Lib/ta-lib/blob/main/src/ta_func/ta_SAREXT.c
+//
+#include "MAType.h"
 #include "container.h"
 #include "lib.h"
 #include "names.h"
@@ -25,89 +30,112 @@
 
 // clang-format off
 SEXP impl_ta_SAREXT(
-  SEXP inHigh,
-  SEXP inLow,
-  SEXP optStartValue,
-  SEXP optOffsetOnReverse,
-  SEXP optAccelerationInitLong,
-  SEXP optAccelerationLong,
-  SEXP optAccelerationMaxLong,
-  SEXP optAccelerationInitShort,
-  SEXP optAccelerationShort,
-  SEXP optAccelerationMaxShort) {
-  // clang-format on
-  int protect_count = 0;
+	SEXP inHigh,
+	SEXP inLow,
+	SEXP optInStartValue,
+	SEXP optInOffsetOnReverse,
+	SEXP optInAccelerationInitLong,
+	SEXP optInAccelerationLong,
+	SEXP optInAccelerationMaxLong,
+	SEXP optInAccelerationInitShort,
+	SEXP optInAccelerationShort,
+	SEXP optInAccelerationMaxShort
+)
+// clang-format on
+{
+  // protection counter
+  int protection_count = 0;
 
-  const double *restrict high_ptr = REAL(inHigh);
-  const double *restrict low_ptr = REAL(inLow);
+  // get length of 'inHigh' (assumes equal length across input)
   const int n = LENGTH(inHigh);
 
-  const double start_value = REAL(optStartValue)[0];
-  const double offset_on_reverse = REAL(optOffsetOnReverse)[0];
-  const double acceleration_init_long = REAL(optAccelerationInitLong)[0];
-  const double acceleration_long = REAL(optAccelerationLong)[0];
-  const double acceleration_max_long = REAL(optAccelerationMaxLong)[0];
-  const double acceleration_init_short = REAL(optAccelerationInitShort)[0];
-  const double acceleration_short = REAL(optAccelerationShort)[0];
-  const double acceleration_max_short = REAL(optAccelerationMaxShort)[0];
+  // pointers to input arrays
+  const double *restrict inHigh_ptr = REAL(inHigh);
+  const double *restrict inLow_ptr = REAL(inLow);
 
+  // extract input values
+  const double optInStartValue_value = REAL(optInStartValue)[0];
+  const double optInOffsetOnReverse_value = REAL(optInOffsetOnReverse)[0];
+  const double optInAccelerationInitLong_value =
+    REAL(optInAccelerationInitLong)[0];
+  const double optInAccelerationLong_value = REAL(optInAccelerationLong)[0];
+  const double optInAccelerationMaxLong_value =
+    REAL(optInAccelerationMaxLong)[0];
+  const double optInAccelerationInitShort_value =
+    REAL(optInAccelerationInitShort)[0];
+  const double optInAccelerationShort_value = REAL(optInAccelerationShort)[0];
+  const double optInAccelerationMaxShort_value =
+    REAL(optInAccelerationMaxShort)[0];
+
+  // output
   SEXP output;
   double *output_ptr;
 
-  // clang-format off
+  // calculate look back and exit
+  // the function function early if
+  // there is a mismatch
   const int lookback = TA_SAREXT_Lookback(
-    start_value,
-    offset_on_reverse,
-    acceleration_init_long,
-    acceleration_long,
-    acceleration_max_long,
-    acceleration_init_short,
-    acceleration_short,
-    acceleration_max_short
-  );
-  // clang-format on
+    optInStartValue_value,
+    optInOffsetOnReverse_value,
+    optInAccelerationInitLong_value,
+    optInAccelerationLong_value,
+    optInAccelerationMaxLong_value,
+    optInAccelerationInitShort_value,
+    optInAccelerationShort_value,
+    optInAccelerationMaxShort_value);
 
-  // clang-format off
-  const int proceed = output_container(
-    n,
-    lookback,
-    1,
-    &output,
-    &output_ptr,
-    &protect_count
-  );
-  // clang-format on
+  // the output container is either a INTSXP or
+  // REALSXP depending on the type and will
+  // return a matrix with <NA> if there is a mismatch
+  // between lookback and n
+  //
+  // see container.h for more details
+  const int proceed =
+    output_container(n, lookback, 1, &output, &output_ptr, &protection_count);
 
   if (proceed) {
     int start_idx = 0;
-    int number_of_elements = 0;
+    int end_idx = 0;
 
-    // clang-format off
+    double *real = output_ptr;
+
+    // TA_SAREXT returns an TA_RetCode
+    // which is TA_SUCCESS if it succeeds
+    // values in output_ptr gets populated
+    // by pointers
     TA_RetCode return_code = TA_SAREXT(
       0,
       n - 1,
-      high_ptr,
-      low_ptr,
-      start_value,
-      offset_on_reverse,
-      acceleration_init_long,
-      acceleration_long,
-      acceleration_max_long,
-      acceleration_init_short,
-      acceleration_short,
-      acceleration_max_short,
+      inHigh_ptr,
+      inLow_ptr,
+      optInStartValue_value,
+      optInOffsetOnReverse_value,
+      optInAccelerationInitLong_value,
+      optInAccelerationLong_value,
+      optInAccelerationMaxLong_value,
+      optInAccelerationInitShort_value,
+      optInAccelerationShort_value,
+      optInAccelerationMaxShort_value,
       &start_idx,
-      &number_of_elements,
-      output_ptr
-    );
-    // clang-format on
+      &end_idx,
+      real);
 
-    check_output(return_code, protect_count);
-    shift_array(output_ptr, n, start_idx);
+    // check if the output is valid
+    // and stop function with the TA_RetCode
+    // see container.h for more details
+    check_output(return_code, protection_count);
+
+    // shift the array so it has the same number
+    // of rows as 'n' - shifted values is replaced
+    // with <NA>
+    // see shift.h for more details
+    shift_array(real, n, start_idx);
   }
 
-  set_colnames(output, "SAR");
+  // set the column names of the output
+  // see names.h for more details
+  set_colnames(output, "SAREXT");
 
-  UNPROTECT(protect_count);
+  UNPROTECT(protection_count);
   return output;
 }

@@ -146,7 +146,7 @@ trend_cycle_mode.plotly <- function(
 	## splice:plotly-assembly:start
 	plotly_object <- subchart(
 		data = constructed_indicator,
-		y = ~TRENDMODE,
+		y = ~HT_TRENDMODE,
 		type = "scatter",
 		mode = "lines",
 		name = "Trendmode",

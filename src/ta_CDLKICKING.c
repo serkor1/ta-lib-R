@@ -1,84 +1,116 @@
 // interface to ta_CDLKICKING.c
 //
-// Description
-//   R wrapper for TA-Lib's CDL Kicking pattern detector.
-//   Produces an integer series with TA-Lib sign semantics.
-//
 // Parameters
-//   open, high, low, close : numeric vectors, equal length
-//   normalize_flag         : logical scalar; if TRUE divide outputs by 100
+//      double  inOpen
+//      double  inClose
+//      double  inLow
+//      double  inClose
+//      bool    flag
 //
 // Returns
-//   Integer vector length n with pattern codes shifted to align with inputs.
-//   +100 bullish Kicking, -100 bearish Kicking, 0 otherwise.
-
-#include "R_ext/Arith.h"
+//      matrix (n x 1) with colum:
+//          "CDLKICKING"
+//
+// Source
+//      https://github.com/TA-Lib/ta-lib/blob/main/src/ta_func/ta_CDLKICKING.c
+//
 #include "Rinternals.h"
+#include "container.h"
 #include "lib.h"
+#include "names.h"
 #include "normalize.h"
 #include "shift.h"
-#include <stdbool.h>
 #include <ta_libc.h>
 
 // clang-format off
 SEXP impl_ta_CDLKICKING(
-  SEXP open,
-  SEXP high,
-  SEXP low,
-  SEXP close,
-  SEXP normalize_flag
-) {
-  // clang-format on
-  int protect_count = 0;
+    SEXP inOpen,
+    SEXP inHigh,
+    SEXP inLow,
+    SEXP inClose,
+    SEXP flag
+)
+// clang-format on 
+{
+    // protection counter
+    int protection_counter = 0;
 
-  const int n = LENGTH(open);
-  const double *restrict open_ptr = REAL(open);
-  const double *restrict high_ptr = REAL(high);
-  const double *restrict low_ptr = REAL(low);
-  const double *restrict close_ptr = REAL(close);
+    // pointers to input
+    const double *restrict open_ptr  = REAL(inOpen);
+    const double *restrict high_ptr  = REAL(inHigh);
+    const double *restrict low_ptr   = REAL(inLow);
+    const double *restrict close_ptr = REAL(inClose);
+    const int n = LENGTH(inOpen);
 
-  SEXP result = PROTECT(allocVector(INTSXP, n));
-  protect_count++;
-  int *restrict out_ptr = INTEGER(result);
+    
+    SEXP output;
+    int *output_ptr;
 
-  const int minimum_lookback = TA_CDLKICKING_Lookback();
+    // calculate look back and exit
+    // the function function early if
+    // there is a mismatch
+    const int lookback = TA_CDLKICKING_Lookback();
 
-  if (n < minimum_lookback) {
-    Rf_warning(
-      "Input length (%d) is smaller than required lookback (%d).",
-      n,
-      minimum_lookback);
-    for (int i = 0; i < n; ++i)
-      out_ptr[i] = NA_INTEGER;
-  } else {
-    int out_begin = 0, out_number = 0;
-
-    // clang-format off
-    TA_RetCode return_code = TA_CDLKICKING(
-       0,
-       n - 1,
-       open_ptr,
-       high_ptr,
-       low_ptr,
-       close_ptr,
-       &out_begin,
-       &out_number,
-       out_ptr
+    // the output container is either a INTSXP or 
+    // REALSXP depending on the type and will
+    // return a matrix with <NA> if there is a mismatch
+    // between lookback and n
+    //
+    // see container.h for more details
+    const int proceed = output_container(
+        n,
+        lookback,
+        1,
+        &output,
+        &output_ptr,
+        &protection_counter
     );
-    // clang-format on
 
-    if (return_code != TA_SUCCESS) {
-      UNPROTECT(protect_count);
-      Rf_error("TA_CDLKICKING failed: return code %d", return_code);
+    if (proceed) {
+        int start_idx = 0;
+        int end_idx   = 0;
+
+        // TA_CDLKICKING returns an TA_RetCode
+        // which is TA_SUCCESS if it succeeds
+        // values in output_ptr gets populated
+        // by pointers
+        TA_RetCode return_code = TA_CDLKICKING(
+            0,
+            n - 1,
+            open_ptr,
+            high_ptr,
+            low_ptr,
+            close_ptr
+            ,
+            &start_idx,
+            &end_idx,
+            output_ptr
+        );
+
+        // check if the output is valid
+        // and stop function with the TA_RetCode
+        // see container.h for more details
+        check_output(return_code, protection_counter);
+
+        // shift the array so it has the same number
+        // of rows as 'n' - shifted values is replaced
+        // with <NA> 
+        // see shift.h for more details
+        shift_array(output_ptr, n, start_idx);
+
+        // ta_CDLKICKING returns values as -100, 100 and 0
+        // if flag is TRUE the output values will be normalized
+        // to -1, 1, 0 
+        // see normalize.h for more details
+        if (LOGICAL_VALUE(flag)) {
+            normalize(output_ptr, n, 100, start_idx);
+        }
     }
 
-    shift_array(out_ptr, n, out_begin);
+    // set the column names of the output
+    // see names.h for more details
+    set_colnames(output, "CDLKICKING");
 
-    const bool do_normalize = LOGICAL_VALUE(normalize_flag);
-    if (do_normalize)
-      normalize(out_ptr, n, 100, out_begin);
-  }
-
-  UNPROTECT(protect_count);
-  return result;
+    UNPROTECT(protection_counter);
+    return output;
 }

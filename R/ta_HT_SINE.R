@@ -146,7 +146,7 @@ sine_wave.plotly <- function(
 	## splice:plotly-assembly:start
 	plotly_object <- subchart(
 		data = constructed_indicator,
-		y = ~sine,
+		y = ~Sine,
 		type = "scatter",
 		mode = "lines",
 		name = "Sine",
@@ -156,7 +156,7 @@ sine_wave.plotly <- function(
 	plotly_object <- plotly::add_lines(
 		p = plotly_object,
 		x = ~idx,
-		y = ~leadsine,
+		y = ~LeadSine,
 		data = constructed_indicator,
 		name = "Lead Sine",
 		legendgroup = "sinewave"
