@@ -63,4 +63,12 @@ metadata[[5]] <- list(
 	alias = 'HT_TRENDMODE'
 )
 
+for (x in metadata) {
+	generate_R(x)
+}
+
+for (x in metadata) {
+	generate_C(x)
+}
+
 ## end script;

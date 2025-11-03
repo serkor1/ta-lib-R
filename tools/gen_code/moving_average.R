@@ -106,4 +106,12 @@ metadata[[9]] <- list(
 	ma_type = '8L'
 )
 
+for (x in metadata) {
+	generate_R(x)
+}
+
+for (x in metadata) {
+	generate_C(x)
+}
+
 ## end script;

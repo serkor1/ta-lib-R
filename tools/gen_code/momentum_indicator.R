@@ -301,4 +301,12 @@ metadata[[29]] <- list(
 	signature = 'fast=7,slow=14,ma=SMA(n=10)'
 )
 
+for (x in metadata) {
+	generate_R(x)
+}
+
+for (x in metadata) {
+	generate_C(x)
+}
+
 ## end script;
