@@ -57,4 +57,12 @@ metadata[[3]] <- list(
 	signature = 'n=10'
 )
 
+for (x in metadata) {
+	generate_R(x)
+}
+
+for (x in metadata) {
+	generate_C(x)
+}
+
 ## end script;

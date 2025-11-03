@@ -518,4 +518,13 @@ metadata[[61]] <- list(
 	alias = 'CDLEVENINGSTAR',
 	agnostic = FALSE
 )
+
+for (x in metadata) {
+	generate_R(x)
+}
+
+for (x in metadata) {
+	generate_C(x)
+}
+
 ## end script;
