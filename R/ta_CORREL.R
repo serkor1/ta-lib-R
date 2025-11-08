@@ -7,6 +7,7 @@
 #' @templateVar .fun rolling_correlation
 #'
 ## splice:documentation:start
+#' @param y A price series ([double])
 ## splice:documentation:end
 #'
 #' @template description

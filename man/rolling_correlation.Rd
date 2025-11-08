@@ -10,6 +10,8 @@ rolling_correlation(x, y, n = 10, ...)
 \arguments{
 \item{x}{An OHLC-V series that is coercible to \link{data.frame}. The function assumes that all columns are named in lowercase and order invariant.}
 
+\item{y}{A price series (\link{double})}
+
 \item{n}{An \link{integer} of \link{length} 1.}
 
 \item{...}{Additional parameters passed into \link{model.frame}}

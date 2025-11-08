@@ -48,7 +48,7 @@ metadata[[2]] <- list(
 	fun = 'rolling_standard_deviation',
 	ta_fun = 'STDDEV',
 	alias = 'STDDEV',
-	signature = c('n=10', 'deviation = 1')
+	signature = c('n=10', 'k = 1')
 )
 
 ## rolling variance
@@ -57,7 +57,7 @@ metadata[[3]] <- list(
 	fun = 'rolling_variance',
 	ta_fun = 'VAR',
 	alias = 'VAR',
-	signature = c('n=10', 'deviation = 1')
+	signature = c('n=10', 'k = 1')
 )
 
 ## rolling beta
