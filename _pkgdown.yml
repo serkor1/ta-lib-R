@@ -46,8 +46,12 @@ reference:
   - indicator
 - title: Rolling Statistics
   desc: |
-    The collection of Candlestick Patterns. 
+    The collection of Rolling Statistics. 
 - contents: has_concept('Rolling Statistic')
+- title: Price Transformations
+  desc: |
+    The collection of Price Transformation. 
+- contents: has_concept('Price Transform')
 - title: Financial Data
   desc: |
     Preloaded financial data
