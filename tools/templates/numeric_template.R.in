@@ -1,0 +1,39 @@
+#' @usage NULL
+#' @aliases ${FUN}
+#' 
+#' @export
+${FUN}.numeric <- function(
+	x, 
+	cols,${ARGS}
+	...) {
+
+		## warn if 'cols' have been
+		## passed just to make sure
+		## the user knows its not possible
+		## or relevant
+		if (!missing(cols)) {
+			warning("'cols' is passed but is unused for vectors.")
+		}
+
+		## pass the argument directly
+		## to ${FUN}.default()
+		x <- ${FUN}.default(
+			x = x,
+			cols = cols, ${PARGS}
+			...
+		)
+
+		## check if it has 'dims'
+		## and convert to double if 
+		## not to honor the 'type-safety'-esque
+		## approach
+		##
+		## NOTE: this adds a few ns overhead but
+		##       its a robust alternative to code it
+		##       manually. Any suggestions are welcome
+		if (is.null(dim(x))) {
+			x <- as.double(x)
+		} 
+
+		x
+}

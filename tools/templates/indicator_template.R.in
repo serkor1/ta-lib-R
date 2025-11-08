@@ -1,0 +1,105 @@
+#' @export
+#' @family ${FAMILY}
+#'
+#' @title ${TITLE}
+#' @templateVar .title ${TITLE}
+#' @templateVar .author Serkan Korkmaz
+#' @templateVar .fun ${FUN}
+#' 
+## splice:documentation:start
+## splice:documentation:end
+#'
+#' @template description
+#' @template returns
+${FUN} <- function(
+	x, 
+	cols,${ARGS}
+	...) {
+  UseMethod("${FUN}")
+}
+
+#' @export
+#' @usage NULL
+#' @rdname ${FUN}
+#' 
+#' @aliases ${FUN}
+${ALIAS} <- ${FUN}
+
+#' @usage NULL
+#' @aliases ${FUN}
+#' 
+#' @export
+${FUN}.default <- function(
+	x, 
+	cols,${ARGS} 
+	...) {
+
+	## validate 'cols'-argument 
+	## if explicitly passed
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series
+	## from input
+	constructed_series <- series(
+		x = cols,
+		default = ${FORMULA},
+		data = x,
+		...
+	)
+
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(constructed_series)
+
+	## calculate indicator and
+	## return as data.frame
+	x <- .Call(
+		"impl_ta_${TA_FUN}",
+		## splice:call:start
+		## splice:call:end
+	)
+
+	## readd rownames
+	rownames(x) <- x_names
+
+	## return indicator
+	x
+}
+
+#' @usage NULL
+#' @aliases ${FUN}
+#' 
+#' @export
+${FUN}.data.frame <- function(
+	x, 
+	cols,${ARGS} 
+	...) {
+	as.data.frame(
+		${FUN}.default(
+			x = x,
+			cols = cols ${PARGS}
+			...
+		)
+	)
+	
+}
+
+#' @usage NULL
+#' @aliases ${FUN}
+#' 
+#' @export
+${FUN}.matrix <- function(
+	x, 
+	cols,${ARGS}
+	...) { 
+	
+	as.matrix(
+		${FUN}.default(
+			x = x,
+			cols = cols ${PARGS}
+			...
+		)
+	) 
+}

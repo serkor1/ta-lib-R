@@ -8,12 +8,16 @@ source("tools/gen_code/utils.R")
 
 ## 1.1) construct wrappers
 generate_R <- function(x) {
-	generate_candlestick(
+	impl_generate_indicator(
 		title = x$title,
+		family = "Cycle Indicator",
 		fun = x$fun,
-		signature = x$signature,
-		alias = x$alias,
-		agnostic = x$agnostic
+		args = x$signature,
+		formula = "~close+fisk",
+		ta_fun = x$alias,
+		agnostic = x$agnostic,
+		candlestick = 1,
+		plotly = 0
 	)
 }
 

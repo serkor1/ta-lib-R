@@ -8,12 +8,13 @@ source("tools/gen_code/utils.R")
 
 ## 1.1) construct wrappers
 generate_R <- function(x) {
-	generate_volume_indicator(
+	impl_generate_indicator(
 		title = x$title,
+		family = "Volume Indicator",
 		fun = x$fun,
-		signature = x$signature,
-		alias = x$alias,
-		default_formula = x$default_formula
+		args = x$signature,
+		ta_fun = x$alias,
+		formula = x$default_formula
 	)
 }
 

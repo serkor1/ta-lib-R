@@ -1,101 +1,138 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-## usage: ./generate_indicators.sh <FAMILY> <TITLE> <FUN> [SIGNATURE] <DEFAULT_FORMULA> [ALIAS] [OUTFILE]
+## 1) environment variables
+##    and templates passed downstream
+##
+## 1.1) common variables and templates
+FAMILY=${FAMILY:-}
+TITLE=${TITLE:-}
+FUN=${FUN:?}
+TA_FUN=${TA_FUN:?}
+ALIAS=${ALIAS:-$TA_FUN}
+FORMULA=${FORMULA:-"~close"}
+PLOTLY=${PLOTLY:-0}
+NUMERIC=${NUMERIC:-1}
+OUTPUTFILE=${OUTPUTFILE:-"R/ta_${TA_FUN}.R"}
 
-TEMPLATE="${1:-indicator_template.R}"; FAMILY="${2:?}"; TITLE="${3:?}"; FUN="${4:?}"
-shift 4
+## 1.1) conditional templates
+##      passed downstream
+TEMPLATE_MAIN=${TEMPLATE_MAIN:-tools/templates/indicator_template.R.in}
+TEMPLATE_PLOTLY=${TEMPLATE_PLOTLY:-tools/templates/plotly_template.R.in}
+TEMPLATE_NUMERIC=${NUMERIC_TEMPLATE:-tools/templates/numeric_template.R.in}
 
-SIGNATURE=""
-if (($# == 0)); then
-  echo "missing DEFAULT_FORMULA" >&2; exit 2
+## 1.2) candlestick specific variables
+##      passed downstream
+AGNOSTIC=${AGNOSTIC:-"TRUE"}
+CANDLESTICK=${CANDLESTICK:-0}
+if [[ $CANDLESTICK -eq 1 ]]; then
+  TEMPLATE_MAIN="tools/templates/candlestick_template.R.in"
 fi
 
-if [[ ${1} == "~"* ]]; then
-  DEFAULT_FORMULA="${1}"; shift 1
-else
-  SIGNATURE="${1}"; DEFAULT_FORMULA="${2:?}"; shift 2
+## 1.3) moving average specific
+##      variables
+maType=${maType:--1} # NOTE: -1 is NO MA
+if [[ "$maType" != "-1" ]]; then
+  TEMPLATE_MAIN="tools/templates/moving_average_template.R.in"
 fi
 
-ALIAS="${1:-$FUN}"
-OUT="${2:-R/ta_${ALIAS}.R}"
-
-TEMPLATE="tools/templates/${TEMPLATE}"
-
-tmp1="$(mktemp)"; tmp2="$(mktemp)"
-trap 'rm -f "$tmp1" "$tmp2"' EXIT
-
-if [[ -n $SIGNATURE ]]; then
-  SIG_FORMALS="${SIGNATURE},"
-  SIG_ACTUALS=",${SIGNATURE}"
-else
-  SIG_FORMALS=""
-  SIG_ACTUALS=""
+## 1.4) rolling statistics
+ROLLING=${ROLLING:-0}
+if [[ "$ROLLING" != "0" ]]; then
+  TEMPLATE_MAIN="tools/templates/rolling_template.R.in"
 fi
 
-if [[ -n $SIGNATURE ]]; then
-  SIG_FORMALS="${SIGNATURE},"
-  SIG_ACTUALS="$(
-    awk -v s="$SIGNATURE" '
-      BEGIN{
-        gsub(/[[:space:]]+/,"",s)
-        out=""; i=1; depth=0
-        while (i<=length(s)) {
-          c=substr(s,i,1)
-          if (c=="(") { depth++; i++; continue }
-          if (c==")") { if (depth>0) depth--; i++; continue }
-          if (depth==0) {
-            rem=substr(s,i)
-            if (match(rem,/^([A-Za-z_.][A-Za-z0-9_.]*)=/)) {
-              n=substr(rem,RSTART,RLENGTH-1)
-              out = out (out?", ":"") n "=" n
-              i += RLENGTH
-              vdepth=0
-              while (i<=length(s)) {
-                c2=substr(s,i,1)
-                if (c2=="(") vdepth++
-                else if (c2==")" && vdepth>0) vdepth--
-                else if (c2=="," && vdepth==0) { i++; break }
-                i++
-              }
-              continue
-            }
-          }
-          i++
-        }
-        if (out!="") print ", " out
-      }'
-  )"
-else
-  SIG_FORMALS=""; SIG_ACTUALS=""
+## 2) arguments passed into
+##    each function is constructed
+##    as an array. Has to be passed as
+##    a vector from R
+ARGS_ARRAY=( "$@" )
+
+## 2.1) split the arguments by the first
+##      '=' to avoid using awk
+PARGS_ARR=() # arguments inside calls, becomes n = n, or k = k
+CARGS_ARR=() # arguments inside .Call, becomes n, k
+for a in "${ARGS_ARRAY[@]}"; do
+  if [[ $a == *=* ]]; then
+    k=${a%%=*}
+  else
+    k=$a
+  fi
+  PARGS_ARR+=( ",$k=$k" )
+  CARGS_ARR+=( ",$k" )
+done
+
+## 2.2) construct arguments 
+##      a la paste + collapse
+PARGS=$(printf '%s ' "${PARGS_ARR[@]}"); PARGS=${PARGS%, }
+if [[ -n ${PARGS} ]]; then PARGS+=','; fi
+
+printf -v ARGS '%s, ' "${ARGS_ARRAY[@]}"; ARGS=${ARGS%, }
+if [[ -n ${ARGS} ]]; then ARGS+=','; fi
+
+## NOTE: this is passed down to 
+##       the {plotly} template
+PPARGS=$(printf '%s ' "${PARGS_ARR[@]}");
+CARGS=$(printf '%s ' "${CARGS_ARR[@]}");
+
+## 3) export environment variables
+##    to replace in templates
+REPLACE=''
+export FUN;      REPLACE+='${FUN}'
+export TITLE;    REPLACE+='${TITLE}'
+export TA_FUN;   REPLACE+='${TA_FUN}'
+export ALIAS;    REPLACE+='${ALIAS}'
+export FAMILY;   REPLACE+='${FAMILY}'
+export FORMULA;  REPLACE+='${FORMULA}'
+export ARGS;     REPLACE+='${ARGS}'
+export PARGS;    REPLACE+='${PARGS}'
+export CARGS;    REPLACE+='${CARGS}'
+export PPARGS;   REPLACE+='${PPARGS}'
+export AGNOSTIC; REPLACE+='${AGNOSTIC}'
+export maType;   REPLACE+='${maType}'
+
+## 4) construct R files
+##    in temporary locations
+##    to avoid breaking existing code
+tmp_render="$(mktemp)"; tmp_plotly="$(mktemp)"; tmp_numeric="$(mktemp)"; tmp_splice="$(mktemp)"
+trap 'rm -f "$tmp_render" "$tmp_plotly" "$tmp_numeric" "$tmp_splice"' EXIT
+
+## 4.1) main template
+envsubst "$REPLACE" < "$TEMPLATE_MAIN" > "$tmp_render"
+
+## 4.2) optional templates
+##      pre-appended with double linebreak
+##      to avoid broken code
+if [[ $NUMERIC -eq 1 ]]; then
+  envsubst "$REPLACE" < "$TEMPLATE_NUMERIC" > "$tmp_numeric"
+  printf '\n\n' >> "$tmp_render"
+  cat "$tmp_numeric" >> "$tmp_render"
+fi
+
+if [[ $PLOTLY -eq 1 ]]; then
+  envsubst "$REPLACE" < "$TEMPLATE_PLOTLY" > "$tmp_plotly"
+  printf '\n\n' >> "$tmp_render"
+  cat "$tmp_plotly" >> "$tmp_render"
 fi
 
 
-export FUN TITLE FAMILY ALIAS SIGNATURE DEFAULT_FORMULA SIG_FORMALS SIG_ACTUALS
-
-## 1) render template
-envsubst <"$TEMPLATE" >"$tmp1"
-
-## 2) splice by label with POSIX awk
-## markers must be lines like:
-##   ## splice:LABEL:start
-##   ... body ...
-##   ## splice:LABEL:end
-if [[ -f "$OUT" ]]; then
+## 5) splice protected code regions
+##    (this is the old code, it works)
+if [[ -f "$OUTPUTFILE" ]]; then
   awk '
     function rtrim(s){ sub(/[[:space:]]+$/,"",s); return s }
     function label_from(line, part,   pos,rest,needle) {
       needle = "splice:"
       pos = index(line, needle)
       if (!pos) return ""
-      rest = substr(line, pos + length(needle))   # LABEL:part
+      rest = substr(line, pos + length(needle))      # LABEL:part
       needle = ":" part
       pos = index(rest, needle)
       if (!pos) return ""
       return rtrim(substr(rest, 1, pos-1))
     }
 
-    ## pass 1: harvest preserved bodies from existing OUT
+    ## pass 1: harvest preserved bodies from existing OUTPUTFILE
     FNR==NR {
       lbl = label_from($0, "start")
       if (lbl != "") { cur = lbl; inside = 1; next }
@@ -107,11 +144,11 @@ if [[ -f "$OUT" ]]; then
       next
     }
 
-    ## pass 2: write new file from template with preserved inserts
+    ## pass 2: write new file from staged template with preserved inserts
     {
       lbl = label_from($0, "start")
       if (lbl != "") {
-        print     # print the start marker
+        print                             # print the start marker
         end_lbl = lbl
         if (lbl in blocks) {
           printf "%s", blocks[lbl]
@@ -119,7 +156,6 @@ if [[ -f "$OUT" ]]; then
         } else {
           preserve = 0
         }
-        # copy or skip template body until matching end marker
         while ( (getline line) > 0 ) {
           if (label_from(line,"end") == end_lbl) { print line; break }
           if (!preserve) print line
@@ -128,9 +164,11 @@ if [[ -f "$OUT" ]]; then
       }
       print
     }
-  ' "$OUT" "$tmp1" >"$tmp2"
+  ' "$OUTPUTFILE" "$tmp_render" > "$tmp_splice"
 else
-  cp "$tmp1" "$tmp2"
+  cp "$tmp_render" "$tmp_splice"
 fi
 
-mv "$tmp2" "$OUT"
+## 6) commit the code
+##    to R/
+mv "$tmp_splice" "$OUTPUTFILE"

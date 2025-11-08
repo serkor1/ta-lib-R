@@ -1,0 +1,67 @@
+#' @export
+#' @family ${FAMILY}
+#'
+#' @title ${TITLE}
+#' @templateVar .title ${TITLE}
+#' @templateVar .author Serkan Korkmaz
+#' @templateVar .fun ${FUN}
+#' 
+## splice:documentation:start
+## splice:documentation:end
+#'
+#' @template description
+#' @template returns
+${FUN} <- function(
+	x,
+    ${ARGS}
+	...) {
+  UseMethod("${FUN}")
+}
+
+#' @export
+#' @usage NULL
+#' @rdname ${FUN}
+#' 
+#' @aliases ${FUN}
+${ALIAS} <- ${FUN}
+
+#' @usage NULL
+#' @aliases ${FUN}
+#' 
+#' @export
+${FUN}.default <- function(
+	x,
+    ${ARGS} 
+	...) {
+
+	## calculate indicator and
+	## return as data.frame
+	x <- .Call(
+		"impl_ta_${TA_FUN}",
+        ## splice:call:start
+		## splice:call:end
+	)
+
+	## return indicator
+	as.double(x)
+}
+
+#' @usage NULL
+#' @aliases ${FUN}
+#' 
+#' @export
+${FUN}.numeric <- function(
+	x,
+    ${ARGS} 
+	...) {
+
+	## calculate indicator and
+	## return as data.frame
+	x <- ${FUN}.default(
+			x = x ${PARGS}
+			...
+	)
+
+	## return indicator
+	as.double(x)
+}

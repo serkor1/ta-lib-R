@@ -41,11 +41,11 @@ clean: ## Remove artifacts
 	@rm -rf $(package_name).Rcheck
 	@rm -rf docs
 	@rm -rf tools/table.csv
-	@Rscript -e "try(remove.packages('$(package_name)'))"
 
 purge: clean ## Remove TA-Lib arifacts
 	@git -C src/ta-lib restore --staged --worktree .
 	@git -C src/ta-lib clean -fdx
+	@Rscript -e "try(remove.packages('$(package_name)'))"
 
 fmt: ## Format code
 	@clang-format \
@@ -91,19 +91,13 @@ unit-tests: ## Generate, or update, unit-tests
 
 
 gen-code: ## Generate R wrappers and unit-tests
-	@Rscript --verbose ./tools/gen_code/R/generate_cycle_indicator.R
-	@Rscript --verbose ./tools/gen_code/R/generate_candlestick_pattern.R
-	@Rscript --verbose ./tools/gen_code/R/generate_momentum_indicator.R
-	@Rscript --verbose ./tools/gen_code/R/generate_MAs.R
-	@Rscript --verbose ./tools/gen_code/R/generate_overlapstudy.R
-	@Rscript --verbose ./tools/gen_code/R/generate_volume_indicator.R
-	@Rscript --verbose ./tools/gen_code/R/generate_volatility_indicator.R
-
-	@Rscript --verbose ./tools/gen_code/C/generate_cycle_indicator.R
-	@Rscript --verbose ./tools/gen_code/C/generate_candlestick_pattern.R
-	@Rscript --verbose ./tools/gen_code/C/generate_momentum_indicator.R
-	@Rscript --verbose ./tools/gen_code/R/generate_MAs.R
-	@Rscript --verbose ./tools/gen_code/C/generate_overlapstudy.R
-	@Rscript --verbose ./tools/gen_code/C/generate_volume_indicator.R
-	@Rscript --verbose ./tools/gen_code/C/generate_volatility_indicator.R
-	$(MAKE) unit-tests
+	@Rscript --verbose ./tools/gen_code/cycle_indicator.R
+	@Rscript --verbose ./tools/gen_code/candlestick_pattern.R
+	@Rscript --verbose ./tools/gen_code/momentum_indicator.R
+	@Rscript --verbose ./tools/gen_code/moving_average.R
+	@Rscript --verbose ./tools/gen_code/overlapstudy.R
+	@Rscript --verbose ./tools/gen_code/volume_indicator.R
+	@Rscript --verbose ./tools/gen_code/volatility_indicator.R
+	@Rscript --verbose ./tools/gen_code/price_transform.R
+	@Rscript --verbose ./tools/gen_code/rolling_statistics.R
+	$(MAKE) fmt

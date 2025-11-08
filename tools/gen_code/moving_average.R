@@ -8,11 +8,15 @@ source("tools/gen_code/utils.R")
 
 ## 1.1) construct wrappers
 generate_R <- function(x) {
-	generate_moving_average(
+	impl_generate_indicator(
 		title = x$title,
+		family = "Overlap Study",
 		fun = x$fun,
+		args = x$signature,
+		ta_fun = x$alias,
+		formula = x$default_formula,
 		maType = x$ma_type,
-		alias = x$alias
+		plotly = 0
 	)
 }
 
