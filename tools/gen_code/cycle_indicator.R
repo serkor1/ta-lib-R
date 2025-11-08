@@ -8,10 +8,13 @@ source("tools/gen_code/utils.R")
 
 ## 1.1) construct wrappers
 generate_R <- function(x) {
-	generate_cycle_indicator(
+	impl_generate_indicator(
 		title = x$title,
+		family = "Cycle Indicator",
 		fun = x$fun,
-		alias = x$alias
+		args = x$signature,
+		formula = "~close",
+		ta_fun = x$alias
 	)
 }
 

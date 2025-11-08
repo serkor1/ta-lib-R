@@ -6,43 +6,42 @@
 ##
 ## 1) main generator function
 impl_generate_indicator <- function(
-	template,
-	family,
 	title,
 	fun,
-	signature,
-	default_formula,
-	alias
+	family,
+	ta_fun,
+	formula,
+	plotly = 1L,
+	args,
+	agnostic = NULL,
+	candlestick = 0,
+	maType = -1,
+	rolling = 0
 ) {
-	## set all missing values
-	## to ' ' so we avoid shenanigans
-	if (missing(family)) {
-		family <- ' '
-	}
-	if (missing(title)) {
-		title <- ' '
-	}
-	if (missing(fun)) {
-		fun <- ' '
-	}
-	if (missing(signature)) {
-		signature <- ' '
-	}
-	if (missing(alias)) {
-		alias <- ' '
-	}
-
+	args <- gsub("([()])", "\\\\\\1", args, perl = TRUE)
+	args <- gsub("\\s+", "", args, perl = TRUE)
 	system2(
 		command = "bash",
-		args = c(
-			"tools/generate_indicator.sh",
-			template,
-			paste0("'", family, "'"),
-			paste0("'", title, "'"),
-			paste0("'", fun, "'"),
-			paste0("'", signature, "'"),
-			paste0("'", default_formula, "'"),
-			paste0("'", alias, "'")
+		args = c("./tools/generate_indicator.sh", args),
+		env = c(
+			sprintf("TITLE='%s'", title),
+			sprintf("FUN='%s'", fun),
+			sprintf("FAMILY='%s'", family),
+			sprintf("TA_FUN='%s'", ta_fun),
+			sprintf("FORMULA='%s'", formula),
+			sprintf("PLOTLY='%s'", plotly),
+			sprintf("AGNOSTIC='%s'", agnostic),
+			sprintf("CANDLESTICK='%s'", candlestick),
+			sprintf("maType='%s'", maType),
+			sprintf("ROLLING='%s'", rolling),
+			sprintf(
+				"NUMERIC='%s'",
+				as.integer(
+					as.logical(
+						length(all.vars(as.formula(formula))) == 1
+					)
+				)
+			)
 		)
 	)
 }

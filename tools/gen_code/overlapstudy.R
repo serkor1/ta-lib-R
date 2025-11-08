@@ -8,12 +8,13 @@ source("tools/gen_code/utils.R")
 
 ## 1.1) construct wrappers
 generate_R <- function(x) {
-	generate_overlap_study(
+	impl_generate_indicator(
 		title = x$title,
+		family = "Overlap Study",
 		fun = x$fun,
-		signature = x$signature,
-		default_formula = x$default_formula,
-		alias = x$alias
+		args = x$signature,
+		formula = x$default_formula,
+		ta_fun = x$alias
 	)
 }
 

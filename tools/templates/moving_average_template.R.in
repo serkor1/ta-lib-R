@@ -6,15 +6,30 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun $FUN
 #' 
-## splice:documentation:start
-## splice:documentation:end
-#'
 #' @template description
 #' @template returns
 $FUN <- function(
 	x, 
-	cols, $SIG_FORMALS
+	cols, 
+	n = 10,
 	...) {
+
+		## if 'x' is missing $FUN functions
+		## as a Moving Average Specification
+		if (missing(x)) {
+			## construct Moving Average specification
+			## from call
+			x <- structure(
+				{
+				list(
+					n = if (missing(n)) 10L else as.integer(n),
+					maType = ${maType}
+				)	
+				}
+			)
+
+			return(x)
+		}
   UseMethod("$FUN")
 }
 
@@ -31,7 +46,8 @@ $ALIAS <- $FUN
 #' @export
 $FUN.default <- function(
 	x, 
-	cols, $SIG_FORMALS 
+	cols, 
+	n = 10, 
 	...) {
 
 	## validate 'cols'-argument 
@@ -44,7 +60,7 @@ $FUN.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default = $DEFAULT_FORMULA,
+		default = ~close,
 		data = x,
 		...
 	)
@@ -56,9 +72,10 @@ $FUN.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_$ALIAS",
-		## splice:call:start
-		## splice:call:end
+		"impl_ta_MA",
+		as.double(constructed_series[[1]]),
+		as.integer(n),
+		${maType}
 	)
 
 	## readd rownames
@@ -74,7 +91,8 @@ $FUN.default <- function(
 #' @export
 $FUN.data.frame <- function(
 	x, 
-	cols, $SIG_FORMALS 
+	cols, 
+	n = 10, 
 	...) {
 
 	as.data.frame(
@@ -88,12 +106,55 @@ $FUN.data.frame <- function(
 #' @export
 $FUN.matrix <- function(
 	x, 
-	cols,$SIG_FORMALS 
+	cols,
+	n = 10, 
 	...) { 
+
+		## pass directly to 
+		## $FUN.default to avoid
+		## shenanigans with NextMethod()
 		as.matrix(
-			NextMethod()
-			) 
-			}
+			$FUN.default(
+				x = x,
+				cols = cols,
+				n = n,
+				...
+			)
+		) 
+}
+
+#' @usage NULL
+#' @aliases $FUN
+#' 
+#' @export
+$FUN.numeric <- function(
+	x, 
+	cols,
+	n = 10, 
+	...) {
+
+		## warn if 'cols' have been
+		## passed just to make sure
+		## the user knows its not possible
+		## or relevant
+		if (!missing(cols)) {
+			warning("'cols' is passed but is unused for vectors.")
+		}
+
+		## pass to 'C' directly
+		## with the input vector
+		x <- .Call(
+			"impl_ta_MA",
+			as.double(x),
+			as.integer(n),
+			${maType}
+		)
+
+		## 'C' returns a named matrix
+		## return the first column
+		as.double(x)
+
+}
 
 #' @usage NULL
 #' @aliases $FUN
@@ -101,9 +162,8 @@ $FUN.matrix <- function(
 #' @export
 $FUN.plotly <- function(
 	x, 
-	cols, $SIG_FORMALS
-	## splice:optional-plotly:start
-	## splice:optional-plotly:end
+	cols, 
+	n = 10,
 	...) { 
 
 	## check that input value
@@ -121,7 +181,7 @@ $FUN.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = $DEFAULT_FORMULA,
+		default = ~close,
 		...
 	)
 
@@ -131,7 +191,8 @@ $FUN.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)$SIG_ACTUALS
+		),
+		n = n
 	)
 
 	## add conditional idx
@@ -140,9 +201,16 @@ $FUN.plotly <- function(
 	)
 
 	## construct {plotly}-object
-	## splice:plotly-assembly:start
-	## initial scaffold
-	## splice:plotly-assembly:end
+	plotly_object <- .plotting_environment[["main"]] <- plotly::add_trace(
+		.plotting_environment[["main"]],
+		data = constructed_indicator,
+		x = ~idx,
+		y = constructed_indicator[["$ALIAS"]],
+		type = "scatter",
+		mode = "lines",
+		name = sprintf("$ALIAS(%d)", n),
+		inherit = FALSE
+	)
 
 	plotly_object
  }
