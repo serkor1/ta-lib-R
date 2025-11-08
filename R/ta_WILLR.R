@@ -86,7 +86,12 @@ williams_oscillator.data.frame <- function(
 	...
 ) {
 	as.data.frame(
-		NextMethod()
+		williams_oscillator.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
 }
 
@@ -101,7 +106,12 @@ williams_oscillator.matrix <- function(
 	...
 ) {
 	as.matrix(
-		NextMethod()
+		williams_oscillator.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
 }
 

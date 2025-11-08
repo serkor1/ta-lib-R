@@ -83,7 +83,7 @@ $FUN.default <- function(
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		constructed_series[[4]],${CARGS}
+		constructed_series[[4]] ${CARGS},
 		normalize
 	)
 	)

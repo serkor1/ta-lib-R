@@ -86,7 +86,12 @@ commodity_channel_index.data.frame <- function(
 	...
 ) {
 	as.data.frame(
-		NextMethod()
+		commodity_channel_index.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
 }
 
@@ -101,7 +106,12 @@ commodity_channel_index.matrix <- function(
 	...
 ) {
 	as.matrix(
-		NextMethod()
+		commodity_channel_index.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
 }
 

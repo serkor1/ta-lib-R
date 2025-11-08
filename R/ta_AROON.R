@@ -85,7 +85,12 @@ aroon.data.frame <- function(
 	...
 ) {
 	as.data.frame(
-		NextMethod()
+		aroon.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
 }
 
@@ -100,7 +105,12 @@ aroon.matrix <- function(
 	...
 ) {
 	as.matrix(
-		NextMethod()
+		aroon.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
 }
 

@@ -83,7 +83,11 @@ balance_of_power.data.frame <- function(
 	...
 ) {
 	as.data.frame(
-		NextMethod()
+		balance_of_power.default(
+			x = x,
+			cols = cols,
+			...
+		)
 	)
 }
 
@@ -97,7 +101,11 @@ balance_of_power.matrix <- function(
 	...
 ) {
 	as.matrix(
-		NextMethod()
+		balance_of_power.default(
+			x = x,
+			cols = cols,
+			...
+		)
 	)
 }
 

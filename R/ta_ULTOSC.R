@@ -88,7 +88,12 @@ ultimate_oscillator.data.frame <- function(
 	...
 ) {
 	as.data.frame(
-		NextMethod()
+		ultimate_oscillator.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
 }
 
@@ -103,7 +108,12 @@ ultimate_oscillator.matrix <- function(
 	...
 ) {
 	as.matrix(
-		NextMethod()
+		ultimate_oscillator.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
 }
 

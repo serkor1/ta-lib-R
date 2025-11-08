@@ -86,7 +86,12 @@ minus_directional_indicator.data.frame <- function(
 	...
 ) {
 	as.data.frame(
-		NextMethod()
+		minus_directional_indicator.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
 }
 
@@ -101,7 +106,12 @@ minus_directional_indicator.matrix <- function(
 	...
 ) {
 	as.matrix(
-		NextMethod()
+		minus_directional_indicator.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
 }
 

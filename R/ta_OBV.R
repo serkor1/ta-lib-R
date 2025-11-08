@@ -81,7 +81,11 @@ on_balance_volume.data.frame <- function(
 	...
 ) {
 	as.data.frame(
-		NextMethod()
+		on_balance_volume.default(
+			x = x,
+			cols = cols,
+			...
+		)
 	)
 }
 
@@ -95,7 +99,11 @@ on_balance_volume.matrix <- function(
 	...
 ) {
 	as.matrix(
-		NextMethod()
+		on_balance_volume.default(
+			x = x,
+			cols = cols,
+			...
+		)
 	)
 }
 

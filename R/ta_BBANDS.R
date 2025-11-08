@@ -96,7 +96,12 @@ bollinger_bands.data.frame <- function(
 	...
 ) {
 	as.data.frame(
-		NextMethod()
+		bollinger_bands.default(
+			x = x,
+			cols = cols,
+			ma = ma,
+			...
+		)
 	)
 }
 
@@ -113,8 +118,58 @@ bollinger_bands.matrix <- function(
 	...
 ) {
 	as.matrix(
-		NextMethod()
+		bollinger_bands.default(
+			x = x,
+			cols = cols,
+			ma = ma,
+			...
+		)
 	)
+}
+
+#' @usage NULL
+#' @aliases bollinger_bands
+#'
+#' @export
+bollinger_bands.numeric <- function(
+	x,
+	cols,
+	ma = SMA(n = 10),
+	std_up = 2,
+	std_down = 2,
+	...
+) {
+	## warn if 'cols' have been
+	## passed just to make sure
+	## the user knows its not possible
+	## or relevant
+	if (!missing(cols)) {
+		warning("'cols' is passed but is unused for vectors.")
+	}
+
+	## pass the argument directly
+	## to bollinger_bands.default()
+	x <- bollinger_bands.default(
+		x = x,
+		cols = cols,
+		,
+		ma = ma,
+		...
+	)
+
+	## check if it has 'dims'
+	## and convert to double if
+	## not to honor the 'type-safety'-esque
+	## approach
+	##
+	## NOTE: this adds a few ns overhead but
+	##       its a robust alternative to code it
+	##       manually. Any suggestions are welcome
+	if (is.null(dim(x))) {
+		x <- as.double(x)
+	}
+
+	x
 }
 
 #' @usage NULL
@@ -157,9 +212,7 @@ bollinger_bands.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		ma = ma,
-		std_up = std_up,
-		std_down = std_down
+		ma = ma
 	)
 
 	## add conditional idx

@@ -102,7 +102,15 @@ stochastic_relative_strength_index.data.frame <- function(
 	...
 ) {
 	as.data.frame(
-		NextMethod()
+		stochastic_relative_strength_index.default(
+			x = x,
+			cols = cols,
+			n = n,
+			n_rsi = n_rsi,
+			fastk = fastk,
+			fastd = fastd,
+			...
+		)
 	)
 }
 
@@ -120,7 +128,15 @@ stochastic_relative_strength_index.matrix <- function(
 	...
 ) {
 	as.matrix(
-		NextMethod()
+		stochastic_relative_strength_index.default(
+			x = x,
+			cols = cols,
+			n = n,
+			n_rsi = n_rsi,
+			fastk = fastk,
+			fastd = fastd,
+			...
+		)
 	)
 }
 

@@ -80,7 +80,11 @@ dominant_cycle_phase.data.frame <- function(
 	...
 ) {
 	as.data.frame(
-		NextMethod()
+		dominant_cycle_phase.default(
+			x = x,
+			cols = cols,
+			...
+		)
 	)
 }
 
@@ -94,8 +98,53 @@ dominant_cycle_phase.matrix <- function(
 	...
 ) {
 	as.matrix(
-		NextMethod()
+		dominant_cycle_phase.default(
+			x = x,
+			cols = cols,
+			...
+		)
 	)
+}
+
+#' @usage NULL
+#' @aliases dominant_cycle_phase
+#'
+#' @export
+dominant_cycle_phase.numeric <- function(
+	x,
+	cols,
+	...
+) {
+	## warn if 'cols' have been
+	## passed just to make sure
+	## the user knows its not possible
+	## or relevant
+	if (!missing(cols)) {
+		warning("'cols' is passed but is unused for vectors.")
+	}
+
+	## pass the argument directly
+	## to dominant_cycle_phase.default()
+	x <- dominant_cycle_phase.default(
+		x = x,
+		cols = cols,
+		,
+		...
+	)
+
+	## check if it has 'dims'
+	## and convert to double if
+	## not to honor the 'type-safety'-esque
+	## approach
+	##
+	## NOTE: this adds a few ns overhead but
+	##       its a robust alternative to code it
+	##       manually. Any suggestions are welcome
+	if (is.null(dim(x))) {
+		x <- as.double(x)
+	}
+
+	x
 }
 
 #' @usage NULL

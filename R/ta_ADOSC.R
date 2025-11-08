@@ -93,7 +93,12 @@ chaikin_accumulation_distribution_oscillator.data.frame <- function(
 	...
 ) {
 	as.data.frame(
-		NextMethod()
+		chaikin_accumulation_distribution_oscillator.default(
+			x = x,
+			cols = cols,
+			fast = fast,
+			...
+		)
 	)
 }
 
@@ -109,7 +114,12 @@ chaikin_accumulation_distribution_oscillator.matrix <- function(
 	...
 ) {
 	as.matrix(
-		NextMethod()
+		chaikin_accumulation_distribution_oscillator.default(
+			x = x,
+			cols = cols,
+			fast = fast,
+			...
+		)
 	)
 }
 
@@ -152,8 +162,7 @@ chaikin_accumulation_distribution_oscillator.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		fast = fast,
-		slow = slow
+		fast = fast
 	)
 
 	## add conditional idx

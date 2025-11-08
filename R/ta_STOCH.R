@@ -99,7 +99,14 @@ stochastic.data.frame <- function(
 	...
 ) {
 	as.data.frame(
-		NextMethod()
+		stochastic.default(
+			x = x,
+			cols = cols,
+			fastk = fastk,
+			slowk = slowk,
+			slowd = slowd,
+			...
+		)
 	)
 }
 
@@ -116,7 +123,14 @@ stochastic.matrix <- function(
 	...
 ) {
 	as.matrix(
-		NextMethod()
+		stochastic.default(
+			x = x,
+			cols = cols,
+			fastk = fastk,
+			slowk = slowk,
+			slowd = slowd,
+			...
+		)
 	)
 }
 
