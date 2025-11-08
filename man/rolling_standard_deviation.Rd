@@ -5,12 +5,14 @@
 \alias{STDDEV}
 \title{Rolling Standard Deviation}
 \usage{
-rolling_standard_deviation(x, n = 10, deviation = 1, ...)
+rolling_standard_deviation(x, n = 10, k = 1, ...)
 }
 \arguments{
 \item{x}{An OHLC-V series that is coercible to \link{data.frame}. The function assumes that all columns are named in lowercase and order invariant.}
 
 \item{n}{An \link{integer} of \link{length} 1.}
+
+\item{k}{multiplier}
 
 \item{...}{Additional parameters passed into \link{model.frame}}
 }
