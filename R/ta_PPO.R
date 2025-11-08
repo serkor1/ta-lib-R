@@ -95,7 +95,14 @@ percentage_price_oscillator.data.frame <- function(
 	...
 ) {
 	as.data.frame(
-		NextMethod()
+		percentage_price_oscillator.default(
+			x = x,
+			cols = cols,
+			fast = fast,
+			slow = slow,
+			ma = ma,
+			...
+		)
 	)
 }
 
@@ -112,8 +119,62 @@ percentage_price_oscillator.matrix <- function(
 	...
 ) {
 	as.matrix(
-		NextMethod()
+		percentage_price_oscillator.default(
+			x = x,
+			cols = cols,
+			fast = fast,
+			slow = slow,
+			ma = ma,
+			...
+		)
 	)
+}
+
+#' @usage NULL
+#' @aliases percentage_price_oscillator
+#'
+#' @export
+percentage_price_oscillator.numeric <- function(
+	x,
+	cols,
+	fast = 7,
+	slow = 14,
+	ma = SMA(n = 10),
+	...
+) {
+	## warn if 'cols' have been
+	## passed just to make sure
+	## the user knows its not possible
+	## or relevant
+	if (!missing(cols)) {
+		warning("'cols' is passed but is unused for vectors.")
+	}
+
+	## pass the argument directly
+	## to percentage_price_oscillator.default()
+	x <- percentage_price_oscillator.default(
+		x = x,
+		cols = cols,
+		,
+		fast = fast,
+		slow = slow,
+		ma = ma,
+		...
+	)
+
+	## check if it has 'dims'
+	## and convert to double if
+	## not to honor the 'type-safety'-esque
+	## approach
+	##
+	## NOTE: this adds a few ns overhead but
+	##       its a robust alternative to code it
+	##       manually. Any suggestions are welcome
+	if (is.null(dim(x))) {
+		x <- as.double(x)
+	}
+
+	x
 }
 
 #' @usage NULL

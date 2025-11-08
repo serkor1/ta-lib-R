@@ -86,7 +86,12 @@ acceleration_bands.data.frame <- function(
 	...
 ) {
 	as.data.frame(
-		NextMethod()
+		acceleration_bands.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
 }
 
@@ -101,7 +106,12 @@ acceleration_bands.matrix <- function(
 	...
 ) {
 	as.matrix(
-		NextMethod()
+		acceleration_bands.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
 }
 

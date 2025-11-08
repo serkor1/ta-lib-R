@@ -86,7 +86,12 @@ normalized_average_true_range.data.frame <- function(
 	...
 ) {
 	as.data.frame(
-		NextMethod()
+		normalized_average_true_range.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
 }
 
@@ -101,7 +106,12 @@ normalized_average_true_range.matrix <- function(
 	...
 ) {
 	as.matrix(
-		NextMethod()
+		normalized_average_true_range.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
 }
 

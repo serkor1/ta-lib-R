@@ -86,7 +86,12 @@ plus_directional_indicator.data.frame <- function(
 	...
 ) {
 	as.data.frame(
-		NextMethod()
+		plus_directional_indicator.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
 }
 
@@ -101,7 +106,12 @@ plus_directional_indicator.matrix <- function(
 	...
 ) {
 	as.matrix(
-		NextMethod()
+		plus_directional_indicator.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
 }
 

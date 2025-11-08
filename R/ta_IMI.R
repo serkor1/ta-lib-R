@@ -85,7 +85,12 @@ intraday_movement_index.data.frame <- function(
 	...
 ) {
 	as.data.frame(
-		NextMethod()
+		intraday_movement_index.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
 }
 
@@ -100,7 +105,12 @@ intraday_movement_index.matrix <- function(
 	...
 ) {
 	as.matrix(
-		NextMethod()
+		intraday_movement_index.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
 }
 

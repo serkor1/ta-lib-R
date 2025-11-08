@@ -82,7 +82,11 @@ true_range.data.frame <- function(
 	...
 ) {
 	as.data.frame(
-		NextMethod()
+		true_range.default(
+			x = x,
+			cols = cols,
+			...
+		)
 	)
 }
 
@@ -96,7 +100,11 @@ true_range.matrix <- function(
 	...
 ) {
 	as.matrix(
-		NextMethod()
+		true_range.default(
+			x = x,
+			cols = cols,
+			...
+		)
 	)
 }
 

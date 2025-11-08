@@ -87,7 +87,12 @@ money_flow_index.data.frame <- function(
 	...
 ) {
 	as.data.frame(
-		NextMethod()
+		money_flow_index.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
 }
 
@@ -102,7 +107,12 @@ money_flow_index.matrix <- function(
 	...
 ) {
 	as.matrix(
-		NextMethod()
+		money_flow_index.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
 }
 

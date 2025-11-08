@@ -93,7 +93,13 @@ fast_stochastic.data.frame <- function(
 	...
 ) {
 	as.data.frame(
-		NextMethod()
+		fast_stochastic.default(
+			x = x,
+			cols = cols,
+			fastk = fastk,
+			fastd = fastd,
+			...
+		)
 	)
 }
 
@@ -109,7 +115,13 @@ fast_stochastic.matrix <- function(
 	...
 ) {
 	as.matrix(
-		NextMethod()
+		fast_stochastic.default(
+			x = x,
+			cols = cols,
+			fastk = fastk,
+			fastd = fastd,
+			...
+		)
 	)
 }
 

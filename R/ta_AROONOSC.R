@@ -85,7 +85,12 @@ aroon_oscillator.data.frame <- function(
 	...
 ) {
 	as.data.frame(
-		NextMethod()
+		aroon_oscillator.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
 }
 
@@ -100,7 +105,12 @@ aroon_oscillator.matrix <- function(
 	...
 ) {
 	as.matrix(
-		NextMethod()
+		aroon_oscillator.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
 }
 

@@ -44,6 +44,10 @@ reference:
   contents:
   - chart
   - indicator
+- title: Rolling Statistics
+  desc: |
+    The collection of Candlestick Patterns. 
+- contents: has_concept('Rolling Statistic')
 - title: Financial Data
   desc: |
     Preloaded financial data

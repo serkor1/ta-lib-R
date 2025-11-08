@@ -86,7 +86,12 @@ average_directional_movement_index.data.frame <- function(
 	...
 ) {
 	as.data.frame(
-		NextMethod()
+		average_directional_movement_index.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
 }
 
@@ -101,7 +106,12 @@ average_directional_movement_index.matrix <- function(
 	...
 ) {
 	as.matrix(
-		NextMethod()
+		average_directional_movement_index.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
 }
 

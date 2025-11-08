@@ -91,7 +91,12 @@ parabolic_stop_and_reverse.data.frame <- function(
 	...
 ) {
 	as.data.frame(
-		NextMethod()
+		parabolic_stop_and_reverse.default(
+			x = x,
+			cols = cols,
+			acceleration = acceleration,
+			...
+		)
 	)
 }
 
@@ -107,7 +112,12 @@ parabolic_stop_and_reverse.matrix <- function(
 	...
 ) {
 	as.matrix(
-		NextMethod()
+		parabolic_stop_and_reverse.default(
+			x = x,
+			cols = cols,
+			acceleration = acceleration,
+			...
+		)
 	)
 }
 
@@ -150,8 +160,7 @@ parabolic_stop_and_reverse.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		acceleration = acceleration,
-		maximum = maximum
+		acceleration = acceleration
 	)
 
 	## add conditional idx

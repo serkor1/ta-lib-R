@@ -85,7 +85,12 @@ plus_directional_movement.data.frame <- function(
 	...
 ) {
 	as.data.frame(
-		NextMethod()
+		plus_directional_movement.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
 }
 
@@ -100,7 +105,12 @@ plus_directional_movement.matrix <- function(
 	...
 ) {
 	as.matrix(
-		NextMethod()
+		plus_directional_movement.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
 }
 

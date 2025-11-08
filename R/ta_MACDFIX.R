@@ -85,7 +85,12 @@ fixed_moving_average_convergence_divergence.data.frame <- function(
 	...
 ) {
 	as.data.frame(
-		NextMethod()
+		fixed_moving_average_convergence_divergence.default(
+			x = x,
+			cols = cols,
+			signal = signal,
+			...
+		)
 	)
 }
 
@@ -100,8 +105,56 @@ fixed_moving_average_convergence_divergence.matrix <- function(
 	...
 ) {
 	as.matrix(
-		NextMethod()
+		fixed_moving_average_convergence_divergence.default(
+			x = x,
+			cols = cols,
+			signal = signal,
+			...
+		)
 	)
+}
+
+#' @usage NULL
+#' @aliases fixed_moving_average_convergence_divergence
+#'
+#' @export
+fixed_moving_average_convergence_divergence.numeric <- function(
+	x,
+	cols,
+	signal = 9,
+	...
+) {
+	## warn if 'cols' have been
+	## passed just to make sure
+	## the user knows its not possible
+	## or relevant
+	if (!missing(cols)) {
+		warning("'cols' is passed but is unused for vectors.")
+	}
+
+	## pass the argument directly
+	## to fixed_moving_average_convergence_divergence.default()
+	x <- fixed_moving_average_convergence_divergence.default(
+		x = x,
+		cols = cols,
+		,
+		signal = signal,
+		...
+	)
+
+	## check if it has 'dims'
+	## and convert to double if
+	## not to honor the 'type-safety'-esque
+	## approach
+	##
+	## NOTE: this adds a few ns overhead but
+	##       its a robust alternative to code it
+	##       manually. Any suggestions are welcome
+	if (is.null(dim(x))) {
+		x <- as.double(x)
+	}
+
+	x
 }
 
 #' @usage NULL

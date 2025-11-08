@@ -87,7 +87,7 @@ dark_cloud_cover.default <- function(
 			constructed_series[[2]],
 			constructed_series[[3]],
 			constructed_series[[4]],
-			eps = eps,
+			eps,
 			normalize
 		)
 	)

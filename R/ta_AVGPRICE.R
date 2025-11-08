@@ -1,0 +1,110 @@
+#' @export
+#' @family Price Transform
+#'
+#' @title Average Price
+#' @templateVar .title Average Price
+#' @templateVar .author Serkan Korkmaz
+#' @templateVar .fun average_price
+#'
+## splice:documentation:start
+## splice:documentation:end
+#'
+#' @template description
+#' @template returns
+average_price <- function(
+	x,
+	cols,
+	...
+) {
+	UseMethod("average_price")
+}
+
+#' @export
+#' @usage NULL
+#' @rdname average_price
+#'
+#' @aliases average_price
+AVGPRICE <- average_price
+
+#' @usage NULL
+#' @aliases average_price
+#'
+#' @export
+average_price.default <- function(
+	x,
+	cols,
+	...
+) {
+	## validate 'cols'-argument
+	## if explicitly passed
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series
+	## from input
+	constructed_series <- series(
+		x = cols,
+		default = ~ open + high + low + close,
+		data = x,
+		...
+	)
+
+	## extract rownames
+	## for later attachment
+	x_names <- rownames(constructed_series)
+
+	## calculate indicator and
+	## return as data.frame
+	x <- .Call(
+		"impl_ta_AVGPRICE",
+		## splice:call:start
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]]
+		## splice:call:end
+	)
+
+	## readd rownames
+	rownames(x) <- x_names
+
+	## return indicator
+	x
+}
+
+#' @usage NULL
+#' @aliases average_price
+#'
+#' @export
+average_price.data.frame <- function(
+	x,
+	cols,
+	...
+) {
+	as.data.frame(
+		average_price.default(
+			x = x,
+			cols = cols,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases average_price
+#'
+#' @export
+average_price.matrix <- function(
+	x,
+	cols,
+	...
+) {
+	as.matrix(
+		average_price.default(
+			x = x,
+			cols = cols,
+			...
+		)
+	)
+}

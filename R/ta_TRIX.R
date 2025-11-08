@@ -84,7 +84,12 @@ triple_exponential_average.data.frame <- function(
 	...
 ) {
 	as.data.frame(
-		NextMethod()
+		triple_exponential_average.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
 }
 
@@ -99,8 +104,56 @@ triple_exponential_average.matrix <- function(
 	...
 ) {
 	as.matrix(
-		NextMethod()
+		triple_exponential_average.default(
+			x = x,
+			cols = cols,
+			n = n,
+			...
+		)
 	)
+}
+
+#' @usage NULL
+#' @aliases triple_exponential_average
+#'
+#' @export
+triple_exponential_average.numeric <- function(
+	x,
+	cols,
+	n = 10,
+	...
+) {
+	## warn if 'cols' have been
+	## passed just to make sure
+	## the user knows its not possible
+	## or relevant
+	if (!missing(cols)) {
+		warning("'cols' is passed but is unused for vectors.")
+	}
+
+	## pass the argument directly
+	## to triple_exponential_average.default()
+	x <- triple_exponential_average.default(
+		x = x,
+		cols = cols,
+		,
+		n = n,
+		...
+	)
+
+	## check if it has 'dims'
+	## and convert to double if
+	## not to honor the 'type-safety'-esque
+	## approach
+	##
+	## NOTE: this adds a few ns overhead but
+	##       its a robust alternative to code it
+	##       manually. Any suggestions are welcome
+	if (is.null(dim(x))) {
+		x <- as.double(x)
+	}
+
+	x
 }
 
 #' @usage NULL
