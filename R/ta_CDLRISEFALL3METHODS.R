@@ -93,7 +93,7 @@ rise_fall_3_methods.default <- function(
 	colnames(x) <- "CDLRISEFALL3METHODS"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

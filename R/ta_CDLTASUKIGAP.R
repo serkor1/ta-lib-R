@@ -93,7 +93,7 @@ tasuki_gap.default <- function(
 	colnames(x) <- "CDLTASUKIGAP"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

@@ -93,7 +93,7 @@ stalled_pattern.default <- function(
 	colnames(x) <- "CDLSTALLEDPATTERN"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

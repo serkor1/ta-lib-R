@@ -93,7 +93,7 @@ three_stars_in_the_south.default <- function(
 	colnames(x) <- "CDL3STARSINSOUTH"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

@@ -93,7 +93,7 @@ gravestone_doji.default <- function(
 	colnames(x) <- "CDLGRAVESTONEDOJI"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

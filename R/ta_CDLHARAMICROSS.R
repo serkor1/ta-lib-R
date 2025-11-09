@@ -93,7 +93,7 @@ harami_cross.default <- function(
 	colnames(x) <- "CDLHARAMICROSS"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

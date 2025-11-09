@@ -66,7 +66,7 @@ typical_price.default <- function(
 	)
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

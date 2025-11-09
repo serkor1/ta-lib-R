@@ -93,7 +93,7 @@ three_black_crows.default <- function(
 	colnames(x) <- "CDL3BLACKCROWS"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

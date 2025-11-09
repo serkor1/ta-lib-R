@@ -93,7 +93,7 @@ homing_pigeon.default <- function(
 	colnames(x) <- "CDLHOMINGPIGEON"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

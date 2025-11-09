@@ -93,7 +93,7 @@ thrusting.default <- function(
 	colnames(x) <- "CDLTHRUSTING"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

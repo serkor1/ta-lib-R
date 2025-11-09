@@ -96,7 +96,7 @@ dark_cloud_cover.default <- function(
 	colnames(x) <- "CDLDARKCLOUDCOVER"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

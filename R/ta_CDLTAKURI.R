@@ -93,7 +93,7 @@ takuri.default <- function(
 	colnames(x) <- "CDLTAKURI"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

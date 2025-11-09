@@ -93,7 +93,7 @@ counter_attack.default <- function(
 	colnames(x) <- "CDLCOUNTERATTACK"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

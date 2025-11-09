@@ -79,7 +79,7 @@ t3_exponential_moving_average.default <- function(
 	)
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

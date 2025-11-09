@@ -96,7 +96,7 @@ evening_doji_star.default <- function(
 	colnames(x) <- "CDLEVENINGDOJISTAR"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

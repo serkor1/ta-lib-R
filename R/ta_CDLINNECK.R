@@ -93,7 +93,7 @@ in_neck.default <- function(
 	colnames(x) <- "CDLINNECK"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

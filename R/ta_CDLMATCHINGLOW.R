@@ -93,7 +93,7 @@ matching_low.default <- function(
 	colnames(x) <- "CDLMATCHINGLOW"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

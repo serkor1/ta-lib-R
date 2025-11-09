@@ -93,7 +93,7 @@ upside_gap_2_crows.default <- function(
 	colnames(x) <- "CDLUPSIDEGAP2CROWS"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x
