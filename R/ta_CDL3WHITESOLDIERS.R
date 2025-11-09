@@ -93,7 +93,7 @@ three_white_soldiers.default <- function(
 	colnames(x) <- "CDL3WHITESOLDIERS"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

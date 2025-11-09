@@ -96,7 +96,7 @@ morning_star.default <- function(
 	colnames(x) <- "CDLMORNINGSTAR"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

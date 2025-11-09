@@ -96,7 +96,7 @@ evening_star.default <- function(
 	colnames(x) <- "CDLEVENINGSTAR"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

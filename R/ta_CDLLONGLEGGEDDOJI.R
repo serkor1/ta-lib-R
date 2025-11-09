@@ -93,7 +93,7 @@ long_legged_doji.default <- function(
 	colnames(x) <- "CDLLONGLEGGEDDOJI"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

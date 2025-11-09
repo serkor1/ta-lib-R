@@ -96,7 +96,7 @@ mat_hold.default <- function(
 	colnames(x) <- "CDLMATHOLD"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

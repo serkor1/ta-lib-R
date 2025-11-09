@@ -93,7 +93,7 @@ harami.default <- function(
 	colnames(x) <- "CDLHARAMI"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

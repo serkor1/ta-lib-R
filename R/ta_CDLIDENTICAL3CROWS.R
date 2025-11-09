@@ -93,7 +93,7 @@ three_identical_crows.default <- function(
 	colnames(x) <- "CDLIDENTICAL3CROWS"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

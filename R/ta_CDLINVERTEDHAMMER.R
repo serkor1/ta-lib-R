@@ -93,7 +93,7 @@ inverted_hammer.default <- function(
 	colnames(x) <- "CDLINVERTEDHAMMER"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

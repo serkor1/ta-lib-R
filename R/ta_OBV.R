@@ -65,7 +65,7 @@ on_balance_volume.default <- function(
 	)
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

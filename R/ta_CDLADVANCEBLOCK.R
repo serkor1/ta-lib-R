@@ -93,7 +93,7 @@ advance_block.default <- function(
 	colnames(x) <- "CDLADVANCEBLOCK"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

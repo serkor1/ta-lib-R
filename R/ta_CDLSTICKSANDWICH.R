@@ -93,7 +93,7 @@ stick_sandwich.default <- function(
 	colnames(x) <- "CDLSTICKSANDWICH"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

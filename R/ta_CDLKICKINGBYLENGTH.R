@@ -93,7 +93,7 @@ kicking_baby_length.default <- function(
 	colnames(x) <- "CDLKICKINGBYLENGTH"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

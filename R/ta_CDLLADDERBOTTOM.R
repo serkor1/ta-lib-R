@@ -93,7 +93,7 @@ ladder_bottom.default <- function(
 	colnames(x) <- "CDLLADDERBOTTOM"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

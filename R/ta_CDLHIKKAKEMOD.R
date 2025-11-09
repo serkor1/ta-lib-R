@@ -93,7 +93,7 @@ hikakke_mod.default <- function(
 	colnames(x) <- "CDLHIKKAKEMOD"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

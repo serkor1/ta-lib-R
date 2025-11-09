@@ -93,7 +93,7 @@ break_away.default <- function(
 	colnames(x) <- "CDLBREAKAWAY"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x

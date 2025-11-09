@@ -93,7 +93,7 @@ unique_3_river.default <- function(
 	colnames(x) <- "CDLUNIQUE3RIVER"
 
 	## readd rownames
-	rownames(x) <- x_names
+	set_rownames(x, x_names)
 
 	## return indicator
 	x
