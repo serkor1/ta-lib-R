@@ -122,3 +122,11 @@ testthat::test_that(desc = '{plotly}-methods for <matrix>', code = {
 		inherits(output, "plotly")
 	)
 })
+
+testthat::test_that(desc = 'Numeric Methods', code = {
+	## 1) check that the output class
+	##    matches the input class
+	testthat::expect_no_error(
+		exponential_moving_average(BTC[[1]])
+	)
+})
