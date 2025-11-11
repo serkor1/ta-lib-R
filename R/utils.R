@@ -214,30 +214,32 @@ candlestick_setting <- function() {
 
 
 ## rownaming
-set_rownames <- function(x, names) {
+set_rownames <- function(x, x_names) {
 	UseMethod("set_rownames")
 }
 
 #' @export
-set_rownames.data.frame <- function(x, names) {
+set_rownames.data.frame <- function(x, x_names) {
 	## set the rownames
 	.Call(
 		"rownames_data_frame",
 		x,
-		names
+		x_names,
+		PACKAGE = "talib"
 	)
 
 	return(invisible(NULL))
 }
 
 #' @export
-set_rownames.matrix <- function(x, names) {
+set_rownames.matrix <- function(x, x_names) {
 	## set the rownames
 	.Call(
 		"rownames_matrix",
 		x,
-		names,
-		colnames(x)
+		x_names,
+		colnames(x),
+		PACKAGE = "talib"
 	)
 
 	return(invisible(NULL))
