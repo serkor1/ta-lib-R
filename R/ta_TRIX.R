@@ -132,13 +132,13 @@ triple_exponential_average.numeric <- function(
 	}
 
 	## pass the argument directly
-	## to triple_exponential_average.default()
-	x <- triple_exponential_average.default(
-		x = x,
-		cols = cols,
-		,
-		n = n,
-		...
+	## to 'C'
+	x <- .Call(
+		"impl_ta_TRIX",
+		as.double(x),
+		## splice:numeric:start
+		as.integer(n)
+		## splice:numeric:end
 	)
 
 	## check if it has 'dims'

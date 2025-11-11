@@ -124,12 +124,13 @@ trendline.numeric <- function(
 	}
 
 	## pass the argument directly
-	## to trendline.default()
-	x <- trendline.default(
-		x = x,
-		cols = cols,
-		,
-		...
+	## to 'C'
+	x <- .Call(
+		"impl_ta_HT_TRENDLINE",
+		as.double(x)
+		## splice:numeric:start
+
+		## splice:numeric:end
 	)
 
 	## check if it has 'dims'

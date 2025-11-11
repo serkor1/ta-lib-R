@@ -132,13 +132,13 @@ relative_strength_index.numeric <- function(
 	}
 
 	## pass the argument directly
-	## to relative_strength_index.default()
-	x <- relative_strength_index.default(
-		x = x,
-		cols = cols,
-		,
-		n = n,
-		...
+	## to 'C'
+	x <- .Call(
+		"impl_ta_RSI",
+		as.double(x),
+		## splice:numeric:start
+		as.integer(n)
+		## splice:numeric:end
 	)
 
 	## check if it has 'dims'

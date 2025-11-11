@@ -151,15 +151,15 @@ absolute_price_oscillator.numeric <- function(
 	}
 
 	## pass the argument directly
-	## to absolute_price_oscillator.default()
-	x <- absolute_price_oscillator.default(
-		x = x,
-		cols = cols,
-		,
-		fast = fast,
-		slow = slow,
-		ma = ma,
-		...
+	## to 'C'
+	x <- .Call(
+		"impl_ta_APO",
+		as.double(x),
+		## splice:numeric:start
+		as.integer(fast),
+		as.integer(slow),
+		ma$maType
+		## splice:numeric:end
 	)
 
 	## check if it has 'dims'

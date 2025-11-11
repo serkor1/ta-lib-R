@@ -124,12 +124,13 @@ dominant_cycle_period.numeric <- function(
 	}
 
 	## pass the argument directly
-	## to dominant_cycle_period.default()
-	x <- dominant_cycle_period.default(
-		x = x,
-		cols = cols,
-		,
-		...
+	## to 'C'
+	x <- .Call(
+		"impl_ta_HT_DCPERIOD",
+		as.double(x)
+		## splice:numeric:start
+
+		## splice:numeric:end
 	)
 
 	## check if it has 'dims'

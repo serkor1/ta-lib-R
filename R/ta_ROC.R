@@ -132,13 +132,13 @@ rate_of_change.numeric <- function(
 	}
 
 	## pass the argument directly
-	## to rate_of_change.default()
-	x <- rate_of_change.default(
-		x = x,
-		cols = cols,
-		,
-		n = n,
-		...
+	## to 'C'
+	x <- .Call(
+		"impl_ta_ROC",
+		as.double(x),
+		## splice:numeric:start
+		as.integer(n)
+		## splice:numeric:end
 	)
 
 	## check if it has 'dims'

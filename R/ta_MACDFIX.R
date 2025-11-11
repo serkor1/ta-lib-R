@@ -133,13 +133,13 @@ fixed_moving_average_convergence_divergence.numeric <- function(
 	}
 
 	## pass the argument directly
-	## to fixed_moving_average_convergence_divergence.default()
-	x <- fixed_moving_average_convergence_divergence.default(
-		x = x,
-		cols = cols,
-		,
-		signal = signal,
-		...
+	## to 'C'
+	x <- .Call(
+		"impl_ta_MACDFIX",
+		as.double(x),
+		## splice:numeric:start
+		as.integer(signal)
+		## splice:numeric:end
 	)
 
 	## check if it has 'dims'
