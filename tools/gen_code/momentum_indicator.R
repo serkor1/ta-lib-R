@@ -39,6 +39,15 @@ generate_C <- function(x, safe = TRUE) {
 	)
 }
 
+generate_test <- function(x) {
+	impl_generate_test(
+		fun = x$fun,
+		ta_fun = x$alias,
+		formula = x$default_formula,
+		plotly = 1
+	)
+}
+
 ## 2) metadata
 metadata <- list()
 
@@ -308,6 +317,7 @@ metadata[[29]] <- list(
 
 for (x in metadata) {
 	generate_R(x)
+	generate_test(x)
 }
 
 # for (x in metadata) {

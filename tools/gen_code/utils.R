@@ -46,6 +46,38 @@ impl_generate_indicator <- function(
 	)
 }
 
+impl_generate_test <- function(
+	fun,
+	ta_fun,
+	formula,
+	plotly = 1,
+	rolling = 0,
+	args = NULL
+) {
+	args <- gsub("([()])", "\\\\\\1", args, perl = TRUE)
+	args <- gsub("\\s+", "", args, perl = TRUE)
+
+	system2(
+		command = "bash",
+		args = c("./tools/generate_unit-tests.sh", args),
+		env = c(
+			sprintf("FUN='%s'", fun),
+			sprintf("TA_FUN='%s'", ta_fun),
+			sprintf("FORMULA='%s'", formula),
+			sprintf("PLOTLY='%s'", plotly),
+			sprintf("ROLLING='%s'", rolling),
+			sprintf(
+				"NUMERIC='%s'",
+				as.integer(
+					as.logical(
+						length(all.vars(as.formula(formula))) == 1
+					)
+				)
+			)
+		)
+	)
+}
+
 ## 2) generate_candlestick
 ##    patterns
 generate_candlestick <- function(
