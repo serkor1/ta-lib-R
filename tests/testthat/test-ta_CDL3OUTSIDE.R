@@ -6,57 +6,18 @@
 
 ## 1) alias and function similarity
 ##    checks this ensures that
-##    CDL3OUTSIDE and three_outside produces the same results
+##    three_outside and CDL3OUTSIDE produces the same results
 testthat::test_that(desc = 'Alias and function similarity', code = {
 	## 1) test that the alias and
 	##    function returns the same values
-	output <- CDL3OUTSIDE(SPY)
-	alias <- three_outside(SPY)
+	output <- three_outside(SPY)
+	alias <- CDL3OUTSIDE(SPY)
 
 	## 1.1) check if the values
 	##      are equal
 	testthat::expect_equal(
 		object = output,
 		expected = alias
-	)
-})
-
-## 2) {plotly}-method checks for data.frames
-##    and matrices
-##
-## 2.1) data.frame checks
-testthat::test_that(desc = '{plotly}-methods for <data.frame>', code = {
-	## 1) check that CDL3OUTSIDE can
-	##    use {plotly} without any issues
-	output <- testthat::expect_no_error(
-		{
-			chart(BTC)
-			indicator(CDL3OUTSIDE)
-		}
-	)
-
-	## 1.1) check that the output
-	##      is a {plotly}-object
-	testthat::expect_true(
-		inherits(output, "plotly")
-	)
-})
-
-## 2.2) matrix checks
-testthat::test_that(desc = '{plotly}-methods for <matrix>', code = {
-	## 1) check that CDL3OUTSIDE can
-	##    use {plotly} without any issues
-	output <- testthat::expect_no_error(
-		{
-			chart(SPY)
-			indicator(CDL3OUTSIDE)
-		}
-	)
-
-	## 1.1) check that the output
-	##      is a {plotly}-object
-	testthat::expect_true(
-		inherits(output, "plotly")
 	)
 })
 
@@ -68,7 +29,7 @@ testthat::test_that(desc = 'Class in, class out (<matrix>)', code = {
 	## 1) check that the output class
 	##    matches the input class
 	testthat::expect_true(
-		inherits(CDL3OUTSIDE(SPY), class(SPY))
+		inherits(three_outside(SPY), class(SPY))
 	)
 })
 
@@ -77,7 +38,7 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 	## 1) check that the output class
 	##    matches the input class
 	testthat::expect_true(
-		inherits(CDL3OUTSIDE(BTC), class(BTC))
+		inherits(three_outside(BTC), class(BTC))
 	)
 })
 
@@ -89,10 +50,10 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 ##          series() function
 testthat::test_that(desc = 'Default calls', code = {
 	testthat::expect_equal(
-		object = CDL3OUTSIDE(
+		object = three_outside(
 			BTC
 		),
-		expected = CDL3OUTSIDE(
+		expected = three_outside(
 			BTC,
 			cols = ~ open + high + low + close
 		)
@@ -105,7 +66,7 @@ testthat::test_that(desc = 'Default calls', code = {
 ## 5.1) <data.frame> object
 testthat::test_that(desc = 'Equal length of input and output for <data.frame>', code = {
 	testthat::expect_equal(
-		object = nrow(CDL3OUTSIDE(
+		object = nrow(three_outside(
 			BTC
 		)),
 		expected = nrow(BTC)
@@ -115,9 +76,49 @@ testthat::test_that(desc = 'Equal length of input and output for <data.frame>', 
 ## 5.2) <matrix> object
 testthat::test_that(desc = 'Equal length of input and output for <matrix>', code = {
 	testthat::expect_equal(
-		object = nrow(CDL3OUTSIDE(
+		object = nrow(three_outside(
 			SPY
 		)),
 		expected = nrow(SPY)
+	)
+})
+
+
+## 2) {plotly}-method checks for data.frames
+##    and matrices
+##
+## 2.1) data.frame checks
+testthat::test_that(desc = '{plotly}-methods for <data.frame>', code = {
+	## 1) check that three_outside can
+	##    use {plotly} without any issues
+	output <- testthat::expect_no_error(
+		{
+			chart(BTC)
+			indicator(three_outside)
+		}
+	)
+
+	## 1.1) check that the output
+	##      is a {plotly}-object
+	testthat::expect_true(
+		inherits(output, "plotly")
+	)
+})
+
+## 2.2) matrix checks
+testthat::test_that(desc = '{plotly}-methods for <matrix>', code = {
+	## 1) check that three_outside can
+	##    use {plotly} without any issues
+	output <- testthat::expect_no_error(
+		{
+			chart(SPY)
+			indicator(three_outside)
+		}
+	)
+
+	## 1.1) check that the output
+	##      is a {plotly}-object
+	testthat::expect_true(
+		inherits(output, "plotly")
 	)
 })

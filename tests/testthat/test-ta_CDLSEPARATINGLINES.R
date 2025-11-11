@@ -6,57 +6,18 @@
 
 ## 1) alias and function similarity
 ##    checks this ensures that
-##    CDLSEPARATINGLINES and separating_lines produces the same results
+##    separating_lines and CDLSEPARATINGLINES produces the same results
 testthat::test_that(desc = 'Alias and function similarity', code = {
 	## 1) test that the alias and
 	##    function returns the same values
-	output <- CDLSEPARATINGLINES(SPY)
-	alias <- separating_lines(SPY)
+	output <- separating_lines(SPY)
+	alias <- CDLSEPARATINGLINES(SPY)
 
 	## 1.1) check if the values
 	##      are equal
 	testthat::expect_equal(
 		object = output,
 		expected = alias
-	)
-})
-
-## 2) {plotly}-method checks for data.frames
-##    and matrices
-##
-## 2.1) data.frame checks
-testthat::test_that(desc = '{plotly}-methods for <data.frame>', code = {
-	## 1) check that CDLSEPARATINGLINES can
-	##    use {plotly} without any issues
-	output <- testthat::expect_no_error(
-		{
-			chart(BTC)
-			indicator(CDLSEPARATINGLINES)
-		}
-	)
-
-	## 1.1) check that the output
-	##      is a {plotly}-object
-	testthat::expect_true(
-		inherits(output, "plotly")
-	)
-})
-
-## 2.2) matrix checks
-testthat::test_that(desc = '{plotly}-methods for <matrix>', code = {
-	## 1) check that CDLSEPARATINGLINES can
-	##    use {plotly} without any issues
-	output <- testthat::expect_no_error(
-		{
-			chart(SPY)
-			indicator(CDLSEPARATINGLINES)
-		}
-	)
-
-	## 1.1) check that the output
-	##      is a {plotly}-object
-	testthat::expect_true(
-		inherits(output, "plotly")
 	)
 })
 
@@ -68,7 +29,7 @@ testthat::test_that(desc = 'Class in, class out (<matrix>)', code = {
 	## 1) check that the output class
 	##    matches the input class
 	testthat::expect_true(
-		inherits(CDLSEPARATINGLINES(SPY), class(SPY))
+		inherits(separating_lines(SPY), class(SPY))
 	)
 })
 
@@ -77,7 +38,7 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 	## 1) check that the output class
 	##    matches the input class
 	testthat::expect_true(
-		inherits(CDLSEPARATINGLINES(BTC), class(BTC))
+		inherits(separating_lines(BTC), class(BTC))
 	)
 })
 
@@ -89,10 +50,10 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 ##          series() function
 testthat::test_that(desc = 'Default calls', code = {
 	testthat::expect_equal(
-		object = CDLSEPARATINGLINES(
+		object = separating_lines(
 			BTC
 		),
-		expected = CDLSEPARATINGLINES(
+		expected = separating_lines(
 			BTC,
 			cols = ~ open + high + low + close
 		)
@@ -105,7 +66,7 @@ testthat::test_that(desc = 'Default calls', code = {
 ## 5.1) <data.frame> object
 testthat::test_that(desc = 'Equal length of input and output for <data.frame>', code = {
 	testthat::expect_equal(
-		object = nrow(CDLSEPARATINGLINES(
+		object = nrow(separating_lines(
 			BTC
 		)),
 		expected = nrow(BTC)
@@ -115,9 +76,49 @@ testthat::test_that(desc = 'Equal length of input and output for <data.frame>', 
 ## 5.2) <matrix> object
 testthat::test_that(desc = 'Equal length of input and output for <matrix>', code = {
 	testthat::expect_equal(
-		object = nrow(CDLSEPARATINGLINES(
+		object = nrow(separating_lines(
 			SPY
 		)),
 		expected = nrow(SPY)
+	)
+})
+
+
+## 2) {plotly}-method checks for data.frames
+##    and matrices
+##
+## 2.1) data.frame checks
+testthat::test_that(desc = '{plotly}-methods for <data.frame>', code = {
+	## 1) check that separating_lines can
+	##    use {plotly} without any issues
+	output <- testthat::expect_no_error(
+		{
+			chart(BTC)
+			indicator(separating_lines)
+		}
+	)
+
+	## 1.1) check that the output
+	##      is a {plotly}-object
+	testthat::expect_true(
+		inherits(output, "plotly")
+	)
+})
+
+## 2.2) matrix checks
+testthat::test_that(desc = '{plotly}-methods for <matrix>', code = {
+	## 1) check that separating_lines can
+	##    use {plotly} without any issues
+	output <- testthat::expect_no_error(
+		{
+			chart(SPY)
+			indicator(separating_lines)
+		}
+	)
+
+	## 1.1) check that the output
+	##      is a {plotly}-object
+	testthat::expect_true(
+		inherits(output, "plotly")
 	)
 })

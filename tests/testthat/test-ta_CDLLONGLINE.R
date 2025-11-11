@@ -6,57 +6,18 @@
 
 ## 1) alias and function similarity
 ##    checks this ensures that
-##    CDLLONGLINE and long_line produces the same results
+##    long_line and CDLLONGLINE produces the same results
 testthat::test_that(desc = 'Alias and function similarity', code = {
 	## 1) test that the alias and
 	##    function returns the same values
-	output <- CDLLONGLINE(SPY)
-	alias <- long_line(SPY)
+	output <- long_line(SPY)
+	alias <- CDLLONGLINE(SPY)
 
 	## 1.1) check if the values
 	##      are equal
 	testthat::expect_equal(
 		object = output,
 		expected = alias
-	)
-})
-
-## 2) {plotly}-method checks for data.frames
-##    and matrices
-##
-## 2.1) data.frame checks
-testthat::test_that(desc = '{plotly}-methods for <data.frame>', code = {
-	## 1) check that CDLLONGLINE can
-	##    use {plotly} without any issues
-	output <- testthat::expect_no_error(
-		{
-			chart(BTC)
-			indicator(CDLLONGLINE)
-		}
-	)
-
-	## 1.1) check that the output
-	##      is a {plotly}-object
-	testthat::expect_true(
-		inherits(output, "plotly")
-	)
-})
-
-## 2.2) matrix checks
-testthat::test_that(desc = '{plotly}-methods for <matrix>', code = {
-	## 1) check that CDLLONGLINE can
-	##    use {plotly} without any issues
-	output <- testthat::expect_no_error(
-		{
-			chart(SPY)
-			indicator(CDLLONGLINE)
-		}
-	)
-
-	## 1.1) check that the output
-	##      is a {plotly}-object
-	testthat::expect_true(
-		inherits(output, "plotly")
 	)
 })
 
@@ -68,7 +29,7 @@ testthat::test_that(desc = 'Class in, class out (<matrix>)', code = {
 	## 1) check that the output class
 	##    matches the input class
 	testthat::expect_true(
-		inherits(CDLLONGLINE(SPY), class(SPY))
+		inherits(long_line(SPY), class(SPY))
 	)
 })
 
@@ -77,7 +38,7 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 	## 1) check that the output class
 	##    matches the input class
 	testthat::expect_true(
-		inherits(CDLLONGLINE(BTC), class(BTC))
+		inherits(long_line(BTC), class(BTC))
 	)
 })
 
@@ -89,10 +50,10 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 ##          series() function
 testthat::test_that(desc = 'Default calls', code = {
 	testthat::expect_equal(
-		object = CDLLONGLINE(
+		object = long_line(
 			BTC
 		),
-		expected = CDLLONGLINE(
+		expected = long_line(
 			BTC,
 			cols = ~ open + high + low + close
 		)
@@ -105,7 +66,7 @@ testthat::test_that(desc = 'Default calls', code = {
 ## 5.1) <data.frame> object
 testthat::test_that(desc = 'Equal length of input and output for <data.frame>', code = {
 	testthat::expect_equal(
-		object = nrow(CDLLONGLINE(
+		object = nrow(long_line(
 			BTC
 		)),
 		expected = nrow(BTC)
@@ -115,9 +76,49 @@ testthat::test_that(desc = 'Equal length of input and output for <data.frame>', 
 ## 5.2) <matrix> object
 testthat::test_that(desc = 'Equal length of input and output for <matrix>', code = {
 	testthat::expect_equal(
-		object = nrow(CDLLONGLINE(
+		object = nrow(long_line(
 			SPY
 		)),
 		expected = nrow(SPY)
+	)
+})
+
+
+## 2) {plotly}-method checks for data.frames
+##    and matrices
+##
+## 2.1) data.frame checks
+testthat::test_that(desc = '{plotly}-methods for <data.frame>', code = {
+	## 1) check that long_line can
+	##    use {plotly} without any issues
+	output <- testthat::expect_no_error(
+		{
+			chart(BTC)
+			indicator(long_line)
+		}
+	)
+
+	## 1.1) check that the output
+	##      is a {plotly}-object
+	testthat::expect_true(
+		inherits(output, "plotly")
+	)
+})
+
+## 2.2) matrix checks
+testthat::test_that(desc = '{plotly}-methods for <matrix>', code = {
+	## 1) check that long_line can
+	##    use {plotly} without any issues
+	output <- testthat::expect_no_error(
+		{
+			chart(SPY)
+			indicator(long_line)
+		}
+	)
+
+	## 1.1) check that the output
+	##      is a {plotly}-object
+	testthat::expect_true(
+		inherits(output, "plotly")
 	)
 })

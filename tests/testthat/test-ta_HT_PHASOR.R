@@ -6,57 +6,18 @@
 
 ## 1) alias and function similarity
 ##    checks this ensures that
-##    HT_PHASOR and phasor_components produces the same results
+##    phasor_components and HT_PHASOR produces the same results
 testthat::test_that(desc = 'Alias and function similarity', code = {
 	## 1) test that the alias and
 	##    function returns the same values
-	output <- HT_PHASOR(SPY)
-	alias <- phasor_components(SPY)
+	output <- phasor_components(SPY)
+	alias <- HT_PHASOR(SPY)
 
 	## 1.1) check if the values
 	##      are equal
 	testthat::expect_equal(
 		object = output,
 		expected = alias
-	)
-})
-
-## 2) {plotly}-method checks for data.frames
-##    and matrices
-##
-## 2.1) data.frame checks
-testthat::test_that(desc = '{plotly}-methods for <data.frame>', code = {
-	## 1) check that HT_PHASOR can
-	##    use {plotly} without any issues
-	output <- testthat::expect_no_error(
-		{
-			chart(BTC)
-			indicator(HT_PHASOR)
-		}
-	)
-
-	## 1.1) check that the output
-	##      is a {plotly}-object
-	testthat::expect_true(
-		inherits(output, "plotly")
-	)
-})
-
-## 2.2) matrix checks
-testthat::test_that(desc = '{plotly}-methods for <matrix>', code = {
-	## 1) check that HT_PHASOR can
-	##    use {plotly} without any issues
-	output <- testthat::expect_no_error(
-		{
-			chart(SPY)
-			indicator(HT_PHASOR)
-		}
-	)
-
-	## 1.1) check that the output
-	##      is a {plotly}-object
-	testthat::expect_true(
-		inherits(output, "plotly")
 	)
 })
 
@@ -68,7 +29,7 @@ testthat::test_that(desc = 'Class in, class out (<matrix>)', code = {
 	## 1) check that the output class
 	##    matches the input class
 	testthat::expect_true(
-		inherits(HT_PHASOR(SPY), class(SPY))
+		inherits(phasor_components(SPY), class(SPY))
 	)
 })
 
@@ -77,7 +38,7 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 	## 1) check that the output class
 	##    matches the input class
 	testthat::expect_true(
-		inherits(HT_PHASOR(BTC), class(BTC))
+		inherits(phasor_components(BTC), class(BTC))
 	)
 })
 
@@ -89,10 +50,10 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 ##          series() function
 testthat::test_that(desc = 'Default calls', code = {
 	testthat::expect_equal(
-		object = HT_PHASOR(
+		object = phasor_components(
 			BTC
 		),
-		expected = HT_PHASOR(
+		expected = phasor_components(
 			BTC,
 			cols = ~close
 		)
@@ -105,7 +66,7 @@ testthat::test_that(desc = 'Default calls', code = {
 ## 5.1) <data.frame> object
 testthat::test_that(desc = 'Equal length of input and output for <data.frame>', code = {
 	testthat::expect_equal(
-		object = nrow(HT_PHASOR(
+		object = nrow(phasor_components(
 			BTC
 		)),
 		expected = nrow(BTC)
@@ -115,9 +76,49 @@ testthat::test_that(desc = 'Equal length of input and output for <data.frame>', 
 ## 5.2) <matrix> object
 testthat::test_that(desc = 'Equal length of input and output for <matrix>', code = {
 	testthat::expect_equal(
-		object = nrow(HT_PHASOR(
+		object = nrow(phasor_components(
 			SPY
 		)),
 		expected = nrow(SPY)
+	)
+})
+
+
+## 2) {plotly}-method checks for data.frames
+##    and matrices
+##
+## 2.1) data.frame checks
+testthat::test_that(desc = '{plotly}-methods for <data.frame>', code = {
+	## 1) check that phasor_components can
+	##    use {plotly} without any issues
+	output <- testthat::expect_no_error(
+		{
+			chart(BTC)
+			indicator(phasor_components)
+		}
+	)
+
+	## 1.1) check that the output
+	##      is a {plotly}-object
+	testthat::expect_true(
+		inherits(output, "plotly")
+	)
+})
+
+## 2.2) matrix checks
+testthat::test_that(desc = '{plotly}-methods for <matrix>', code = {
+	## 1) check that phasor_components can
+	##    use {plotly} without any issues
+	output <- testthat::expect_no_error(
+		{
+			chart(SPY)
+			indicator(phasor_components)
+		}
+	)
+
+	## 1.1) check that the output
+	##      is a {plotly}-object
+	testthat::expect_true(
+		inherits(output, "plotly")
 	)
 })

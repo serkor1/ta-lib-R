@@ -6,57 +6,18 @@
 
 ## 1) alias and function similarity
 ##    checks this ensures that
-##    CDLXSIDEGAP3METHODS and xside_gap_3_methods produces the same results
+##    xside_gap_3_methods and CDLXSIDEGAP3METHODS produces the same results
 testthat::test_that(desc = 'Alias and function similarity', code = {
 	## 1) test that the alias and
 	##    function returns the same values
-	output <- CDLXSIDEGAP3METHODS(SPY)
-	alias <- xside_gap_3_methods(SPY)
+	output <- xside_gap_3_methods(SPY)
+	alias <- CDLXSIDEGAP3METHODS(SPY)
 
 	## 1.1) check if the values
 	##      are equal
 	testthat::expect_equal(
 		object = output,
 		expected = alias
-	)
-})
-
-## 2) {plotly}-method checks for data.frames
-##    and matrices
-##
-## 2.1) data.frame checks
-testthat::test_that(desc = '{plotly}-methods for <data.frame>', code = {
-	## 1) check that CDLXSIDEGAP3METHODS can
-	##    use {plotly} without any issues
-	output <- testthat::expect_no_error(
-		{
-			chart(BTC)
-			indicator(CDLXSIDEGAP3METHODS)
-		}
-	)
-
-	## 1.1) check that the output
-	##      is a {plotly}-object
-	testthat::expect_true(
-		inherits(output, "plotly")
-	)
-})
-
-## 2.2) matrix checks
-testthat::test_that(desc = '{plotly}-methods for <matrix>', code = {
-	## 1) check that CDLXSIDEGAP3METHODS can
-	##    use {plotly} without any issues
-	output <- testthat::expect_no_error(
-		{
-			chart(SPY)
-			indicator(CDLXSIDEGAP3METHODS)
-		}
-	)
-
-	## 1.1) check that the output
-	##      is a {plotly}-object
-	testthat::expect_true(
-		inherits(output, "plotly")
 	)
 })
 
@@ -68,7 +29,7 @@ testthat::test_that(desc = 'Class in, class out (<matrix>)', code = {
 	## 1) check that the output class
 	##    matches the input class
 	testthat::expect_true(
-		inherits(CDLXSIDEGAP3METHODS(SPY), class(SPY))
+		inherits(xside_gap_3_methods(SPY), class(SPY))
 	)
 })
 
@@ -77,7 +38,7 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 	## 1) check that the output class
 	##    matches the input class
 	testthat::expect_true(
-		inherits(CDLXSIDEGAP3METHODS(BTC), class(BTC))
+		inherits(xside_gap_3_methods(BTC), class(BTC))
 	)
 })
 
@@ -89,10 +50,10 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 ##          series() function
 testthat::test_that(desc = 'Default calls', code = {
 	testthat::expect_equal(
-		object = CDLXSIDEGAP3METHODS(
+		object = xside_gap_3_methods(
 			BTC
 		),
-		expected = CDLXSIDEGAP3METHODS(
+		expected = xside_gap_3_methods(
 			BTC,
 			cols = ~ open + high + low + close
 		)
@@ -105,7 +66,7 @@ testthat::test_that(desc = 'Default calls', code = {
 ## 5.1) <data.frame> object
 testthat::test_that(desc = 'Equal length of input and output for <data.frame>', code = {
 	testthat::expect_equal(
-		object = nrow(CDLXSIDEGAP3METHODS(
+		object = nrow(xside_gap_3_methods(
 			BTC
 		)),
 		expected = nrow(BTC)
@@ -115,9 +76,49 @@ testthat::test_that(desc = 'Equal length of input and output for <data.frame>', 
 ## 5.2) <matrix> object
 testthat::test_that(desc = 'Equal length of input and output for <matrix>', code = {
 	testthat::expect_equal(
-		object = nrow(CDLXSIDEGAP3METHODS(
+		object = nrow(xside_gap_3_methods(
 			SPY
 		)),
 		expected = nrow(SPY)
+	)
+})
+
+
+## 2) {plotly}-method checks for data.frames
+##    and matrices
+##
+## 2.1) data.frame checks
+testthat::test_that(desc = '{plotly}-methods for <data.frame>', code = {
+	## 1) check that xside_gap_3_methods can
+	##    use {plotly} without any issues
+	output <- testthat::expect_no_error(
+		{
+			chart(BTC)
+			indicator(xside_gap_3_methods)
+		}
+	)
+
+	## 1.1) check that the output
+	##      is a {plotly}-object
+	testthat::expect_true(
+		inherits(output, "plotly")
+	)
+})
+
+## 2.2) matrix checks
+testthat::test_that(desc = '{plotly}-methods for <matrix>', code = {
+	## 1) check that xside_gap_3_methods can
+	##    use {plotly} without any issues
+	output <- testthat::expect_no_error(
+		{
+			chart(SPY)
+			indicator(xside_gap_3_methods)
+		}
+	)
+
+	## 1.1) check that the output
+	##      is a {plotly}-object
+	testthat::expect_true(
+		inherits(output, "plotly")
 	)
 })

@@ -6,57 +6,18 @@
 
 ## 1) alias and function similarity
 ##    checks this ensures that
-##    TRIMA and triangular_moving_average produces the same results
+##    triangular_moving_average and TRIMA produces the same results
 testthat::test_that(desc = 'Alias and function similarity', code = {
 	## 1) test that the alias and
 	##    function returns the same values
-	output <- TRIMA(SPY)
-	alias <- triangular_moving_average(SPY)
+	output <- triangular_moving_average(SPY)
+	alias <- TRIMA(SPY)
 
 	## 1.1) check if the values
 	##      are equal
 	testthat::expect_equal(
 		object = output,
 		expected = alias
-	)
-})
-
-## 2) {plotly}-method checks for data.frames
-##    and matrices
-##
-## 2.1) data.frame checks
-testthat::test_that(desc = '{plotly}-methods for <data.frame>', code = {
-	## 1) check that TRIMA can
-	##    use {plotly} without any issues
-	output <- testthat::expect_no_error(
-		{
-			chart(BTC)
-			indicator(TRIMA)
-		}
-	)
-
-	## 1.1) check that the output
-	##      is a {plotly}-object
-	testthat::expect_true(
-		inherits(output, "plotly")
-	)
-})
-
-## 2.2) matrix checks
-testthat::test_that(desc = '{plotly}-methods for <matrix>', code = {
-	## 1) check that TRIMA can
-	##    use {plotly} without any issues
-	output <- testthat::expect_no_error(
-		{
-			chart(SPY)
-			indicator(TRIMA)
-		}
-	)
-
-	## 1.1) check that the output
-	##      is a {plotly}-object
-	testthat::expect_true(
-		inherits(output, "plotly")
 	)
 })
 
@@ -68,7 +29,7 @@ testthat::test_that(desc = 'Class in, class out (<matrix>)', code = {
 	## 1) check that the output class
 	##    matches the input class
 	testthat::expect_true(
-		inherits(TRIMA(SPY), class(SPY))
+		inherits(triangular_moving_average(SPY), class(SPY))
 	)
 })
 
@@ -77,7 +38,7 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 	## 1) check that the output class
 	##    matches the input class
 	testthat::expect_true(
-		inherits(TRIMA(BTC), class(BTC))
+		inherits(triangular_moving_average(BTC), class(BTC))
 	)
 })
 
@@ -89,10 +50,10 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 ##          series() function
 testthat::test_that(desc = 'Default calls', code = {
 	testthat::expect_equal(
-		object = TRIMA(
+		object = triangular_moving_average(
 			BTC
 		),
-		expected = TRIMA(
+		expected = triangular_moving_average(
 			BTC,
 			cols = ~close
 		)
@@ -105,7 +66,7 @@ testthat::test_that(desc = 'Default calls', code = {
 ## 5.1) <data.frame> object
 testthat::test_that(desc = 'Equal length of input and output for <data.frame>', code = {
 	testthat::expect_equal(
-		object = nrow(TRIMA(
+		object = nrow(triangular_moving_average(
 			BTC
 		)),
 		expected = nrow(BTC)
@@ -115,7 +76,7 @@ testthat::test_that(desc = 'Equal length of input and output for <data.frame>', 
 ## 5.2) <matrix> object
 testthat::test_that(desc = 'Equal length of input and output for <matrix>', code = {
 	testthat::expect_equal(
-		object = nrow(TRIMA(
+		object = nrow(triangular_moving_average(
 			SPY
 		)),
 		expected = nrow(SPY)
@@ -123,24 +84,41 @@ testthat::test_that(desc = 'Equal length of input and output for <matrix>', code
 })
 
 
-## 6) vectors
-testthat::test_that(desc = '<double> methods', code = {
-	## 1) test that the alias and
-	##    function returns the same values
-	output <- TRIMA(SPY[, 1])
-	alias <- triangular_moving_average(SPY[, 1])
-
-	## 1.1) check if the values
-	##      are equal
-	testthat::expect_equal(
-		object = output,
-		expected = alias
+## 2) {plotly}-method checks for data.frames
+##    and matrices
+##
+## 2.1) data.frame checks
+testthat::test_that(desc = '{plotly}-methods for <data.frame>', code = {
+	## 1) check that triangular_moving_average can
+	##    use {plotly} without any issues
+	output <- testthat::expect_no_error(
+		{
+			chart(BTC)
+			indicator(triangular_moving_average)
+		}
 	)
 
-	testthat::expect_equal(
-		object = length(TRIMA(
-			SPY[, 1]
-		)),
-		expected = nrow(SPY)
+	## 1.1) check that the output
+	##      is a {plotly}-object
+	testthat::expect_true(
+		inherits(output, "plotly")
+	)
+})
+
+## 2.2) matrix checks
+testthat::test_that(desc = '{plotly}-methods for <matrix>', code = {
+	## 1) check that triangular_moving_average can
+	##    use {plotly} without any issues
+	output <- testthat::expect_no_error(
+		{
+			chart(SPY)
+			indicator(triangular_moving_average)
+		}
+	)
+
+	## 1.1) check that the output
+	##      is a {plotly}-object
+	testthat::expect_true(
+		inherits(output, "plotly")
 	)
 })
