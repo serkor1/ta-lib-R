@@ -32,7 +32,7 @@ generate_test <- function(x) {
 	impl_generate_test(
 		fun = x$fun,
 		ta_fun = x$alias,
-		formula = x$default_formula,
+		formula = '~close',
 		plotly = 1,
 		rolling = 0,
 		args = x$signature
