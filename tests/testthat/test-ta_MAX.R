@@ -4,28 +4,42 @@
 ##
 ## author: Serkan Korkmaz
 
-## 1) test that it works
-testthat::test_that(desc = 'description', code = {
-	## 1) test that the alias and
-	##    function returns the same values
-	output <- testthat::expect_no_error(
+## test that the function runs without
+## any conditions
+testthat::test_that(desc = 'Runs without *any* conditions', code = {
+	output <- testthat::expect_no_condition(
 		{
 			rolling_max(
-				x = SPY[[1]]
+				x = SPY[, 1]
 			)
 		}
 	)
 })
 
-## 5) check that the lenght of the input
-##    matches the output length
-##
-## 5.1) <data.frame> object
-testthat::test_that(desc = 'Equal length of input and output for <data.frame>', code = {
+## test that the length of the input
+## matches the output
+testthat::test_that(desc = 'Length in, length out', code = {
 	testthat::expect_equal(
-		object = length(rolling_max(
-			BTC[[1]]
-		)),
-		expected = nrow(BTC)
+		object = length(
+			rolling_max(
+				x = SPY[, 1]
+			)
+		),
+		expected = length(SPY[, 1])
+	)
+})
+
+## test that the output is a <double> vector
+testthat::test_that(desc = 'Output type', code = {
+	output <- rolling_max(
+		x = SPY[, 1]
+	)
+
+	testthat::expect_true(
+		typeof(output) == "double"
+	)
+
+	testthat::expect_true(
+		is.vector(output)
 	)
 })
