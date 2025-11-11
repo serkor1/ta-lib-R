@@ -124,12 +124,13 @@ trend_cycle_mode.numeric <- function(
 	}
 
 	## pass the argument directly
-	## to trend_cycle_mode.default()
-	x <- trend_cycle_mode.default(
-		x = x,
-		cols = cols,
-		,
-		...
+	## to 'C'
+	x <- .Call(
+		"impl_ta_HT_TRENDMODE",
+		as.double(x)
+		## splice:numeric:start
+
+		## splice:numeric:end
 	)
 
 	## check if it has 'dims'

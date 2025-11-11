@@ -124,12 +124,13 @@ phasor_components.numeric <- function(
 	}
 
 	## pass the argument directly
-	## to phasor_components.default()
-	x <- phasor_components.default(
-		x = x,
-		cols = cols,
-		,
-		...
+	## to 'C'
+	x <- .Call(
+		"impl_ta_HT_PHASOR",
+		as.double(x)
+		## splice:numeric:start
+
+		## splice:numeric:end
 	)
 
 	## check if it has 'dims'

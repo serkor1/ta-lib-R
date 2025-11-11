@@ -148,13 +148,16 @@ bollinger_bands.numeric <- function(
 	}
 
 	## pass the argument directly
-	## to bollinger_bands.default()
-	x <- bollinger_bands.default(
-		x = x,
-		cols = cols,
-		,
-		ma = ma,
-		...
+	## to 'C'
+	x <- .Call(
+		"impl_ta_BBANDS",
+		as.double(x),
+		## splice:numeric:start
+		ma$n,
+		as.double(std_up),
+		as.double(std_down),
+		ma$maType
+		## splice:numeric:end
 	)
 
 	## check if it has 'dims'

@@ -151,15 +151,15 @@ moving_average_convergence_divergence.numeric <- function(
 	}
 
 	## pass the argument directly
-	## to moving_average_convergence_divergence.default()
-	x <- moving_average_convergence_divergence.default(
-		x = x,
-		cols = cols,
-		,
-		fast = fast,
-		slow = slow,
-		signal = signal,
-		...
+	## to 'C'
+	x <- .Call(
+		"impl_ta_MACD",
+		as.double(x),
+		## splice:numeric:start
+		as.integer(fast),
+		as.integer(slow),
+		as.integer(signal)
+		## splice:numeric:end
 	)
 
 	## check if it has 'dims'

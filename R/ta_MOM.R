@@ -132,13 +132,13 @@ momentum.numeric <- function(
 	}
 
 	## pass the argument directly
-	## to momentum.default()
-	x <- momentum.default(
-		x = x,
-		cols = cols,
-		,
-		n = n,
-		...
+	## to 'C'
+	x <- .Call(
+		"impl_ta_MOM",
+		as.double(x),
+		## splice:numeric:start
+		as.integer(n)
+		## splice:numeric:end
 	)
 
 	## check if it has 'dims'
