@@ -62,6 +62,7 @@ utils::tail(output)
 \seealso{
 Other Price Transform: 
 \code{\link{median_price}()},
+\code{\link{midpoint_price}()},
 \code{\link{typical_price}()},
 \code{\link{weighted_close_price}()}
 }

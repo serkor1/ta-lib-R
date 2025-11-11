@@ -97,6 +97,7 @@ SEXP impl_ta_MA(SEXP inReal, SEXP optInTimePeriod, SEXP optInMAType);
 SEXP impl_ta_MAX(SEXP inReal, SEXP optInTimePeriod);
 SEXP impl_ta_MEDPRICE(SEXP inHigh, SEXP inLow);
 SEXP impl_ta_MFI(SEXP inHigh, SEXP inLow, SEXP inClose, SEXP inVolume, SEXP optInTimePeriod);
+SEXP impl_ta_MIDPRICE(SEXP inHigh, SEXP inLow, SEXP optInTimePeriod);
 SEXP impl_ta_MIN(SEXP inReal, SEXP optInTimePeriod);
 SEXP impl_ta_MINUS_DI(SEXP inHigh, SEXP inLow, SEXP inClose, SEXP optInTimePeriod);
 SEXP impl_ta_MINUS_DM(SEXP inHigh, SEXP inLow, SEXP optInTimePeriod);
