@@ -103,6 +103,7 @@ static const R_CallMethodDef CallEntries[] = {
   CALLDEF(impl_ta_MAX, 2),
   CALLDEF(impl_ta_MEDPRICE, 2),
   CALLDEF(impl_ta_MFI, 5),
+  CALLDEF(impl_ta_MIDPRICE, 3),
   CALLDEF(impl_ta_MIN, 2),
   CALLDEF(impl_ta_MINUS_DI, 4),
   CALLDEF(impl_ta_MINUS_DM, 3),

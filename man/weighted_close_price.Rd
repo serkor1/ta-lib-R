@@ -63,6 +63,7 @@ utils::tail(output)
 Other Price Transform: 
 \code{\link{average_price}()},
 \code{\link{median_price}()},
+\code{\link{midpoint_price}()},
 \code{\link{typical_price}()}
 }
 \author{
