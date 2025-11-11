@@ -16,11 +16,13 @@ ${FUN}.numeric <- function(
 		}
 
 		## pass the argument directly
-		## to ${FUN}.default()
-		x <- ${FUN}.default(
-			x = x,
-			cols = cols, ${PARGS}
-			...
+		## to 'C'
+		x <- .Call(
+			"impl_ta_${TA_FUN}",
+			as.double(x)
+			## splice:numeric:start
+			${CARGS}
+			## splice:numeric:end
 		)
 
 		## check if it has 'dims'

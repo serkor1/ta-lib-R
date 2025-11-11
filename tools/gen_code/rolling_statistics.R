@@ -30,6 +30,17 @@ generate_C <- function(x) {
 	)
 }
 
+generate_test <- function(x) {
+	impl_generate_test(
+		fun = x$fun,
+		ta_fun = x$alias,
+		formula = x$default_formula,
+		plotly = 0,
+		rolling = 1,
+		args = x$signature
+	)
+}
+
 ## 2) metadata
 metadata <- list()
 
@@ -107,4 +118,5 @@ for (x in metadata) {
 	generate_R(
 		x
 	)
+	generate_test(x)
 }

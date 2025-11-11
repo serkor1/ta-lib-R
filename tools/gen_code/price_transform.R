@@ -12,7 +12,7 @@ generate_R <- function(x) {
 		title = x$title,
 		family = "Price Transform",
 		fun = x$fun,
-		args = '',
+		args = x$signature,
 		formula = x$formula,
 		ta_fun = x$alias,
 		plotly = 0,
@@ -27,6 +27,15 @@ generate_C <- function(x) {
 			"tools/generate_indicator_core.sh",
 			paste0(x$alias, " > src/ta_", x$alias, ".c")
 		)
+	)
+}
+
+generate_test <- function(x) {
+	impl_generate_test(
+		fun = x$fun,
+		ta_fun = x$alias,
+		formula = x$formula,
+		plotly = 0
 	)
 }
 
@@ -65,8 +74,18 @@ metadata[[4]] <- list(
 	formula = '~high + low + close'
 )
 
+## Midpoint Price
+metadata[[5]] <- list(
+	title = 'Midpoint Price',
+	alias = 'MIDPRICE',
+	fun = 'midpoint_price',
+	formula = '~high + low',
+	signature = c("n=10")
+)
+
 ## generate code
 for (x in metadata) {
 	generate_C(x)
 	generate_R(x)
+	generate_test(x)
 }
