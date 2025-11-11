@@ -89,9 +89,9 @@ cat > ${OUTPUTFILE} <<EOF
 ## 
 ## author: Serkan Korkmaz
 
-## 1) alias and function similarity
-##    checks this ensures that 
-##    ${FUN} and ${ALIAS} produces the same results
+## alias and function similarity
+## checks this ensures that 
+## ${FUN} and ${ALIAS} produces the same results
 testthat::test_that(desc = 'Alias and function similarity', code = {
 
     ## 1) test that the alias and 
@@ -108,10 +108,10 @@ testthat::test_that(desc = 'Alias and function similarity', code = {
 
 })
 
-## 3) type-checks for data.frames and
-##    matrices
+## type-checks for data.frames and
+## matrices
 ##
-## 3.1) <matrix> object
+## <matrix> object
 testthat::test_that(desc = 'Class in, class out (<matrix>)', code = {
 	## 1) check that the output class
 	##    matches the input class
@@ -121,7 +121,7 @@ testthat::test_that(desc = 'Class in, class out (<matrix>)', code = {
 
 })
 
-## 3.2) <data.frame> object
+## <data.frame> object
 testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 	## 1) check that the output class
 	##    matches the input class
@@ -130,12 +130,12 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 	)
 })
 
-## 4) check that the default calls
-##    matches that of the constructed call
-##    with default values.
+## check that the default calls
+## matches that of the constructed call
+## with default values.
 ##
-##    NOTE: This test is more of a test of the internal
-##          series() function
+## NOTE: This test is more of a test of the internal
+##       series() function
 testthat::test_that(desc = 'Default calls', code = {
     testthat::expect_equal(
 		object = ${FUN}(
@@ -148,10 +148,10 @@ testthat::test_that(desc = 'Default calls', code = {
 	)
 })
 
-## 5) check that the lenght of the input
-##    matches the output length
+## check that the lenght of the input
+## matches the output length
 ##
-## 5.1) <data.frame> object
+## <data.frame> object
 testthat::test_that(desc = 'Equal length of input and output for <data.frame>', code = {
     testthat::expect_equal(
 		object = nrow(${FUN}(
@@ -161,7 +161,7 @@ testthat::test_that(desc = 'Equal length of input and output for <data.frame>', 
 	)
 })
 
-## 5.2) <matrix> object
+## <matrix> object
 testthat::test_that(desc = 'Equal length of input and output for <matrix>', code = {
     testthat::expect_equal(
 		object = nrow(${FUN}(
@@ -177,13 +177,13 @@ EOF
 if [[ $PLOTLY -eq 1 ]]; then
 	cat >> ${OUTPUTFILE} <<EOF
 
-## 2) {plotly}-method checks for data.frames
-##    and matrices
+## <plotly>-method checks for <data.frame>
+## and <matrix>
 ## 
-## 2.1) data.frame checks
-testthat::test_that(desc = '{plotly}-methods for <data.frame>', code = {
-	## 1) check that ${FUN} can
-	##    use {plotly} without any issues
+## <data.frame> checks
+testthat::test_that(desc = '<plotly>-methods for <data.frame>', code = {
+	## check that ${FUN} can
+	## use <plotly> without any issues
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
@@ -191,17 +191,17 @@ testthat::test_that(desc = '{plotly}-methods for <data.frame>', code = {
 		}
 	)
 
-	## 1.1) check that the output
-	##      is a {plotly}-object
+	## check that the output
+	## is a <plotly>-object
 	testthat::expect_true(
 		inherits(output, "plotly")
 	)
 })
 
-## 2.2) matrix checks
-testthat::test_that(desc = '{plotly}-methods for <matrix>', code = {
-	## 1) check that ${FUN} can
-	##    use {plotly} without any issues
+## <matrix> checks
+testthat::test_that(desc = '<plotly>-methods for <matrix>', code = {
+	## check that ${FUN} can
+	## use <plotly> without any issues
 	output <- testthat::expect_no_error(
 		{
 			chart(SPY)
@@ -209,8 +209,8 @@ testthat::test_that(desc = '{plotly}-methods for <matrix>', code = {
 		}
 	)
 
-	## 1.1) check that the output
-	##      is a {plotly}-object
+	## check that the output
+	## is a <plotly>-object
 	testthat::expect_true(
 		inherits(output, "plotly")
 	)
@@ -218,17 +218,33 @@ testthat::test_that(desc = '{plotly}-methods for <matrix>', code = {
 EOF
 fi
 
-
-## Add plotly methods
+## add <numeric> methods
 if [[ $NUMERIC -eq 1 ]]; then
 	cat >> ${OUTPUTFILE} <<EOF
 
-testthat::test_that(desc = 'Numeric Methods', code = {
-	## 1) check that the output class
-	##    matches the input class
-	testthat::expect_no_error(
+## check that <numeric> methods runs without
+## issues and returns proper lengths
+testthat::test_that(desc = '<numeric> methods', code = {
+	## check that the <numeric> method
+	## runs
+	x <- testthat::expect_no_condition(
 		${FUN}(BTC[[1]])
 	)
+
+	## the numeric methods returns <matrix>
+	## depending on the underlying functions
+	## so the checks for equal lengths is conditional
+	target_length <- length(BTC[[1]])
+
+	if (is.null(dim(x))) {
+		testthat::expect_true(
+			length(x) == target_length
+		)
+	} else {
+		testthat::expect_true(
+			nrow(x) == target_length
+		)
+	}
 })
 EOF
 fi
