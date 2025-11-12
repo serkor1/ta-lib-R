@@ -5,7 +5,8 @@
 #' @templateVar .title $TITLE
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun $FUN
-#' 
+#' @templateVar .family ${FAMILY}
+#'
 #' @returns
 #' An object of same [class] and [length] of `x`:
 #'
