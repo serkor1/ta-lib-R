@@ -19,7 +19,6 @@ ${FUN}.numeric <- function(
 		## to 'C'
 		x <- .Call(
 			"impl_ta_${TA_FUN}",
-			as.double(x)
 			## splice:numeric:start
 			${CARGS}
 			## splice:numeric:end

@@ -5,6 +5,7 @@
 #' @templateVar .title ${TITLE}
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun ${FUN}
+#' @templateVar .family ${FAMILY}
 #' 
 ## splice:documentation:start
 ## splice:documentation:end

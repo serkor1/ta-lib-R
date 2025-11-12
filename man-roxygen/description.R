@@ -16,6 +16,20 @@
 #' @concept trading
 #' @concept algorithmic trading
 #'
+<% if (grepl(pattern = "Price Transform", x = .family)) { %>
+#' @examples
+#' ## load Bitcoin (BTC)
+#' ## series
+#' data(BTC, package = "talib")
+#'
+#' ## calculate the indicator
+#' ## for Bitcoin (BTC)
+#' output <- talib::<%= .fun %>(BTC)
+#'
+#' ## display the results
+#' utils::tail(output)
+
+<% } else { %>
 #' @examples
 #' ## load Bitcoin (BTC)
 #' ## series
@@ -44,3 +58,5 @@
 #'      talib::<%= .fun %>
 #'  )
 #' }
+
+<% } %>
