@@ -1,5 +1,5 @@
 Package: talib
-Title: Bindings to the Technical Analysis Library (TA-Lib)
+Title: An Interface to 'TA-Lib' (Technical Analysis Library)
 Version: 0.9-0
 Authors@R: c(
     person(
@@ -10,7 +10,8 @@ Authors@R: c(
       comment = c(ORCID = "0000-0002-5052-0982")
     )
   )
-Description: 'TA-Lib' offers 200+ technical trading indicators, including candlestick pattern recognition.
+Description: An interface to the 'TA-Lib' technical analysis library. The package provides access to about 200 indicators (e.g., ADX, MACD, RSI, Stochastic, Bollinger Bands), candlestick pattern recognition and common rolling-window functions—implemented in 'C' for fast computations on open-high-low-close-volume (OHLC-V) time series for rule-based signal generation.
+SystemRequirements: CMake
 License: BSD_3_clause + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
