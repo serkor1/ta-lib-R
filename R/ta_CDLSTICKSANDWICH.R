@@ -5,6 +5,7 @@
 #' @templateVar .title Stick Sandwich
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun stick_sandwich
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

@@ -5,6 +5,7 @@
 #' @templateVar .title Commodity Channel Index
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun commodity_channel_index
+#' @templateVar .family Momentum Indicator
 #'
 ## splice:documentation:start
 ## splice:documentation:end

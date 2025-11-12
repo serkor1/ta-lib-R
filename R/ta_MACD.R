@@ -5,6 +5,7 @@
 #' @templateVar .title Moving Average Convergence Divergence
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun moving_average_convergence_divergence
+#' @templateVar .family Momentum Indicator
 #'
 ## splice:documentation:start
 #' @param fast Number of period for the fast MA.
@@ -154,8 +155,8 @@ moving_average_convergence_divergence.numeric <- function(
 	## to 'C'
 	x <- .Call(
 		"impl_ta_MACD",
-		as.double(x),
 		## splice:numeric:start
+		as.double(x),
 		as.integer(fast),
 		as.integer(slow),
 		as.integer(signal)

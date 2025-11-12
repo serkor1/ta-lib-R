@@ -5,6 +5,7 @@
 #' @templateVar .title MESA Adaptive Moving Average
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun mesa_adaptive_moving_average
+#' @templateVar .family Overlap Study
 #'
 #' @template description
 #' @template returns

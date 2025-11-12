@@ -5,6 +5,7 @@
 #' @templateVar .title Triple Exponential Average
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun triple_exponential_average
+#' @templateVar .family Momentum Indicator
 #'
 ## splice:documentation:start
 ## splice:documentation:end
@@ -135,8 +136,8 @@ triple_exponential_average.numeric <- function(
 	## to 'C'
 	x <- .Call(
 		"impl_ta_TRIX",
-		as.double(x),
 		## splice:numeric:start
+		as.double(x),
 		as.integer(n)
 		## splice:numeric:end
 	)

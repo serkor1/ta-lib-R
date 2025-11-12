@@ -5,6 +5,7 @@
 #' @templateVar .title Stochastic Relative Strength Index
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun stochastic_relative_strength_index
+#' @templateVar .family Momentum Indicator
 #'
 ## splice:documentation:start
 #' @param fastk Time period for building the Fast-K line.

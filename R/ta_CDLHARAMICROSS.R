@@ -5,6 +5,7 @@
 #' @templateVar .title Harami Cross
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun harami_cross
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

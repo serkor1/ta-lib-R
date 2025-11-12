@@ -5,6 +5,7 @@
 #' @templateVar .title Plus Directional Movement
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun plus_directional_movement
+#' @templateVar .family Momentum Indicator
 #'
 ## splice:documentation:start
 ## splice:documentation:end

@@ -5,6 +5,7 @@
 #' @templateVar .title Triangular Moving Average
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun triangular_moving_average
+#' @templateVar .family Overlap Study
 #'
 #' @template description
 #' @template returns

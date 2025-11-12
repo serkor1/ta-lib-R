@@ -5,6 +5,7 @@
 #' @templateVar .title Dark Cloud Cover
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun dark_cloud_cover
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

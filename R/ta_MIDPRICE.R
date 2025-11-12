@@ -5,6 +5,7 @@
 #' @templateVar .title Midpoint Price
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun midpoint_price
+#' @templateVar .family Price Transform
 #'
 ## splice:documentation:start
 ## splice:documentation:end

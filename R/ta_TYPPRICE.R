@@ -5,6 +5,7 @@
 #' @templateVar .title Typical Price
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun typical_price
+#' @templateVar .family Price Transform
 #'
 ## splice:documentation:start
 ## splice:documentation:end

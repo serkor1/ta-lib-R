@@ -5,6 +5,7 @@
 #' @templateVar .title Aroon
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun aroon
+#' @templateVar .family Momentum Indicator
 #'
 ## splice:documentation:start
 ## splice:documentation:end

@@ -5,6 +5,7 @@
 #' @templateVar .title Three Inside
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun three_inside
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

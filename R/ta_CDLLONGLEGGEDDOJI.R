@@ -5,6 +5,7 @@
 #' @templateVar .title Long Legged Doji
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun long_legged_doji
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

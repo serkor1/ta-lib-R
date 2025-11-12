@@ -5,6 +5,7 @@
 #' @templateVar .title Piercing
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun piercing
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

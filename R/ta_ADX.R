@@ -5,6 +5,7 @@
 #' @templateVar .title Average Directional Movement Index
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun average_directional_movement_index
+#' @templateVar .family Momentum Indicator
 #'
 ## splice:documentation:start
 ## splice:documentation:end

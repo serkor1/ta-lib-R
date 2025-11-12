@@ -5,6 +5,7 @@
 #' @templateVar .title Engulfing
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun engulfing
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

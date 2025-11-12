@@ -5,6 +5,7 @@
 #' @templateVar .title Triple Exponential Moving Average (T3)
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun t3_exponential_moving_average
+#' @templateVar .family Overlap Study
 #'
 #' @template description
 #' @template returns

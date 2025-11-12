@@ -5,6 +5,7 @@
 #' @templateVar .title Separating Lines
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun separating_lines
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

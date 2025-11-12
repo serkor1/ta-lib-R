@@ -5,6 +5,7 @@
 #' @templateVar .title Hilbert Transform - SineWave
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun sine_wave
+#' @templateVar .family Cycle Indicator
 #'
 ## splice:documentation:start
 ## splice:documentation:end
@@ -127,9 +128,8 @@ sine_wave.numeric <- function(
 	## to 'C'
 	x <- .Call(
 		"impl_ta_HT_SINE",
-		as.double(x)
 		## splice:numeric:start
-
+		as.double(x)
 		## splice:numeric:end
 	)
 

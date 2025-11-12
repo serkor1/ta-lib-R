@@ -5,6 +5,7 @@
 #' @templateVar .title Tasuki Gap
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun tasuki_gap
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

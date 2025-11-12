@@ -5,6 +5,7 @@
 #' @templateVar .title Inverted Hammer
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun inverted_hammer
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

@@ -5,6 +5,7 @@
 #' @templateVar .title Weighted Close Price
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun weighted_close_price
+#' @templateVar .family Price Transform
 #'
 ## splice:documentation:start
 ## splice:documentation:end

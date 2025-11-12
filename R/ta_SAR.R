@@ -5,6 +5,7 @@
 #' @templateVar .title Parabolic Stop and Reverse (SAR)
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun parabolic_stop_and_reverse
+#' @templateVar .family Overlap Study
 #'
 ## splice:documentation:start
 #' @param acceleration  Acceleration factor used up to the maximum value

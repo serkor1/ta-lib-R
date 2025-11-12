@@ -5,6 +5,7 @@
 #' @templateVar .title Counter Attack
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun counter_attack
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

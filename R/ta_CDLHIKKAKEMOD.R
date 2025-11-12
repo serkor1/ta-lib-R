@@ -5,6 +5,7 @@
 #' @templateVar .title Hikkake Modified
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun hikakke_mod
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

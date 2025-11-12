@@ -5,6 +5,7 @@
 #' @templateVar .title Momentum
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun momentum
+#' @templateVar .family Momentum Indicator
 #'
 ## splice:documentation:start
 ## splice:documentation:end
@@ -135,8 +136,8 @@ momentum.numeric <- function(
 	## to 'C'
 	x <- .Call(
 		"impl_ta_MOM",
-		as.double(x),
 		## splice:numeric:start
+		as.double(x),
 		as.integer(n)
 		## splice:numeric:end
 	)

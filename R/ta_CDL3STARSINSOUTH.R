@@ -5,6 +5,7 @@
 #' @templateVar .title Three Stars in the South
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun three_stars_in_the_south
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

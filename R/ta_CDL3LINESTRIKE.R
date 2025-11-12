@@ -5,6 +5,7 @@
 #' @templateVar .title Three-Line Strike
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun three_line_strike
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

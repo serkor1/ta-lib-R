@@ -5,6 +5,7 @@
 #' @templateVar .title Chaikin A/D Line
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun chaikin_accumulation_distribution_line
+#' @templateVar .family Volume Indicator
 #'
 ## splice:documentation:start
 ## splice:documentation:end

@@ -5,6 +5,7 @@
 #' @templateVar .title Percentage Price Oscillator
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun percentage_price_oscillator
+#' @templateVar .family Momentum Indicator
 #'
 ## splice:documentation:start
 #' @param fast Number of period for the fast MA
@@ -154,8 +155,8 @@ percentage_price_oscillator.numeric <- function(
 	## to 'C'
 	x <- .Call(
 		"impl_ta_PPO",
-		as.double(x),
 		## splice:numeric:start
+		as.double(x),
 		as.integer(fast),
 		as.integer(slow),
 		ma$maType

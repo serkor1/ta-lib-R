@@ -5,6 +5,7 @@
 #' @templateVar .title In Neck
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun in_neck
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

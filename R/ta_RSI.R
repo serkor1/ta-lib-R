@@ -5,6 +5,7 @@
 #' @templateVar .title Relative Strength Index
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun relative_strength_index
+#' @templateVar .family Momentum Indicator
 #'
 ## splice:documentation:start
 ## splice:documentation:end
@@ -135,8 +136,8 @@ relative_strength_index.numeric <- function(
 	## to 'C'
 	x <- .Call(
 		"impl_ta_RSI",
-		as.double(x),
 		## splice:numeric:start
+		as.double(x),
 		as.integer(n)
 		## splice:numeric:end
 	)

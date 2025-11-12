@@ -5,6 +5,7 @@
 #' @templateVar .title Closing Marubozu
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun closing_marubozu
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

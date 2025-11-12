@@ -5,6 +5,7 @@
 #' @templateVar .title Kicking Baby Length
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun kicking_baby_length
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:
