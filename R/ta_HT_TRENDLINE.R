@@ -5,6 +5,7 @@
 #' @templateVar .title Hilbert Transform - Instantaneous Trendline
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun trendline
+#' @templateVar .family Overlap Study
 #'
 ## splice:documentation:start
 ## splice:documentation:end
@@ -127,9 +128,8 @@ trendline.numeric <- function(
 	## to 'C'
 	x <- .Call(
 		"impl_ta_HT_TRENDLINE",
-		as.double(x)
 		## splice:numeric:start
-
+		as.double(x)
 		## splice:numeric:end
 	)
 

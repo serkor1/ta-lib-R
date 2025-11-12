@@ -5,6 +5,7 @@
 #' @templateVar .title Ratio of Change
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun ratio_of_change
+#' @templateVar .family Momentum Indicator
 #'
 ## splice:documentation:start
 ## splice:documentation:end
@@ -135,8 +136,8 @@ ratio_of_change.numeric <- function(
 	## to 'C'
 	x <- .Call(
 		"impl_ta_ROCR",
-		as.double(x),
 		## splice:numeric:start
+		as.double(x),
 		as.integer(n)
 		## splice:numeric:end
 	)

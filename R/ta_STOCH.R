@@ -5,6 +5,7 @@
 #' @templateVar .title Stochastic
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun stochastic
+#' @templateVar .family Momentum Indicator
 #'
 ## splice:documentation:start
 #' @param fastk Time period for building the Fast-K line

@@ -5,6 +5,7 @@
 #' @templateVar .title Williams %R
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun williams_oscillator
+#' @templateVar .family Momentum Indicator
 #'
 ## splice:documentation:start
 ## splice:documentation:end

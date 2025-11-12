@@ -5,6 +5,7 @@
 #' @templateVar .title Hilbert Transform - Dominant Cycle Period
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun dominant_cycle_period
+#' @templateVar .family Cycle Indicator
 #'
 ## splice:documentation:start
 ## splice:documentation:end
@@ -127,9 +128,8 @@ dominant_cycle_period.numeric <- function(
 	## to 'C'
 	x <- .Call(
 		"impl_ta_HT_DCPERIOD",
-		as.double(x)
 		## splice:numeric:start
-
+		as.double(x)
 		## splice:numeric:end
 	)
 

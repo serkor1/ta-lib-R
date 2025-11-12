@@ -5,6 +5,7 @@
 #' @templateVar .title Hammer
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun hammer
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

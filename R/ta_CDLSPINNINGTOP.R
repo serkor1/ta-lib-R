@@ -5,6 +5,7 @@
 #' @templateVar .title Spinning Top
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun spinning_top
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

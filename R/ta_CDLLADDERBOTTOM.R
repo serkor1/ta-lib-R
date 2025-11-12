@@ -5,6 +5,7 @@
 #' @templateVar .title Ladder Bottom
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun ladder_bottom
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

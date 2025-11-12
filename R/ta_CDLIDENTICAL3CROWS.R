@@ -5,6 +5,7 @@
 #' @templateVar .title Identical Three Crows
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun three_identical_crows
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

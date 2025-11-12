@@ -5,6 +5,7 @@
 #' @templateVar .title Parabolic Stop and Reverse (SAR) - Extended
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun extended_parabolic_stop_and_reverse
+#' @templateVar .family Overlap Study
 #'
 ## splice:documentation:start
 #' @param init Start value and direction. 0 for Auto, >0 for Long, <0 for Short

@@ -5,6 +5,7 @@
 #' @templateVar .title Upside/Downside Gap Three Methods
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun xside_gap_3_methods
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

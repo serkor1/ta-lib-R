@@ -5,6 +5,7 @@
 #' @templateVar .title Chande Momentum Oscillator
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun chande_momentum_oscillator
+#' @templateVar .family Momentum Indicator
 #'
 ## splice:documentation:start
 ## splice:documentation:end
@@ -135,8 +136,8 @@ chande_momentum_oscillator.numeric <- function(
 	## to 'C'
 	x <- .Call(
 		"impl_ta_CMO",
-		as.double(x),
 		## splice:numeric:start
+		as.double(x),
 		as.integer(n)
 		## splice:numeric:end
 	)

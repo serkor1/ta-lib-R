@@ -5,6 +5,7 @@
 #' @templateVar .title Normalized Average True Range
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun normalized_average_true_range
+#' @templateVar .family Volatility Indicator
 #'
 ## splice:documentation:start
 ## splice:documentation:end

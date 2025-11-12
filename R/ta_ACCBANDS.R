@@ -5,6 +5,7 @@
 #' @templateVar .title Acceleration Bands
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun acceleration_bands
+#' @templateVar .family Overlap Study
 #'
 ## splice:documentation:start
 ## splice:documentation:end

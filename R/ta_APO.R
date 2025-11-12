@@ -5,6 +5,7 @@
 #' @templateVar .title Absolute Price Oscillator
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun absolute_price_oscillator
+#' @templateVar .family Momentum Indicator
 #'
 ## splice:documentation:start
 #' @param fast something
@@ -154,8 +155,8 @@ absolute_price_oscillator.numeric <- function(
 	## to 'C'
 	x <- .Call(
 		"impl_ta_APO",
-		as.double(x),
 		## splice:numeric:start
+		as.double(x),
 		as.integer(fast),
 		as.integer(slow),
 		ma$maType

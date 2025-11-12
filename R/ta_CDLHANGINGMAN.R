@@ -5,6 +5,7 @@
 #' @templateVar .title Hanging Man
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun hanging_man
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

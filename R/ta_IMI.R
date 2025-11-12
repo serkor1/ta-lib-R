@@ -5,6 +5,7 @@
 #' @templateVar .title Intraday Movement Index
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun intraday_movement_index
+#' @templateVar .family Momentum Indicator
 #'
 ## splice:documentation:start
 ## splice:documentation:end

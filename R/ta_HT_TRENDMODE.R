@@ -5,6 +5,7 @@
 #' @templateVar .title Hilbert Transform - Trend vs Cycle Mode
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun trend_cycle_mode
+#' @templateVar .family Cycle Indicator
 #'
 ## splice:documentation:start
 ## splice:documentation:end
@@ -127,9 +128,8 @@ trend_cycle_mode.numeric <- function(
 	## to 'C'
 	x <- .Call(
 		"impl_ta_HT_TRENDMODE",
-		as.double(x)
 		## splice:numeric:start
-
+		as.double(x)
 		## splice:numeric:end
 	)
 

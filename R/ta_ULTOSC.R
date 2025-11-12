@@ -5,6 +5,7 @@
 #' @templateVar .title Ultimate Oscillator
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun ultimate_oscillator
+#' @templateVar .family Momentum Indicator
 #'
 ## splice:documentation:start
 ## splice:documentation:end

@@ -5,6 +5,7 @@
 #' @templateVar .title Hilbert Transform - Phasor Components
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun phasor_components
+#' @templateVar .family Cycle Indicator
 #'
 ## splice:documentation:start
 ## splice:documentation:end
@@ -127,9 +128,8 @@ phasor_components.numeric <- function(
 	## to 'C'
 	x <- .Call(
 		"impl_ta_HT_PHASOR",
-		as.double(x)
 		## splice:numeric:start
-
+		as.double(x)
 		## splice:numeric:end
 	)
 

@@ -5,6 +5,7 @@
 #' @templateVar .title Advance Block
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun advance_block
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

@@ -5,6 +5,7 @@
 #' @templateVar .title Long Line
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun long_line
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

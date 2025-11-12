@@ -5,6 +5,7 @@
 #' @templateVar .title True Range
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun true_range
+#' @templateVar .family Volatility Indicator
 #'
 ## splice:documentation:start
 ## splice:documentation:end

@@ -5,6 +5,7 @@
 #' @templateVar .title Dragonfly Doji
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun dragonfly_doji
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

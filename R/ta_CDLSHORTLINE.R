@@ -5,6 +5,7 @@
 #' @templateVar .title Short Line Candle
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun short_line
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

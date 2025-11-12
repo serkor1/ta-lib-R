@@ -5,6 +5,7 @@
 #' @templateVar .title Gravestone Doji
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun gravestone_doji
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

@@ -5,6 +5,7 @@
 #' @templateVar .title Bollinger Bands
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun bollinger_bands
+#' @templateVar .family Overlap Study
 #'
 ## splice:documentation:start
 #' @param ma Moving average specification
@@ -151,8 +152,8 @@ bollinger_bands.numeric <- function(
 	## to 'C'
 	x <- .Call(
 		"impl_ta_BBANDS",
-		as.double(x),
 		## splice:numeric:start
+		as.double(x),
 		ma$n,
 		as.double(std_up),
 		as.double(std_down),

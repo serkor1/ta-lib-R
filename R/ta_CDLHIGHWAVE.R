@@ -5,6 +5,7 @@
 #' @templateVar .title High Wave
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun high_wave
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

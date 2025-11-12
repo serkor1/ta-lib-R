@@ -5,6 +5,7 @@
 #' @templateVar .title Morning Doji Star
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun morning_doji_star
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

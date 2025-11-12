@@ -5,6 +5,7 @@
 #' @templateVar .title Stalled Pattern
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun stalled_pattern
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

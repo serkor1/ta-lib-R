@@ -5,6 +5,7 @@
 #' @templateVar .title Up/Down-gap side-by-side white lines
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun gaps_side_white
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

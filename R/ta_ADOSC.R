@@ -5,6 +5,7 @@
 #' @templateVar .title Chaikin A/D Oscillator
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun chaikin_accumulation_distribution_oscillator
+#' @templateVar .family Volume Indicator
 #'
 ## splice:documentation:start
 #' @param fast Period for the fast MA

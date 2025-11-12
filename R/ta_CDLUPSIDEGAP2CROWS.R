@@ -5,6 +5,7 @@
 #' @templateVar .title Upside Gap Two Crows
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun upside_gap_2_crows
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

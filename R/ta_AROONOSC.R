@@ -5,6 +5,7 @@
 #' @templateVar .title Aroon Oscillator
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun aroon_oscillator
+#' @templateVar .family Momentum Indicator
 #'
 ## splice:documentation:start
 ## splice:documentation:end

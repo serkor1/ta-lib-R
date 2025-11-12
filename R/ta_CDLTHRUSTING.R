@@ -5,6 +5,7 @@
 #' @templateVar .title Thrusting
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun thrusting
+#' @templateVar .family Cycle Indicator
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

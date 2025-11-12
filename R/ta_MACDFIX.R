@@ -5,6 +5,7 @@
 #' @templateVar .title Moving Average Convergence Divergence (Fixed)
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun fixed_moving_average_convergence_divergence
+#' @templateVar .family Momentum Indicator
 #'
 ## splice:documentation:start
 #' @param signal Smoothing for the signal line.
@@ -136,8 +137,8 @@ fixed_moving_average_convergence_divergence.numeric <- function(
 	## to 'C'
 	x <- .Call(
 		"impl_ta_MACDFIX",
-		as.double(x),
 		## splice:numeric:start
+		as.double(x),
 		as.integer(signal)
 		## splice:numeric:end
 	)

@@ -5,6 +5,7 @@
 #' @templateVar .title Balance of Power
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun balance_of_power
+#' @templateVar .family Momentum Indicator
 #'
 ## splice:documentation:start
 ## splice:documentation:end
