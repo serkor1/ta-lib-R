@@ -4,7 +4,7 @@ name: R-CMD-check
 
 on:
   push:
-    branches: [devel]
+    branches: [devel, documentation]
   pull_request:
     branches: [devel]
 
