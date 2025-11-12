@@ -41,23 +41,6 @@ output <- talib::median_price(BTC)
 
 ## display the results
 utils::tail(output)
-
-## visualize the indicator
-## with candlesticks
-##
-## see ?talib::chart or ?talib::indicator
-## for more details
-{
- ## chart OHLC-V
- ## series with candlesticks
- talib::chart(BTC)
-
- ## chart indicator
- ## with default values
- talib::indicator(
-     talib::median_price
- )
-}
 }
 \seealso{
 Other Price Transform: 
