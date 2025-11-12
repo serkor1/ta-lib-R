@@ -1,3 +1,6 @@
+# Man files
+/**/*.Rd
+
 # History files
 .Rhistory
 .Rapp.history
