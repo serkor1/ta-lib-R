@@ -30,35 +30,6 @@ is passed as a \link{vector} the function calculates the indicator 'as is', and 
 The indicator, by default, follows its mathematical definition. However, the \code{cols} argument allows for simple rearrangement of the definition by passing relevant
 columns in a custom order. Refer to the details-section for more on the calculation of the indicators.
 }
-\examples{
-## load Bitcoin (BTC)
-## series
-data(BTC, package = "talib")
-
-## calculate the indicator
-## for Bitcoin (BTC)
-output <- talib::rolling_standard_deviation(BTC)
-
-## display the results
-utils::tail(output)
-
-## visualize the indicator
-## with candlesticks
-##
-## see ?talib::chart or ?talib::indicator
-## for more details
-{
- ## chart OHLC-V
- ## series with candlesticks
- talib::chart(BTC)
-
- ## chart indicator
- ## with default values
- talib::indicator(
-     talib::rolling_standard_deviation
- )
-}
-}
 \seealso{
 Other Rolling Statistic: 
 \code{\link{rolling_beta}()},
