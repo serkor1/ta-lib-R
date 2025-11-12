@@ -35,18 +35,12 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::pkgdown
+          extra-packages: any::pkgdown any::devtools any::roxygen2
           needs: website
         
-      - name: Install {talib}
-        shell: bash
-        run: |
-          package_name=$(sed -n 's/^Package:[[:space:]]*//p' DESCRIPTION)
-          package_version=$(sed -n 's/^Version:[[:space:]]*//p' DESCRIPTION)
-          tarball_location="${package_name}_${package_version}.tar.gz"
-
-          R CMD build .
-          R CMD INSTALL "$tarball_location"
+      - name: Render documentation and NAMESPACE
+        run: devtools::document()
+        shell: Rscript {0}
 
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
