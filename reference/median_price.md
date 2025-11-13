@@ -7,20 +7,18 @@ package-wide dependencies. Ie.
 [class](https://rdrr.io/r/base/class.html) out. Each method is a soft
 wrapper of [model.frame](https://rdrr.io/r/stats/model.frame.html) and
 therefore the OHLC-V series must be coercible to a
-[data.frame](https://rdrr.io/r/base/data.frame.html). This rule does not
-transfer to indicators that uses univariate series, unless passed as a
-1-column [data.frame](https://rdrr.io/r/base/data.frame.html) or
-[matrix](https://rdrr.io/r/base/matrix.html). In such cases, if
-univariate series is passed as a
-[vector](https://rdrr.io/r/base/vector.html) the function calculates the
-indicator 'as is', and returns a
-[data.frame](https://rdrr.io/r/base/data.frame.html) if the indicator
-itself is also a univariate series.
+[data.frame](https://rdrr.io/r/base/data.frame.html).
 
-The indicator, by default, follows its mathematical definition. However,
-the `cols` argument allows for simple rearrangement of the definition by
-passing relevant columns in a custom order. Refer to the details-section
-for more on the calculation of the indicators.
+`median_price()` also accepts a
+[double](https://rdrr.io/r/base/double.html) vector in which case the
+indicator is calculated 'as-is' without passing through
+[model.frame](https://rdrr.io/r/stats/model.frame.html).
+`median_price()` returns an `n` by `k`
+[matrix](https://rdrr.io/r/base/matrix.html) computed in C by default.
+When `k = 1`, the result is simplified to a
+[double](https://rdrr.io/r/base/double.html) vector; for `k > 1`, the
+full `n` by `k` [matrix](https://rdrr.io/r/base/matrix.html) is
+returned.
 
 ## Usage
 
@@ -33,18 +31,14 @@ median_price(x, cols, ...)
 - x:
 
   An OHLC-V series that is coercible to
-  [data.frame](https://rdrr.io/r/base/data.frame.html). The function
-  assumes that all columns are named in lowercase and order invariant.
+  [data.frame](https://rdrr.io/r/base/data.frame.html).
 
 - cols:
 
-  An optional [formula](https://rdrr.io/r/stats/formula.html) passed
-  into [model.frame](https://rdrr.io/r/stats/model.frame.html). If
-  passed into indicators based on univariate series, the function
-  calculates indicators for each element in 'cols'. For indicators based
-  on multivariate series, it will alter the calculation itself. See
-  [`vignette("talib")`](https://serkor1.github.io/ta-lib-R/articles/talib.md)
-  for more details.
+  ([formula](https://rdrr.io/r/stats/formula.html)). An optional `2`
+  variable [formula](https://rdrr.io/r/stats/formula.html) passed into
+  [model.frame](https://rdrr.io/r/stats/model.frame.html). Internally
+  uses `~high + low` by default.
 
 - ...:
 
@@ -92,22 +86,4 @@ utils::tail(output)
 #> 2024-12-29 01:00:00 94000.90
 #> 2024-12-30 01:00:00 93112.63
 #> 2024-12-31 01:00:00 94008.09
-
-## visualize the indicator
-## with candlesticks
-##
-## see ?talib::chart or ?talib::indicator
-## for more details
-{
- ## chart OHLC-V
- ## series with candlesticks
- talib::chart(BTC)
-
- ## chart indicator
- ## with default values
- talib::indicator(
-     talib::median_price
- )
-}
-#> Error in as.data.frame.default(data): cannot coerce class ‘c("plotly", "htmlwidget")’ to a data.frame
 ```

@@ -267,9 +267,9 @@ The collection of Volatility Indicators.
 Charting functions
 
 - [`chart()`](https://serkor1.github.io/ta-lib-R/reference/chart.md) :
-  Chart
+  OHLC Chart
 - [`indicator()`](https://serkor1.github.io/ta-lib-R/reference/indicator.md)
-  : Indicator
+  : Indicator Chart
 
 ## Rolling Statistics
 

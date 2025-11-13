@@ -14,22 +14,25 @@ downstream.
 
 - cols:
 
-  An optional [formula](https://rdrr.io/r/stats/formula.html) passed
-  into [model.frame](https://rdrr.io/r/stats/model.frame.html). If
-  passed into indicators based on univariate series, the function
-  calculates indicators for each element in 'cols'. For indicators based
-  on multivariate series, it will alter the calculation itself. See
+  ([formula](https://rdrr.io/r/stats/formula.html)). An optional
+  [formula](https://rdrr.io/r/stats/formula.html) passed into
+  [model.frame](https://rdrr.io/r/stats/model.frame.html). If passed
+  into indicators based on univariate series, the function calculates
+  indicators for each element in 'cols'. For indicators based on
+  multivariate series, it will alter the calculation itself. See
   [`vignette("talib")`](https://serkor1.github.io/ta-lib-R/articles/talib.md)
   for more details.
 
 - n:
 
-  An [integer](https://rdrr.io/r/base/integer.html) of
+  ([integer](https://rdrr.io/r/base/integer.html)). An
+  [integer](https://rdrr.io/r/base/integer.html) of
   [length](https://rdrr.io/r/base/length.html) 1.
 
 - eps:
 
-  A [double](https://rdrr.io/r/base/double.html) of
+  ([double](https://rdrr.io/r/base/double.html)). A
+  [double](https://rdrr.io/r/base/double.html) of
   [length](https://rdrr.io/r/base/length.html) 1. Percentage of
   penetration of a candle within another candle.
 
