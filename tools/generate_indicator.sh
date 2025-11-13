@@ -65,11 +65,14 @@ done
 ## 2.2) construct arguments 
 ##      a la paste + collapse
 PARGS=$(printf '%s ' "${PARGS_ARR[@]}"); PARGS=${PARGS%, }
-if [[ -n ${PARGS} ]]; then PARGS+=','; fi
+if [[ "$ROLLING" != "1" ]]; then
+  if [[ -n ${PARGS} ]]; then PARGS+=','; fi
+fi
 
 printf -v ARGS '%s, ' "${ARGS_ARRAY[@]}"; ARGS=${ARGS%, }
-if [[ -n ${ARGS} ]]; then ARGS+=','; fi
-
+if [[ "$ROLLING" != "1" ]]; then
+  if [[ -n ${ARGS} ]]; then ARGS+=','; fi
+fi
 ## NOTE: this is passed down to 
 ##       the {plotly} template
 PPARGS=$(printf '%s ' "${PARGS_ARR[@]}");
