@@ -6,6 +6,7 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun $FUN
 #' @templateVar .family ${FAMILY}
+#' @templateVar .formula ${FORMULA}
 #' 
 #' @template description
 #' @template returns

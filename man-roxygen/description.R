@@ -7,6 +7,21 @@
 #' The indicator, by default, follows its mathematical definition. However, the `cols` argument allows for simple rearrangement of the definition by passing relevant
 #' columns in a custom order. Refer to the details-section for more on the calculation of the indicators.
 #'
+#' 
+<% if (any(grepl(pattern = "cols", x = names(formals(.fun))))) { %>
+
+<% n_vars <- length(all.vars(as.formula(.formula))) %>
+
+#' @param x An OHLC-V series that is coercible to [data.frame].
+<% if (n_vars == 1) { %>
+#' Alternatively, `x` may also be supplied as a [double] vector.
+<% } %>
+#'
+#' @param cols An optional `<%= length(all.vars(as.formula(.formula))) %>` variable [formula] passed into [model.frame]. Internally uses 
+#'  `<%= deparse(as.formula(.formula)) %>` by default.
+#' 
+<% } %>
+#'
 #' @inheritParams generic_documentation
 #'
 #' @author <%= .author %>

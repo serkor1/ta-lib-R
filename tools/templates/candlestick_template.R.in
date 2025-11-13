@@ -6,6 +6,7 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun $FUN
 #' @templateVar .family ${FAMILY}
+#' @templateVar .formula ${FORMULA}
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:
