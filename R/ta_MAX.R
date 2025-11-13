@@ -9,12 +9,11 @@
 ## splice:documentation:start
 ## splice:documentation:end
 #'
-#' @template description
-#' @template returns
+#' @template rolling_description
+#' @template rolling_returns
 rolling_max <- function(
 	x,
-	n = 10,
-	...
+	n = 10
 ) {
 	UseMethod("rolling_max")
 }
@@ -32,8 +31,7 @@ MAX <- rolling_max
 #' @export
 rolling_max.default <- function(
 	x,
-	n = 10,
-	...
+	n = 10
 ) {
 	## calculate indicator and
 	## return as data.frame
@@ -55,15 +53,13 @@ rolling_max.default <- function(
 #' @export
 rolling_max.numeric <- function(
 	x,
-	n = 10,
-	...
+	n = 10
 ) {
 	## calculate indicator and
 	## return as data.frame
 	x <- rolling_max.default(
 		x = x,
-		n = n,
-		...
+		n = n
 	)
 
 	## return indicator

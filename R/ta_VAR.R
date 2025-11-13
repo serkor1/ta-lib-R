@@ -10,13 +10,12 @@
 #' @param k multiplier
 ## splice:documentation:end
 #'
-#' @template description
-#' @template returns
+#' @template rolling_description
+#' @template rolling_returns
 rolling_variance <- function(
 	x,
 	n = 10,
-	k = 1,
-	...
+	k = 1
 ) {
 	UseMethod("rolling_variance")
 }
@@ -35,8 +34,7 @@ VAR <- rolling_variance
 rolling_variance.default <- function(
 	x,
 	n = 10,
-	k = 1,
-	...
+	k = 1
 ) {
 	## calculate indicator and
 	## return as data.frame
@@ -60,16 +58,14 @@ rolling_variance.default <- function(
 rolling_variance.numeric <- function(
 	x,
 	n = 10,
-	k = 1,
-	...
+	k = 1
 ) {
 	## calculate indicator and
 	## return as data.frame
 	x <- rolling_variance.default(
 		x = x,
 		n = n,
-		k = k,
-		...
+		k = k
 	)
 
 	## return indicator
