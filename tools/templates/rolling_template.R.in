@@ -9,12 +9,12 @@
 ## splice:documentation:start
 ## splice:documentation:end
 #'
-#' @template description
-#' @template returns
+#' @template rolling_description
+#' @template rolling_returns
 ${FUN} <- function(
 	x,
     ${ARGS}
-	...) {
+	) {
   UseMethod("${FUN}")
 }
 
@@ -32,7 +32,7 @@ ${ALIAS} <- ${FUN}
 ${FUN}.default <- function(
 	x,
     ${ARGS} 
-	...) {
+	) {
 
 	## calculate indicator and
 	## return as data.frame
@@ -53,13 +53,13 @@ ${FUN}.default <- function(
 ${FUN}.numeric <- function(
 	x,
     ${ARGS} 
-	...) {
+	) {
 
 	## calculate indicator and
 	## return as data.frame
 	x <- ${FUN}.default(
 			x = x ${PARGS}
-			...
+			
 	)
 
 	## return indicator
