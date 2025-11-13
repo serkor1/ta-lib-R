@@ -9,9 +9,9 @@
 #' @templateVar .formula ~ high + low + close
 #'
 ## splice:documentation:start
-#' @param fastk Time period for building the Fast-K line
-#' @param slowk Smoothing for making the Slow-K line.
-#' @param slowd Smoothing for making the Slow-D line
+#' @param fastk ([integer]). Period for the fast-k line.
+#' @param slowk ([list]). Period and Moving Average (MA) type  for the slow-k line. [SMA] by default.
+#' @param slowd ([list]). Period and Moving Average (MA) type  for the slow-d line. [SMA] by default.
 ## splice:documentation:end
 #'
 #' @template description

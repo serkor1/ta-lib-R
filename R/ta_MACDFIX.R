@@ -9,7 +9,7 @@
 #' @templateVar .formula ~close
 #'
 ## splice:documentation:start
-#' @param signal Smoothing for the signal line.
+#' @param signal ([integer]). Period for the signal Moving Average (MA).
 ## splice:documentation:end
 #'
 #' @template description

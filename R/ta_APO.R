@@ -9,9 +9,9 @@
 #' @templateVar .formula ~close
 #'
 ## splice:documentation:start
-#' @param fast something
-#' @param slow something
-#' @param ma something
+#' @param fast ([integer]). Period for the fast Moving Average (MA).
+#' @param slow ([integer]). Period for the slow Moving Average (MA).
+#' @param ma ([list]). The type of Moving Average (MA) used for the `fast` and `slow` MA. [SMA] by default.
 ## splice:documentation:end
 #'
 #' @template description

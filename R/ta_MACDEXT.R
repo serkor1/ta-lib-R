@@ -9,9 +9,9 @@
 #' @templateVar .formula ~close
 #'
 ## splice:documentation:start
-#' @param fast Number of period for the fast MA.
-#' @param slow Number of period for the slow MA.
-#' @param signal Smoothing for the signal line.
+#' @param fast ([list]). Period and Moving Average (MA) type for the fast MA. [EMA] by default.
+#' @param slow ([list]). Period and Moving Average (MA) type for the slow MA. [EMA] by default.
+#' @param signal ([list]). Period and Moving Average (MA) type for the signal MA. [EMA] by default.
 ## splice:documentation:end
 #'
 #' @template description

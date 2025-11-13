@@ -9,9 +9,9 @@
 #' @templateVar .formula ~close
 #'
 ## splice:documentation:start
-#' @param ma Moving average specification
-#' @param std_up Deviation multiplier for upper band
-#' @param std_down Deviation multiplier for lower band
+#' @param ma ([list]). The type of Moving Average (MA) used for the `MiddleBand`. [SMA] by default.
+#' @param std_up ([double]). Deviation multiplier for upper band
+#' @param std_down ([double]). Deviation multiplier for lower band
 ## splice:documentation:end
 #'
 #' @template description

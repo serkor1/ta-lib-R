@@ -9,9 +9,9 @@
 #' @templateVar .formula ~close
 #'
 ## splice:documentation:start
-#' @param fast Number of period for the fast MA.
-#' @param slow Number of period for the slow MA.
-#' @param signal Smoothing for the signal line.
+#' @param fast ([integer]). Period for the fast Moving Average (MA).
+#' @param slow ([integer]). Period for the slow Moving Average (MA).
+#' @param signal ([integer]). Period for the signal Moving Average (MA).
 ## splice:documentation:end
 #'
 #' @template description
