@@ -9,12 +9,11 @@
 ## splice:documentation:start
 ## splice:documentation:end
 #'
-#' @template description
-#' @template returns
+#' @template rolling_description
+#' @template rolling_returns
 rolling_sum <- function(
 	x,
-	n = 10,
-	...
+	n = 10
 ) {
 	UseMethod("rolling_sum")
 }
@@ -32,8 +31,7 @@ SUM <- rolling_sum
 #' @export
 rolling_sum.default <- function(
 	x,
-	n = 10,
-	...
+	n = 10
 ) {
 	## calculate indicator and
 	## return as data.frame
@@ -55,15 +53,13 @@ rolling_sum.default <- function(
 #' @export
 rolling_sum.numeric <- function(
 	x,
-	n = 10,
-	...
+	n = 10
 ) {
 	## calculate indicator and
 	## return as data.frame
 	x <- rolling_sum.default(
 		x = x,
-		n = n,
-		...
+		n = n
 	)
 
 	## return indicator

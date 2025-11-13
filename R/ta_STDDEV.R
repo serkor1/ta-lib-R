@@ -10,13 +10,12 @@
 #' @param k multiplier
 ## splice:documentation:end
 #'
-#' @template description
-#' @template returns
+#' @template rolling_description
+#' @template rolling_returns
 rolling_standard_deviation <- function(
 	x,
 	n = 10,
-	k = 1,
-	...
+	k = 1
 ) {
 	UseMethod("rolling_standard_deviation")
 }
@@ -35,8 +34,7 @@ STDDEV <- rolling_standard_deviation
 rolling_standard_deviation.default <- function(
 	x,
 	n = 10,
-	k = 1,
-	...
+	k = 1
 ) {
 	## calculate indicator and
 	## return as data.frame
@@ -60,16 +58,14 @@ rolling_standard_deviation.default <- function(
 rolling_standard_deviation.numeric <- function(
 	x,
 	n = 10,
-	k = 1,
-	...
+	k = 1
 ) {
 	## calculate indicator and
 	## return as data.frame
 	x <- rolling_standard_deviation.default(
 		x = x,
 		n = n,
-		k = k,
-		...
+		k = k
 	)
 
 	## return indicator

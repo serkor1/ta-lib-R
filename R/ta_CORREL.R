@@ -7,16 +7,14 @@
 #' @templateVar .fun rolling_correlation
 #'
 ## splice:documentation:start
-#' @param y A price series ([double])
 ## splice:documentation:end
 #'
-#' @template description
-#' @template returns
+#' @template rolling_description
+#' @template rolling_returns
 rolling_correlation <- function(
 	x,
 	y,
-	n = 10,
-	...
+	n = 10
 ) {
 	UseMethod("rolling_correlation")
 }
@@ -35,8 +33,7 @@ CORREL <- rolling_correlation
 rolling_correlation.default <- function(
 	x,
 	y,
-	n = 10,
-	...
+	n = 10
 ) {
 	## calculate indicator and
 	## return as data.frame
@@ -60,16 +57,14 @@ rolling_correlation.default <- function(
 rolling_correlation.numeric <- function(
 	x,
 	y,
-	n = 10,
-	...
+	n = 10
 ) {
 	## calculate indicator and
 	## return as data.frame
 	x <- rolling_correlation.default(
 		x = x,
 		y = y,
-		n = n,
-		...
+		n = n
 	)
 
 	## return indicator

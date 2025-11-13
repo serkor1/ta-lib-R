@@ -9,12 +9,11 @@
 ## splice:documentation:start
 ## splice:documentation:end
 #'
-#' @template description
-#' @template returns
+#' @template rolling_description
+#' @template rolling_returns
 rolling_min <- function(
 	x,
-	n = 10,
-	...
+	n = 10
 ) {
 	UseMethod("rolling_min")
 }
@@ -32,8 +31,7 @@ MIN <- rolling_min
 #' @export
 rolling_min.default <- function(
 	x,
-	n = 10,
-	...
+	n = 10
 ) {
 	## calculate indicator and
 	## return as data.frame
@@ -55,15 +53,13 @@ rolling_min.default <- function(
 #' @export
 rolling_min.numeric <- function(
 	x,
-	n = 10,
-	...
+	n = 10
 ) {
 	## calculate indicator and
 	## return as data.frame
 	x <- rolling_min.default(
 		x = x,
-		n = n,
-		...
+		n = n
 	)
 
 	## return indicator
