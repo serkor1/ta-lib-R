@@ -6,6 +6,7 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun bollinger_bands
 #' @templateVar .family Overlap Study
+#' @templateVar .formula ~close
 #'
 ## splice:documentation:start
 #' @param ma Moving average specification

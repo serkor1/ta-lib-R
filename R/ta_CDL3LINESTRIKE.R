@@ -6,6 +6,7 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun three_line_strike
 #' @templateVar .family Cycle Indicator
+#' @templateVar .formula ~close+fisk
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

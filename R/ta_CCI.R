@@ -6,6 +6,7 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun commodity_channel_index
 #' @templateVar .family Momentum Indicator
+#' @templateVar .formula ~ high + low + close
 #'
 ## splice:documentation:start
 ## splice:documentation:end

@@ -6,6 +6,7 @@
 #' @templateVar .title Trading Volume
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun trading_volume
+#' @templateVar .formula ~volume
 #'
 #' @param ma An optional list of moving average specifications.
 #'

@@ -6,6 +6,7 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun kaufman_adaptive_moving_average
 #' @templateVar .family Overlap Study
+#' @templateVar .formula ~close
 #'
 #' @template description
 #' @template returns

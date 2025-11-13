@@ -6,6 +6,7 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun chande_momentum_oscillator
 #' @templateVar .family Momentum Indicator
+#' @templateVar .formula ~ close
 #'
 ## splice:documentation:start
 ## splice:documentation:end

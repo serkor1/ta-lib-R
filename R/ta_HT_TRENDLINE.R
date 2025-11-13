@@ -6,6 +6,7 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun trendline
 #' @templateVar .family Overlap Study
+#' @templateVar .formula ~close
 #'
 ## splice:documentation:start
 ## splice:documentation:end

@@ -6,6 +6,7 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun average_price
 #' @templateVar .family Price Transform
+#' @templateVar .formula ~open + high + low + close
 #'
 ## splice:documentation:start
 ## splice:documentation:end
