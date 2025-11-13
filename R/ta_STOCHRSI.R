@@ -200,7 +200,7 @@ stochastic_relative_strength_index.plotly <- function(
 	## splice:plotly-assembly:start
 	plotly_object <- subchart(
 		data = constructed_indicator,
-		y = ~fastk,
+		y = ~FastK,
 		type = "scatter",
 		mode = "lines",
 		name = "StochRSI %K",
@@ -212,7 +212,7 @@ stochastic_relative_strength_index.plotly <- function(
 		plotly_object = plotly_object,
 		data = constructed_indicator,
 		x = ~idx,
-		y = ~fastd,
+		y = ~FastD,
 		ymin = rep(lower, nrow(constructed_indicator)),
 		ymax = rep(upper, nrow(constructed_indicator)),
 		color = "lightgray",
@@ -226,7 +226,7 @@ stochastic_relative_strength_index.plotly <- function(
 	if (main_chart_exists()) {
 		plotly_object <- add_title(
 			x = plotly_object,
-			text = "StochRSI"
+			text = "Stochastic RSI"
 		)
 	}
 

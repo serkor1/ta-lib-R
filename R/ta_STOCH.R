@@ -190,7 +190,7 @@ stochastic.plotly <- function(
 	## splice:plotly-assembly:start
 	plotly_object <- subchart(
 		data = constructed_indicator,
-		y = ~slowk,
+		y = ~SlowK,
 		type = "scatter",
 		mode = "lines",
 		name = "Stocastic %K",
@@ -202,7 +202,7 @@ stochastic.plotly <- function(
 		plotly_object = plotly_object,
 		data = constructed_indicator,
 		x = ~idx,
-		y = ~slowd,
+		y = ~SlowD,
 		ymin = rep(20, nrow(constructed_indicator)),
 		ymax = rep(80, nrow(constructed_indicator)),
 		color = "lightgray",

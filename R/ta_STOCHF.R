@@ -181,7 +181,7 @@ fast_stochastic.plotly <- function(
 	## splice:plotly-assembly:start
 	plotly_object <- subchart(
 		data = constructed_indicator,
-		y = ~fastk,
+		y = ~FastK,
 		type = "scatter",
 		mode = "lines",
 		name = "Stochastic %K (Fast)",
@@ -193,7 +193,7 @@ fast_stochastic.plotly <- function(
 		plotly_object = plotly_object,
 		data = constructed_indicator,
 		x = ~idx,
-		y = ~fastd,
+		y = ~FastD,
 		ymin = rep(lower, nrow(constructed_indicator)),
 		ymax = rep(upper, nrow(constructed_indicator)),
 		color = "lightgray",
