@@ -8,6 +8,12 @@
 #' @templateVar .family Overlap Study
 #' @templateVar .formula ~close
 #'
+#' @details
+#' When passed without 'x', [simple_moving_average] functions as an 'Moving Average'-specification which is used in, for example, [stochastic] when constructing the smoothing lines.
+#'
+#' When called without 'x' it will return a named list which is used for the
+#' indicators that supports various Moving Average specifications.
+#'
 #' @template description
 #' @template returns
 simple_moving_average <- function(
