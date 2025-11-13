@@ -13,7 +13,7 @@
 #' Alternatively, `x` may also be supplied as a [double] vector.
 <% } %>
 #'
-#' @param cols An optional `<%= length(all.vars(as.formula(.formula))) %>` variable [formula] passed into [model.frame]. Internally uses 
+#' @param cols ([formula]). An optional `<%= length(all.vars(as.formula(.formula))) %>` variable [formula] passed into [model.frame]. Internally uses 
 #'  `<%= deparse(as.formula(.formula)) %>` by default.
 #' 
 <% } %>

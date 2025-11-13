@@ -4,9 +4,9 @@
 <%
 	if (all(c("x","y") %in% names(formals(.fun))))
 { %>
-#' @param x,y A pair of [double] vectors.
+#' @param x,y (([double]), ([double])). A pair of vectors.
 <% } else { %>
-#' @param x A [double] vector.
+#' @param x ([double]). A vector.
 #' 
 <% } %>
 #' @inheritParams generic_documentation

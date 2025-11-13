@@ -12,9 +12,9 @@ NULL
 #' that doesn't exist downstream.
 #'
 #' @param x An OHLC-V series that is coercible to [data.frame]. The function assumes that all columns are named in lowercase and order invariant.
-#' @param cols An optional [formula] passed into [model.frame]. If passed into indicators based on univariate series, the function calculates indicators for each element in 'cols'. For indicators based on multivariate series, it will alter the calculation itself. See `vignette("talib")` for more details.
-#' @param n An [integer] of [length] 1.
-#' @param eps A [double] of [length] 1. Percentage of penetration of a candle within another candle.
+#' @param cols ([formula]). An optional [formula] passed into [model.frame]. If passed into indicators based on univariate series, the function calculates indicators for each element in 'cols'. For indicators based on multivariate series, it will alter the calculation itself. See `vignette("talib")` for more details.
+#' @param n ([integer]). An [integer] of [length] 1.
+#' @param eps ([double]). A [double] of [length] 1. Percentage of penetration of a candle within another candle.
 #' @param ... Additional parameters passed into [model.frame]
 #'
 #' @returns NULL
