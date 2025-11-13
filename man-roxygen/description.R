@@ -1,17 +1,13 @@
 #' @description
 #' The `<%= tolower(.fun) %>()` is a generic S3 function that builds upon 'type-safe'-esque workflows limited to classes in in base `R`, and the package-wide
 #' dependencies. Ie. [class] in, [class] out. Each method is a soft wrapper of [model.frame] and therefore the OHLC-V series must be coercible to a [data.frame].
-#' This rule does not transfer to indicators that uses univariate series, unless passed as a 1-column [data.frame] or [matrix]. In such cases, if univariate series
-#' is passed as a [vector] the function calculates the indicator 'as is', and returns a [data.frame] if the indicator itself is also a univariate series.
-#'
-#' The indicator, by default, follows its mathematical definition. However, the `cols` argument allows for simple rearrangement of the definition by passing relevant
-#' columns in a custom order. Refer to the details-section for more on the calculation of the indicators.
 #'
 #' 
 <% if (any(grepl(pattern = "cols", x = names(formals(.fun))))) { %>
 
 <% n_vars <- length(all.vars(as.formula(.formula))) %>
-
+#' `<%= tolower(.fun) %>()` also accepts a [double] vector in which case the indicator is calculated 'as-is' without passing through [model.frame]. `<%= tolower(.fun) %>()` returns an `n` by `k` [matrix] computed in C by default. When `k = 1`, the result is simplified to a [double] vector; for `k > 1`, the full `n` by `k` [matrix] is returned.
+#' 
 #' @param x An OHLC-V series that is coercible to [data.frame].
 <% if (n_vars == 1) { %>
 #' Alternatively, `x` may also be supplied as a [double] vector.
@@ -58,13 +54,13 @@
 #' utils::tail(output)
 #'
 #' ## visualize the indicator
-#' ## with candlesticks
+#' ## with talib::chart()
 #' ##
 #' ## see ?talib::chart or ?talib::indicator
 #' ## for more details
 #' {
 #'  ## chart OHLC-V
-#'  ## series with candlesticks
+#'  ## series with talib::chart()
 #'  talib::chart(BTC)
 #'
 #'  ## chart indicator
