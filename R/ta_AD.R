@@ -6,6 +6,7 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun chaikin_accumulation_distribution_line
 #' @templateVar .family Volume Indicator
+#' @templateVar .formula ~high+low+close+volume
 #'
 ## splice:documentation:start
 ## splice:documentation:end

@@ -6,6 +6,7 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun triple_exponential_average
 #' @templateVar .family Momentum Indicator
+#' @templateVar .formula ~close
 #'
 ## splice:documentation:start
 ## splice:documentation:end

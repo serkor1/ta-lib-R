@@ -6,6 +6,7 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun on_balance_volume
 #' @templateVar .family Volume Indicator
+#' @templateVar .formula ~close+volume
 #'
 ## splice:documentation:start
 ## splice:documentation:end

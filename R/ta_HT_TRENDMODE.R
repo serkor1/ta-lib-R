@@ -6,6 +6,7 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun trend_cycle_mode
 #' @templateVar .family Cycle Indicator
+#' @templateVar .formula ~close
 #'
 ## splice:documentation:start
 ## splice:documentation:end

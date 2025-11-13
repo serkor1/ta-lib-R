@@ -6,6 +6,7 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun moving_average_convergence_divergence
 #' @templateVar .family Momentum Indicator
+#' @templateVar .formula ~close
 #'
 ## splice:documentation:start
 #' @param fast Number of period for the fast MA.

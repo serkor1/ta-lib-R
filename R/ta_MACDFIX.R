@@ -6,6 +6,7 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun fixed_moving_average_convergence_divergence
 #' @templateVar .family Momentum Indicator
+#' @templateVar .formula ~close
 #'
 ## splice:documentation:start
 #' @param signal Smoothing for the signal line.

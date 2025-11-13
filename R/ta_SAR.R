@@ -6,6 +6,7 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun parabolic_stop_and_reverse
 #' @templateVar .family Overlap Study
+#' @templateVar .formula ~high+low
 #'
 ## splice:documentation:start
 #' @param acceleration  Acceleration factor used up to the maximum value

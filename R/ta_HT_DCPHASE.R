@@ -6,6 +6,7 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun dominant_cycle_phase
 #' @templateVar .family Cycle Indicator
+#' @templateVar .formula ~close
 #'
 ## splice:documentation:start
 ## splice:documentation:end

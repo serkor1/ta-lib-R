@@ -6,6 +6,7 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun aroon_oscillator
 #' @templateVar .family Momentum Indicator
+#' @templateVar .formula ~ high + low
 #'
 ## splice:documentation:start
 ## splice:documentation:end

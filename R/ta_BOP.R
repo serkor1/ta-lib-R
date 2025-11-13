@@ -6,6 +6,7 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun balance_of_power
 #' @templateVar .family Momentum Indicator
+#' @templateVar .formula ~ open + high + low + close
 #'
 ## splice:documentation:start
 ## splice:documentation:end

@@ -6,6 +6,7 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun phasor_components
 #' @templateVar .family Cycle Indicator
+#' @templateVar .formula ~close
 #'
 ## splice:documentation:start
 ## splice:documentation:end
