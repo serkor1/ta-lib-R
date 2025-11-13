@@ -2,20 +2,17 @@
 #' @family Charting
 #' @author Serkan Korkmaz
 #'
-#' @title Indicator
+#' @title Indicator Chart
 #'
 #' @description
-#' This function is a high-level wrapper of the indicator functions and [\{plotly\}](plotly)-objects.
-#' Its implemented similar to the [apply]-family, where the indicator function is passed, and its additional arguments
-#' are specificied by ...
+#' `indicator()` will look for an existing [chart()]-object and attach the indicator accordingly. All indicators can be charted indepently of whether [chart()] have been called.
 #'
-#' Internally it will look for a [chart]-object, and attach the indicator to the object if found. Otherwise it will return
-#' the indicator as a plot if `data` is provided.
+#' If no [chart()] have been called prior to [indicator()] the indicator will be charted by itself if `data` is provided. See `vignette(topic = "charting", package = "talib")` for more details.
 #'
-#' @param FUN An indicator function
+#' @param FUN An indicator function.
 #' @param ... Arguments passed into FUN.
 #'
-#' @example man/examples/charting.R
+#' @example man/examples/indicator.R
 #'
 #' @author Serkan Korkmaz
 indicator <- function(FUN, ...) {

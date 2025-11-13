@@ -1,48 +1,24 @@
 ## charting in {talib}
 ## using {plotly}
-x <- talib::BTC
+data(BTC, package = "talib")
 
 ## candlestick chart
-## of BTC
-talib::chart(x)
-
-## adding indicators
-## via indicator()
+## (default)
 {
-	## simple moving
-	## averages
-	talib::indicator(
-		FUN = talib::SMA,
-		n = 7
-	)
-	talib::indicator(
-		FUN = talib::SMA,
-		n = 14
-	)
-	talib::indicator(
-		FUN = talib::SMA,
-		n = 21
-	)
-
-	## MACD
-	talib::indicator(
-		FUN = talib::MACD
-	)
-
-	## OBV
-	talib::indicator(
-		FUN = talib::OBV
+	talib::chart(
+		BTC,
+		type = "candlestick"
 	)
 }
 
-## chart indicators
-## without candlesticks
-## by resetting the previous
-## chart
-talib::chart()
+## OHLC chart
+{
+	talib::chart(
+		BTC,
+		type = "ohlc"
+	)
+}
 
-## chart indicator
-talib::indicator(
-	FUN = stochastic,
-	data = x
-)
+## reset the charting
+## environment
+talib::chart()

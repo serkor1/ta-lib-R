@@ -2,12 +2,14 @@
 #' @family Charting
 #' @author Serkan Korkmaz
 #'
-#' @title Chart
+#' @title OHLC Chart
 #'
 #' @description
-#' The [chart]-function is a generic S3 function for charting OHLC series as either
-#' candlesticks or 'traditional' OHLC-bars. The function is a high-level wrapper of [plotly::plot_ly] with
-#' predefined OHLC values based on the input series.
+#' `chart()` is a generic S3 function for charting OHLC-V series interactively.
+#' The function is a high-level [plotly::plot_ly] wrapper with pre-specified OHLC values based on the input data.
+#'
+#' Call `chart()` without any arguments to reset the charting
+#' environment. See `vignette(topic = "charting", package = "talib")` for more details.
 #'
 #' @details
 #' The function uses various controlable options:
@@ -21,8 +23,8 @@
 #'  \item{talib.chart.scale <[numeric]>}{1 by default. Controls the scale of fonts.}
 #' }
 #'
-#' @param x An OHLC object to be charted.
-#' @param type A [character] of [length] 1. Either `candlestick` or `ohlc`.
+#' @param x An OHLC-V object coercible to [data.frame].
+#' @param type A [character] of [length] 1. `candlestick` by default. Can be `ohlc` for OHLC bars.
 #' @param idx A [vector] with the same [length] of `x`. If passed it will replace the x-axis labels. See `vignette("charting")` for more details.
 #' @param title An optional [character] vector of [length] 1.
 #' @param ... Parameters passed into [plotly::plot_ly]
