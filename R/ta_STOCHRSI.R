@@ -9,9 +9,9 @@
 #' @templateVar .formula ~ high + low + close
 #'
 ## splice:documentation:start
-#' @param fastk Time period for building the Fast-K line.
-#' @param fastd Smoothing for making the Fast-D line.
-#' @param n_rsi Time period for [relative_strength_index]
+#' @param fastk ([integer]). Period for the fast-k line.
+#' @param fastd ([list]). Period and Moving Average (MA) type for the fast-d line. [SMA] by default.
+#' @param n_rsi ([integer]). Period for the [relative_strength_index].
 ## splice:documentation:end
 #'
 #' @template description

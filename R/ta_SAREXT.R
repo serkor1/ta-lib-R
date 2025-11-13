@@ -9,14 +9,14 @@
 #' @templateVar .formula ~high+low
 #'
 ## splice:documentation:start
-#' @param init Start value and direction. 0 for Auto, >0 for Long, <0 for Short
-#' @param offset offset added/removed to initial stop on short/long reversal
-#' @param init_long Acceleration Factor initial value for the Long direction
-#' @param long Acceleration Factor for the Long direction
-#' @param max_long Acceleration Factor maximum value for the Long direction
-#' @param init_short Acceleration Factor initial value for the Short direction
-#' @param short Acceleration Factor for the Short direction
-#' @param max_short Acceleration Factor maximum value for the Short direction
+#' @param init ([double]). Start value and direction. 0 for Auto, >0 for Long, <0 for Short.
+#' @param offset ([double]). Offset added/removed to initial stop on short/long reversal.
+#' @param init_long ([double]). Acceleration factor initial value for the Long direction.
+#' @param long ([double]). Acceleration factor for the Long direction.
+#' @param max_long ([double]). Acceleration factor maximum value for the Long direction.
+#' @param init_short ([double]). Acceleration factor initial value for the Short direction.
+#' @param short ([double]). Acceleration factor for the Short direction.
+#' @param max_short ([double]). Acceleration factor maximum value for the Short direction.
 ## splice:documentation:end
 #'
 #' @template description

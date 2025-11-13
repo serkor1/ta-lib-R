@@ -7,7 +7,7 @@
 #' @templateVar .fun rolling_standard_deviation
 #'
 ## splice:documentation:start
-#' @param k multiplier
+#' @param k ([double]). Multiplier for the standard deviation.
 ## splice:documentation:end
 #'
 #' @template rolling_description

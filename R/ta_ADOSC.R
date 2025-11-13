@@ -9,8 +9,8 @@
 #' @templateVar .formula ~high+low+close+volume
 #'
 ## splice:documentation:start
-#' @param fast Period for the fast MA
-#' @param slow Period for the slow MA
+#' @param fast ([integer]). Period for the fast Moving Average (MA).
+#' @param slow ([integer]). Period for the slow Moving Average (MA).
 ## splice:documentation:end
 #'
 #' @template description

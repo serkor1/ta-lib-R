@@ -9,8 +9,8 @@
 #' @templateVar .formula ~high+low
 #'
 ## splice:documentation:start
-#' @param acceleration  Acceleration factor used up to the maximum value
-#' @param maximum Acceleration factor maximum value
+#' @param acceleration ([double]). Acceleration factor used up to the maximum value.
+#' @param maximum ([double]). Acceleration factor maximum value.
 ## splice:documentation:end
 #'
 #' @template description
