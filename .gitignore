@@ -68,3 +68,7 @@ inst/doc
 /.quarto/
 
 tools/table.csv
+
+
+## ignore files in benchmark
+benchmark/*.rds

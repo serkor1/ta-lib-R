@@ -90,6 +90,20 @@ unit-tests: ## Generate, or update, unit-tests
 
 	$(MAKE) fmt
 
+bench: ## Run benchmark(s)
+	@echo -e "Running bencmark..."
+	@echo -e ""
+	@Rscript ./benchmark/benchmark-overhead.R
+	@echo -e ""
+	@echo -e "Benchmark information:"
+	@echo -e " -baseline: no R overhead"
+	@echo -e " -data.frame: data.frame methods"
+	@echo -e " -baseline: matrix methods"
+	
+
+n ?= 1e6
+bench-data: ## Generate data for benchmark(s) 
+	@Rscript ./benchmark/benchmark-data.R $(n)
 
 gen-code: ## Generate R wrappers and unit-tests
 	@Rscript --verbose ./tools/gen_code/cycle_indicator.R
