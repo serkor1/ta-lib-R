@@ -244,3 +244,31 @@ set_rownames.matrix <- function(x, x_names) {
 
 	return(invisible(NULL))
 }
+
+## map <matrix> to <data.frames>
+map_dfr <- function(x) {
+	UseMethod("map_dfr")
+}
+
+#' @export
+map_dfr.double <- function(x) {
+	if (!is.matrix(x)) {
+		stop("'x' has to be a <matrix>")
+	}
+	.Call(
+		"map_dfr_double",
+		x
+	)
+}
+
+#' @export
+map_dfr.integer <- function(x) {
+	if (!is.matrix(x)) {
+		stop("'x' has to be a <matrix>")
+	}
+
+	.Call(
+		"map_dfr_integer",
+		x
+	)
+}

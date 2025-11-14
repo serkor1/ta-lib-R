@@ -125,11 +125,14 @@ SEXP impl_ta_VAR(SEXP inReal, SEXP optInTimePeriod, SEXP optInNbDev);
 SEXP impl_ta_WCLPRICE(SEXP inHigh, SEXP inLow, SEXP inClose);
 SEXP impl_ta_WILLR(SEXP inHigh, SEXP inLow, SEXP inClose, SEXP optInTimePeriod);
 SEXP initialize_ta_lib();
+SEXP map_dfr_double(SEXP x);
+SEXP map_dfr_integer(SEXP x);
 SEXP reset_candle_setting();
 SEXP rownames_data_frame(SEXP x, SEXP rownames);
 SEXP rownames_matrix(SEXP x, SEXP rownames, SEXP colnames);
 SEXP set_candle_setting(SEXP s_settingType, SEXP s_rangeType, SEXP s_avgPeriod, SEXP s_factor);
 SEXP shutdown_ta_lib();
+static SEXP map_dfr_impl(SEXP x, SEXPTYPE type);
 // clang-format on
 
 #endif //_API_H

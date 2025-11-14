@@ -131,6 +131,8 @@ static const R_CallMethodDef CallEntries[] = {
   CALLDEF(impl_ta_WCLPRICE, 3),
   CALLDEF(impl_ta_WILLR, 4),
   CALLDEF(initialize_ta_lib, 0),
+  CALLDEF(map_dfr_double, 1),
+  CALLDEF(map_dfr_integer, 1),
   CALLDEF(reset_candle_setting, 0),
   CALLDEF(rownames_data_frame, 2),
   CALLDEF(rownames_matrix, 3),
