@@ -97,7 +97,7 @@ bollinger_bands.data.frame <- function(
 	std_down = 2,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		bollinger_bands.default(
 			x = x,
 			cols = cols,
@@ -119,13 +119,11 @@ bollinger_bands.matrix <- function(
 	std_down = 2,
 	...
 ) {
-	as.matrix(
-		bollinger_bands.default(
-			x = x,
-			cols = cols,
-			ma = ma,
-			...
-		)
+	bollinger_bands.default(
+		x = x,
+		cols = cols,
+		ma = ma,
+		...
 	)
 }
 

@@ -96,7 +96,7 @@ moving_average_convergence_divergence.data.frame <- function(
 	signal = 9,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		moving_average_convergence_divergence.default(
 			x = x,
 			cols = cols,
@@ -120,15 +120,13 @@ moving_average_convergence_divergence.matrix <- function(
 	signal = 9,
 	...
 ) {
-	as.matrix(
-		moving_average_convergence_divergence.default(
-			x = x,
-			cols = cols,
-			fast = fast,
-			slow = slow,
-			signal = signal,
-			...
-		)
+	moving_average_convergence_divergence.default(
+		x = x,
+		cols = cols,
+		fast = fast,
+		slow = slow,
+		signal = signal,
+		...
 	)
 }
 

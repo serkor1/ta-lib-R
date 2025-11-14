@@ -85,7 +85,7 @@ momentum.data.frame <- function(
 	n = 10,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		momentum.default(
 			x = x,
 			cols = cols,
@@ -105,13 +105,11 @@ momentum.matrix <- function(
 	n = 10,
 	...
 ) {
-	as.matrix(
-		momentum.default(
-			x = x,
-			cols = cols,
-			n = n,
-			...
-		)
+	momentum.default(
+		x = x,
+		cols = cols,
+		n = n,
+		...
 	)
 }
 

@@ -86,7 +86,7 @@ aroon_oscillator.data.frame <- function(
 	n = 10,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		aroon_oscillator.default(
 			x = x,
 			cols = cols,
@@ -106,13 +106,11 @@ aroon_oscillator.matrix <- function(
 	n = 10,
 	...
 ) {
-	as.matrix(
-		aroon_oscillator.default(
-			x = x,
-			cols = cols,
-			n = n,
-			...
-		)
+	aroon_oscillator.default(
+		x = x,
+		cols = cols,
+		n = n,
+		...
 	)
 }
 

@@ -103,7 +103,7 @@ $FUN.data.frame <- function(
 	n = 10, 
 	...) {
 
-	as.data.frame(
+	map_dfr(
 		NextMethod()
 	) 
 }
@@ -121,14 +121,12 @@ $FUN.matrix <- function(
 		## pass directly to 
 		## $FUN.default to avoid
 		## shenanigans with NextMethod()
-		as.matrix(
-			$FUN.default(
+		$FUN.default(
 				x = x,
 				cols = cols,
 				n = n,
 				...
-			)
-		) 
+		)
 }
 
 #' @usage NULL

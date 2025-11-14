@@ -110,7 +110,7 @@ long_legged_doji.data.frame <- function(
 	cols,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		NextMethod()
 	)
 }
@@ -124,9 +124,7 @@ long_legged_doji.matrix <- function(
 	cols,
 	...
 ) {
-	as.matrix(
-		NextMethod()
-	)
+	NextMethod()
 }
 
 #' @usage NULL

@@ -110,7 +110,7 @@ belt_hold.data.frame <- function(
 	cols,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		NextMethod()
 	)
 }
@@ -124,9 +124,7 @@ belt_hold.matrix <- function(
 	cols,
 	...
 ) {
-	as.matrix(
-		NextMethod()
-	)
+	NextMethod()
 }
 
 #' @usage NULL

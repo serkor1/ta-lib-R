@@ -110,7 +110,7 @@ in_neck.data.frame <- function(
 	cols,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		NextMethod()
 	)
 }
@@ -124,9 +124,7 @@ in_neck.matrix <- function(
 	cols,
 	...
 ) {
-	as.matrix(
-		NextMethod()
-	)
+	NextMethod()
 }
 
 #' @usage NULL

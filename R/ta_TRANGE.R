@@ -83,7 +83,7 @@ true_range.data.frame <- function(
 	cols,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		true_range.default(
 			x = x,
 			cols = cols,
@@ -101,12 +101,10 @@ true_range.matrix <- function(
 	cols,
 	...
 ) {
-	as.matrix(
-		true_range.default(
-			x = x,
-			cols = cols,
-			...
-		)
+	true_range.default(
+		x = x,
+		cols = cols,
+		...
 	)
 }
 

@@ -85,7 +85,7 @@ triple_exponential_average.data.frame <- function(
 	n = 10,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		triple_exponential_average.default(
 			x = x,
 			cols = cols,
@@ -105,13 +105,11 @@ triple_exponential_average.matrix <- function(
 	n = 10,
 	...
 ) {
-	as.matrix(
-		triple_exponential_average.default(
-			x = x,
-			cols = cols,
-			n = n,
-			...
-		)
+	triple_exponential_average.default(
+		x = x,
+		cols = cols,
+		n = n,
+		...
 	)
 }
 

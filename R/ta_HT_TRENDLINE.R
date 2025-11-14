@@ -81,7 +81,7 @@ trendline.data.frame <- function(
 	cols,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		trendline.default(
 			x = x,
 			cols = cols,
@@ -99,12 +99,10 @@ trendline.matrix <- function(
 	cols,
 	...
 ) {
-	as.matrix(
-		trendline.default(
-			x = x,
-			cols = cols,
-			...
-		)
+	trendline.default(
+		x = x,
+		cols = cols,
+		...
 	)
 }
 

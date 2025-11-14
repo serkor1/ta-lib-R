@@ -81,7 +81,7 @@ sine_wave.data.frame <- function(
 	cols,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		sine_wave.default(
 			x = x,
 			cols = cols,
@@ -99,12 +99,10 @@ sine_wave.matrix <- function(
 	cols,
 	...
 ) {
-	as.matrix(
-		sine_wave.default(
-			x = x,
-			cols = cols,
-			...
-		)
+	sine_wave.default(
+		x = x,
+		cols = cols,
+		...
 	)
 }
 

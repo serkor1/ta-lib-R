@@ -92,7 +92,7 @@ parabolic_stop_and_reverse.data.frame <- function(
 	maximum = 0.75,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		parabolic_stop_and_reverse.default(
 			x = x,
 			cols = cols,
@@ -113,13 +113,11 @@ parabolic_stop_and_reverse.matrix <- function(
 	maximum = 0.75,
 	...
 ) {
-	as.matrix(
-		parabolic_stop_and_reverse.default(
-			x = x,
-			cols = cols,
-			acceleration = acceleration,
-			...
-		)
+	parabolic_stop_and_reverse.default(
+		x = x,
+		cols = cols,
+		acceleration = acceleration,
+		...
 	)
 }
 

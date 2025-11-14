@@ -100,7 +100,7 @@ stochastic.data.frame <- function(
 	slowd = SMA(n = 8),
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		stochastic.default(
 			x = x,
 			cols = cols,
@@ -124,15 +124,13 @@ stochastic.matrix <- function(
 	slowd = SMA(n = 8),
 	...
 ) {
-	as.matrix(
-		stochastic.default(
-			x = x,
-			cols = cols,
-			fastk = fastk,
-			slowk = slowk,
-			slowd = slowd,
-			...
-		)
+	stochastic.default(
+		x = x,
+		cols = cols,
+		fastk = fastk,
+		slowk = slowk,
+		slowd = slowd,
+		...
 	)
 }
 

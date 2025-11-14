@@ -85,7 +85,7 @@ chande_momentum_oscillator.data.frame <- function(
 	n = 10,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		chande_momentum_oscillator.default(
 			x = x,
 			cols = cols,
@@ -105,13 +105,11 @@ chande_momentum_oscillator.matrix <- function(
 	n = 10,
 	...
 ) {
-	as.matrix(
-		chande_momentum_oscillator.default(
-			x = x,
-			cols = cols,
-			n = n,
-			...
-		)
+	chande_momentum_oscillator.default(
+		x = x,
+		cols = cols,
+		n = n,
+		...
 	)
 }
 

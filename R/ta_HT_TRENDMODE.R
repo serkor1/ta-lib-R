@@ -81,7 +81,7 @@ trend_cycle_mode.data.frame <- function(
 	cols,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		trend_cycle_mode.default(
 			x = x,
 			cols = cols,
@@ -99,12 +99,10 @@ trend_cycle_mode.matrix <- function(
 	cols,
 	...
 ) {
-	as.matrix(
-		trend_cycle_mode.default(
-			x = x,
-			cols = cols,
-			...
-		)
+	trend_cycle_mode.default(
+		x = x,
+		cols = cols,
+		...
 	)
 }
 

@@ -94,7 +94,7 @@ chaikin_accumulation_distribution_oscillator.data.frame <- function(
 	slow = 10,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		chaikin_accumulation_distribution_oscillator.default(
 			x = x,
 			cols = cols,
@@ -115,13 +115,11 @@ chaikin_accumulation_distribution_oscillator.matrix <- function(
 	slow = 10,
 	...
 ) {
-	as.matrix(
-		chaikin_accumulation_distribution_oscillator.default(
-			x = x,
-			cols = cols,
-			fast = fast,
-			...
-		)
+	chaikin_accumulation_distribution_oscillator.default(
+		x = x,
+		cols = cols,
+		fast = fast,
+		...
 	)
 }
 

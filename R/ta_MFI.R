@@ -88,7 +88,7 @@ money_flow_index.data.frame <- function(
 	n = 10,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		money_flow_index.default(
 			x = x,
 			cols = cols,
@@ -108,13 +108,11 @@ money_flow_index.matrix <- function(
 	n = 10,
 	...
 ) {
-	as.matrix(
-		money_flow_index.default(
-			x = x,
-			cols = cols,
-			n = n,
-			...
-		)
+	money_flow_index.default(
+		x = x,
+		cols = cols,
+		n = n,
+		...
 	)
 }
 

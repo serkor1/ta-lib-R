@@ -83,7 +83,7 @@ weighted_close_price.data.frame <- function(
 	cols,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		weighted_close_price.default(
 			x = x,
 			cols = cols,
@@ -101,11 +101,9 @@ weighted_close_price.matrix <- function(
 	cols,
 	...
 ) {
-	as.matrix(
-		weighted_close_price.default(
-			x = x,
-			cols = cols,
-			...
-		)
+	weighted_close_price.default(
+		x = x,
+		cols = cols,
+		...
 	)
 }

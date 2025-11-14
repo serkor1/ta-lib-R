@@ -86,7 +86,7 @@ aroon.data.frame <- function(
 	n = 10,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		aroon.default(
 			x = x,
 			cols = cols,
@@ -106,13 +106,11 @@ aroon.matrix <- function(
 	n = 10,
 	...
 ) {
-	as.matrix(
-		aroon.default(
-			x = x,
-			cols = cols,
-			n = n,
-			...
-		)
+	aroon.default(
+		x = x,
+		cols = cols,
+		n = n,
+		...
 	)
 }
 

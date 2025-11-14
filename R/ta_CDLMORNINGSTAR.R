@@ -114,7 +114,7 @@ morning_star.data.frame <- function(
 	eps = 0,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		NextMethod()
 	)
 }
@@ -129,9 +129,7 @@ morning_star.matrix <- function(
 	eps = 0,
 	...
 ) {
-	as.matrix(
-		NextMethod()
-	)
+	NextMethod()
 }
 
 #' @usage NULL

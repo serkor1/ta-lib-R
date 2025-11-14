@@ -86,7 +86,7 @@ plus_directional_movement.data.frame <- function(
 	n = 10,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		plus_directional_movement.default(
 			x = x,
 			cols = cols,
@@ -106,13 +106,11 @@ plus_directional_movement.matrix <- function(
 	n = 10,
 	...
 ) {
-	as.matrix(
-		plus_directional_movement.default(
-			x = x,
-			cols = cols,
-			n = n,
-			...
-		)
+	plus_directional_movement.default(
+		x = x,
+		cols = cols,
+		n = n,
+		...
 	)
 }
 

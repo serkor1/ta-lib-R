@@ -87,7 +87,7 @@ minus_directional_indicator.data.frame <- function(
 	n = 10,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		minus_directional_indicator.default(
 			x = x,
 			cols = cols,
@@ -107,13 +107,11 @@ minus_directional_indicator.matrix <- function(
 	n = 10,
 	...
 ) {
-	as.matrix(
-		minus_directional_indicator.default(
-			x = x,
-			cols = cols,
-			n = n,
-			...
-		)
+	minus_directional_indicator.default(
+		x = x,
+		cols = cols,
+		n = n,
+		...
 	)
 }
 

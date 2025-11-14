@@ -83,7 +83,7 @@ typical_price.data.frame <- function(
 	cols,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		typical_price.default(
 			x = x,
 			cols = cols,
@@ -101,11 +101,9 @@ typical_price.matrix <- function(
 	cols,
 	...
 ) {
-	as.matrix(
-		typical_price.default(
-			x = x,
-			cols = cols,
-			...
-		)
+	typical_price.default(
+		x = x,
+		cols = cols,
+		...
 	)
 }

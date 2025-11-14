@@ -87,7 +87,7 @@ acceleration_bands.data.frame <- function(
 	n = 10,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		acceleration_bands.default(
 			x = x,
 			cols = cols,
@@ -107,13 +107,11 @@ acceleration_bands.matrix <- function(
 	n = 10,
 	...
 ) {
-	as.matrix(
-		acceleration_bands.default(
-			x = x,
-			cols = cols,
-			n = n,
-			...
-		)
+	acceleration_bands.default(
+		x = x,
+		cols = cols,
+		n = n,
+		...
 	)
 }
 

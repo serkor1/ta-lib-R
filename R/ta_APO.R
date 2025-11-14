@@ -96,7 +96,7 @@ absolute_price_oscillator.data.frame <- function(
 	ma = SMA(n = 10),
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		absolute_price_oscillator.default(
 			x = x,
 			cols = cols,
@@ -120,15 +120,13 @@ absolute_price_oscillator.matrix <- function(
 	ma = SMA(n = 10),
 	...
 ) {
-	as.matrix(
-		absolute_price_oscillator.default(
-			x = x,
-			cols = cols,
-			fast = fast,
-			slow = slow,
-			ma = ma,
-			...
-		)
+	absolute_price_oscillator.default(
+		x = x,
+		cols = cols,
+		fast = fast,
+		slow = slow,
+		ma = ma,
+		...
 	)
 }
 

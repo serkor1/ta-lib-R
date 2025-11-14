@@ -81,7 +81,7 @@ dominant_cycle_period.data.frame <- function(
 	cols,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		dominant_cycle_period.default(
 			x = x,
 			cols = cols,
@@ -99,12 +99,10 @@ dominant_cycle_period.matrix <- function(
 	cols,
 	...
 ) {
-	as.matrix(
-		dominant_cycle_period.default(
-			x = x,
-			cols = cols,
-			...
-		)
+	dominant_cycle_period.default(
+		x = x,
+		cols = cols,
+		...
 	)
 }
 

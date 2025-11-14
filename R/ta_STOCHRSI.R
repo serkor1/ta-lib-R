@@ -103,7 +103,7 @@ stochastic_relative_strength_index.data.frame <- function(
 	fastd = SMA(n = 10),
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		stochastic_relative_strength_index.default(
 			x = x,
 			cols = cols,
@@ -129,16 +129,14 @@ stochastic_relative_strength_index.matrix <- function(
 	fastd = SMA(n = 10),
 	...
 ) {
-	as.matrix(
-		stochastic_relative_strength_index.default(
-			x = x,
-			cols = cols,
-			n = n,
-			n_rsi = n_rsi,
-			fastk = fastk,
-			fastd = fastd,
-			...
-		)
+	stochastic_relative_strength_index.default(
+		x = x,
+		cols = cols,
+		n = n,
+		n_rsi = n_rsi,
+		fastk = fastk,
+		fastd = fastd,
+		...
 	)
 }
 

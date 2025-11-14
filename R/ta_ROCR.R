@@ -85,7 +85,7 @@ ratio_of_change.data.frame <- function(
 	n = 10,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		ratio_of_change.default(
 			x = x,
 			cols = cols,
@@ -105,13 +105,11 @@ ratio_of_change.matrix <- function(
 	n = 10,
 	...
 ) {
-	as.matrix(
-		ratio_of_change.default(
-			x = x,
-			cols = cols,
-			n = n,
-			...
-		)
+	ratio_of_change.default(
+		x = x,
+		cols = cols,
+		n = n,
+		...
 	)
 }
 

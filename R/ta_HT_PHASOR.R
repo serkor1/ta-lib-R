@@ -81,7 +81,7 @@ phasor_components.data.frame <- function(
 	cols,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		phasor_components.default(
 			x = x,
 			cols = cols,
@@ -99,12 +99,10 @@ phasor_components.matrix <- function(
 	cols,
 	...
 ) {
-	as.matrix(
-		phasor_components.default(
-			x = x,
-			cols = cols,
-			...
-		)
+	phasor_components.default(
+		x = x,
+		cols = cols,
+		...
 	)
 }
 

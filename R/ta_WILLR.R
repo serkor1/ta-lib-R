@@ -87,7 +87,7 @@ williams_oscillator.data.frame <- function(
 	n = 10,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		williams_oscillator.default(
 			x = x,
 			cols = cols,
@@ -107,13 +107,11 @@ williams_oscillator.matrix <- function(
 	n = 10,
 	...
 ) {
-	as.matrix(
-		williams_oscillator.default(
-			x = x,
-			cols = cols,
-			n = n,
-			...
-		)
+	williams_oscillator.default(
+		x = x,
+		cols = cols,
+		n = n,
+		...
 	)
 }
 

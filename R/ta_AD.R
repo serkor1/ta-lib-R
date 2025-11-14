@@ -84,7 +84,7 @@ chaikin_accumulation_distribution_line.data.frame <- function(
 	cols,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		chaikin_accumulation_distribution_line.default(
 			x = x,
 			cols = cols,
@@ -102,12 +102,10 @@ chaikin_accumulation_distribution_line.matrix <- function(
 	cols,
 	...
 ) {
-	as.matrix(
-		chaikin_accumulation_distribution_line.default(
-			x = x,
-			cols = cols,
-			...
-		)
+	chaikin_accumulation_distribution_line.default(
+		x = x,
+		cols = cols,
+		...
 	)
 }
 

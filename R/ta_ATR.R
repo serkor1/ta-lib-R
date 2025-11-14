@@ -87,7 +87,7 @@ average_true_range.data.frame <- function(
 	n = 10,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		average_true_range.default(
 			x = x,
 			cols = cols,
@@ -107,13 +107,11 @@ average_true_range.matrix <- function(
 	n = 10,
 	...
 ) {
-	as.matrix(
-		average_true_range.default(
-			x = x,
-			cols = cols,
-			n = n,
-			...
-		)
+	average_true_range.default(
+		x = x,
+		cols = cols,
+		n = n,
+		...
 	)
 }
 

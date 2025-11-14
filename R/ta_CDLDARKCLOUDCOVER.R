@@ -114,7 +114,7 @@ dark_cloud_cover.data.frame <- function(
 	eps = 0,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		NextMethod()
 	)
 }
@@ -129,9 +129,7 @@ dark_cloud_cover.matrix <- function(
 	eps = 0,
 	...
 ) {
-	as.matrix(
-		NextMethod()
-	)
+	NextMethod()
 }
 
 #' @usage NULL

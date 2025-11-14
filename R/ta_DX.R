@@ -87,7 +87,7 @@ directional_movement_index.data.frame <- function(
 	n = 10,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		directional_movement_index.default(
 			x = x,
 			cols = cols,
@@ -107,13 +107,11 @@ directional_movement_index.matrix <- function(
 	n = 10,
 	...
 ) {
-	as.matrix(
-		directional_movement_index.default(
-			x = x,
-			cols = cols,
-			n = n,
-			...
-		)
+	directional_movement_index.default(
+		x = x,
+		cols = cols,
+		n = n,
+		...
 	)
 }
 

@@ -109,7 +109,7 @@ $FUN.data.frame <- function(
 	cols, ${ARGS} 
 	...) {
 
-	as.data.frame(
+	map_dfr(
 		NextMethod()
 	) 
 }
@@ -122,10 +122,8 @@ $FUN.matrix <- function(
 	x, 
 	cols,${ARGS} 
 	...) { 
-		as.matrix(
-			NextMethod()
-			) 
-			}
+		NextMethod() 
+}
 
 #' @usage NULL
 #' @aliases $FUN

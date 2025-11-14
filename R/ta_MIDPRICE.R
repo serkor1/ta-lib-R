@@ -86,7 +86,7 @@ midpoint_price.data.frame <- function(
 	n = 10,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		midpoint_price.default(
 			x = x,
 			cols = cols,
@@ -106,12 +106,10 @@ midpoint_price.matrix <- function(
 	n = 10,
 	...
 ) {
-	as.matrix(
-		midpoint_price.default(
-			x = x,
-			cols = cols,
-			n = n,
-			...
-		)
+	midpoint_price.default(
+		x = x,
+		cols = cols,
+		n = n,
+		...
 	)
 }

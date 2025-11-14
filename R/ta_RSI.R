@@ -85,7 +85,7 @@ relative_strength_index.data.frame <- function(
 	n = 10,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		relative_strength_index.default(
 			x = x,
 			cols = cols,
@@ -105,13 +105,11 @@ relative_strength_index.matrix <- function(
 	n = 10,
 	...
 ) {
-	as.matrix(
-		relative_strength_index.default(
-			x = x,
-			cols = cols,
-			n = n,
-			...
-		)
+	relative_strength_index.default(
+		x = x,
+		cols = cols,
+		n = n,
+		...
 	)
 }
 

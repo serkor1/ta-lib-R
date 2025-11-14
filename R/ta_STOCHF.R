@@ -94,7 +94,7 @@ fast_stochastic.data.frame <- function(
 	fastd = SMA(n = 10),
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		fast_stochastic.default(
 			x = x,
 			cols = cols,
@@ -116,14 +116,12 @@ fast_stochastic.matrix <- function(
 	fastd = SMA(n = 10),
 	...
 ) {
-	as.matrix(
-		fast_stochastic.default(
-			x = x,
-			cols = cols,
-			fastk = fastk,
-			fastd = fastd,
-			...
-		)
+	fast_stochastic.default(
+		x = x,
+		cols = cols,
+		fastk = fastk,
+		fastd = fastd,
+		...
 	)
 }
 

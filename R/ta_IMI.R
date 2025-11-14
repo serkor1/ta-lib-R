@@ -86,7 +86,7 @@ intraday_movement_index.data.frame <- function(
 	n = 10,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		intraday_movement_index.default(
 			x = x,
 			cols = cols,
@@ -106,13 +106,11 @@ intraday_movement_index.matrix <- function(
 	n = 10,
 	...
 ) {
-	as.matrix(
-		intraday_movement_index.default(
-			x = x,
-			cols = cols,
-			n = n,
-			...
-		)
+	intraday_movement_index.default(
+		x = x,
+		cols = cols,
+		n = n,
+		...
 	)
 }
 

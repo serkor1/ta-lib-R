@@ -99,7 +99,7 @@ extended_moving_average_convergence_divergence.data.frame <- function(
 	signal = EMA(n = 9),
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		extended_moving_average_convergence_divergence.default(
 			x = x,
 			cols = cols,
@@ -123,15 +123,13 @@ extended_moving_average_convergence_divergence.matrix <- function(
 	signal = EMA(n = 9),
 	...
 ) {
-	as.matrix(
-		extended_moving_average_convergence_divergence.default(
-			x = x,
-			cols = cols,
-			fast = fast,
-			slow = slow,
-			signal = signal,
-			...
-		)
+	extended_moving_average_convergence_divergence.default(
+		x = x,
+		cols = cols,
+		fast = fast,
+		slow = slow,
+		signal = signal,
+		...
 	)
 }
 

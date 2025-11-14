@@ -122,7 +122,7 @@ extended_parabolic_stop_and_reverse.data.frame <- function(
 	max_short = 0,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		extended_parabolic_stop_and_reverse.default(
 			x = x,
 			cols = cols,
@@ -149,13 +149,11 @@ extended_parabolic_stop_and_reverse.matrix <- function(
 	max_short = 0,
 	...
 ) {
-	as.matrix(
-		extended_parabolic_stop_and_reverse.default(
-			x = x,
-			cols = cols,
-			init = init,
-			...
-		)
+	extended_parabolic_stop_and_reverse.default(
+		x = x,
+		cols = cols,
+		init = init,
+		...
 	)
 }
 

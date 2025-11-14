@@ -82,7 +82,7 @@ median_price.data.frame <- function(
 	cols,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		median_price.default(
 			x = x,
 			cols = cols,
@@ -100,11 +100,9 @@ median_price.matrix <- function(
 	cols,
 	...
 ) {
-	as.matrix(
-		median_price.default(
-			x = x,
-			cols = cols,
-			...
-		)
+	median_price.default(
+		x = x,
+		cols = cols,
+		...
 	)
 }

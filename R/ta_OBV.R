@@ -82,7 +82,7 @@ on_balance_volume.data.frame <- function(
 	cols,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		on_balance_volume.default(
 			x = x,
 			cols = cols,
@@ -100,12 +100,10 @@ on_balance_volume.matrix <- function(
 	cols,
 	...
 ) {
-	as.matrix(
-		on_balance_volume.default(
-			x = x,
-			cols = cols,
-			...
-		)
+	on_balance_volume.default(
+		x = x,
+		cols = cols,
+		...
 	)
 }
 

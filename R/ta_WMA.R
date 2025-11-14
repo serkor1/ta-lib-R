@@ -103,7 +103,7 @@ weighted_moving_average.data.frame <- function(
 	n = 10,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		NextMethod()
 	)
 }
@@ -121,13 +121,11 @@ weighted_moving_average.matrix <- function(
 	## pass directly to
 	## weighted_moving_average.default to avoid
 	## shenanigans with NextMethod()
-	as.matrix(
-		weighted_moving_average.default(
-			x = x,
-			cols = cols,
-			n = n,
-			...
-		)
+	weighted_moving_average.default(
+		x = x,
+		cols = cols,
+		n = n,
+		...
 	)
 }
 

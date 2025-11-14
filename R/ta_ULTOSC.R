@@ -89,7 +89,7 @@ ultimate_oscillator.data.frame <- function(
 	n = c(7, 14, 28),
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		ultimate_oscillator.default(
 			x = x,
 			cols = cols,
@@ -109,13 +109,11 @@ ultimate_oscillator.matrix <- function(
 	n = c(7, 14, 28),
 	...
 ) {
-	as.matrix(
-		ultimate_oscillator.default(
-			x = x,
-			cols = cols,
-			n = n,
-			...
-		)
+	ultimate_oscillator.default(
+		x = x,
+		cols = cols,
+		n = n,
+		...
 	)
 }
 

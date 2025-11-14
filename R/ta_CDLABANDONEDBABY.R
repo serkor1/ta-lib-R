@@ -114,7 +114,7 @@ abandoned_baby.data.frame <- function(
 	eps = 0,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		NextMethod()
 	)
 }
@@ -129,9 +129,7 @@ abandoned_baby.matrix <- function(
 	eps = 0,
 	...
 ) {
-	as.matrix(
-		NextMethod()
-	)
+	NextMethod()
 }
 
 #' @usage NULL

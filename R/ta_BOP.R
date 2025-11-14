@@ -84,7 +84,7 @@ balance_of_power.data.frame <- function(
 	cols,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		balance_of_power.default(
 			x = x,
 			cols = cols,
@@ -102,12 +102,10 @@ balance_of_power.matrix <- function(
 	cols,
 	...
 ) {
-	as.matrix(
-		balance_of_power.default(
-			x = x,
-			cols = cols,
-			...
-		)
+	balance_of_power.default(
+		x = x,
+		cols = cols,
+		...
 	)
 }
 

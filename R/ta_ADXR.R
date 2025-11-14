@@ -87,7 +87,7 @@ average_directional_movement_index_rating.data.frame <- function(
 	n = 10,
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		average_directional_movement_index_rating.default(
 			x = x,
 			cols = cols,
@@ -107,13 +107,11 @@ average_directional_movement_index_rating.matrix <- function(
 	n = 10,
 	...
 ) {
-	as.matrix(
-		average_directional_movement_index_rating.default(
-			x = x,
-			cols = cols,
-			n = n,
-			...
-		)
+	average_directional_movement_index_rating.default(
+		x = x,
+		cols = cols,
+		n = n,
+		...
 	)
 }
 

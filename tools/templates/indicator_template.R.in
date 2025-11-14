@@ -78,7 +78,7 @@ ${FUN}.data.frame <- function(
 	x, 
 	cols,${ARGS} 
 	...) {
-	as.data.frame(
+	map_dfr(
 		${FUN}.default(
 			x = x,
 			cols = cols ${PARGS}
@@ -97,11 +97,9 @@ ${FUN}.matrix <- function(
 	cols,${ARGS}
 	...) { 
 	
-	as.matrix(
-		${FUN}.default(
+	${FUN}.default(
 			x = x,
 			cols = cols ${PARGS}
 			...
 		)
-	) 
 }

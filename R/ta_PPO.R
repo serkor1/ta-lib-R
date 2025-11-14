@@ -96,7 +96,7 @@ percentage_price_oscillator.data.frame <- function(
 	ma = SMA(n = 10),
 	...
 ) {
-	as.data.frame(
+	map_dfr(
 		percentage_price_oscillator.default(
 			x = x,
 			cols = cols,
@@ -120,15 +120,13 @@ percentage_price_oscillator.matrix <- function(
 	ma = SMA(n = 10),
 	...
 ) {
-	as.matrix(
-		percentage_price_oscillator.default(
-			x = x,
-			cols = cols,
-			fast = fast,
-			slow = slow,
-			ma = ma,
-			...
-		)
+	percentage_price_oscillator.default(
+		x = x,
+		cols = cols,
+		fast = fast,
+		slow = slow,
+		ma = ma,
+		...
 	)
 }
 
