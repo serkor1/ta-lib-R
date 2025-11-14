@@ -60,7 +60,7 @@ testthat::test_that(desc = 'Default calls', code = {
 	)
 })
 
-## check that the lenght of the input
+## check that the length of the input
 ## matches the output length
 ##
 ## <data.frame> object
@@ -73,6 +73,21 @@ testthat::test_that(desc = 'Equal length of input and output for <data.frame>', 
 	)
 })
 
+## check that the rownames are being
+## respected for <data.frame>
+testthat::test_that(desc = 'Row names are respected for <data.frame>', code = {
+	## extract row names
+	x_names <- row.names(BTC)
+
+	## calculate indicator
+	indicator <- kicking_baby_length(BTC)
+
+	testthat::expect_equal(
+		object = x_names,
+		expected = rownames(indicator)
+	)
+})
+
 ## <matrix> object
 testthat::test_that(desc = 'Equal length of input and output for <matrix>', code = {
 	testthat::expect_equal(
@@ -80,6 +95,23 @@ testthat::test_that(desc = 'Equal length of input and output for <matrix>', code
 			SPY
 		)),
 		expected = nrow(SPY)
+	)
+})
+
+## check that the rownames are being
+## respected for <matrix>
+testthat::test_that(desc = 'Row names are respected for <matrix>', code = {
+	## extract row names
+	## NOTE: by default the SPY has no
+	##       rownames
+	rownames(SPY) <- paste0("row", 1:nrow(SPY))
+
+	## calculate indicator
+	indicator <- kicking_baby_length(SPY)
+
+	testthat::expect_equal(
+		object = paste0("row", 1:nrow(SPY)),
+		expected = rownames(indicator)
 	)
 })
 
