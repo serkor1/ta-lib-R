@@ -1,6 +1,7 @@
 # Man files
 /**/*.Rd
-
+# html files
+/**/*.html
 # History files
 .Rhistory
 .Rapp.history

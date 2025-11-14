@@ -91,7 +91,7 @@ unit-tests: ## Generate, or update, unit-tests
 	$(MAKE) fmt
 
 bench: ## Run benchmark(s)
-	@echo -e "Running bencmark..."
+	@echo -e "Running benchmark..."
 	@echo -e ""
 	@Rscript ./benchmark/benchmark-overhead.R
 	@echo -e ""
@@ -99,6 +99,7 @@ bench: ## Run benchmark(s)
 	@echo -e " -baseline: no R overhead"
 	@echo -e " -data.frame: data.frame methods"
 	@echo -e " -baseline: matrix methods"
+	@cd benchmark && Rscript -e "rmarkdown::render('README.Rmd', output_format = rmarkdown::github_document(html_preview = FALSE), clean = TRUE)"
 	
 
 n ?= 1e6

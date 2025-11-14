@@ -1,0 +1,35 @@
+---
+output: github_document
+---
+```{r setup, include = FALSE}
+# set options
+Sys.setenv(OPENSSL_CONF = "/dev/null")
+
+knitr::opts_chunk$set(
+	collapse  = TRUE,
+	comment   = "#>",
+	message   = FALSE,
+	warning   = FALSE,
+	echo      = FALSE
+)
+```
+
+# Benchmarks
+
+The benchmarks are run on the `bollinger_bands()` function, with three different specifications:
+
+1. *baseline:* This specification calls the C routine directly, without any calls to R functions.
+2. *data.frame:* This specification is the S3 `<data.frame>` dispatch.
+3. *matrix:* This specification is the S3 `<matrix>` dispatch.
+
+All benchmarks uses a `r nrow(readRDS("dataframe.rds"))` row OHLC `<data.frame>`
+
+## Benchmark results
+
+```{r}
+library(bench)
+readRDS(
+    "overhead_benchmark.rds"
+)
+```
+

@@ -87,3 +87,10 @@ pretty(
 	indicator = "Bollinger Bands",
 	n = nrow(DF)
 )
+
+## 4.3) store the benchmark
+##      results
+saveRDS(
+	benchmark_results,
+	"benchmark/overhead_benchmark.rds"
+)
