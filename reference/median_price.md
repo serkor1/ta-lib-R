@@ -9,17 +9,6 @@ wrapper of [model.frame](https://rdrr.io/r/stats/model.frame.html) and
 therefore the OHLC-V series must be coercible to a
 [data.frame](https://rdrr.io/r/base/data.frame.html).
 
-`median_price()` also accepts a
-[double](https://rdrr.io/r/base/double.html) vector in which case the
-indicator is calculated 'as-is' without passing through
-[model.frame](https://rdrr.io/r/stats/model.frame.html).
-`median_price()` returns an `n` by `k`
-[matrix](https://rdrr.io/r/base/matrix.html) computed in C by default.
-When `k = 1`, the result is simplified to a
-[double](https://rdrr.io/r/base/double.html) vector; for `k > 1`, the
-full `n` by `k` [matrix](https://rdrr.io/r/base/matrix.html) is
-returned.
-
 ## Usage
 
 ``` r
