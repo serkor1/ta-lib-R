@@ -147,6 +147,7 @@ add_title <- function(
 #' @keywords internal
 subchart <- function(
 	data,
+	title,
 	...
 ) {
 	## main plotly object to
@@ -197,6 +198,41 @@ subchart <- function(
 		##       removed later (TM)
 		displaylogo = FALSE
 	)
+
+	## add title to the plotly
+	## object - this addition is to
+	## reduce the coding and ensure a
+	## uniform subchart structure
+	if (main_chart_exists()) {
+		if (missing(title)) {
+			## the system.parent is always
+			## a .plotly method here
+			title <- input_name(
+				sys.call(sys.parent())[[1]]
+			)
+
+			## remove the .plotly string
+			## from the title
+			title <- gsub(
+				".plotly",
+				"",
+				x = title,
+				ignore.case = TRUE
+			)
+
+			## set string to title-case
+			## NOTE: This was conditional
+			##       on _ before
+			title <- to_title(
+				title
+			)
+		}
+
+		plotly_object <- add_title(
+			x = plotly_object,
+			text = title
+		)
+	}
 
 	return(plotly_object)
 }
