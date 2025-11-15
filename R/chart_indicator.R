@@ -47,21 +47,6 @@ indicator <- function(FUN, ...) {
 	if (is.null(plt)) {
 		chart_called <- FALSE
 
-		## add empty {plotly}
-		## object to trigger .plotly
-		## method downstream
-		plt <- .plotting_environment$main <- plotly::plot_ly()
-
-		if (has_arg(idx)) {
-			idx <- eval.parent(
-				match.call()[["idx"]]
-			)
-		} else {
-			idx <- NULL
-		}
-
-		.plotting_environment$idx$label <- idx
-
 		if (has_arg(data)) {
 			data <- eval.parent(
 				match.call()[["data"]]
@@ -69,6 +54,23 @@ indicator <- function(FUN, ...) {
 		} else {
 			stop("'data'-argument has to be provided.")
 		}
+
+		## add empty {plotly}
+		## object to trigger .plotly
+		## method downstream
+		plt <- plotly::plot_ly()
+
+		if (has_arg(idx)) {
+			idx <- eval.parent(
+				match.call()[["idx"]]
+			)
+		} else {
+			idx <- rownames(
+				data
+			)
+		}
+
+		.plotting_environment$idx$label <- idx
 	}
 
 	## construct {plotly}-object
