@@ -6,7 +6,7 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun inverted_hammer
 #' @templateVar .family Cycle Indicator
-#' @templateVar .formula ~close+fisk
+#' @templateVar .formula ~open + high + low + close
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:

@@ -6,7 +6,7 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun upside_gap_2_crows
 #' @templateVar .family Cycle Indicator
-#' @templateVar .formula ~close+fisk
+#' @templateVar .formula ~open + high + low + close
 #'
 #' @returns
 #' An object of same [class] and [length] of `x`:
