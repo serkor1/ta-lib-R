@@ -5,7 +5,7 @@ subchart
 ## Usage
 
 ``` r
-subchart(data, ...)
+subchart(data, title, ...)
 ```
 
 ## Arguments
