@@ -171,13 +171,6 @@ average_directional_movement_index_rating.plotly <- function(
 		showlegend = FALSE
 	)
 
-	if (main_chart_exists()) {
-		plotly_object <- add_title(
-			x = plotly_object,
-			text = "Average Directional Movement Index"
-		)
-	}
-
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)

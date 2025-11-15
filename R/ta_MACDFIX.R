@@ -252,18 +252,6 @@ fixed_moving_average_convergence_divergence.plotly <- function(
 		)
 	)
 
-	if (!is.null(.plotting_environment$main)) {
-		plotly_object <- add_title(
-			x = plotly_object,
-			text = sprintf(
-				fmt = "MACD(%d, %d, %d)",
-				12L,
-				26L,
-				if (is.list(signal)) signal$n else signal
-			)
-		)
-	}
-
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)

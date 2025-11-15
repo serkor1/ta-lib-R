@@ -185,16 +185,6 @@ commodity_channel_index.plotly <- function(
 		dash = "dot"
 	)
 
-	if (main_chart_exists()) {
-		plotly_object <- add_title(
-			x = plotly_object,
-			text = sprintf(
-				"Commodity Channel Index (%d)",
-				n
-			)
-		)
-	}
-
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)

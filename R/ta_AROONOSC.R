@@ -175,13 +175,6 @@ aroon_oscillator.plotly <- function(
 		showlegend = FALSE
 	)
 
-	if (!is.null(.plotting_environment$main)) {
-		plotly_object <- add_title(
-			x = plotly_object,
-			text = "Aroon Oscillator"
-		)
-	}
-
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)

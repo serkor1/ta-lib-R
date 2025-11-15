@@ -202,13 +202,6 @@ trend_cycle_mode.plotly <- function(
 		line = list(shape = "hvh")
 	)
 
-	if (main_chart_exists()) {
-		plotly_object <- add_title(
-			x = plotly_object,
-			text = "Trendmode"
-		)
-	}
-
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)

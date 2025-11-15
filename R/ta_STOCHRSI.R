@@ -221,13 +221,6 @@ stochastic_relative_strength_index.plotly <- function(
 		legendgroup = "stochrsi"
 	)
 
-	if (main_chart_exists()) {
-		plotly_object <- add_title(
-			x = plotly_object,
-			text = "Stochastic RSI"
-		)
-	}
-
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)

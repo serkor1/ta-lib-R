@@ -184,16 +184,6 @@ money_flow_index.plotly <- function(
 		)
 	)
 
-	if (main_chart_exists()) {
-		plotly_object <- add_title(
-			x = plotly_object,
-			text = sprintf(
-				"Money Flow Index (%d)",
-				n
-			)
-		)
-	}
-
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)

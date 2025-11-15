@@ -249,17 +249,6 @@ absolute_price_oscillator.plotly <- function(
 		)
 	)
 
-	if (main_chart_exists()) {
-		plotly_object <- add_title(
-			x = plotly_object,
-			text = sprintf(
-				"Absolute Price Oscillator (%d, %d)",
-				fast,
-				slow
-			)
-		)
-	}
-
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)

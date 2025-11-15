@@ -177,15 +177,9 @@ chaikin_accumulation_distribution_oscillator.plotly <- function(
 		y = ~ADOSC,
 		type = "scatter",
 		mode = "lines",
-		showlegend = FALSE
+		showlegend = FALSE,
+		title = "Chaikin A/D Line"
 	)
-
-	if (main_chart_exists()) {
-		plotly_object <- add_title(
-			x = plotly_object,
-			text = "Chaikin A/D Line"
-		)
-	}
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,

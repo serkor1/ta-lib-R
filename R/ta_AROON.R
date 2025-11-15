@@ -181,13 +181,6 @@ aroon.plotly <- function(
 		data = constructed_indicator
 	)
 
-	if (main_chart_exists()) {
-		plotly_object <- add_title(
-			x = plotly_object,
-			text = "Aroon"
-		)
-	}
-
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)

@@ -211,13 +211,6 @@ sine_wave.plotly <- function(
 		legendgroup = "sinewave"
 	)
 
-	if (main_chart_exists()) {
-		plotly_object <- add_title(
-			x = plotly_object,
-			text = "Sine Wave"
-		)
-	}
-
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)

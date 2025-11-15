@@ -226,16 +226,6 @@ chande_momentum_oscillator.plotly <- function(
 		dash = "dot"
 	)
 
-	if (main_chart_exists()) {
-		plotly_object <- add_title(
-			x = plotly_object,
-			text = sprintf(
-				"Chande Momentum Indicator (%d)",
-				n
-			)
-		)
-	}
-
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
