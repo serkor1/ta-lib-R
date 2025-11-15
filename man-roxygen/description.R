@@ -6,8 +6,10 @@
 <% if (any(grepl(pattern = "cols", x = names(formals(.fun))))) { %>
 
 <% n_vars <- length(all.vars(as.formula(.formula))) %>
+<% if (n_vars == 1) { %>
 #' `<%= tolower(.fun) %>()` also accepts a [double] vector in which case the indicator is calculated 'as-is' without passing through [model.frame]. `<%= tolower(.fun) %>()` returns an `n` by `k` [matrix] computed in C by default. When `k = 1`, the result is simplified to a [double] vector; for `k > 1`, the full `n` by `k` [matrix] is returned.
 #' 
+<% } %>
 #' @param x An OHLC-V series that is coercible to [data.frame].
 <% if (n_vars == 1) { %>
 #' Alternatively, `x` may also be supplied as a [double] vector.

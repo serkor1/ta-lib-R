@@ -10,10 +10,10 @@ source("tools/gen_code/utils.R")
 generate_R <- function(x) {
 	impl_generate_indicator(
 		title = x$title,
-		family = "Cycle Indicator",
+		family = "Pattern Recognition",
 		fun = x$fun,
 		args = x$signature,
-		formula = "~close+fisk",
+		formula = "~open + high + low + close",
 		ta_fun = x$alias,
 		agnostic = x$agnostic,
 		candlestick = 1,
