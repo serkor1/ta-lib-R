@@ -147,8 +147,14 @@ fi
 ##    CRAN machine about .a, .dll etc
 ##    files, see .Rbuildignore for more
 ##    details.
-BUILDROOT="$(mktemp -d "${TESTDIR:-/tmp}/talib-win-build-XXXXXX")"
-OUT_PREFIX="$BUILDROOT/prefix"        # <— external prefix; not in src/
+BUILDROOT=$(mktemp -d) || {
+  echo
+  echo "error: cannot create temporary directory"
+  echo
+  exit 1
+}
+
+OUT_PREFIX="$BUILDROOT/prefix"
 GEN="MinGW Makefiles"; command -v ninja >/dev/null 2>&1 && GEN="Ninja"
 
 ## 2.1) build release version
