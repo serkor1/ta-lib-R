@@ -4,32 +4,6 @@
 ## macOS
 set -eu
 
-## configure arguments and vars
-## passed downstream
-
-## ${DEVELOPMENT_VERSION}:
-##    If installing via {pak} submodules
-##    are ignored, and therefore development versions
-##    will not compile unless using git clone --recursive
-##    
-##    This addition will ease the process of installing
-##    development versions without having to take initial
-##    steps
-##
-##    Its determined by the --development_version
-DEVELOPMENT_VERSION=no
-
-while [ "$#" -gt 0 ]; do
-  case "$1" in
-    --development_version)
-      DEVELOPMENT_VERSION=yes
-      ;;
-    *)
-      ;;
-  esac
-  shift
-done
-
 ## 0) basic sanity checks
 ##    before starting the build
 ##    process
@@ -151,25 +125,41 @@ fi
 if [ "$USE_SYSTEM" -eq 0 ]; then
 
   ## 3.1) check if TA-Lib is vendored
-  ##      correctly and throw an error
-  ##      if not
+  ##      correctly and determine an action
+  ##      conditional of how the repository
+  ##      have been downloaded
   if [ ! -d "$TA_SRC" ]; then
-     git clone https://github.com/TA-Lib/ta-lib.git ${TA_SRC} || {
-          echo "Build-error: git submodule update failed."
+
+    ## this part checks if its a git repository
+    ## which most imply that the host have clone the 
+    ## repository without --recursive
+    ## so this part is "just" to give the developer a helpful
+    ## message
+    if git status > /dev/null 2>&1; then
+        echo "Build-error: $TA_SRC not found. Either make a new clone, or initialize the submodule."
+        echo 
+        echo "Clone: \t\t git clone --recursive https://github.com/serkor1/ta-lib-R.git"
+        echo "Initialize: \t git submodule update --init --recursive"
+        echo
+        exit 1
+    
+    ## if its NOT a git repository it is safe to assume that the development
+    ## version is being installed via {pak} or other tools which does not 
+    ## include submodules by default
+    ##    NOTE: After many attempts to ease the installation of the development
+    ##          version, this is the best solution I could come up with. If you 
+    ##          are reading this, I am open to other and better solutions.
+    else
+      echo
+      echo "TA-Lib (core) not found. Cloning https://github.com/TA-Lib/ta-lib.git"
+      echo
+      git clone https://github.com/TA-Lib/ta-lib.git ${TA_SRC} || {
+          echo
+          echo "Build-error: Could not clone https://github.com/TA-Lib/ta-lib.git. Check your internet connection, or submit a bug-report."
+          echo
           exit 1
         }
-      # if [ "$DEVELOPMENT_VERSION" = yes ]; then
-      #   git submodule update --init --recursive || {
-      #     echo "Build-error: git submodule update failed."
-      #     exit 1
-      #   }
-      # else
-      #   echo "Build-error: $TA_SRC not found. Either make a new clone, or initialize the submodule."
-      #   echo 
-      #   echo "Clone: \t\t git clone --recursive https://github.com/serkor1/ta-lib-R.git"
-      #   echo "Initialize: \t git submodule update --init --recursive"
-      #   echo
-      #   exit 1
+    fi
   fi
 
   echo 
