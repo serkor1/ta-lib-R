@@ -3,6 +3,66 @@
 ## configure for Windows
 set -eu
 
+## 0) basic sanity checks
+##    before starting the build
+##    process
+##
+##    check if R exists on the
+##    default PATH
+: ${R_HOME=`R RHOME`}
+if test -z "${R_HOME}"; then
+  echo 
+  echo "could not determine R_HOME"
+  echo 
+  exit 1
+fi
+
+## construct variable to R binaries taken
+## from 'Writing R extensions'
+##
+##    "$(R_HOME)/bin$(R_ARCH_BIN)/Rscript" filename
+##    "$(R_HOME)/bin$(R_ARCH_BIN)/Rscript" -e 'R expression'
+R_BIN="${R_HOME}/bin${R_ARCH_BIN}/R"
+
+## construct temporary directory
+## for the build tests
+## See: https://stackoverflow.com/a/53063602/10400791
+TESTDIR=$(mktemp -d) || {
+  echo
+  echo "error: cannot create temporary directory"
+  echo
+  exit 1
+}
+
+## construct simple C routine
+## that is to be compile
+cat > "${TESTDIR}/conftest.c" <<'EOF'
+void rtools_conftest(void) {}
+EOF
+
+## compile the conftest.c 
+## and capture status
+(
+  cd "$TESTDIR" || exit 1
+  "$R_BIN" CMD SHLIB conftest.c
+) >/dev/null 2>&1
+
+STATUS=$?
+
+## throw an error if the conftest.c 
+## fails
+if [ $STATUS -ne 0 ] || { [ ! -f "${TESTDIR}/conftest.dll" ] && [ ! -f "${TESTDIR}/conftest.so" ]; }; then
+  echo
+  echo "configure: error: R CMD SHLIB test compilation failed; build tools may be missing or misconfigured." 
+  echo 
+  rm -rf "$TESTDIR"
+  exit 1
+fi
+
+## remove TESTDIR
+## from host-machine
+rm -rf "$TESTDIR"
+
 ## 1) general setup of
 ##    the configure script
 TA_SRC="src/ta-lib"
@@ -18,37 +78,62 @@ nprocs() {
   else echo 2; fi
 }
 
-## 1.2) throw error if TA-Lib is not found
-##      in source
-##      
-##      TODO: Throw an informative error
-##            instead
+## 1.2) check if TA-Lib is vendored
+##      correctly and determine an action
+##      conditional of how the repository
+##      have been downloaded
 if [ ! -d "$TA_SRC" ]; then
+
+  ## this part checks if its a git repository
+  ## which most imply that the host have clone the 
+  ## repository without --recursive
+  ## so this part is "just" to give the developer a helpful
+  ## message
+  if git status > /dev/null 2>&1; then
       echo "Build-error: $TA_SRC not found. Either make a new clone, or initialize the submodule."
       echo 
       echo "Clone: \t\t git clone --recursive https://github.com/serkor1/ta-lib-R.git"
       echo "Initialize: \t git submodule update --init --recursive"
       echo
       exit 1
+  
+  ## if its NOT a git repository it is safe to assume that the development
+  ## version is being installed via {pak} or other tools which does not 
+  ## include submodules by default
+  ##    NOTE: After many attempts to ease the installation of the development
+  ##          version, this is the best solution I could come up with. If you 
+  ##          are reading this, I am open to other and better solutions.
+  else
+    echo
+    echo "TA-Lib (core) not found. Cloning https://github.com/TA-Lib/ta-lib.git"
+    echo
+    git clone https://github.com/TA-Lib/ta-lib.git ${TA_SRC} || {
+        echo
+        echo "Build-error: Could not clone https://github.com/TA-Lib/ta-lib.git. Check your internet connection, or submit a bug-report."
+        echo
+        exit 1
+      }
+  fi
 fi
 
 ## 1.2.1) check if CMake is available
 ##        on the system
 if ! command -v cmake >/dev/null 2>&1; then
+  echo
   echo "CMake not found on PATH."
-    echo "=========================================================================="
-    echo "Install CMake:"
-    echo "  Windows:"
-    echo "    winget: winget install -e --id Kitware.CMake"
-    echo "    Chocolatey: choco install cmake -y"
-    echo "    Scoop: scoop install cmake"
-    echo
-    echo "Alternatively download the installer: https://cmake.org/download/"
-    echo "After installation, restart the shell or add CMake to PATH"
-    echo "=========================================================================="
-    echo "Submit bug-reports here: https://github.com/serkor1/ta-lib-R"
-    echo
-    exit 1
+  echo "=========================================================================="
+  echo "Install CMake:"
+  echo "  Windows:"
+  echo "    winget: winget install -e --id Kitware.CMake"
+  echo "    Chocolatey: choco install cmake -y"
+  echo "    Scoop: scoop install cmake"
+  echo
+  echo "Alternatively download the installer: https://cmake.org/download/"
+  echo "After installation, restart the shell or add CMake to PATH"
+  echo "=========================================================================="
+  echo "Submit bug-reports here: https://github.com/serkor1/ta-lib-R"
+  echo
+  exit 1
 fi
 
 ## 1.3) no clue what this does
@@ -62,13 +147,19 @@ fi
 ##    CRAN machine about .a, .dll etc
 ##    files, see .Rbuildignore for more
 ##    details.
-BUILDROOT="$(mktemp -d "${TMPDIR:-/tmp}/talib-win-build-XXXXXX")"
-OUT_PREFIX="$BUILDROOT/prefix"        # <— external prefix; not in src/
+BUILDROOT=$(mktemp -d) || {
+  echo
+  echo "error: cannot create temporary directory"
+  echo
+  exit 1
+}
+
+OUT_PREFIX="$BUILDROOT/prefix"
 GEN="MinGW Makefiles"; command -v ninja >/dev/null 2>&1 && GEN="Ninja"
 
 ## 2.1) build release version
 ##      with CMake
-cmake -S "$TA_SRC" -B "$BUILDROOT/cmake" -G "$GEN" \
+if ! cmake -S "$TA_SRC" -B "$BUILDROOT/cmake" -G "$GEN" \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX="$OUT_PREFIX" \
   -DBUILD_SHARED_LIBS=OFF \
@@ -76,6 +167,13 @@ cmake -S "$TA_SRC" -B "$BUILDROOT/cmake" -G "$GEN" \
   -DCMAKE_C_FLAGS="-w" -DCMAKE_CXX_FLAGS="-w" \
   -DCMAKE_C_FLAGS_RELEASE="-O3 -march=native -fPIC" \
   -DBUILD_DEV_TOOLS=OFF
+then
+  echo
+  echo "Please check that RTools and the relevant PATH is correctly setup."
+  echo "    - Or open a issue at https://github.com/serkor1/ta-lib-R      "
+  echo
+  exit 1
+fi
 
 ## 2.2) build and install
 ##      as per TA-Lib instructions
