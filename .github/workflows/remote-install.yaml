@@ -4,7 +4,7 @@ name: Remote Install
 
 on:
   push:
-    branches: [devel, 14-robust-build-tools]
+    branches: [devel]
   pull_request:
     branches: [devel]
 
@@ -58,5 +58,9 @@ jobs:
           needs: check
 
       - name: Install {talib}
-        run: pak::pak("serkor1/ta-lib-R@14-robust-build-tools")
+        run: pak::pak("serkor1/ta-lib-R")
+        shell: Rscript {0}
+
+      - name: Calculate an indicator
+        run: talib::bollinger_bands(talib::BTC)
         shell: Rscript {0}
