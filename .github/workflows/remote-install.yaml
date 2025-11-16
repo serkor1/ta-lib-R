@@ -57,10 +57,6 @@ jobs:
           extra-packages: any::pak any::plotly any::devtools any::roxygen2
           needs: check
 
-      - name: Render documentation and NAMESPACE
-        run: devtools::document()
-        shell: Rscript {0}
-      
       - name: Install {talib}
-        run: devtools::document()
-        shell: Rscript -e "pak::pak(serkor1/ta-lib-R)"
+        run: pak::pak(serkor1/ta-lib-R)
+        shell: Rscript {0}
