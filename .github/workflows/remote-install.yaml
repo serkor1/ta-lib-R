@@ -58,5 +58,5 @@ jobs:
           needs: check
 
       - name: Install {talib}
-        run: pak::pak(serkor1/ta-lib-R)
+        run: pak::pak("serkor1/ta-lib-R")
         shell: Rscript {0}
