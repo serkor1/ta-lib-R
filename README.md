@@ -138,35 +138,26 @@ Below is an example on how to use `chart()` and `indicator()`.
 
 <img src="man/figures/README-charting-1.png" style="display: block; margin: auto;" />
 
-## Installation
+## Installation[^1]
 
-[TA-Lib](https://github.com/TA-Lib/ta-lib) is vendored in
-[{talib}](https://serkor1.github.io/ta-lib-R/) via `CMake`, so it is not
-necessary to have [TA-Lib](https://github.com/TA-Lib/ta-lib)
-pre-installed.[^1]
+[{talib}](https://serkor1.github.io/ta-lib-R/) can be installed using
+[{pak}](https://github.com/r-lib/pak) from CRAN[^2], or Github.
 
-### CRAN version
+### Install from source
 
-``` r
-pak::pak("talib")
-```
+The latest version of [{talib}](https://serkor1.github.io/ta-lib-R/) can
+be installed directly from source. The vendoring of
+[TA-Lib](https://github.com/TA-Lib/ta-lib) is handled by `configure` on
+Windows, MacOS and Linux.
 
-### Development version via [{pak}](https://github.com/r-lib/pak)
-
-[{talib}](https://serkor1.github.io/ta-lib-R/) can be installed via
-[{pak}](https://github.com/r-lib/pak) on Windows, MacOS and Linux.
+#### Using [{pak}](https://github.com/r-lib/pak)
 
 ``` r
-pak::pak("serkor1/talib")
+## install remote
+pak::pak("serkor1/ta-lib-R")
 ```
 
-When installing via [{pak}](https://github.com/r-lib/pak) the configure
-scripts will handle the vendoring.
-
-### Development version via source
-
-The development version can be installed by recursive cloning the
-repository and using the available build tools as follows:
+#### Using BASH
 
 ``` shell
 git clone --recursive https://github.com/serkor1/ta-lib-R.git
@@ -183,6 +174,11 @@ released with a [Contributor Code of
 Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html).
 By contributing to this project, you agree to abide by its terms.
 
-[^1]: Some systems (Windows in particular) may require you to explicitly
-    install and link `CMake` for
+[^1]: [TA-Lib](https://github.com/TA-Lib/ta-lib) is vendored in
+    [{talib}](https://serkor1.github.io/ta-lib-R/) via `CMake`, so it is
+    not necessary to have [TA-Lib](https://github.com/TA-Lib/ta-lib)
+    pre-installed. Some systems (Windows in particular) may require you
+    to explicitly install and link `CMake` for
     [{talib}](https://serkor1.github.io/ta-lib-R/) to build properly.
+
+[^2]: Not yet available.
