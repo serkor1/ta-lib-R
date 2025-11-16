@@ -4,7 +4,7 @@ name: Remote Install
 
 on:
   push:
-    branches: [devel]
+    branches: [devel, 14-robust-build-tools]
   pull_request:
     branches: [devel]
 
