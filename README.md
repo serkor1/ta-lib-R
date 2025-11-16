@@ -143,13 +143,25 @@ Below is an example on how to use `chart()` and `indicator()`.
 necessary to have [TA-Lib](https://github.com/TA-Lib/ta-lib)
 pre-installed.[^1]
 
-### Stable version
+### CRAN version
 
 ``` r
 pak::pak("talib")
 ```
 
-### Development version
+### Development version via [{pak}](https://github.com/r-lib/pak)
+
+[{talib}](https://serkor1.github.io/ta-lib-R/) can be installed via
+[{pak}](https://github.com/r-lib/pak) on Windows, MacOS and Linux.
+
+``` r
+pak::pak("serkor1/talib")
+```
+
+When installing via [{pak}](https://github.com/r-lib/pak) the configure
+scripts will handle the vendoring.
+
+### Development version via source
 
 The development version can be installed by recursive cloning the
 repository and using the available build tools as follows:
