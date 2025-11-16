@@ -154,7 +154,7 @@ if [ "$USE_SYSTEM" -eq 0 ]; then
   ##      correctly and throw an error
   ##      if not
   if [ ! -d "$TA_SRC" ]; then
-     git submodule update --init --recursive || {
+     git clone https://github.com/TA-Lib/ta-lib.git ${TA_SRC} || {
           echo "Build-error: git submodule update failed."
           exit 1
         }
