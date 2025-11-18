@@ -130,6 +130,36 @@ if [ "$USE_SYSTEM" -eq 0 ]; then
   ##      have been downloaded
   if [ ! -d "$TA_SRC" ]; then
 
+    ## check if git is available
+    ## on the system
+    if ! command -v git >/dev/null 2>&1; then
+      echo
+      echo "Build-error: Git is not found on default PATH."
+      echo "=========================================================================="
+      echo "Install Git:"
+      echo "  Linux:"
+      echo "    Debian/Ubuntu: sudo apt-get update && sudo apt-get install -y git"
+      echo "    Fedora/RHEL/CentOS: sudo dnf install -y git"
+      echo "    Arch: sudo pacman -S --needed git"
+      echo "    openSUSE: sudo zypper install -y git"
+      echo
+      echo "  macOS:"
+      echo "    Homebrew: brew install git"
+      echo "    MacPorts: sudo port install git"
+      echo "    Xcode CLT (also installs Git): xcode-select --install"
+      echo
+      echo "  Windows:"
+      echo "    Winget (Win10/11):  winget install --id Git.Git -e"
+      echo "    Chocolatey:         choco install git"
+      echo "    Or download Git for Windows from: https://git-scm.com/downloads"
+      echo
+      echo "After installation, ensure 'git' is on PATH and restart the shell/terminal."
+      echo "=========================================================================="
+      echo "Submit bug-reports here: https://github.com/serkor1/ta-lib-R"
+      echo
+      exit 1
+    fi
+
     ## this part checks if its a git repository
     ## which most imply that the host have clone the 
     ## repository without --recursive
