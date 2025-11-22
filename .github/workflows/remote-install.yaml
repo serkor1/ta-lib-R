@@ -4,7 +4,7 @@ name: Remote Install
 
 on:
   push:
-    branches: [devel]
+    branches: [devel, build-tools]
   pull_request:
     branches: [devel]
 
@@ -58,7 +58,7 @@ jobs:
           needs: check
 
       - name: Install {talib}
-        run: pak::pak("serkor1/ta-lib-R")
+        run: pak::pak("serkor1/ta-lib-R@build-tools")
         shell: Rscript {0}
 
       - name: Calculate an indicator
