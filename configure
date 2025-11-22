@@ -260,7 +260,7 @@ fi
 ## construct Makevars
 ##
 echo -n $(info) Constructing $(var PKG_CFLAGS) and $(var PKG_LIBS)
-
+CFLAGS=""
 if [ $PREINSTALLED -eq 0 ]; then
     
     if command -v pkg-config >/dev/null 2>&1 && pkg-config --exists ta-lib; then
@@ -280,10 +280,9 @@ else
     SEARCH_DIR="$TALIB/local/lib/"
     LIBFILE=$( find "$SEARCH_DIR" -maxdepth 1 -type f -name '*.a' | head -n 1 )
     LIBFILE="${LIBFILE#*src/} -lm"
-    
 fi
 
-CFLAGS+=$OPTIMIZE
+CFLAGS="$CFLAGS $OPTIMIZE"
 echo $(success)
 
 echo
