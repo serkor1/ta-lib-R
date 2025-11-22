@@ -66,16 +66,12 @@ warning() {
 }
 
 temporary_directory() {
-    local dir
-
-    if ! dir=$(mktemp -d); then
-        echo
-        error_message "could not create temporary directory"
-        echo
-        exit 1
-    fi
-
-    printf '%s' "$dir"
+  dir="$(mktemp -d)" || {
+    echo
+    printf '%s\n' "$(error) could not create temporary directory"
+    exit 1
+  }
+  printf '%s' "$dir"
 }
 
 ## 0) R_HOME and SHLIB
@@ -170,11 +166,10 @@ if [ "$(( PREINSTALLED + FORCE_VENDOR ))" -ne 0 ]; then
 
         if git status > /dev/null 2>&1; then
             printf ' %s\n' "$(warning)"
-            echo "Build-error: $TALIB not found. Either make a new clone, or initialize the submodule."
-            echo 
-            echo "Clone: \t\t git clone --recursive https://github.com/serkor1/ta-lib-R.git"
-            echo "Initialize: \t git submodule update --init --recursive"
-            echo
+            printf "Build-error: $TALIB not found. Either make a new clone, or initialize the submodule."
+            print 
+            printf 'Clone:\t\tgit clone --recursive https://github.com/serkor1/ta-lib-R.git\n'
+            printf 'Initialize:\tgit submodule update --init --recursive\n'
             exit 1
         
         ## if its NOT a git repository it is safe to assume that the development
