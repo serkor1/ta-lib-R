@@ -1,6 +1,6 @@
-# Contributing to talib
+# Contributing to {talib}
 
-This outlines how to propose a change to talib.
+This outlines how to propose a change to {talib}.
 For a detailed discussion on contributing to this and other tidyverse packages, please see the [development contributing guide](https://rstd.io/tidy-contrib) and our [code review principles](https://code-review.tidyverse.org/).
 
 ## Fixing typos
@@ -9,12 +9,20 @@ You can fix typos, spelling mistakes, or grammatical errors in the documentation
 This generally means you'll need to edit [roxygen2 comments](https://roxygen2.r-lib.org/articles/roxygen2.html) in an `.R`, not a `.Rd` file. 
 You can find the `.R` file that generates the `.Rd` by reading the comment in the first line.
 
+> [!NOTE]
+>
+> All documentation is generated via `man-roxygen` and/or `tools/`.
+
 ## Bigger changes
 
 If you want to make a bigger change, it's a good idea to first file an issue and make sure someone from the team agrees that it’s needed. 
 If you’ve found a bug, please file an issue that illustrates the bug with a minimal 
 [reprex](https://www.tidyverse.org/help/#reprex) (this will also help you write a unit test, if needed).
 See our guide on [how to create a great issue](https://code-review.tidyverse.org/issues/) for more advice.
+
+> [!NOTE]
+>
+> New indicators should be proposed [upstream](https://github.com/TA-Lib/ta-lib).
 
 ### Pull request process
 
@@ -33,7 +41,7 @@ See our guide on [how to create a great issue](https://code-review.tidyverse.org
 ### Code style
 
 *   New code should follow the tidyverse [style guide](https://style.tidyverse.org). 
-    You can use [Air](https://posit-dev.github.io/air/) to apply this style, but please don't restyle code that has nothing to do with your PR.  
+    You can use [Air](https://posit-dev.github.io/air/) to apply this style, but please don't restyle code that has nothing to do with your PR.
 
 *  We use [roxygen2](https://cran.r-project.org/package=roxygen2), with [Markdown syntax](https://cran.r-project.org/web/packages/roxygen2/vignettes/rd-formatting.html), for documentation.  
 
@@ -42,6 +50,6 @@ See our guide on [how to create a great issue](https://code-review.tidyverse.org
 
 ## Code of Conduct
 
-Please note that the talib project is released with a
+Please note that the {talib} project is released with a
 [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By contributing to this
 project you agree to abide by its terms.
