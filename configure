@@ -27,7 +27,7 @@ for arg in "$@"; do
       FORCE_VENDOR=1
       ;;
     --optimize)
-      OPTIMIZE+=" -O3"
+      OPTIMIZE="${OPTIMIZE} -O3"
       ;;
     *)
       echo "Unkown Option"
