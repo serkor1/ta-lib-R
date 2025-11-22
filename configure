@@ -58,7 +58,7 @@ info() {
 }
 
 success() {
-     printf '[\e[0;32m%s\033[0m]' "OK"
+    printf '[\e[0;32m%s\033[0m]' "OK"
 }
 
 warning() {
@@ -80,22 +80,23 @@ temporary_directory() {
 
 ## 0) R_HOME and SHLIB
 ##
-echo 
-echo -n $(info) Checking for $(var R_HOME)
+printf '%s Checking for %s' "$(info)" "$(var R_HOME)"
+
 
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
-    echo 
-    echo -e $(error) could not determine $(var R_HOME)
-    echo 
+    printf ' %s\n'"$(warning)"
+    printf '%s could not determine %s\n'"$(error)" "$(var R_HOME)"
+    printf '\n'
     exit 1
 else 
-    echo $(success)
+    printf ' %s\n' "$(success)"
     R_BIN="${R_HOME}/bin/R"
 fi
 
+
 ## check R CMD SHLIB 
-echo -n $(info) Compiling C-program with R CMD SHLIB
+printf '%s Compiling C-program with R CMD SHLIB' "$(info)"
 SHLIB_TEST=$(temporary_directory)
 
 cat > "${SHLIB_TEST}/conftest.c" <<'EOF'
@@ -104,20 +105,18 @@ EOF
 
 
 if ! ( cd "$SHLIB_TEST" && "$R_BIN" CMD SHLIB conftest.c >/dev/null 2>&1 ); then
-  echo
-  echo $(error) R CMD SHLIB test compilation failed; build-tools may be missing or misconfigured.
-  echo
+  printf ' %s\n' "$(warning)"
+  echo $(error) R CMD SHLIB test compilation failed. Build-tools may be missing or misconfigured.
   exit 1
 fi
 
 
-echo $(success)
+printf ' %s\n' $(success)
 rm -rf $SHLIB_TEST
 
 ## 1) default to pre-installed TA-Lib
 ##    if available 
-echo 
-echo -n $(info) Checking if TA-Lib can be compiled with system headers
+printf '%s Compiling TA-Lib program with system headers' "$(info)"
 
 TALIB_SYSTEM=$(temporary_directory)
 
@@ -127,28 +126,24 @@ int main(void){ return 0; }
 EOF
 
 if ! ( cd "$TALIB_SYSTEM" && gcc conftest.c >/dev/null 2>&1 ); then
-    echo $(warning)
-    echo
-    echo $(info) Using vendored TA-Lib instead!
+    printf ' %s\n' "$(warning)"
     PREINSTALLED=1
 else
-    echo $(success)
+    printf ' %s\n' "$(success)"
     PREINSTALLED=0
 fi
 rm -rf $TALIB_SYSTEM
-
 
 ## 2) conditional build of vendored
 ##    TA-Lib
 if [ "$(( PREINSTALLED + FORCE_VENDOR ))" -ne 0 ]; then
     TALIB="src/ta-lib" # vendor location
-    echo $(info) Vendored location check
     
     ## vendor check start
     if [ ! -d "$TALIB" ]; then
-        echo $(info) Vendored location check
 
         if ! command -v git > /dev/null 2>&1; then
+            printf ' %s\n' "$(warning)"
             echo
             echo $(error) Git is not found on default PATH.
             echo
@@ -174,6 +169,7 @@ if [ "$(( PREINSTALLED + FORCE_VENDOR ))" -ne 0 ]; then
         fi
 
         if git status > /dev/null 2>&1; then
+            printf ' %s\n' "$(warning)"
             echo "Build-error: $TALIB not found. Either make a new clone, or initialize the submodule."
             echo 
             echo "Clone: \t\t git clone --recursive https://github.com/serkor1/ta-lib-R.git"
@@ -188,6 +184,7 @@ if [ "$(( PREINSTALLED + FORCE_VENDOR ))" -ne 0 ]; then
         ##          version, this is the best solution I could come up with. If you 
         ##          are reading this, I am open to other and better solutions.
         else
+        printf ' %s\n' "$(warning)"
         echo
         echo "TA-Lib (core) not found. Cloning https://github.com/TA-Lib/ta-lib.git"
         echo
@@ -200,9 +197,8 @@ if [ "$(( PREINSTALLED + FORCE_VENDOR ))" -ne 0 ]; then
         fi
 
     fi
-    ## vendor check end
-    echo -n $(info) Building TA-Lib with CMake
 
+    ## vendor check end
     TARGET="$(cd "$TALIB" 2>/dev/null && pwd)/local"
     trap 'rm -rf "$TARGET"' EXIT
 
@@ -213,27 +209,35 @@ if [ "$(( PREINSTALLED + FORCE_VENDOR ))" -ne 0 ]; then
     trap 'rm -rf "$BUILDLOCATION"' EXIT
 
     if command -v cmake >/dev/null 2>&1 && [ -f "$TALIB/CMakeLists.txt" ]; then
+        printf '%s Configure and generate TA-Lib\n' "$(info)"
+
         cmake -S "$TALIB" -B "${BUILDLOCATION}" \
-        -DCMAKE_BUILD_TYPE=Release \
-        -DCMAKE_INSTALL_PREFIX="$TARGET" \
-        -DBUILD_SHARED_LIBS=OFF \
-        -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-        -DCMAKE_C_FLAGS="-O3 -w -march=native -fPIC  -DNDEBUG" \
-        -DCMAKE_CXX_FLAGS="-O3 -w -march=native -fPIC  -DNDEBUG" \
-        -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-        -DCMAKE_C_FLAGS_RELEASE="-O3 -march=native -fPIC  -DNDEBUG" \
-        -DBUILD_DEV_TOOLS=OFF
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX="$TARGET" \
+            -DBUILD_SHARED_LIBS=OFF \
+            -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+            -DCMAKE_C_FLAGS="-O3 -w -march=native -fPIC  -DNDEBUG" \
+            -DCMAKE_CXX_FLAGS="-O3 -w -march=native -fPIC  -DNDEBUG" \
+            -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+            -DCMAKE_C_FLAGS_RELEASE="-O3 -march=native -fPIC  -DNDEBUG" \
+            -DBUILD_DEV_TOOLS=OFF
+
+        printf '%s\n' "$(success)"
+
+        printf '%s Build and install TA-Lib\n' "$(info)"
 
         cmake --build "${BUILDLOCATION}" --target install -- -j"$(nproc --ignore 2)"
 
-        echo $(success)
+        printf '%s\n' "$(success)"
+
     else
         ## NOTE: after many attempts I can't make 
         ##       configure "work" using libtools. It either complains about
         ##       missing libraries, or links.
         ##
         ##       CMake just works well here, end of story.
-        echo $(error) "CMake not found on PATH."
+        printf ' %s\n' "$(error)"
+        printf 'CMake not found on PATH'
         echo "=========================================================================="
         echo "Install CMake:"
         echo "  Linux:"
@@ -259,7 +263,7 @@ fi
 
 ## construct Makevars
 ##
-echo -n $(info) Constructing $(var PKG_CFLAGS) and $(var PKG_LIBS)
+printf '%s Constucting %s and %s' "$(info)" "$(var PKG_CFLAGS)" "$(var PKG_LIBS)"
 CFLAGS=""
 if [ $PREINSTALLED -eq 0 ]; then
     
@@ -283,10 +287,9 @@ else
 fi
 
 CFLAGS="$CFLAGS $OPTIMIZE"
-echo $(success)
+printf '%s\n' "$(success)"
 
-echo
-echo -n $(info) Constructing Makevars
+printf '%s Constucting %s' "$(info)" "$(var Makevars)"
 
 cat > src/Makevars <<EOF
 # autogenerated by configure
@@ -295,7 +298,7 @@ PKG_CFLAGS = $CFLAGS
 PKG_LIBS   = $LIBFILE
 EOF
 
-echo $(success)
+printf '%s\n' "$(success)"
 
 echo 
 echo Configure status $(success)
