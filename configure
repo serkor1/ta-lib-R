@@ -126,17 +126,17 @@ cat > "${TALIB_SYSTEM}/conftest.c" <<'EOF'
 int main(void){ return 0; }
 EOF
 
-(cd "$TALIB_SYSTEM" && gcc conftest.c) >/dev/null 2>&1
-PREINSTALLED=$?
-
-if [ $PREINSTALLED -eq 0 ]; then
-    echo $(success)
-else
+if ! ( cd "$TALIB_SYSTEM" && gcc conftest.c >/dev/null 2>&1 ); then
     echo $(warning)
     echo
     echo $(info) Using vendored TA-Lib instead!
+    PREINSTALLED=1
+else
+    echo $(success)
+    PREINSTALLED=0
 fi
 rm -rf $TALIB_SYSTEM
+
 
 ## 2) conditional build of vendored
 ##    TA-Lib
@@ -259,7 +259,6 @@ fi
 
 ## construct Makevars
 ##
-echo
 echo -n $(info) Constructing $(var PKG_CFLAGS) and $(var PKG_LIBS)
 
 if [ $PREINSTALLED -eq 0 ]; then
@@ -277,7 +276,6 @@ if [ $PREINSTALLED -eq 0 ]; then
     fi
 
 else
-    echo NOT PREINSTALLED
     CFLAGS="-I${TARGET#*/src/}/include -I${TARGET#*/src/}/include/ta-lib"
     SEARCH_DIR="$TALIB/local/lib/"
     LIBFILE=$( find "$SEARCH_DIR" -maxdepth 1 -type f -name '*.a' | head -n 1 )
