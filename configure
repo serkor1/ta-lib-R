@@ -1,279 +1,305 @@
-#!/bin/sh
-
-## configure for Linux and
-## macOS
+#!/usr/bin/env bash
+## configure: UNIX
+##
+## description:
+##
+##
+## 
 set -eu
 
-## 0) basic sanity checks
-##    before starting the build
-##    process
-##
-##    check if R exists on the
-##    default PATH
-: ${R_HOME=`R RHOME`}
-if test -z "${R_HOME}"; then
-  echo 
-  echo "could not determine R_HOME"
-  echo 
-  exit 1
-fi
+## {pkg} information
+RPKGNAME=$(grep "^Package:" DESCRIPTION | sed "s/Package: //")
+RPKGVERSION=$(grep "^Version:" DESCRIPTION | sed "s/Version: //")
 
-## construct variable to R binaries taken
-## from 'Writing R extensions'
-##
-##    "$(R_HOME)/bin/Rscript" filename
-##    "$(R_HOME)/bin/Rscript" -e 'R expression'
-R_BIN="${R_HOME}/bin/R"
+echo 
+echo Configure for {$RPKGNAME} v$RPKGVERSION 
+echo
 
-## construct temporary directory
-## for the build tests
-## See: https://stackoverflow.com/a/53063602/10400791
-TESTDIR=$(mktemp -d) || {
-  echo
-  echo "error: cannot create temporary directory"
-  echo
-  exit 1
+## configure args and default
+## values
+##
+##   --configure-args="--force-vendor" 
+FORCE_VENDOR=0
+OPTIMIZE=""
+for arg in "$@"; do
+  case "$arg" in
+    --force-vendor)
+      FORCE_VENDOR=1
+      ;;
+    --optimize)
+      OPTIMIZE+=" -O3"
+      ;;
+    *)
+      echo "Unkown Option"
+      ;;
+  esac
+done
+
+## passed via --configure-vars
+# CFLAGS="${CFLAGS:+$CFLAGS}"
+# CPPFLAGS="${CPPFLAGS:+$CPPFLAGS}"
+# echo FLAGS = $CFLAGS
+# exit 1
+# if [ "${MYOPT}" = "fast" ]; then
+#   USE_FAST="yes"
+# fi
+
+## utility functions
+error() {
+    printf '\e[0;31m%s\033[0m' "Build-error:"
 }
 
-## construct simple C routine
-## that is to be compile
-cat > "${TESTDIR}/conftest.c" <<'EOF'
-void rtools_conftest(void) {}
+var() {
+    printf '\e[0;35m%s\033[0m' $1
+}
+
+info() {
+    printf '\e[0;34m%s\033[0m' "Build-step:"
+}
+
+success() {
+     printf '[\e[0;32m%s\033[0m]' "OK"
+}
+
+warning() {
+    printf '[\e[0;33m%s\033[0m]' "Failed"
+}
+
+temporary_directory() {
+    local dir
+
+    if ! dir=$(mktemp -d); then
+        echo
+        error_message "could not create temporary directory"
+        echo
+        exit 1
+    fi
+
+    printf '%s' "$dir"
+}
+
+## 0) R_HOME and SHLIB
+##
+echo 
+echo -n $(info) Checking for $(var R_HOME)
+
+: ${R_HOME=`R RHOME`}
+if test -z "${R_HOME}"; then
+    echo 
+    echo -e $(error) could not determine $(var R_HOME)
+    echo 
+    exit 1
+else 
+    echo $(success)
+    R_BIN="${R_HOME}/bin/R"
+fi
+
+## check R CMD SHLIB 
+echo -n $(info) Compiling C-program with R CMD SHLIB
+SHLIB_TEST=$(temporary_directory)
+
+cat > "${SHLIB_TEST}/conftest.c" <<'EOF'
+void foo(void) {}
 EOF
 
-## compile the conftest.c 
-## and capture status
-(
-  cd "$TESTDIR" || exit 1
-  "$R_BIN" CMD SHLIB conftest.c
-) >/dev/null 2>&1
 
-STATUS=$?
-
-## throw an error if the conftest.c 
-## fails
-if [ $STATUS -ne 0 ] || { [ ! -f "${TESTDIR}/conftest.dll" ] && [ ! -f "${TESTDIR}/conftest.so" ]; }; then
+if ! ( cd "$SHLIB_TEST" && "$R_BIN" CMD SHLIB conftest.c >/dev/null 2>&1 ); then
   echo
-  echo "configure: error: R CMD SHLIB test compilation failed; build tools may be missing or misconfigured." 
-  echo 
-  rm -rf "$TESTDIR"
+  echo $(error) R CMD SHLIB test compilation failed; build-tools may be missing or misconfigured.
+  echo
   exit 1
 fi
 
-## remove TESTDIR
-## from host-machine
-rm -rf "$TESTDIR"
 
-## 1) general setup of
-##    the configure script
-TA_SRC="src/ta-lib"
-CC_BIN="${CC:-cc}"
-PKG_CPPFLAGS=""
-PKG_CFLAGS=""
-PKG_LIBS=""
-USE_SYSTEM=0
+echo $(success)
+rm -rf $SHLIB_TEST
 
-## 2) check if the user have 
-##    a pre-installed version of TA-Lib
-##    
-##    This is always the preferred way 
-##    of installing {talib}
-if command -v pkg-config >/dev/null 2>&1 && pkg-config --exists ta-lib; then
-  incdir="$(pkg-config --variable=includedir ta-lib)"
-  libdir="$(pkg-config --variable=libdir ta-lib)"
-  PKG_CPPFLAGS="-I$incdir -I$incdir/ta-lib"
-  PKG_LIBS="-L$libdir -lta-lib"
-  case "$(uname -s)" in
-    Linux) PKG_LIBS="$PKG_LIBS -Wl,-rpath,$libdir" ;;
-  esac
-  USE_SYSTEM=1
-  echo "configure: using system TA-Lib (inc=$incdir lib=$libdir)"
-fi
+## 1) default to pre-installed TA-Lib
+##    if available 
+echo 
+echo -n $(info) Checking if TA-Lib can be compiled with system headers
 
-## 2.1) check if it works
-##      by a simple program
-if [ "$USE_SYSTEM" -eq 0 ]; then
-  cat > conftest.c <<'EOF'
+TALIB_SYSTEM=$(temporary_directory)
+
+cat > "${TALIB_SYSTEM}/conftest.c" <<'EOF'
 #include <ta-lib/ta_libc.h>
 int main(void){ return 0; }
 EOF
-  INC_DIRS="/usr/local/include/ta-lib /usr/include/ta-lib /opt/homebrew/include/ta-lib /opt/local/include/ta-lib"
-  LIB_DIRS="/usr/local/lib /usr/lib /opt/homebrew/lib /opt/local/lib"
-  for inc in $INC_DIRS ""; do
-    [ -n "$inc" ] && [ ! -f "$inc/ta_libc.h" ] && continue
-    for libd in $LIB_DIRS ""; do
-      for lname in ta-lib ta_lib; do
-        CPPTRY=""; LIBTRY="-l$lname"
-        [ -n "$inc" ]  && CPPTRY="-I$inc -I$(dirname "$inc")"
-        [ -n "$libd" ] && LIBTRY="-L$libd $LIBTRY"
-        if ${CC:-cc} conftest.c -o conftest $CPPTRY $LIBTRY -lm >/dev/null 2>&1; then
-          PKG_CPPFLAGS="$CPPTRY"
-          PKG_LIBS="$LIBTRY -lm"
-          [ -n "$libd" ] && { case "$(uname -s)" in Linux) PKG_LIBS="$PKG_LIBS -Wl,-rpath,$libd";; esac; }
-          USE_SYSTEM=1
-          echo "configure: found system TA-Lib inc=$inc lib=$libd name=$lname"
-          break 3
-        fi
-      done
-    done
-  done
-  rm -f conftest conftest.c
+
+(cd "$TALIB_SYSTEM" && gcc conftest.c) >/dev/null 2>&1
+PREINSTALLED=$?
+
+if [ $PREINSTALLED -eq 0 ]; then
+    echo $(success)
+else
+    echo $(warning)
+    echo
+    echo $(info) Using vendored TA-Lib instead!
 fi
+rm -rf $TALIB_SYSTEM
 
-## 3) build TA-Lib in src/ta-lib
-##    if its not installed in the system
-if [ "$USE_SYSTEM" -eq 0 ]; then
+## 2) conditional build of vendored
+##    TA-Lib
+if [ "$(( PREINSTALLED + FORCE_VENDOR ))" -ne 0 ]; then
+    TALIB="src/ta-lib" # vendor location
+    echo $(info) Vendored location check
+    
+    ## vendor check start
+    if [ ! -d "$TALIB" ]; then
+        echo $(info) Vendored location check
 
-  ## 3.1) check if TA-Lib is vendored
-  ##      correctly and determine an action
-  ##      conditional of how the repository
-  ##      have been downloaded
-  if [ ! -d "$TA_SRC" ]; then
-
-    ## check if git is available
-    ## on the system
-    if ! command -v git >/dev/null 2>&1; then
-      echo
-      echo "Build-error: Git is not found on default PATH."
-      echo "=========================================================================="
-      echo "Install Git:"
-      echo "  Linux:"
-      echo "    Debian/Ubuntu: sudo apt-get update && sudo apt-get install -y git"
-      echo "    Fedora/RHEL/CentOS: sudo dnf install -y git"
-      echo "    Arch: sudo pacman -S --needed git"
-      echo "    openSUSE: sudo zypper install -y git"
-      echo
-      echo "  macOS:"
-      echo "    Homebrew: brew install git"
-      echo "    MacPorts: sudo port install git"
-      echo "    Xcode CLT (also installs Git): xcode-select --install"
-      echo
-      echo "  Windows:"
-      echo "    Winget (Win10/11):  winget install --id Git.Git -e"
-      echo "    Chocolatey:         choco install git"
-      echo "    Or download Git for Windows from: https://git-scm.com/downloads"
-      echo
-      echo "After installation, ensure 'git' is on PATH and restart the shell/terminal."
-      echo "=========================================================================="
-      echo "Submit bug-reports here: https://github.com/serkor1/ta-lib-R"
-      echo
-      exit 1
-    fi
-
-    ## this part checks if its a git repository
-    ## which most imply that the host have clone the 
-    ## repository without --recursive
-    ## so this part is "just" to give the developer a helpful
-    ## message
-    if git status > /dev/null 2>&1; then
-        echo "Build-error: $TA_SRC not found. Either make a new clone, or initialize the submodule."
+        if command -v git > /dev/null 2>&1; then
+        echo
+        echo $(error) Git is not found on default PATH.
+        echo
+        echo "=========================================================================="
+        echo "Install Git:"
+        echo "  Linux:"
+        echo "    Debian/Ubuntu: sudo apt-get update && sudo apt-get install -y git"
+        echo "    Fedora/RHEL/CentOS: sudo dnf install -y git"
+        echo "    Arch: sudo pacman -S --needed git"
+        echo "    openSUSE: sudo zypper install -y git"
+        echo
+        echo "  macOS:"
+        echo "    Homebrew: brew install git"
+        echo "    MacPorts: sudo port install git"
+        echo "    Xcode CLT (also installs Git): xcode-select --install"
         echo 
-        echo "Clone: \t\t git clone --recursive https://github.com/serkor1/ta-lib-R.git"
-        echo "Initialize: \t git submodule update --init --recursive"
+        echo "After installation, ensure 'git' is on PATH and restart the shell/terminal."
+        echo
+        echo "=========================================================================="
+        echo "Submit bug-reports here: https://github.com/serkor1/ta-lib-R"
         echo
         exit 1
-    
-    ## if its NOT a git repository it is safe to assume that the development
-    ## version is being installed via {pak} or other tools which does not 
-    ## include submodules by default
-    ##    NOTE: After many attempts to ease the installation of the development
-    ##          version, this is the best solution I could come up with. If you 
-    ##          are reading this, I am open to other and better solutions.
-    else
-      echo
-      echo "TA-Lib (core) not found. Cloning https://github.com/TA-Lib/ta-lib.git"
-      echo
-      git clone https://github.com/TA-Lib/ta-lib.git ${TA_SRC} || {
-          echo
-          echo "Build-error: Could not clone https://github.com/TA-Lib/ta-lib.git. Check your internet connection, or submit a bug-report."
-          echo
-          exit 1
-        }
+        fi
+
+        if git status > /dev/null 2>&1; then
+            echo "Build-error: $TALIB not found. Either make a new clone, or initialize the submodule."
+            echo 
+            echo "Clone: \t\t git clone --recursive https://github.com/serkor1/ta-lib-R.git"
+            echo "Initialize: \t git submodule update --init --recursive"
+            echo
+            exit 1
+        
+        ## if its NOT a git repository it is safe to assume that the development
+        ## version is being installed via {pak} or other tools which does not 
+        ## include submodules by default
+        ##    NOTE: After many attempts to ease the installation of the development
+        ##          version, this is the best solution I could come up with. If you 
+        ##          are reading this, I am open to other and better solutions.
+        else
+        echo
+        echo "TA-Lib (core) not found. Cloning https://github.com/TA-Lib/ta-lib.git"
+        echo
+        git clone https://github.com/TA-Lib/ta-lib.git ${TALIB} || {
+            echo
+            echo "Build-error: Could not clone https://github.com/TA-Lib/ta-lib.git. Check your internet connection, or submit a bug-report."
+            echo
+            exit 1
+            }
+        fi
+
     fi
-  fi
+    ## vendor check end
+    echo -n $(info) Building TA-Lib with CMake
 
-  echo 
-  echo "Building TA-Lib using CMake"
-  echo
+    TARGET="$(cd "$TALIB" 2>/dev/null && pwd)/local"
+    trap 'rm -rf "$TARGET"' EXIT
 
-  TA_PREFIX="$(cd "$TA_SRC" 2>/dev/null && pwd)/local"
+    ## NOTE: this builds a temporary
+    ##       directory to build TA-Lib
+    ##       without this step .Rbuildignore will riot.
+    BUILDLOCATION=$(temporary_directory)
+    trap 'rm -rf "$BUILDLOCATION"' EXIT
 
-  ## NOTE: this builds a temporary
-  ##       directory to build TA-Lib
-  ##       without this step .Rbuildignore will riot.
-  BUILDROOT=$(mktemp -d) || {
-  echo
-  echo "error: cannot create temporary directory"
-  echo
-  exit 1
-  }
+    if command -v cmake >/dev/null 2>&1 && [ -f "$TALIB/CMakeLists.txt" ]; then
+        cmake -S "$TALIB" -B "${BUILDLOCATION}" \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX="$TARGET" \
+        -DBUILD_SHARED_LIBS=OFF \
+        -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+        -DCMAKE_C_FLAGS="-O3 -w -march=native -fPIC  -DNDEBUG" \
+        -DCMAKE_CXX_FLAGS="-O3 -w -march=native -fPIC  -DNDEBUG" \
+        -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+        -DCMAKE_C_FLAGS_RELEASE="-O3 -march=native -fPIC  -DNDEBUG" \
+        -DBUILD_DEV_TOOLS=OFF
 
-  if command -v cmake >/dev/null 2>&1 && [ -f "$TA_SRC/CMakeLists.txt" ]; then
-    cmake -S "$TA_SRC" -B "${BUILDROOT}/cmake" \
-      -DCMAKE_BUILD_TYPE=Release \
-      -DCMAKE_INSTALL_PREFIX="$TA_PREFIX" \
-      -DBUILD_SHARED_LIBS=OFF \
-      -DCMAKE_C_FLAGS="-O3 -w" -DCMAKE_CXX_FLAGS="-O3 -w" \
-      -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-      -DCMAKE_C_FLAGS_RELEASE="-O3 -march=native -fPIC" \
-      -DBUILD_DEV_TOOLS=OFF
-    cmake --build "${BUILDROOT}/cmake" --target install -- -j"$(nproc --ignore 2)"
-  else
-    ## NOTE: after many attempts I can't make 
-    ##       configure "work" using libtools. It either complains about
-    ##       missing libraries, or links.
-    ##
-    ##       CMake just works well here, end of story.
-    echo "CMake not found on PATH."
-    echo "=========================================================================="
-    echo "Install CMake:"
-    echo "  Linux:"
-    echo "    Debian/Ubuntu: sudo apt-get update && sudo apt-get install -y cmake"
-    echo "    Fedora/RHEL/CentOS: sudo dnf install -y cmake"
-    echo "    Arch: sudo pacman -S --needed cmake"
-    echo "    openSUSE: sudo zypper install -y cmake"
-    echo
-    echo "  macOS:"
-    echo "    Homebrew: brew install cmake"
-    echo "    MacPorts: sudo port install cmake"
-    echo
-    echo "Alternatively download the installer: https://cmake.org/download/"
-    echo "After installation, restart the shell or add CMake to PATH"
-    echo "=========================================================================="
-    echo "Submit bug-reports here: https://github.com/serkor1/ta-lib-R"
-    echo
-    exit 1
-  fi
+        cmake --build "${BUILDLOCATION}" --target install -- -j"$(nproc --ignore 2)"
 
-  ## flags for Makevars
-  REL="ta-lib/local"
-  PKG_CPPFLAGS="-I$REL/include -I$REL/include/ta-lib"
-  if   [ -f "$TA_SRC/local/lib/libta-lib.a" ]; then
-    PKG_LIBS="$REL/lib/libta-lib.a -lm"
-  elif [ -f "$TA_SRC/local/lib/libta_lib.a" ]; then
-    PKG_LIBS="$REL/lib/libta_lib.a -lm"
-  elif [ -f "$TA_SRC/local/lib/libta-lib.so" ] || [ -f "$TA_SRC/local/lib/libta-lib.dylib" ]; then
-    PKG_LIBS="-L$REL/lib -Wl,-rpath,'\$$ORIGIN'/$REL/lib -lta-lib -lm"
-  else
-    echo "ERROR: TA-Lib library not found under $TA_SRC/local/lib" >&2
-    exit 1
-  fi
+        echo $(success)
+    else
+        ## NOTE: after many attempts I can't make 
+        ##       configure "work" using libtools. It either complains about
+        ##       missing libraries, or links.
+        ##
+        ##       CMake just works well here, end of story.
+        echo $(error) "CMake not found on PATH."
+        echo "=========================================================================="
+        echo "Install CMake:"
+        echo "  Linux:"
+        echo "    Debian/Ubuntu: sudo apt-get update && sudo apt-get install -y cmake"
+        echo "    Fedora/RHEL/CentOS: sudo dnf install -y cmake"
+        echo "    Arch: sudo pacman -S --needed cmake"
+        echo "    openSUSE: sudo zypper install -y cmake"
+        echo
+        echo "  macOS:"
+        echo "    Homebrew: brew install cmake"
+        echo "    MacPorts: sudo port install cmake"
+        echo
+        echo "Alternatively download the installer: https://cmake.org/download/"
+        echo "After installation, restart the shell or add CMake to PATH"
+        echo "=========================================================================="
+        echo "Submit bug-reports here: https://github.com/serkor1/ta-lib-R"
+        echo
+        exit 1
+    fi
+
 fi
 
-## 4) check if configured
-##    properly
-[ -n "$PKG_LIBS" ] || { echo "ERROR: empty PKG_LIBS" >&2; exit 1; }
 
-## 5) write Makevars
+## construct Makevars
+##
+echo
+echo -n $(info) Constructing $(var PKG_CFLAGS) and $(var PKG_LIBS)
+
+if [ $PREINSTALLED -eq 0 ]; then
+    
+    if command -v pkg-config >/dev/null 2>&1 && pkg-config --exists ta-lib; then
+        incdir="$(pkg-config --variable=includedir ta-lib)"
+        libdir="$(pkg-config --variable=libdir ta-lib)"
+        CFLAGS="-I$incdir -I$incdir/ta-lib"
+
+        LIBFILE="-L$libdir -lta-lib"
+    case "$(uname -s)" in
+        Linux) LIBFILE="$LIBFILE -Wl,-rpath,$libdir" ;;
+    esac
+        USE_SYSTEM=1
+    fi
+
+else
+    echo NOT PREINSTALLED
+    CFLAGS="-I${TARGET#*/src/}/include -I${TARGET#*/src/}/include/ta-lib"
+    SEARCH_DIR="$TALIB/local/lib/"
+    LIBFILE=$( find "$SEARCH_DIR" -maxdepth 1 -type f -name '*.a' | head -n 1 )
+    LIBFILE="${LIBFILE#*src/} -lm"
+    
+fi
+
+CFLAGS+=$OPTIMIZE
+echo $(success)
+
+echo
+echo -n $(info) Constructing Makevars
+
 cat > src/Makevars <<EOF
 # autogenerated by configure
-PKG_CPPFLAGS = $PKG_CPPFLAGS
-PKG_CFLAGS = $PKG_CFLAGS
-PKG_LIBS = $PKG_LIBS
+CFLAGS += $CFLAGS
+PKG_CFLAGS += $CFLAGS
+PKG_LIBS += $LIBFILE
 EOF
 
-echo
-echo "TA-Lib installed successfully!"
-echo
+echo $(success)
 
-rm -rf "$BUILDROOT"
+echo 
+echo Configure status $(success)
+echo
