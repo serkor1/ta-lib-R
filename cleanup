@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
-
-rm -rf src/Makevars
-rm -rf src/ta-lib/local
+#!/bin/sh
+## cleanup: UNIX
+rm -rf src/Makevars     # from configure
+rm -rf src/ta-lib/local # from CMake
