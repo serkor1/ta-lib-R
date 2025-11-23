@@ -1,9 +1,14 @@
 #!/bin/sh
 ## configure: UNIX
 ##
-## description:
+## details:
 ##
-##
+##  configure will *always* check for a pre-installed
+##  TA-Lib using default locations using #include <ta-lib/ta_libc.h>
+##  whether it builds, or not, is left to mercy of your installed compiler (gcc).
+##  If the routine cant be built (and the reason does not matter) configure
+##  will use the vendored TA-Lib located in src/ta-lib
+##  This behaviour can be overridden by passing --force-vendor
 ## 
 set -eu
 
@@ -15,10 +20,18 @@ echo
 echo Configure for {$RPKGNAME} v$RPKGVERSION 
 echo
 
-## configure args and default
-## values
+## configure args and vars
+## 
+## details:
+##  args are passed as: --configure-args="--foo-bar"
+##  vars are passed as: --configure-vars="FOO='DOTHIS'"
 ##
-##   --configure-args="--force-vendor" 
+##  args:
+##      --force-vendor: if passed it will use the vendored
+##      TA-Lib via CMake
+## 
+##  vars:
+##      
 FORCE_VENDOR=0
 OPTIMIZE=""
 for arg in "$@"; do
@@ -35,16 +48,12 @@ for arg in "$@"; do
   esac
 done
 
-## passed via --configure-vars
-# CFLAGS="${CFLAGS:+$CFLAGS}"
-# CPPFLAGS="${CPPFLAGS:+$CPPFLAGS}"
-# echo FLAGS = $CFLAGS
-# exit 1
-# if [ "${MYOPT}" = "fast" ]; then
-#   USE_FAST="yes"
-# fi
-
 ## utility functions
+## 
+## details:
+##  these functions serves absolutely no *real*
+##  purpose other than coloring simplifying the 
+##  messages sent to the host.
 error() {
     printf '\e[0;31m%s\033[0m' "Build-error:"
 }
@@ -65,6 +74,10 @@ warning() {
     printf '[\e[0;33m%s\033[0m]' "Failed"
 }
 
+## details:
+##  this function generates a temporary
+##  directory for building the libraries
+##  and is deleted after configure is done
 temporary_directory() {
   dir="$(mktemp -d)" || {
     echo
@@ -74,11 +87,15 @@ temporary_directory() {
   printf '%s' "$dir"
 }
 
-## 0) R_HOME and SHLIB
+## sanity checks
 ##
+## details:
+##  taken from the 'Writing R Extensions' these steps
+##  should always be included.
 printf '%s Checking for %s' "$(info)" "$(var R_HOME)"
 
-
+## details:
+##  check R_HOME
 : ${R_HOME=`R RHOME`}
 if test -z "${R_HOME}"; then
     printf ' %s\n'"$(warning)"
@@ -90,8 +107,9 @@ else
     R_BIN="${R_HOME}/bin/R"
 fi
 
-
-## check R CMD SHLIB 
+## details:
+##  compile a small C-routine wiht R CMD SHLIB
+##  as a belt and buckles test
 printf '%s Compiling C-program with R CMD SHLIB' "$(info)"
 SHLIB_TEST=$(temporary_directory)
 
@@ -99,21 +117,22 @@ cat > "${SHLIB_TEST}/conftest.c" <<'EOF'
 void foo(void) {}
 EOF
 
-
 if ! ( cd "$SHLIB_TEST" && "$R_BIN" CMD SHLIB conftest.c >/dev/null 2>&1 ); then
   printf ' %s\n' "$(warning)"
   echo $(error) R CMD SHLIB test compilation failed. Build-tools may be missing or misconfigured.
   exit 1
 fi
 
-
 printf ' %s\n' $(success)
 rm -rf $SHLIB_TEST
 
-## 1) default to pre-installed TA-Lib
-##    if available 
+## TA-Lib availability
+##
+## details:
+##  CRAN requires that compiled packages
+##  that uses external libraries should always
+##  default to the users installation
 printf '%s Compiling TA-Lib program with system headers' "$(info)"
-
 TALIB_SYSTEM=$(temporary_directory)
 
 cat > "${TALIB_SYSTEM}/conftest.c" <<'EOF'
@@ -121,6 +140,9 @@ cat > "${TALIB_SYSTEM}/conftest.c" <<'EOF'
 int main(void){ return 0; }
 EOF
 
+## details:
+##  1 is BASH for EXIT, 0 is for SUCCESS 
+##  so the logic is reversed here
 if ! ( cd "$TALIB_SYSTEM" && gcc conftest.c >/dev/null 2>&1 ); then
     printf ' %s\n' "$(warning)"
     PREINSTALLED=1
@@ -130,8 +152,13 @@ else
 fi
 rm -rf $TALIB_SYSTEM
 
-## 2) conditional build of vendored
-##    TA-Lib
+## conditional building using CMake
+## for vendored TA-Lib
+## 
+## details:
+##  if --force-vendor is passed FORCE_VENDOR
+##  is set to 1, 0 otherwise - so everyting
+##  is based on the above compilation
 if [ "$(( PREINSTALLED + FORCE_VENDOR ))" -ne 0 ]; then
     TALIB="src/ta-lib" # vendor location
     
@@ -255,9 +282,11 @@ if [ "$(( PREINSTALLED + FORCE_VENDOR ))" -ne 0 ]; then
 
 fi
 
-
-## construct Makevars
-##
+## Makevars
+## 
+## details:
+##  this is probably the most important step, if done
+##  incorrectly the uptream build wont be linked to R
 printf '%s Constucting %s and %s' "$(info)" "$(var PKG_CFLAGS)" "$(var PKG_LIBS)"
 CFLAGS=""
 if [ $PREINSTALLED -eq 0 ]; then
