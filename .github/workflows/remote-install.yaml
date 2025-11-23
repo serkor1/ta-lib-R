@@ -4,7 +4,7 @@ name: Remote Install
 
 on:
   push:
-    branches: [devel, build-tools]
+    branches: [devel]
   pull_request:
     branches: [devel]
 
