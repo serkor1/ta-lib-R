@@ -6,7 +6,7 @@
 ##  configure will *always* check for a pre-installed
 ##  TA-Lib using default locations using #include <ta-lib/ta_libc.h>
 ##  whether it builds, or not, is left to mercy of your installed compiler (gcc).
-##  If the routine cant be built (and the reason does not matter) configure
+##  If the routine can't be built (and the reason does not matter) configure
 ##  will use the vendored TA-Lib located in src/ta-lib
 ##  This behaviour can be overridden by passing --force-vendor
 ## 
@@ -43,8 +43,8 @@ for arg in "$@"; do
       OPTIMIZE="${OPTIMIZE} -O3"
       ;;
     *)
-      echo "Unkown Option"
-      ;;
+      echo "$(error) Unknown option: $arg" >&2
+      exit 1
   esac
 done
 
@@ -58,8 +58,12 @@ error() {
     printf '\e[0;31m%s\033[0m' "Build-error:"
 }
 
+url() {
+    printf '\e[0;34m%s\033[0m' $1
+}
+
 var() {
-    printf '\e[0;35m%s\033[0m' $1
+    printf '\e[0;34m%s\033[0m' $1
 }
 
 info() {
@@ -108,7 +112,7 @@ else
 fi
 
 ## details:
-##  compile a small C-routine wiht R CMD SHLIB
+##  compile a small C-routine with R CMD SHLIB
 ##  as a belt and buckles test
 printf '%s Compiling C-program with R CMD SHLIB' "$(info)"
 SHLIB_TEST=$(temporary_directory)
@@ -143,7 +147,8 @@ EOF
 ## details:
 ##  1 is BASH for EXIT, 0 is for SUCCESS 
 ##  so the logic is reversed here
-if ! ( cd "$TALIB_SYSTEM" && gcc conftest.c >/dev/null 2>&1 ); then
+: "${CC:=$("$R_BIN" CMD config CC)}"
+if ! ( cd "$TALIB_SYSTEM" && $CC conftest.c >/dev/null 2>&1 ); then
     printf ' %s\n' "$(warning)"
     PREINSTALLED=1
 else
@@ -157,7 +162,7 @@ rm -rf $TALIB_SYSTEM
 ## 
 ## details:
 ##  if --force-vendor is passed FORCE_VENDOR
-##  is set to 1, 0 otherwise - so everyting
+##  is set to 1, 0 otherwise - so everything
 ##  is based on the above compilation
 if [ "$(( PREINSTALLED + FORCE_VENDOR ))" -ne 0 ]; then
     TALIB="src/ta-lib" # vendor location
@@ -186,34 +191,30 @@ if [ "$(( PREINSTALLED + FORCE_VENDOR ))" -ne 0 ]; then
             echo "After installation, ensure 'git' is on PATH and restart the shell/terminal."
             echo
             echo "=========================================================================="
-            echo "Submit bug-reports here: https://github.com/serkor1/ta-lib-R"
+            echo "Submit bug-reports here: $(url https://github.com/serkor1/ta-lib-R)"
             echo
             exit 1
         fi
 
-        if git status > /dev/null 2>&1; then
+        if git -C . status > /dev/null 2>&1; then
             printf ' %s\n' "$(warning)"
-            printf "Build-error: $TALIB not found. Either make a new clone, or initialize the submodule."
-            print 
-            printf 'Clone:\t\tgit clone --recursive https://github.com/serkor1/ta-lib-R.git\n'
-            printf 'Initialize:\tgit submodule update --init --recursive\n'
+            printf "Build-error: $TALIB not found. Either make a new clone, or initialize the submodule.\n"
+            printf "Clone:\t\tgit clone --recursive $(url https://github.com/serkor1/ta-lib-R.git)\n"
+            printf "Initialize:\tgit submodule update --init --recursive\n"
             exit 1
         
         ## if its NOT a git repository it is safe to assume that the development
         ## version is being installed via {pak} or other tools which does not 
         ## include submodules by default
-        ##    NOTE: After many attempts to ease the installation of the development
-        ##          version, this is the best solution I could come up with. If you 
-        ##          are reading this, I am open to other and better solutions.
         else
         printf ' %s\n' "$(warning)"
         echo
-        echo "TA-Lib (core) not found. Cloning https://github.com/TA-Lib/ta-lib.git"
+        echo "TA-Lib (core) not found. Cloning $(url https://github.com/TA-Lib/ta-lib.git)"
         echo
         git clone https://github.com/TA-Lib/ta-lib.git ${TALIB} || {
-            echo
-            echo "Build-error: Could not clone https://github.com/TA-Lib/ta-lib.git. Check your internet connection, or submit a bug-report."
-            echo
+
+            echo $(error) Could not clone $(url https://github.com/TA-Lib/ta-lib.git).
+            echo Check your internet connection, or submit a bug-report.
             exit 1
             }
         fi
@@ -275,7 +276,7 @@ if [ "$(( PREINSTALLED + FORCE_VENDOR ))" -ne 0 ]; then
         echo "Alternatively download the installer: https://cmake.org/download/"
         echo "After installation, restart the shell or add CMake to PATH"
         echo "=========================================================================="
-        echo "Submit bug-reports here: https://github.com/serkor1/ta-lib-R"
+        echo "Submit bug-reports here: $(url https://github.com/serkor1/ta-lib-R)"
         echo
         exit 1
     fi
@@ -287,7 +288,7 @@ fi
 ## details:
 ##  this is probably the most important step, if done
 ##  incorrectly the uptream build wont be linked to R
-printf '%s Constucting %s and %s' "$(info)" "$(var PKG_CFLAGS)" "$(var PKG_LIBS)"
+printf '%s Constructing %s and %s' "$(info)" "$(var PKG_CFLAGS)" "$(var PKG_LIBS)"
 CFLAGS=""
 if [ $PREINSTALLED -eq 0 ]; then
 
@@ -308,12 +309,12 @@ if [ $PREINSTALLED -eq 0 ]; then
         echo
         echo "After installation, restart the shell or ensure pkg-config is on PATH"
         echo "=========================================================================="
-        echo "Submit bug-reports here: https://github.com/serkor1/ta-lib-R"
+        echo "Submit bug-reports here: $(url https://github.com/serkor1/ta-lib-R)"
         echo
         exit 1
     fi
     
-    if command -v pkg-config >/dev/null 2>&1 && pkg-config --exists ta-lib; then
+    if pkg-config --exists ta-lib; then
         incdir="$(pkg-config --variable=includedir ta-lib)"
         libdir="$(pkg-config --variable=libdir ta-lib)"
         CFLAGS="-I$incdir -I$incdir/ta-lib"
@@ -321,7 +322,7 @@ if [ $PREINSTALLED -eq 0 ]; then
     else
         printf ' %s\n' "$(warning)"
         echo $(error) pkg-config failed to link TA-Lib. 
-        echo This is a bug, please submit a issue here: https://github.com/serkor1/ta-lib-R
+        echo This is a bug, please submit a issue here: $(url https://github.com/serkor1/ta-lib-R)
         exit 1
     fi
 
@@ -337,7 +338,7 @@ else
     if [ -z "$PKG_LIBS" ]; then
        printf ' %s\n' "$(warning)"
         echo $(error) Could not find static libraries in $SEARCH_DIR.
-        echo This is a bug, please submit a issue here: https://github.com/serkor1/ta-lib-R
+        echo This is a bug, please submit a issue here: $(url https://github.com/serkor1/ta-lib-R)
         exit 1
     fi
     PKG_LIBS="${PKG_LIBS#*src/} -lm"
@@ -346,11 +347,10 @@ fi
 CFLAGS="$CFLAGS $OPTIMIZE"
 printf ' %s\n' "$(success)"
 
-printf '%s Constucting %s' "$(info)" "$(var Makevars)"
+printf '%s Constructing %s' "$(info)" "$(var Makevars)"
 
 cat > src/Makevars <<EOF
 # autogenerated by configure
-CFLAGS     = $CFLAGS
 PKG_CFLAGS = $CFLAGS
 PKG_LIBS   = $PKG_LIBS
 EOF
