@@ -58,7 +58,7 @@ jobs:
           needs: check
 
       - name: Install {talib}
-        run: pak::pak("serkor1/ta-lib-R@build-tools")
+        run: pak::pak("serkor1/ta-lib-R")
         shell: Rscript {0}
 
       - name: Calculate an indicator
