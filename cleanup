@@ -1,3 +1,4 @@
 #!/bin/sh
-
-rm -rf src/Makevars
+## cleanup: UNIX
+rm -rf src/Makevars     # from configure
+rm -rf src/ta-lib/local # from CMake
