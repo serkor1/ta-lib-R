@@ -202,12 +202,27 @@ chart.default <- function(
 		)
 	}
 
-	## store in main chart
-	## (see description)
-	.plotting_environment$main <- .chart_layout(
-		x = price_chart,
-		title_text = title_text,
-		idx = idx
+	## construct price chart
+	##
+	##
+	fns <- list(
+		function(p) layout_background(p),
+		function(p) layout_axis(p, idx = idx),
+		function(p) {
+			layout_title(
+				p,
+				title = title_text
+			)
+		},
+		function(p) layout_font(p),
+		function(p) layout_legend(p),
+		function(p) layout_settings(p)
+	)
+
+	.plotting_environment$main <- Reduce(
+		f = function(p, f) f(p),
+		x = fns,
+		init = price_chart
 	)
 
 	.plotting_environment$main
