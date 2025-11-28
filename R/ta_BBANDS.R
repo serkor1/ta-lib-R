@@ -225,21 +225,39 @@ bollinger_bands.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- .plotting_environment[["main"]] <- add_ribbons(
-		plotly_object = .plotting_environment[["main"]],
-		data = constructed_indicator,
-		x = ~idx,
-		y = ~MiddleBand,
-		ymin = ~LowerBand,
-		ymax = ~UpperBand,
-		color = "steelblue",
-		alpha = 0.5,
-		showlegend = TRUE,
-		legendgroup = "Bollinger Bands",
-		name = c("Bollinger Bands", "middle", "upper"),
-		dash = NULL
+
+	name <- "Bollinger Bands"
+	##
+	traces <- list(
+		list(y = ~UpperBand, name = "Upper Band"),
+		list(y = ~MiddleBand, name = "Middle Band", fill = "tonexty"),
+		list(y = ~LowerBand, name = "Lower Band", fill = "tonexty")
+	)
+
+	##
+	traces <- lapply(
+		traces,
+		function(x) {
+			x$x <- ~idx
+			x$data <- constructed_indicator
+			x$legendgroup = "BollingerBands"
+			x$fillcolor <- plotly::toRGB(
+				"red",
+				0.2
+			)
+			x$line <- list(
+				color = "red"
+			)
+			x
+		}
 	)
 	## splice:plotly-assembly:end
+
+	plotly_object <- .plotting_environment[["main"]] <- build_plotly(
+		init = .plotting_environment[["main"]],
+		traces = traces,
+		name = name
+	)
 
 	plotly_object
 }
