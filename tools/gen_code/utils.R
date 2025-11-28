@@ -12,6 +12,7 @@ impl_generate_indicator <- function(
 	ta_fun,
 	formula,
 	plotly = 1L,
+	subchart = 1L,
 	args,
 	agnostic = NULL,
 	candlestick = 0,
@@ -34,6 +35,7 @@ impl_generate_indicator <- function(
 			sprintf("CANDLESTICK='%s'", candlestick),
 			sprintf("maType='%s'", maType),
 			sprintf("ROLLING='%s'", rolling),
+			sprintf("SUBCHART='%s'", subchart),
 			sprintf(
 				"NUMERIC='%s'",
 				as.integer(
