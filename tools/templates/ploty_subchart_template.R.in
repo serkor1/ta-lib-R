@@ -1,0 +1,57 @@
+#' @usage NULL
+#' @aliases ${FUN}
+#' 
+#' @export
+${FUN}.plotly <- function(
+	x, 
+	cols,${ARGS}
+	## splice:optional-plotly:start
+	## splice:optional-plotly:end
+	...) { 
+
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly(x)
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from 
+	## {plotly}-object
+	constructed_series <- series(
+		x = x,
+		formula = cols,
+		default = ${FORMULA},
+		...
+	)
+
+	## construct indicator
+	## from the series
+	constructed_indicator <- ${FUN}(
+		x = constructed_series,
+		cols = rebuild_formula(
+			names(constructed_series)
+		)
+		${PPARGS}
+	)
+
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
+	)
+
+	## construct {plotly}-object
+	## splice:plotly-assembly:start
+	## initial scaffold
+	## splice:plotly-assembly:end
+
+    .plotting_environment$sub <- c(
+		.plotting_environment$sub,
+		list(plotly_object)
+	)
+
+	plotly_object
+ }

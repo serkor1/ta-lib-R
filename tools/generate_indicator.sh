@@ -12,13 +12,13 @@ TA_FUN=${TA_FUN:?}
 ALIAS=${ALIAS:-$TA_FUN}
 FORMULA=${FORMULA:-"~close"}
 PLOTLY=${PLOTLY:-0}
+SUBCHART=${SUBCHART:-0}
 NUMERIC=${NUMERIC:-1}
 OUTPUTFILE=${OUTPUTFILE:-"R/ta_${TA_FUN}.R"}
 
 ## 1.1) conditional templates
 ##      passed downstream
 TEMPLATE_MAIN=${TEMPLATE_MAIN:-tools/templates/indicator_template.R.in}
-TEMPLATE_PLOTLY=${TEMPLATE_PLOTLY:-tools/templates/plotly_template.R.in}
 TEMPLATE_NUMERIC=${NUMERIC_TEMPLATE:-tools/templates/numeric_template.R.in}
 
 ## 1.2) candlestick specific variables
@@ -113,9 +113,17 @@ if [[ $NUMERIC -eq 1 ]]; then
 fi
 
 if [[ $PLOTLY -eq 1 ]]; then
+  if [[ $SUBCHART -eq 1 ]]; then
+  TEMPLATE_PLOTLY=${TEMPLATE_PLOTLY:-tools/templates/plotly_subchart_template.R.in}
   envsubst "$REPLACE" < "$TEMPLATE_PLOTLY" > "$tmp_plotly"
   printf '\n\n' >> "$tmp_render"
   cat "$tmp_plotly" >> "$tmp_render"
+  else
+  TEMPLATE_PLOTLY=${TEMPLATE_PLOTLY:-tools/templates/plotly_main_template.R.in}
+  envsubst "$REPLACE" < "$TEMPLATE_PLOTLY" > "$tmp_plotly"
+  printf '\n\n' >> "$tmp_render"
+  cat "$tmp_plotly" >> "$tmp_render"
+  fi
 fi
 
 
