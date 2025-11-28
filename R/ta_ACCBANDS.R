@@ -163,21 +163,37 @@ acceleration_bands.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- .plotting_environment[["main"]] <- add_ribbons(
-		plotly_object = .plotting_environment[["main"]],
-		data = constructed_indicator,
-		x = ~idx,
-		y = ~MiddleBand,
-		ymin = ~LowerBand,
-		ymax = ~UpperBand,
-		color = 'steelblue',
-		alpha = 0.5,
-		showlegend = TRUE,
-		legendgroup = 'acceleration_band',
-		name = c("Acceleration Bands", "B", "C"),
-		dash = NULL
+	name <- "Acceleration Bands"
+	traces <- list(
+		list(y = ~UpperBand, name = "Upper Band"),
+		list(y = ~MiddleBand, name = "Middle Band", fill = "tonexty"),
+		list(y = ~LowerBand, name = "Lower Band", fill = "tonexty")
+	)
+
+	traces <- lapply(
+		traces,
+		function(x) {
+			x$x <- ~idx
+			x$data <- constructed_indicator
+			x$legendgroup = "AccelerationBands"
+			x$fillcolor <- plotly::toRGB(
+				"steelblue",
+				0.2
+			)
+			x$line <- list(
+				color = "steelblue"
+			)
+			x
+		}
 	)
 	## splice:plotly-assembly:end
+
+	plotly_object <- .plotting_environment[["main"]] <- build_plotly(
+		init = .plotting_environment[["main"]],
+		traces = traces,
+		name = name,
+		data = constructed_indicator
+	)
 
 	plotly_object
 }
