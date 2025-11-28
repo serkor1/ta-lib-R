@@ -11,18 +11,20 @@
 #' @returns
 #' A <plotly>-object
 #'
-build_plotly <- function(init, traces, name, ...) {
+build_plotly <- function(init, traces, name, data, ...) {
 	UseMethod("build_plotly")
 }
 
 #' @export
-build_plotly.plotly <- function(init, traces, name, ...) {
+build_plotly.plotly <- function(init, traces, name, data, ...) {
 	## default traces
 	default_trace <- list(
 		type = "scatter",
 		mode = "lines",
 		showlegend = FALSE,
-		inherit = FALSE
+		inherit = FALSE,
+		data = data,
+		x = ~idx
 	)
 
 	traces <- lapply(traces, function(tr) {
