@@ -124,6 +124,8 @@ acceleration_bands.plotly <- function(
 	cols,
 	n = 10,
 	## splice:optional-plotly:start
+	color = "steelblue",
+	alpha = 0.2,
 	## splice:optional-plotly:end
 	...
 ) {
@@ -163,28 +165,27 @@ acceleration_bands.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	name <- "Acceleration Bands"
+	name <- sprintf(
+		"AccBands(%d)",
+		n
+	)
+
 	traces <- list(
 		list(y = ~UpperBand, name = "Upper Band"),
 		list(y = ~MiddleBand, name = "Middle Band", fill = "tonexty"),
 		list(y = ~LowerBand, name = "Lower Band", fill = "tonexty")
 	)
 
-	traces <- lapply(
+	traces <- modify_traces(
 		traces,
-		function(x) {
-			x$x <- ~idx
-			x$data <- constructed_indicator
-			x$legendgroup = "AccelerationBands"
-			x$fillcolor <- plotly::toRGB(
-				"steelblue",
-				0.2
-			)
-			x$line <- list(
-				color = "steelblue"
-			)
-			x
-		}
+		legendgroup = "AccerationBands",
+		fillcolor = plotly::toRGB(
+			color,
+			alpha
+		),
+		line = list(
+			color = color
+		)
 	)
 	## splice:plotly-assembly:end
 

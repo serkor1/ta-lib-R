@@ -186,6 +186,8 @@ bollinger_bands.plotly <- function(
 	std_up = 2,
 	std_down = 2,
 	## splice:optional-plotly:start
+	color = "steelblue",
+	alpha = 0.2,
 	## splice:optional-plotly:end
 	...
 ) {
@@ -225,7 +227,20 @@ bollinger_bands.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	name <- "Bollinger Bands"
+	if (std_down == std_up) {
+		name <- sprintf(
+			"BBands(%d, %d)",
+			ma$n,
+			std_up
+		)
+	} else {
+		name <- sprintf(
+			"BBands(%d, %d, %d)",
+			ma$n,
+			std_up,
+			std_down
+		)
+	}
 
 	traces <- list(
 		list(y = ~UpperBand, name = "Upper Band"),
@@ -233,21 +248,16 @@ bollinger_bands.plotly <- function(
 		list(y = ~LowerBand, name = "Lower Band", fill = "tonexty")
 	)
 
-	traces <- lapply(
+	traces <- modify_traces(
 		traces,
-		function(x) {
-			x$x <- ~idx
-			x$data <- constructed_indicator
-			x$legendgroup = "BollingerBands"
-			x$fillcolor <- plotly::toRGB(
-				"steelblue",
-				0.2
-			)
-			x$line <- list(
-				color = "steelblue"
-			)
-			x
-		}
+		legendgroup = "BollingerBands",
+		fillcolor = plotly::toRGB(
+			color,
+			alpha
+		),
+		line = list(
+			color = color
+		)
 	)
 	## splice:plotly-assembly:end
 
