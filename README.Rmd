@@ -7,6 +7,7 @@ output: github_document
 ```{r setup, include = FALSE}
 # set options
 Sys.setenv(OPENSSL_CONF = "/dev/null")
+options(talib.chart.modebar =  FALSE)
 
 knitr::opts_chunk$set(
 	collapse  = TRUE,
