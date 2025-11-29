@@ -64,3 +64,35 @@ modify_traces <- function(trace_list, ...) {
 		}
 	)
 }
+
+plotly_line <- function(value, length, dash = TRUE) {
+	## if 'length' is missing, infer the length
+	## from parent.frame
+	if (missing(length)) {
+		length <- nrow(
+			get("constructed_indicator", parent.frame())
+		)
+	}
+
+	x <- list(
+		y = rep(value, length),
+		line = list(
+			color = "lightgray"
+		)
+	)
+
+	if (dash) {
+		x$line$dash <- "dash"
+	}
+
+	return(x)
+}
+
+
+plotly_init <- function(...) {
+	plotly::plot_ly(
+		data = get("constructed_indicator", parent.frame()),
+		x = ~idx,
+		...
+	)
+}
