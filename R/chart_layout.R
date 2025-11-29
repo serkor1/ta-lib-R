@@ -182,6 +182,7 @@ layout_settings <- function(p) {
 			"drawrect",
 			"eraseshape"
 		),
+		displayModeBar = getOption("talib.chart.modebar", TRUE),
 
 		## remove {plotly} logo
 		## to reduce clutter
