@@ -49,10 +49,6 @@ add_idx <- function(x) {
 	}
 }
 
-main_chart_exists <- function() {
-	!is.null(.plotting_environment$main)
-}
-
 modify_traces <- function(trace_list, ...) {
 	lapply(
 		trace_list,

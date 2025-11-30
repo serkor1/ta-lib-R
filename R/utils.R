@@ -48,7 +48,6 @@ assert_formula <- function(x) {
 	)
 }
 
-
 assert_plotly <- function(x) {
 	assert(
 		x = is.plotly(x),
@@ -65,13 +64,8 @@ assert_plotly <- function(x) {
 	)
 }
 
-
 ## class related utility
 ## functions
-is.number <- function(x) {
-	is.numeric(x) || is.integer(x)
-}
-
 is.formula <- function(x) {
 	inherits(x, "formula")
 }
