@@ -154,7 +154,7 @@ true_range.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	name <- sprintf("TRANGE(%d)", n)
+	name <- sprintf("TRANGE")
 	traces <- list(
 		list(y = ~TRANGE)
 	)
