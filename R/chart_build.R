@@ -17,6 +17,10 @@ build_plotly <- function(init, traces, name, data, ...) {
 
 #' @export
 build_plotly.plotly <- function(init, traces, name, data, ...) {
+	if (missing(data)) {
+		data <- get("constructed_indicator", parent.frame())
+	}
+
 	## default traces
 	default_trace <- list(
 		type = "scatter",
