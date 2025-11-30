@@ -153,21 +153,21 @@ on_balance_volume.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- subchart(
-		data = constructed_indicator,
-		y = ~OBV,
-		type = "scatter",
-		mode = "lines",
-		name = "On-Balance Volume",
-		legendgroup = "obv",
-		showlegend = TRUE
+	name <- "OBV"
+	traces <- list(list(y = ~OBV))
+	## splice:plotly-assembly:end
+
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		name = name,
+		data = constructed_indicator
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## splice:plotly-assembly:end
 
 	plotly_object
 }

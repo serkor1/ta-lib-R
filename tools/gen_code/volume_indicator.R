@@ -14,7 +14,8 @@ generate_R <- function(x) {
 		fun = x$fun,
 		args = x$signature,
 		ta_fun = x$alias,
-		formula = x$default_formula
+		formula = x$default_formula,
+		subchart = x$subchart
 	)
 }
 
@@ -49,7 +50,8 @@ metadata[[1]] <- list(
 	fun = 'chaikin_accumulation_distribution_line',
 	alias = 'AD',
 	default_formula = '~high+low+close+volume',
-	signature = ''
+	signature = '',
+	subchart = 1
 )
 
 ## Chaikin A/D Oscillator: metadata
@@ -58,7 +60,8 @@ metadata[[2]] <- list(
 	fun = 'chaikin_accumulation_distribution_oscillator',
 	alias = 'ADOSC',
 	default_formula = '~high+low+close+volume',
-	signature = 'fast=3,slow=10'
+	signature = 'fast=3,slow=10',
+	subchart = 1
 )
 
 ## On-Balance Volume: metadata
@@ -67,7 +70,8 @@ metadata[[3]] <- list(
 	fun = 'on_balance_volume',
 	alias = 'OBV',
 	default_formula = '~close+volume',
-	signature = ''
+	signature = '',
+	subchart = 1
 )
 
 ## generate code
