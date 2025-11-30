@@ -5,12 +5,13 @@
 #'
 #' @param x x
 #' @param y y
+#' @param ... ...
 #'
 #' @returns
 #' A <plotly>-object
 #'
 #' @export
-merge.plotly <- function(x, y) {
+merge.plotly <- function(x, y, ...) {
 	## assert both input
 	## just in case
 	assert_plotly(x)

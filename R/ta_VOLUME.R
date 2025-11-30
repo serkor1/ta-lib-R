@@ -9,6 +9,7 @@
 #' @templateVar .formula ~volume + open + close
 #'
 ## splice:documentation:start
+#' @param ma A list of MA specifications.
 ## splice:documentation:end
 #'
 #' @template description
