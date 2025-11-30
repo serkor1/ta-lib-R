@@ -14,7 +14,8 @@ generate_R <- function(x) {
 		fun = x$fun,
 		args = x$signature,
 		ta_fun = x$alias,
-		formula = x$default_formula
+		formula = x$default_formula,
+		subchart = x$subchart
 	)
 }
 
@@ -49,7 +50,8 @@ metadata[[1]] <- list(
 	fun = 'true_range',
 	alias = 'TRANGE',
 	default_formula = '~high + low + close',
-	signature = ''
+	signature = '',
+	subchart = 1
 )
 
 ## Average True Range: metadata
@@ -58,7 +60,8 @@ metadata[[2]] <- list(
 	fun = 'average_true_range',
 	alias = 'ATR',
 	default_formula = '~high + low + close',
-	signature = 'n=10'
+	signature = 'n=10',
+	subchart = 1
 )
 
 ## Normalized Average True Range: metadata
@@ -67,7 +70,8 @@ metadata[[3]] <- list(
 	fun = 'normalized_average_true_range',
 	alias = 'NATR',
 	default_formula = '~high + low + close',
-	signature = 'n=10'
+	signature = 'n=10',
+	subchart = 1
 )
 
 for (x in metadata) {
