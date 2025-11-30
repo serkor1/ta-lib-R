@@ -193,29 +193,25 @@ sine_wave.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- subchart(
-		data = constructed_indicator,
-		y = ~Sine,
-		type = "scatter",
-		mode = "lines",
-		name = "Sine",
-		legendgroup = "sinewave"
-	)
+	name <- sprintf("DCPeriod")
 
-	plotly_object <- plotly::add_lines(
-		p = plotly_object,
-		x = ~idx,
-		y = ~LeadSine,
-		data = constructed_indicator,
-		name = "Lead Sine",
-		legendgroup = "sinewave"
+	traces <- list(
+		list(y = ~Sine),
+		list(y = ~LeadSine)
+	)
+	## splice:plotly-assembly:end
+
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		name = name,
+		data = constructed_indicator
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## splice:plotly-assembly:end
 
 	plotly_object
 }

@@ -14,7 +14,8 @@ generate_R <- function(x) {
 		fun = x$fun,
 		args = x$signature,
 		formula = "~close",
-		ta_fun = x$alias
+		ta_fun = x$alias,
+		subchart = x$subchart
 	)
 }
 
@@ -46,35 +47,40 @@ metadata <- list()
 metadata[[1]] <- list(
 	title = 'Hilbert Transform - Dominant Cycle Period',
 	fun = 'dominant_cycle_period',
-	alias = 'HT_DCPERIOD'
+	alias = 'HT_DCPERIOD',
+	subchart = 1
 )
 
 ## Hilbert Transform - Dominant Cycle Phase: metadata
 metadata[[2]] <- list(
 	title = 'Hilbert Transform - Dominant Cycle Phase',
 	fun = 'dominant_cycle_phase',
-	alias = 'HT_DCPHASE'
+	alias = 'HT_DCPHASE',
+	subchart = 1
 )
 
 ## Hilbert Transform - Phasor Components: metadata
 metadata[[3]] <- list(
 	title = 'Hilbert Transform - Phasor Components',
 	fun = 'phasor_components',
-	alias = 'HT_PHASOR'
+	alias = 'HT_PHASOR',
+	subchart = 1
 )
 
 ## Hilbert Transform - SineWave: metadata
 metadata[[4]] <- list(
 	title = 'Hilbert Transform - SineWave',
 	fun = 'sine_wave',
-	alias = 'HT_SINE'
+	alias = 'HT_SINE',
+	subchart = 1
 )
 
 ## Hilbert Transform - Trend vs Cycle Mode: metadata
 metadata[[5]] <- list(
 	title = 'Hilbert Transform - Trend vs Cycle Mode',
 	fun = 'trend_cycle_mode',
-	alias = 'HT_TRENDMODE'
+	alias = 'HT_TRENDMODE',
+	subchart = 1
 )
 
 for (x in metadata) {

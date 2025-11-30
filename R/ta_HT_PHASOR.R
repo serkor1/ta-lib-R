@@ -193,30 +193,25 @@ phasor_components.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- subchart(
-		data = constructed_indicator,
-		y = ~InPhase,
-		type = "scatter",
-		mode = "lines",
-		name = "Inphase",
-		legendgroup = "phasor_components"
-	)
+	name <- sprintf("DCPeriod")
 
-	plotly_object <- plotly::add_lines(
-		p = plotly_object,
-		data = constructed_indicator,
-		x = ~idx,
-		y = ~Quadrature,
-		name = "Quadrature",
-		legendgroup = "phasor_components"
+	traces <- list(
+		list(y = ~InPhase),
+		list(y = ~Quadrature)
+	)
+	## splice:plotly-assembly:end
+
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		name = name,
+		data = constructed_indicator
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-
-	## splice:plotly-assembly:end
 
 	plotly_object
 }
