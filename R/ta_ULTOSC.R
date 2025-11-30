@@ -173,19 +173,11 @@ ultimate_oscillator.plotly <- function(
 		n[2],
 		n[3]
 	)
-	plotly_object <- subchart(
-		data = constructed_indicator,
-		y = ~ULTOSC,
-		type = "scatter",
-		mode = "lines",
-		name = "Ultimate Oscillator",
-		legendgroup = "ultimate_oscillator",
-		showlegend = TRUE
-	)
 
 	traces <- list(
 		plotly_line(upper_bound, nrow(constructed_indicator)),
-		plotly_line(lower_bound, nrow(constructed_indicator))
+		plotly_line(lower_bound, nrow(constructed_indicator)),
+		list(y = ~ULTOSC)
 	)
 	## splice:plotly-assembly:end
 

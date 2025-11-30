@@ -170,17 +170,10 @@ williams_oscillator.plotly <- function(
 		n
 	)
 
-	plotly_object <- subchart(
-		data = constructed_indicator,
-		y = ~WILLR,
-		type = "scatter",
-		mode = "lines",
-		showlegend = TRUE
-	)
-
 	traces <- list(
 		plotly_line(lower_bound, nrow(constructed_indicator), dash = TRUE),
-		plotly_line(upper_bound, nrow(constructed_indicator), dash = TRUE)
+		plotly_line(upper_bound, nrow(constructed_indicator), dash = TRUE),
+		list(y = ~WILLR)
 	)
 	## splice:plotly-assembly:end
 
