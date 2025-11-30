@@ -162,24 +162,25 @@ aroon_oscillator.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- subchart(
-		data = constructed_indicator,
-		y = ~AROONOSC,
-		type = "scatter",
-		mode = "lines",
-		name = sprintf(
-			fmt = "AD(%d)",
-			n
-		),
-		legendgroup = "Aroon",
-		showlegend = FALSE
+	name <- "AroonOsc"
+
+	traces <- list(
+		plotly_line(0, nrow(constructed_indicator)),
+		list(y = ~AROONOSC, name = "AroonOscillator")
+	)
+	## splice:plotly-assembly:end
+
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		name = name,
+		data = constructed_indicator
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## splice:plotly-assembly:end
 
 	plotly_object
 }

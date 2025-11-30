@@ -124,6 +124,9 @@ average_directional_movement_index.plotly <- function(
 	cols,
 	n = 10,
 	## splice:optional-plotly:start
+	lower_bound = 25,
+	middle_bound = 50,
+	upper_bound = 75,
 	## splice:optional-plotly:end
 	...
 ) {
@@ -163,19 +166,30 @@ average_directional_movement_index.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- subchart(
-		data = constructed_indicator,
-		y = ~ADX,
-		type = "scatter",
-		mode = "lines",
-		showlegend = FALSE
+	name <- sprintf(
+		"ADX(%d)",
+		n
+	)
+
+	traces <- list(
+		plotly_line(lower_bound, nrow(constructed_indicator)),
+		plotly_line(middle_bound, nrow(constructed_indicator)),
+		plotly_line(upper_bound, nrow(constructed_indicator)),
+		list(y = ~ADX)
+	)
+	## splice:plotly-assembly:end
+
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		name = name,
+		data = constructed_indicator
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## splice:plotly-assembly:end
 
 	plotly_object
 }

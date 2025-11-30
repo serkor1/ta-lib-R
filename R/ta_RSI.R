@@ -165,6 +165,8 @@ relative_strength_index.plotly <- function(
 	cols,
 	n = 10,
 	## splice:optional-plotly:start
+	lower_bound = 20,
+	upper_bound = 80,
 	## splice:optional-plotly:end
 	...
 ) {
@@ -204,31 +206,29 @@ relative_strength_index.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- subchart(
-		data = constructed_indicator,
-		y = ~RSI,
-		type = "scatter",
-		mode = "lines",
-		showlegend = FALSE
+	name <- sprintf(
+		"RSI(%d)",
+		n
 	)
 
-	plotly_object <- plotly::add_ribbons(
-		plotly_object,
-		x = ~idx,
-		ymin = rep(20, nrow(constructed_indicator)),
-		ymax = rep(80, nrow(constructed_indicator)),
-		line = list(width = 0),
-		fillcolor = plotly::toRGB(
-			x = "lightgray",
-			alpha = 0.2
-		)
+	traces <- list(
+		plotly_line(lower_bound),
+		plotly_line(upper_bound),
+		list(y = ~RSI)
+	)
+	## splice:plotly-assembly:end
+
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		name = name,
+		data = constructed_indicator
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## splice:plotly-assembly:end
 
 	plotly_object
 }

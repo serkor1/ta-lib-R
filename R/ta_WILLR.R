@@ -124,6 +124,8 @@ williams_oscillator.plotly <- function(
 	cols,
 	n = 10,
 	## splice:optional-plotly:start
+	lower_bound = -20,
+	upper_bound = -80,
 	## splice:optional-plotly:end
 	...
 ) {
@@ -163,19 +165,36 @@ williams_oscillator.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
+	name <- sprintf(
+		"WillR(%d)",
+		n
+	)
+
 	plotly_object <- subchart(
 		data = constructed_indicator,
 		y = ~WILLR,
 		type = "scatter",
 		mode = "lines",
-		showlegend = FALSE
+		showlegend = TRUE
+	)
+
+	traces <- list(
+		plotly_line(lower_bound, nrow(constructed_indicator), dash = TRUE),
+		plotly_line(upper_bound, nrow(constructed_indicator), dash = TRUE)
+	)
+	## splice:plotly-assembly:end
+
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		name = name,
+		data = constructed_indicator
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## splice:plotly-assembly:end
 
 	plotly_object
 }

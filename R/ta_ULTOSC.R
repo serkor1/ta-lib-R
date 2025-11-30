@@ -126,8 +126,8 @@ ultimate_oscillator.plotly <- function(
 	cols,
 	n = c(7, 14, 28),
 	## splice:optional-plotly:start
-	lower = 30,
-	upper = 70,
+	lower_bound = 30,
+	upper_bound = 70,
 	## splice:optional-plotly:end
 	...
 ) {
@@ -167,6 +167,12 @@ ultimate_oscillator.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
+	name <- sprintf(
+		"UltOsc(%d, %d, %d)",
+		n[1],
+		n[2],
+		n[3]
+	)
 	plotly_object <- subchart(
 		data = constructed_indicator,
 		y = ~ULTOSC,
@@ -177,25 +183,23 @@ ultimate_oscillator.plotly <- function(
 		showlegend = TRUE
 	)
 
-	plotly_object <- add_ribbons(
-		plotly_object = plotly_object,
-		data = constructed_indicator,
-		x = ~idx,
-		ymin = rep(lower, nrow(constructed_indicator)),
-		ymax = rep(upper, nrow(constructed_indicator)),
-		color = "lightgray",
-		alpha = 0.2,
-		showlegend = TRUE,
-		dash = c("dot", "dot"),
-		name = c("Lower", "Upper"),
-		legendgroup = "stochrsi"
+	traces <- list(
+		plotly_line(upper_bound, nrow(constructed_indicator)),
+		plotly_line(lower_bound, nrow(constructed_indicator))
+	)
+	## splice:plotly-assembly:end
+
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		name = name,
+		data = constructed_indicator
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## splice:plotly-assembly:end
 
 	plotly_object
 }

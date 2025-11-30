@@ -145,6 +145,8 @@ stochastic.plotly <- function(
 	slowk = SMA(n = 10),
 	slowd = SMA(n = 8),
 	## splice:optional-plotly:start
+	lower_bound = 20,
+	upper_bound = 80,
 	## splice:optional-plotly:end
 	...
 ) {
@@ -186,36 +188,27 @@ stochastic.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- subchart(
-		data = constructed_indicator,
-		y = ~SlowK,
-		type = "scatter",
-		mode = "lines",
-		name = "Stocastic %K",
-		legendgroup = "STOCH",
-		showlegend = TRUE
-	)
+	name <- ""
 
-	plotly_object <- add_ribbons(
-		plotly_object = plotly_object,
-		data = constructed_indicator,
-		x = ~idx,
-		y = ~SlowD,
-		ymin = rep(20, nrow(constructed_indicator)),
-		ymax = rep(80, nrow(constructed_indicator)),
-		color = "lightgray",
-		alpha = 0.7,
-		showlegend = TRUE,
-		dash = c("solid", "dot", "dot"),
-		name = c("Stochastic %D", "Lower", "Upper"),
-		legendgroup = "STOCH"
+	traces <- list(
+		plotly_line(lower_bound),
+		plotly_line(upper_bound),
+		list(y = ~SlowK),
+		list(y = ~SlowD)
+	)
+	## splice:plotly-assembly:end
+
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		name = name,
+		data = constructed_indicator
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## splice:plotly-assembly:end
 
 	plotly_object
 }

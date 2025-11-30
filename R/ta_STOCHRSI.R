@@ -152,8 +152,8 @@ stochastic_relative_strength_index.plotly <- function(
 	fastk = 5,
 	fastd = SMA(n = 10),
 	## splice:optional-plotly:start
-	lower = 20,
-	upper = 80,
+	lower_bound = 20,
+	upper_bound = 80,
 	## splice:optional-plotly:end
 	...
 ) {
@@ -196,36 +196,27 @@ stochastic_relative_strength_index.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- subchart(
-		data = constructed_indicator,
-		y = ~FastK,
-		type = "scatter",
-		mode = "lines",
-		name = "StochRSI %K",
-		legendgroup = "stochrsi",
-		showlegend = TRUE
-	)
+	name <- ""
 
-	plotly_object <- add_ribbons(
-		plotly_object = plotly_object,
-		data = constructed_indicator,
-		x = ~idx,
-		y = ~FastD,
-		ymin = rep(lower, nrow(constructed_indicator)),
-		ymax = rep(upper, nrow(constructed_indicator)),
-		color = "lightgray",
-		alpha = 0.2,
-		showlegend = TRUE,
-		dash = c("solid", "dot", "dot"),
-		name = c("StochRSI %D", "Lower", "Upper"),
-		legendgroup = "stochrsi"
+	traces <- list(
+		plotly_line(lower_bound),
+		plotly_line(upper_bound),
+		list(y = ~FastK),
+		list(y = ~FastD)
+	)
+	## splice:plotly-assembly:end
+
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		name = name,
+		data = constructed_indicator
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## splice:plotly-assembly:end
 
 	plotly_object
 }

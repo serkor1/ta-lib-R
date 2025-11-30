@@ -124,6 +124,8 @@ commodity_channel_index.plotly <- function(
 	cols,
 	n = 10,
 	## splice:optional-plotly:start
+	lower_bound = -100,
+	upper_bound = 100,
 	## splice:optional-plotly:end
 	...
 ) {
@@ -163,33 +165,23 @@ commodity_channel_index.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- subchart(
-		data = constructed_indicator,
-		y = ~CCI,
-		type = "scatter",
-		mode = "lines",
-		showlegend = FALSE
+	name <- sprintf(
+		"CCI(%d)",
+		n
 	)
-
-	plotly_object <- add_ribbons(
-		plotly_object = plotly_object,
-		data = constructed_indicator,
-		x = ~idx,
-		ymin = rep(-100, nrow(constructed_indicator)),
-		ymax = rep(100, nrow(constructed_indicator)),
-		color = "lightgray",
-		alpha = 0.1,
-		showlegend = FALSE,
-		legendgroup = "placeholder",
-		name = "CCI",
-		dash = "dot"
-	)
-
-	.plotting_environment$sub <- c(
-		.plotting_environment$sub,
-		list(plotly_object)
+	traces <- list(
+		plotly_line(lower_bound, nrow(constructed_indicator)),
+		plotly_line(upper_bound, nrow(constructed_indicator)),
+		list(y = ~CCI)
 	)
 	## splice:plotly-assembly:end
+
+	plotly_object <- .plotting_environment[["main"]] <- build_plotly(
+		init = .plotting_environment[["main"]],
+		traces = traces,
+		name = name,
+		data = constructed_indicator
+	)
 
 	plotly_object
 }

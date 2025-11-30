@@ -165,6 +165,8 @@ chande_momentum_oscillator.plotly <- function(
 	cols,
 	n = 10,
 	## splice:optional-plotly:start
+	lower_bound = -50,
+	upper_bound = 50,
 	## splice:optional-plotly:end
 	...
 ) {
@@ -204,33 +206,26 @@ chande_momentum_oscillator.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- subchart(
-		data = constructed_indicator,
-		y = ~CMO,
-		type = "scatter",
-		mode = "lines",
-		showlegend = FALSE
-	)
+	name <- sprintf("CCI(%d)", n)
 
-	plotly_object <- add_ribbons(
-		plotly_object = plotly_object,
-		data = constructed_indicator,
-		x = ~idx,
-		ymin = rep(-50, nrow(constructed_indicator)),
-		ymax = rep(50, nrow(constructed_indicator)),
-		alpha = 0.5,
-		color = "lightgray",
-		showlegend = FALSE,
-		legendgroup = "cmo_area",
-		name = "cmo_area",
-		dash = "dot"
+	traces <- list(
+		plotly_line(lower_bound, nrow(constructed_indicator)),
+		plotly_line(upper_bound, nrow(constructed_indicator)),
+		list(y = ~CCI)
+	)
+	## splice:plotly-assembly:end
+
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		name = name,
+		data = constructed_indicator
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## splice:plotly-assembly:end
 
 	plotly_object
 }

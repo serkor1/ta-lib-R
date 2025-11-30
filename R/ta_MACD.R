@@ -239,48 +239,56 @@ moving_average_convergence_divergence.plotly <- function(
 	chart_theme <- .chart_theme()
 
 	## construct plotly object
-	plotly_object <- subchart(
-		data = constructed_indicator,
-		y = ~MACDHist,
-		color = ~direction,
-		colors = c(
-			chart_theme$bull_color,
-			chart_theme$bear_color
+	name <- sprintf(
+		"MACD(%d, %d, %d)",
+		fast,
+		slow,
+		signal
+	)
+
+	traces <- list(
+		list(
+			y = ~MACDHist,
+			color = ~direction,
+			colors = c(
+				chart_theme$bull_color,
+				chart_theme$bear_color
+			),
+			type = 'bar',
+			mode = NULL,
+			showlegend = FALSE
 		),
-		type = 'bar',
-		showlegend = FALSE
-	)
-
-	plotly_object <- plotly::add_lines(
-		plotly_object,
-		x = ~idx,
-		y = ~MACDSignal,
-		data = constructed_indicator,
-		inherit = FALSE,
-		name = sprintf(
-			fmt = "Signal(%d)",
-			if (is.list(signal)) signal$n else signal
+		list(
+			y = ~MACDSignal,
+			inherit = FALSE,
+			name = sprintf(
+				fmt = "Signal(%d)",
+				if (is.list(signal)) signal$n else signal
+			)
+		),
+		list(
+			y = ~MACD,
+			inherit = FALSE,
+			name = sprintf(
+				fmt = "MACD(%d, %d)",
+				if (is.list(fast)) fast$n else fast,
+				if (is.list(slow)) slow$n else slow
+			)
 		)
 	)
+	## splice:plotly-assembly:end
 
-	plotly_object <- plotly::add_lines(
-		plotly_object,
-		x = ~idx,
-		y = ~MACD,
-		data = constructed_indicator,
-		inherit = FALSE,
-		name = sprintf(
-			fmt = "MACD(%d, %d)",
-			if (is.list(fast)) fast$n else fast,
-			if (is.list(slow)) slow$n else slow
-		)
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		name = name,
+		data = constructed_indicator
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## splice:plotly-assembly:end
 
 	plotly_object
 }
