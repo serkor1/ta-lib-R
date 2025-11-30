@@ -74,12 +74,26 @@ metadata[[3]] <- list(
 	subchart = 1
 )
 
+## Trading Volume: metadata
+metadata[[4]] <- list(
+	title = 'Trading Volume',
+	fun = 'trading_volume',
+	alias = 'VOLUME',
+	default_formula = '~volume + open + close',
+	signature = 'ma = list(SMA(n = 7), SMA(n = 15))',
+	subchart = 1
+)
+
 ## generate code
 for (x in metadata) {
 	generate_R(x)
 }
 
 for (x in metadata) {
+	if (x$fun == "trading_volume") {
+		next()
+	}
+
 	generate_C(x)
 }
 
