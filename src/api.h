@@ -122,6 +122,7 @@ SEXP impl_ta_TRIX(SEXP inReal, SEXP optInTimePeriod);
 SEXP impl_ta_TYPPRICE(SEXP inHigh, SEXP inLow, SEXP inClose);
 SEXP impl_ta_ULTOSC(SEXP inHigh, SEXP inLow, SEXP inClose, SEXP optInTimePeriod1, SEXP optInTimePeriod2, SEXP optInTimePeriod3);
 SEXP impl_ta_VAR(SEXP inReal, SEXP optInTimePeriod, SEXP optInNbDev);
+SEXP impl_ta_VOLUME(SEXP inReal, SEXP maSpec);
 SEXP impl_ta_WCLPRICE(SEXP inHigh, SEXP inLow, SEXP inClose);
 SEXP impl_ta_WILLR(SEXP inHigh, SEXP inLow, SEXP inClose, SEXP optInTimePeriod);
 SEXP initialize_ta_lib();
