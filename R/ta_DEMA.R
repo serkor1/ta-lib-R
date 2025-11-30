@@ -206,15 +206,10 @@ double_exponential_moving_average.plotly <- function(
 	)
 
 	## construct {plotly}-object
-	plotly_object <- .plotting_environment[["main"]] <- plotly::add_trace(
-		.plotting_environment[["main"]],
-		data = constructed_indicator,
-		x = ~idx,
-		y = constructed_indicator[["DEMA"]],
-		type = "scatter",
-		mode = "lines",
+	plotly_object <- .plotting_environment[["main"]] <- build_plotly(
+		init = .plotting_environment[["main"]],
+		traces = list(list(y = ~ constructed_indicator[["DEMA"]])),
 		name = sprintf("DEMA(%d)", n),
-		inherit = FALSE
 	)
 
 	plotly_object
