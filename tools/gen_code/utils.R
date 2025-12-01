@@ -17,8 +17,19 @@ impl_generate_indicator <- function(
 	agnostic = NULL,
 	candlestick = 0,
 	maType = -1,
-	rolling = 0
+	rolling = 0,
+	univariate
 ) {
+	if (missing(univariate) | is.null(univariate)) {
+		has_numeric <- as.integer(
+			as.logical(
+				length(all.vars(as.formula(formula))) == 1
+			)
+		)
+	} else {
+		has_numeric <- univariate
+	}
+
 	args <- gsub("([()])", "\\\\\\1", args, perl = TRUE)
 	args <- gsub("\\s+", "", args, perl = TRUE)
 	system2(
@@ -38,11 +49,7 @@ impl_generate_indicator <- function(
 			sprintf("SUBCHART='%s'", subchart),
 			sprintf(
 				"NUMERIC='%s'",
-				as.integer(
-					as.logical(
-						length(all.vars(as.formula(formula))) == 1
-					)
-				)
+				has_numeric
 			)
 		)
 	)

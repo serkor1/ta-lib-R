@@ -15,7 +15,8 @@ generate_R <- function(x) {
 		args = x$signature,
 		ta_fun = x$alias,
 		formula = x$default_formula,
-		subchart = x$subchart
+		subchart = x$subchart,
+		univariate = x$univariate
 	)
 }
 
@@ -81,7 +82,8 @@ metadata[[4]] <- list(
 	alias = 'VOLUME',
 	default_formula = '~volume + open + close',
 	signature = 'ma = list(SMA(n = 7), SMA(n = 15))',
-	subchart = 1
+	subchart = 1,
+	univariate = 1
 )
 
 ## generate code
