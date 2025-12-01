@@ -5,7 +5,7 @@
 #' @templateVar .title Break Away
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun break_away
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

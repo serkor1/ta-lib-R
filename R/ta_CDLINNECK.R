@@ -5,7 +5,7 @@
 #' @templateVar .title In Neck
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun in_neck
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

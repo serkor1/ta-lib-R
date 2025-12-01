@@ -5,7 +5,7 @@
 #' @templateVar .title Mat Hold
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun mat_hold
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

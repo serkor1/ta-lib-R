@@ -5,7 +5,7 @@
 #' @templateVar .title Counter Attack
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun counter_attack
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

@@ -5,7 +5,7 @@
 #' @templateVar .title Ladder Bottom
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun ladder_bottom
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

@@ -5,7 +5,7 @@
 #' @templateVar .title Long Line
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun long_line
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

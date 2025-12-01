@@ -5,7 +5,7 @@
 #' @templateVar .title Harami
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun harami
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

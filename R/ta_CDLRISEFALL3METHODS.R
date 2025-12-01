@@ -5,7 +5,7 @@
 #' @templateVar .title Rising/Falling Three Methods
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun rise_fall_3_methods
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

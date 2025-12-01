@@ -5,7 +5,7 @@
 #' @templateVar .title Concealing Baby Swallow
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun concealing_baby_swallow
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

@@ -5,7 +5,7 @@
 #' @templateVar .title Kicking Baby Length
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun kicking_baby_length
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

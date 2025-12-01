@@ -5,7 +5,7 @@
 #' @templateVar .title Long Legged Doji
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun long_legged_doji
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

@@ -5,7 +5,7 @@
 #' @templateVar .title Three Black Crows
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun three_black_crows
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

@@ -5,7 +5,7 @@
 #' @templateVar .title Hanging Man
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun hanging_man
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

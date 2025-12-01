@@ -5,7 +5,7 @@
 #' @templateVar .title Three Outside
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun three_outside
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

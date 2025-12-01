@@ -5,7 +5,7 @@
 #' @templateVar .title Spinning Top
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun spinning_top
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

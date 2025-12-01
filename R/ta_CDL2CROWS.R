@@ -5,7 +5,7 @@
 #' @templateVar .title Two Crows
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun two_crows
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

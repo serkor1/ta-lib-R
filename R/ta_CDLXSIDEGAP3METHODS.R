@@ -5,7 +5,7 @@
 #' @templateVar .title Upside/Downside Gap Three Methods
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun xside_gap_3_methods
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

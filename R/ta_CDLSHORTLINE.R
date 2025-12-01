@@ -5,7 +5,7 @@
 #' @templateVar .title Short Line Candle
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun short_line
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

@@ -5,7 +5,7 @@
 #' @templateVar .title Shooting Star
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun shooting_star
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

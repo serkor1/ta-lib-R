@@ -5,7 +5,7 @@
 #' @templateVar .title Three White Soldiers
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun three_white_soldiers
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

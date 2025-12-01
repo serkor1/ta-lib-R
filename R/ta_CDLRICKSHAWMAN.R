@@ -5,7 +5,7 @@
 #' @templateVar .title Rickshaw Man
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun rickshaw_man
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

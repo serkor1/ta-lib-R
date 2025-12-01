@@ -5,7 +5,7 @@
 #' @templateVar .title Evening Star
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun evening_star
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

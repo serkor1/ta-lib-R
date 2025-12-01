@@ -5,7 +5,7 @@
 #' @templateVar .title Up/Down-gap side-by-side white lines
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun gaps_side_white
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

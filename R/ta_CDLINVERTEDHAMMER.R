@@ -5,7 +5,7 @@
 #' @templateVar .title Inverted Hammer
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun inverted_hammer
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns
