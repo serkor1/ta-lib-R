@@ -7,6 +7,8 @@
 #' @param y y
 #' @param ... ...
 #'
+#' @keywords internal
+#'
 #' @returns
 #' A <plotly>-object
 #'

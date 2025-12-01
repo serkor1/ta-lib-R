@@ -53,7 +53,7 @@ modify_traces <- function(trace_list, ...) {
 	lapply(
 		trace_list,
 		function(traces) {
-			modifyList(
+			utils::modifyList(
 				traces,
 				list(...)
 			)

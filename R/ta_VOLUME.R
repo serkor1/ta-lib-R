@@ -220,7 +220,7 @@ trading_volume.plotly <- function(
 	traces <- lapply(
 		trace_cols,
 		function(col) {
-			list(y = as.formula(paste0("~", col)))
+			list(y = stats::as.formula(paste0("~", col)))
 		}
 	)
 
