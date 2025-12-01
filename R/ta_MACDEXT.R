@@ -195,6 +195,7 @@ extended_moving_average_convergence_divergence.plotly <- function(
 	signal = EMA(n = 9),
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -288,7 +289,12 @@ extended_moving_average_convergence_divergence.plotly <- function(
 		init = plotly_init(),
 		traces = traces,
 		name = name,
-		data = constructed_indicator
+		data = constructed_indicator,
+		title = if (missing(title)) {
+			"Moving Average Convergence Divergence (Extended)"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(

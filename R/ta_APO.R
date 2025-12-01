@@ -189,6 +189,7 @@ absolute_price_oscillator.plotly <- function(
 	ma = SMA(n = 10),
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -245,7 +246,12 @@ absolute_price_oscillator.plotly <- function(
 		init = plotly_init(),
 		traces = traces,
 		name = name,
-		data = constructed_indicator
+		data = constructed_indicator,
+		title = if (missing(title)) {
+			"Absolute Price Oscillator"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(

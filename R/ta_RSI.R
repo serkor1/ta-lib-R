@@ -168,6 +168,7 @@ relative_strength_index.plotly <- function(
 	lower_bound = 20,
 	upper_bound = 80,
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -222,7 +223,12 @@ relative_strength_index.plotly <- function(
 		init = plotly_init(),
 		traces = traces,
 		name = name,
-		data = constructed_indicator
+		data = constructed_indicator,
+		title = if (missing(title)) {
+			"Relative Strength Index"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(

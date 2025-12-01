@@ -121,7 +121,6 @@ trading_volume.matrix <- function(
 	)
 }
 
-## splice:numeric-method:start
 #' @usage NULL
 #' @aliases trading_volume
 #'
@@ -140,25 +139,30 @@ trading_volume.numeric <- function(
 		warning("'cols' is passed but is unused for vectors.")
 	}
 
-	## pass to 'C' directly
-	## with the input vector
+	## pass the argument directly
+	## to 'C'
 	x <- .Call(
 		"impl_ta_VOLUME",
+		## splice:numeric:start
 		as.double(x),
-		lapply(
-			ma,
-			function(xx) {
-				as.integer(
-					unlist(xx, use.names = FALSE)
-				)
-			}
-		)
+		ma
+		## splice:numeric:end
 	)
 
-	## return 'as-is'
+	## check if it has 'dims'
+	## and convert to double if
+	## not to honor the 'type-safety'-esque
+	## approach
+	##
+	## NOTE: this adds a few ns overhead but
+	##       its a robust alternative to code it
+	##       manually. Any suggestions are welcome
+	if (is.null(dim(x))) {
+		x <- as.double(x)
+	}
+
 	x
 }
-## splice:numeric-method:end
 
 #' @usage NULL
 #' @aliases trading_volume
@@ -170,6 +174,7 @@ trading_volume.plotly <- function(
 	ma = list(SMA(n = 7), SMA(n = 15)),
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -237,7 +242,12 @@ trading_volume.plotly <- function(
 		init = plotly_init(),
 		traces = traces,
 		name = name,
-		data = constructed_indicator
+		data = constructed_indicator,
+		title = if (missing(title)) {
+			"Trading Volume"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(

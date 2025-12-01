@@ -125,6 +125,7 @@ normalized_average_true_range.plotly <- function(
 	n = 10,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -173,7 +174,12 @@ normalized_average_true_range.plotly <- function(
 		init = plotly_init(),
 		traces = traces,
 		name = name,
-		data = constructed_indicator
+		data = constructed_indicator,
+		title = if (missing(title)) {
+			"Normalized Average True Range"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(

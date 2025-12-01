@@ -156,6 +156,7 @@ dominant_cycle_phase.plotly <- function(
 	cols,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -204,7 +205,12 @@ dominant_cycle_phase.plotly <- function(
 		init = plotly_init(),
 		traces = traces,
 		name = name,
-		data = constructed_indicator
+		data = constructed_indicator,
+		title = if (missing(title)) {
+			"Hilbert Transform - Dominant Cycle Phase"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(

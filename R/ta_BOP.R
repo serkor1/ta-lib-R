@@ -118,6 +118,7 @@ balance_of_power.plotly <- function(
 	cols,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -166,7 +167,12 @@ balance_of_power.plotly <- function(
 		init = plotly_init(),
 		traces = traces,
 		name = name,
-		data = constructed_indicator
+		data = constructed_indicator,
+		title = if (missing(title)) {
+			"Balance of Power"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(

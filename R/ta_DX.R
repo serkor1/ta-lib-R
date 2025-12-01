@@ -125,6 +125,7 @@ directional_movement_index.plotly <- function(
 	n = 10,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -177,7 +178,12 @@ directional_movement_index.plotly <- function(
 		init = plotly_init(),
 		traces = traces,
 		name = name,
-		data = constructed_indicator
+		data = constructed_indicator,
+		title = if (missing(title)) {
+			"Directional Movement Index"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(

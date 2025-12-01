@@ -156,6 +156,7 @@ phasor_components.plotly <- function(
 	cols,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -205,7 +206,12 @@ phasor_components.plotly <- function(
 		init = plotly_init(),
 		traces = traces,
 		name = name,
-		data = constructed_indicator
+		data = constructed_indicator,
+		title = if (missing(title)) {
+			"Hilbert Transform - Phasor Components"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(

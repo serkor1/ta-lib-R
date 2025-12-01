@@ -129,6 +129,7 @@ ultimate_oscillator.plotly <- function(
 	lower_bound = 30,
 	upper_bound = 70,
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -185,7 +186,12 @@ ultimate_oscillator.plotly <- function(
 		init = plotly_init(),
 		traces = traces,
 		name = name,
-		data = constructed_indicator
+		data = constructed_indicator,
+		title = if (missing(title)) {
+			"Ultimate Oscillator"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(

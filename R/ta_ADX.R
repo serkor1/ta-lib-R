@@ -128,6 +128,7 @@ average_directional_movement_index.plotly <- function(
 	middle_bound = 50,
 	upper_bound = 75,
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -183,7 +184,12 @@ average_directional_movement_index.plotly <- function(
 		init = plotly_init(),
 		traces = traces,
 		name = name,
-		data = constructed_indicator
+		data = constructed_indicator,
+		title = if (missing(title)) {
+			"Average Directional Movement Index"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(

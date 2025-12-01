@@ -168,6 +168,7 @@ chande_momentum_oscillator.plotly <- function(
 	lower_bound = -50,
 	upper_bound = 50,
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -219,7 +220,12 @@ chande_momentum_oscillator.plotly <- function(
 		init = plotly_init(),
 		traces = traces,
 		name = name,
-		data = constructed_indicator
+		data = constructed_indicator,
+		title = if (missing(title)) {
+			"Chande Momentum Oscillator"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(

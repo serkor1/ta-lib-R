@@ -148,6 +148,7 @@ stochastic.plotly <- function(
 	lower_bound = 20,
 	upper_bound = 80,
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -202,7 +203,12 @@ stochastic.plotly <- function(
 		init = plotly_init(),
 		traces = traces,
 		name = name,
-		data = constructed_indicator
+		data = constructed_indicator,
+		title = if (missing(title)) {
+			"Stochastic"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(
