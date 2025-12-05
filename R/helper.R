@@ -72,16 +72,24 @@ plotly_line <- function(value, length, dash = TRUE) {
 
 	x <- list(
 		y = rep(value, length),
+		x = ~idx,
+		mode = "lines",
+		type = "scatter",
 		line = list(
-			color = "lightgray"
-		)
+			color = layout_theme()$threshold_color,
+			width = 0.5
+		),
+		inherit = FALSE,
+		showlegend = FALSE,
+		data = get("constructed_indicator", parent.frame())
 	)
 
 	if (dash) {
-		x$line$dash <- "dash"
+		x$line$dash <- "dot"
 	}
 
-	return(x)
+	class(x) <- "plotly_line"
+	x
 }
 
 
