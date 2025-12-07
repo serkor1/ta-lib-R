@@ -179,6 +179,7 @@ commodity_channel_index.plotly <- function(
 	plotly_object <- .plotting_environment[["main"]] <- build_plotly(
 		init = .plotting_environment[["main"]],
 		traces = traces,
+		decorators = list(),
 		name = name,
 		data = constructed_indicator
 	)
