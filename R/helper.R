@@ -100,3 +100,22 @@ plotly_init <- function(...) {
 		...
 	)
 }
+
+is.empty <- function(x) {
+	UseMethod("is.empty")
+}
+
+#' @export
+is.empty.default <- function(x) {
+	missing(x)
+}
+
+#' @export
+is.empty.list <- function(x) {
+	length(x) == 0L
+}
+
+#' @export
+is.empty.character <- function(x) {
+	identical(x, character(0)) | grepl("^[[:space:]]*$", x)
+}

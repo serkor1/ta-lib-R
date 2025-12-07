@@ -134,3 +134,15 @@ add_title <- function(
 		)
 	)
 }
+
+add_limit <- function(
+	p,
+	y_range
+) {
+	plotly::layout(
+		p = p,
+		yaxis = list(
+			range = c(y_range[1], y_range[2])
+		)
+	)
+}

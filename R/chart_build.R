@@ -19,6 +19,7 @@ build_plotly <- function(init, traces, name, data, title = NULL, ...) {
 build_plotly.plotly <- function(
 	init,
 	traces,
+	decorators = list(),
 	name,
 	data,
 	title = NULL,
@@ -81,6 +82,15 @@ build_plotly.plotly <- function(
 	# decorate
 	if (!is.null(title)) {
 		plotly_object <- add_title(plotly_object, text = title)
+	}
+
+	# check for additional options
+	if (!is.empty(decorators)) {
+		plotly_object <- Reduce(
+			f = function(p, f) f(p),
+			x = decorators,
+			init = plotly_object
+		)
 	}
 
 	layout_axis(plotly_object, data$idx)

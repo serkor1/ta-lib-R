@@ -18,7 +18,7 @@ impl_generate_indicator <- function(
 	candlestick = 0,
 	maType = -1,
 	rolling = 0,
-	univariate
+	univariate = NULL
 ) {
 	if (missing(univariate) | is.null(univariate)) {
 		has_numeric <- as.integer(
