@@ -83,6 +83,7 @@ layout_title <- function(
 			text = title,
 			x = 1,
 			y = 1,
+			xref = "paper",
 			xanchor = "right",
 			pad = list(
 				t = 20

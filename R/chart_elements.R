@@ -146,3 +146,50 @@ add_limit <- function(
 		)
 	)
 }
+
+add_last_value <- function(
+	p,
+	data,
+	remove_cols = NULL
+) {
+	## construct last value
+	## text
+	last_values <- data[
+		nrow(data),
+		grep(
+			x = colnames(data),
+			pattern = paste(
+				c("idx", remove_cols),
+				collapse = "|"
+			),
+			value = TRUE,
+			invert = TRUE,
+			ignore.case = TRUE
+		)
+	]
+
+	value_text <- paste0(
+		"<b>",
+		colnames(last_values),
+		"</b>: ",
+		last_values,
+		collapse = " "
+	)
+
+	plotly::add_annotations(
+		p = p,
+		text = value_text,
+		x = 0,
+		y = 1,
+		xref = "paper",
+		yref = "paper",
+		showarrow = FALSE,
+		font = list(
+			size = 10 *
+				getOption(
+					"talib.chart.scale",
+					default = 1
+				)
+		)
+	)
+}
