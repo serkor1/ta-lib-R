@@ -11,7 +11,15 @@
 #' @returns
 #' A <plotly>-object
 #'
-build_plotly <- function(init, traces, name, data, title = NULL, ...) {
+build_plotly <- function(
+	init,
+	traces,
+	decorators = list(),
+	name,
+	data,
+	title = NULL,
+	...
+) {
 	UseMethod("build_plotly")
 }
 
