@@ -205,7 +205,8 @@ triple_exponential_average.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	name <- "TRIX"
+	name <- sprintf("TRIX(%d)", n)
+	decorators <- list()
 	traces <- list(
 		list(y = ~TRIX)
 	)
@@ -214,6 +215,7 @@ triple_exponential_average.plotly <- function(
 	plotly_object <- build_plotly(
 		init = plotly_init(),
 		traces = traces,
+		decorators = decorators,
 		name = name,
 		data = constructed_indicator,
 		title = if (missing(title)) {

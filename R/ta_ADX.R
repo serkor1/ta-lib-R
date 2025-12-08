@@ -172,6 +172,10 @@ average_directional_movement_index.plotly <- function(
 		n
 	)
 
+	decorators <- list(
+		function(p) add_limit(p, y_range = c(0, 100))
+	)
+
 	traces <- list(
 		plotly_line(lower_bound, nrow(constructed_indicator)),
 		plotly_line(middle_bound, nrow(constructed_indicator)),
@@ -183,6 +187,7 @@ average_directional_movement_index.plotly <- function(
 	plotly_object <- build_plotly(
 		init = plotly_init(),
 		traces = traces,
+		decorators = decorators,
 		name = name,
 		data = constructed_indicator,
 		title = if (missing(title)) {
