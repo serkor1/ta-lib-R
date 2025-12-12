@@ -138,15 +138,18 @@ layout_legend <- function(
 
 	plotly::layout(
 		p = p,
-		showlegend = TRUE,
+		showlegend = showlegend,
 		legend = list(
-			orientation = "h",
+			font = list(size = 8),
+			grouptitlefont = list(size = 9),
+			itemsizing = "constant",
+			maxheight = 0.35,
+			bgcolor = "transparent",
+			orientation = "v",
 			x = 0,
-			y = 100,
-			yref = "container",
-			title = list(
-				text = "<b>Indicators:</b>"
-			)
+			y = 1,
+			yref = "paper",
+			xref = "paper"
 		)
 	)
 }
