@@ -63,20 +63,21 @@ build_plotly.plotly <- function(
 	n_tr <- length(traces)
 	n_non <- length(non_line)
 
-	if (n_non > 0) {
-		if (n_tr > 1 && n_non > 1) {
-			# add a dedicated legend entry
-			legend_tr <- traces[[non_line[1]]]
-			legend_tr$showlegend <- TRUE
-			legend_tr$visible <- "legendonly"
-			legend_tr$name <- name
+	# if (n_non > 0) {
+	# 	if (n_tr > 1 && n_non > 1) {
+	# 		# add a dedicated legend entry
+	# 		#legend_tr <- traces[[non_line[1]]]
+	# 		legend_tr <- list()
+	# 		legend_tr$showlegend <- TRUE
+	# 		legend_tr$visible <- "legendonly"
+	# 		legend_tr$name <- name
 
-			traces <- append(traces, list(legend_tr))
-		} else {
-			# just name the single relevant non-line trace
-			traces[[non_line[1]]]$name <- name
-		}
-	}
+	# 		traces <- append(traces, list(legend_tr))
+	# 	} else {
+	# 		# just name the single relevant non-line trace
+	# 		traces[[non_line[1]]]$name <- name
+	# 	}
+	# }
 
 	# build plotly object
 	plotly_object <- Reduce(
