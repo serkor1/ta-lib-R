@@ -183,6 +183,8 @@ add_last_value <- function(
 		y = 1,
 		xref = "paper",
 		yref = "paper",
+		xanchor = "left",
+		yanchor = "bottom",
 		showarrow = FALSE,
 		font = list(
 			size = 10 *
