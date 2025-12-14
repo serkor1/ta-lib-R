@@ -163,17 +163,39 @@ aroon.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	name <- "Aroon"
+	name <- sprintf(
+		"Aroon(%d)",
+		n
+	)
+
+	decorators <- list(
+		function(p) add_limit(p, y_range = c(0, 100))
+	)
 
 	traces <- list(
-		list(y = ~AroonDown, name = "AroonDown"),
-		list(y = ~AroonUp, name = "AroonUp")
+		list(
+			y = ~AroonDown,
+			name = "AroonDown",
+			legendgroup = name,
+			legendgrouptitle = list(text = name)
+		),
+
+		list(
+			y = ~AroonUp,
+			name = "AroonUp",
+			legendgroup = name,
+			legendgrouptitle = list(text = name)
+		)
 	)
 	## splice:plotly-assembly:end
 
 	plotly_object <- build_plotly(
 		init = plotly_init(),
 		traces = traces,
+		decorators = get0(
+			x = "decorators",
+			ifnotfound = list()
+		),
 		name = name,
 		data = constructed_indicator,
 		title = if (missing(title)) {

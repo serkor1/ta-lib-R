@@ -196,14 +196,27 @@ dominant_cycle_phase.plotly <- function(
 	## splice:plotly-assembly:start
 	name <- sprintf("DCPeriod")
 
+	decorators <- list()
+
 	traces <- list(
-		list(y = ~HT_DCPHASE, mode = "lines+markers")
+		list(
+			y = ~HT_DCPHASE,
+			name = "DC Phase",
+			legendgroup = name,
+			legendgrouptitle = list(
+				text = "Hilbert Transform - Dominant Cycle Phase"
+			)
+		)
 	)
 	## splice:plotly-assembly:end
 
 	plotly_object <- build_plotly(
 		init = plotly_init(),
 		traces = traces,
+		decorators = get0(
+			x = "decorators",
+			ifnotfound = list()
+		),
 		name = name,
 		data = constructed_indicator,
 		title = if (missing(title)) {

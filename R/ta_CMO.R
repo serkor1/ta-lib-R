@@ -207,18 +207,34 @@ chande_momentum_oscillator.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	name <- sprintf("CCI(%d)", n)
+
+	name <- sprintf("CMO(%d)", n)
+
+	decorators <- list(
+		function(p) add_limit(p, y_range = c(-100, 100))
+	)
 
 	traces <- list(
 		plotly_line(lower_bound, nrow(constructed_indicator)),
 		plotly_line(upper_bound, nrow(constructed_indicator)),
-		list(y = ~CCI)
+		list(
+			y = ~CMO,
+			name = "CMO",
+			legendgroup = name,
+			legendgrouptitle = list(
+				text = name
+			)
+		)
 	)
 	## splice:plotly-assembly:end
 
 	plotly_object <- build_plotly(
 		init = plotly_init(),
 		traces = traces,
+		decorators = get0(
+			x = "decorators",
+			ifnotfound = list()
+		),
 		name = name,
 		data = constructed_indicator,
 		title = if (missing(title)) {

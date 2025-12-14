@@ -166,10 +166,7 @@ williams_oscillator.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	name <- sprintf(
-		"Will %R(%d)",
-		n
-	)
+	name <- paste0("Will %R(", n, ")")
 
 	decorators <- list(
 		function(p) add_limit(p, y_range = c(0, -100))
@@ -185,7 +182,10 @@ williams_oscillator.plotly <- function(
 	plotly_object <- build_plotly(
 		init = plotly_init(),
 		traces = traces,
-		decorators = decorators,
+		decorators = get0(
+			x = "decorators",
+			ifnotfound = list()
+		),
 		name = name,
 		data = constructed_indicator,
 		title = if (missing(title)) {

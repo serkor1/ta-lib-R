@@ -169,14 +169,24 @@ directional_movement_index.plotly <- function(
 		n
 	)
 
+	decorators <- list(
+		function(p) add_limit(p, y_range = c(0, 100))
+	)
+
 	traces <- list(
-		list(y = ~DX)
+		list(
+			y = ~DX
+		)
 	)
 	## splice:plotly-assembly:end
 
 	plotly_object <- build_plotly(
 		init = plotly_init(),
 		traces = traces,
+		decorators = get0(
+			x = "decorators",
+			ifnotfound = list()
+		),
 		name = name,
 		data = constructed_indicator,
 		title = if (missing(title)) {

@@ -194,17 +194,35 @@ sine_wave.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	name <- sprintf("DCPeriod")
+	name <- sprintf("Hilbert Transform - SineWave")
+
+	decorators <- list(
+		function(p) add_limit(p, y_range = c(-1, 1))
+	)
 
 	traces <- list(
-		list(y = ~Sine),
-		list(y = ~LeadSine)
+		list(
+			y = ~Sine,
+			name = "Sine",
+			legendgroup = name,
+			legendgrouptitle = list(text = name)
+		),
+		list(
+			y = ~LeadSine,
+			name = "Lead Sine",
+			legendgroup = name,
+			legendgrouptitle = list(text = name)
+		)
 	)
 	## splice:plotly-assembly:end
 
 	plotly_object <- build_plotly(
 		init = plotly_init(),
 		traces = traces,
+		decorators = get0(
+			x = "decorators",
+			ifnotfound = list()
+		),
 		name = name,
 		data = constructed_indicator,
 		title = if (missing(title)) {
