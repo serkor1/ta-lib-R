@@ -66,11 +66,11 @@ add_last_value <- function(
 	plotly::add_annotations(
 		p = p,
 		text = value_text,
-		x = 0,
+		x = 1,
 		y = 1,
 		xref = "paper",
 		yref = "paper",
-		xanchor = "left",
+		xanchor = "right",
 		yanchor = "bottom",
 		showarrow = FALSE,
 		font = list(

@@ -81,13 +81,12 @@ layout_title <- function(
 		p = p,
 		title = list(
 			text = title,
-			x = 1,
+			x = 0,
 			y = 1,
 			xref = "paper",
-			xanchor = "right",
-			pad = list(
-				t = 20
-			)
+			yref = "paper",
+			xanchor = "left",
+			yanchor = "bottom"
 		)
 	)
 }
@@ -149,7 +148,8 @@ layout_legend <- function(
 			x = 0,
 			y = 1,
 			yref = "paper",
-			xref = "paper"
+			xref = "paper",
+			yanchor = "top"
 		)
 	)
 }
@@ -186,7 +186,7 @@ layout_settings <- function(p) {
 			"drawrect",
 			"eraseshape"
 		),
-		displayModeBar = getOption("talib.chart.modebar", TRUE),
+		displayModeBar = getOption("talib.chart.modebar", NULL),
 
 		## remove {plotly} logo
 		## to reduce clutter
