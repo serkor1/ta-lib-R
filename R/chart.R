@@ -216,7 +216,6 @@ chart.default <- function(
 		},
 		function(p) layout_font(p),
 		function(p) layout_legend(p),
-		function(p) layout_settings(p),
 		function(p) add_last_value(p, data = data_frame, remove_cols = "volume")
 	)
 
@@ -226,5 +225,7 @@ chart.default <- function(
 		init = price_chart
 	)
 
-	.plotting_environment$main
+	layout_settings(
+		.plotting_environment$main
+	)
 }

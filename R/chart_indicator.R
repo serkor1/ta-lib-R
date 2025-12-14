@@ -128,17 +128,17 @@ indicator <- function(FUN, ...) {
 		.plotting_environment$chart <- fig
 
 		return(
-			fig
+			layout_settings(fig)
 		)
 	}
 
 	## reconstruct charting
 	## as if called from chart()
-	outcome <- .chart_layout(
-		x = outcome,
-		title_text = title,
-		idx = if (is.null(idx)) 1:nrow(data) else idx
-	)
+	# outcome <- .chart_layout(
+	# 	x = outcome,
+	# 	title_text = title,
+	# 	idx = if (is.null(idx)) 1:nrow(data) else idx
+	# )
 
-	outcome
+	layout_settings(outcome)
 }
