@@ -44,6 +44,9 @@ build_plotly.plotly <- function(
 		mode = "lines",
 		showlegend = TRUE,
 		inherit = FALSE,
+		name = name,
+		legendgroup = name,
+		legendgrouptitle = list(text = title),
 		data = data,
 		x = ~idx
 	)
