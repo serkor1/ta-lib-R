@@ -173,6 +173,11 @@ layout_settings <- function(p) {
 				visible = range_slider,
 				thickness = range_slider_size
 			)
+		),
+		margin = list(
+			l = 0,
+			b = 0,
+			pad = 0
 		)
 	)
 
