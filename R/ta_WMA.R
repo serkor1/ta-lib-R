@@ -208,8 +208,17 @@ weighted_moving_average.plotly <- function(
 	## construct {plotly}-object
 	plotly_object <- .plotting_environment[["main"]] <- build_plotly(
 		init = .plotting_environment[["main"]],
-		traces = list(list(y = ~ constructed_indicator[["WMA"]])),
+		traces = list(
+			list(
+				y = ~ constructed_indicator[["WMA"]],
+				legendgroup = "MovingAverage",
+				legendgrouptitle = list(
+					text = "Moving Averages"
+				)
+			)
+		),
 		name = sprintf("WMA(%d)", n),
+		decorators = list()
 	)
 
 	plotly_object

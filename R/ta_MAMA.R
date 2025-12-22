@@ -208,8 +208,17 @@ mesa_adaptive_moving_average.plotly <- function(
 	## construct {plotly}-object
 	plotly_object <- .plotting_environment[["main"]] <- build_plotly(
 		init = .plotting_environment[["main"]],
-		traces = list(list(y = ~ constructed_indicator[["MAMA"]])),
+		traces = list(
+			list(
+				y = ~ constructed_indicator[["MAMA"]],
+				legendgroup = "MovingAverage",
+				legendgrouptitle = list(
+					text = "Moving Averages"
+				)
+			)
+		),
 		name = sprintf("MAMA(%d)", n),
+		decorators = list()
 	)
 
 	plotly_object

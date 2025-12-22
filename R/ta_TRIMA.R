@@ -208,8 +208,17 @@ triangular_moving_average.plotly <- function(
 	## construct {plotly}-object
 	plotly_object <- .plotting_environment[["main"]] <- build_plotly(
 		init = .plotting_environment[["main"]],
-		traces = list(list(y = ~ constructed_indicator[["TRIMA"]])),
+		traces = list(
+			list(
+				y = ~ constructed_indicator[["TRIMA"]],
+				legendgroup = "MovingAverage",
+				legendgrouptitle = list(
+					text = "Moving Averages"
+				)
+			)
+		),
 		name = sprintf("TRIMA(%d)", n),
+		decorators = list()
 	)
 
 	plotly_object
