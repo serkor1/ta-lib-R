@@ -166,7 +166,7 @@ acceleration_bands.plotly <- function(
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
 	name <- sprintf(
-		"AccBands(%d)",
+		"Acceleration Bands(%d)",
 		n
 	)
 
@@ -178,14 +178,15 @@ acceleration_bands.plotly <- function(
 
 	traces <- modify_traces(
 		traces,
-		legendgroup = "AccerationBands",
 		fillcolor = plotly::toRGB(
 			color,
 			alpha
 		),
 		line = list(
 			color = color
-		)
+		),
+		legendgroup = name,
+		legendgrouptitle = list(text = name)
 	)
 	## splice:plotly-assembly:end
 

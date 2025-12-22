@@ -250,14 +250,15 @@ bollinger_bands.plotly <- function(
 
 	traces <- modify_traces(
 		traces,
-		legendgroup = "BollingerBands",
 		fillcolor = plotly::toRGB(
 			color,
 			alpha
 		),
 		line = list(
 			color = color
-		)
+		),
+		legendgroup = name,
+		legendgrouptitle = list(text = name)
 	)
 	## splice:plotly-assembly:end
 
