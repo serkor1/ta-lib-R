@@ -165,8 +165,8 @@ acceleration_bands.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	name <- sprintf(
-		"Acceleration Bands(%d)",
+	name <- label(
+		"Acceleration Bands",
 		n
 	)
 
@@ -184,9 +184,7 @@ acceleration_bands.plotly <- function(
 		),
 		line = list(
 			color = color
-		),
-		legendgroup = name,
-		legendgrouptitle = list(text = name)
+		)
 	)
 	## splice:plotly-assembly:end
 
@@ -194,7 +192,10 @@ acceleration_bands.plotly <- function(
 		init = .plotting_environment[["main"]],
 		traces = traces,
 		decorators = list(),
-		name = name,
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
 		data = constructed_indicator
 	)
 

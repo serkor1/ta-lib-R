@@ -224,7 +224,10 @@ rate_of_change.plotly <- function(
 			x = "decorators",
 			ifnotfound = list()
 		),
-		name = name,
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
 		data = constructed_indicator,
 		title = if (missing(title)) {
 			"Rate of Change"

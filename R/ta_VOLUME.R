@@ -213,31 +213,49 @@ trading_volume.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
+
+	## calculate direction of the
+	## candle for downstream coloring
+	##
+	## NOTE: this might a possible bug
+	##       if values are passed differently
+	##       form 'open' and 'close'
 	constructed_indicator$direction <- constructed_series$open >=
 		constructed_series$close
 
-	chart_theme <- .chart_theme()
+	## construct theme object for
+	## coloring
+	chart_theme <- layout_theme()
 
-	name <- "Volume"
+	## identify column names
+	## that are not 'idx' or 'direction'
+	trace_cols <- setdiff(
+		names(constructed_indicator),
+		c("idx", "direction")
+	)
 
-	decorators <- list()
-
-	trace_cols <- setdiff(names(constructed_indicator), "idx")
-
+	## construct all traces
 	traces <- lapply(
 		trace_cols,
 		function(col) {
-			list(y = stats::as.formula(paste0("~", col)))
+			list(
+				y = stats::as.formula(
+					paste0("~", col)
+				),
+				name = col
+			)
 		}
 	)
 
+	## modify the first trace
+	## assuming its volume
 	traces[[1]]$color <- ~direction
 	traces[[1]]$colors = c(
 		chart_theme$bull_color,
 		chart_theme$bear_color
 	)
-	traces[[1]]$type = 'bar'
-	traces[[1]]$mode = 'bar'
+	traces[[1]]$type <- 'bar'
+	traces[[1]]["mode"] <- list(NULL)
 	## splice:plotly-assembly:end
 
 	plotly_object <- build_plotly(
@@ -247,7 +265,10 @@ trading_volume.plotly <- function(
 			x = "decorators",
 			ifnotfound = list()
 		),
-		name = name,
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
 		data = constructed_indicator,
 		title = if (missing(title)) {
 			"Trading Volume"

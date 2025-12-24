@@ -186,7 +186,10 @@ money_flow_index.plotly <- function(
 			x = "decorators",
 			ifnotfound = list()
 		),
-		name = name,
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
 		data = constructed_indicator,
 		title = if (missing(title)) {
 			"Money Flow Index"

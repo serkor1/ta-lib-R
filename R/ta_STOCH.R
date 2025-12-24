@@ -189,7 +189,10 @@ stochastic.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	name <- ""
+	name <- sprintf(
+		"Stochastic(%d)",
+		fastk
+	)
 
 	decorators <- list(
 		function(p) add_limit(p, y_range = c(0, 100))
@@ -198,8 +201,8 @@ stochastic.plotly <- function(
 	traces <- list(
 		plotly_line(lower_bound),
 		plotly_line(upper_bound),
-		list(y = ~SlowK),
-		list(y = ~SlowD)
+		list(y = ~SlowK, name = "SlowK"),
+		list(y = ~SlowD, name = "SlowD")
 	)
 	## splice:plotly-assembly:end
 
@@ -210,7 +213,10 @@ stochastic.plotly <- function(
 			x = "decorators",
 			ifnotfound = list()
 		),
-		name = name,
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
 		data = constructed_indicator,
 		title = if (missing(title)) {
 			"Stochastic"

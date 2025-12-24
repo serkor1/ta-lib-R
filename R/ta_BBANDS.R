@@ -228,14 +228,14 @@ bollinger_bands.plotly <- function(
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
 	if (std_down == std_up) {
-		name <- sprintf(
-			"BBands(%d, %d)",
+		name <- label(
+			"Bollinger Bands",
 			ma$n,
 			std_up
 		)
 	} else {
-		name <- sprintf(
-			"BBands(%d, %d, %d)",
+		name <- label(
+			"Bollinger Bands",
 			ma$n,
 			std_up,
 			std_down
@@ -256,9 +256,7 @@ bollinger_bands.plotly <- function(
 		),
 		line = list(
 			color = color
-		),
-		legendgroup = name,
-		legendgrouptitle = list(text = name)
+		)
 	)
 	## splice:plotly-assembly:end
 
@@ -266,7 +264,10 @@ bollinger_bands.plotly <- function(
 		init = .plotting_environment[["main"]],
 		traces = traces,
 		decorators = list(),
-		name = name,
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
 		data = constructed_indicator
 	)
 

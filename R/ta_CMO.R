@@ -235,7 +235,10 @@ chande_momentum_oscillator.plotly <- function(
 			x = "decorators",
 			ifnotfound = list()
 		),
-		name = name,
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
 		data = constructed_indicator,
 		title = if (missing(title)) {
 			"Chande Momentum Oscillator"

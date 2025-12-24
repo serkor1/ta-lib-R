@@ -248,7 +248,10 @@ extended_parabolic_stop_and_reverse.plotly <- function(
 		init = .plotting_environment[["main"]],
 		traces = traces,
 		decorators = list(),
-		name = name,
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
 		data = constructed_indicator
 	)
 
