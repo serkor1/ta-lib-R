@@ -119,3 +119,21 @@ is.empty.list <- function(x) {
 is.empty.character <- function(x) {
 	identical(x, character(0)) | grepl("^[[:space:]]*$", x)
 }
+
+
+label <- function(
+	label,
+	...
+) {
+	x <- c(...)
+	if (!length(x)) {
+		return(label)
+	}
+
+	paste0(
+		label,
+		" (",
+		toString(sprintf("%g", x)),
+		")"
+	)
+}
