@@ -5,14 +5,14 @@ testthat::test_that(desc = "Charting", code = {
 	##    without issues
 	##
 	## 1.1) matrix
-	testthat::expect_no_condition(
+	testthat::expect_no_error(
 		{
 			chart(SPY)
 		}
 	)
 
 	## 1.2) data.frame
-	testthat::expect_no_condition(
+	testthat::expect_no_error(
 		{
 			chart(SPY)
 		}
@@ -21,7 +21,7 @@ testthat::test_that(desc = "Charting", code = {
 	## 2) test that indicators
 	##    can be passed with custom
 	##    data
-	testthat::expect_no_condition(
+	testthat::expect_no_error(
 		{
 			chart(SPY)
 			indicator(
