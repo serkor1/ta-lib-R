@@ -127,6 +127,13 @@ extended_parabolic_stop_and_reverse.data.frame <- function(
 			x = x,
 			cols = cols,
 			init = init,
+			offset = offset,
+			init_long = init_long,
+			long = long,
+			max_long = max_long,
+			init_short = init_short,
+			short = short,
+			max_short = max_short,
 			...
 		)
 	)
@@ -153,6 +160,13 @@ extended_parabolic_stop_and_reverse.matrix <- function(
 		x = x,
 		cols = cols,
 		init = init,
+		offset = offset,
+		init_long = init_long,
+		long = long,
+		max_long = max_long,
+		init_short = init_short,
+		short = short,
+		max_short = max_short,
 		...
 	)
 }
@@ -202,7 +216,14 @@ extended_parabolic_stop_and_reverse.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		init = init
+		init = init,
+		offset = offset,
+		init_long = init_long,
+		long = long,
+		max_long = max_long,
+		init_short = init_short,
+		short = short,
+		max_short = max_short
 	)
 
 	## add conditional idx

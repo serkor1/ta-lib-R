@@ -81,7 +81,7 @@ metadata[[4]] <- list(
 	fun = 'trading_volume',
 	alias = 'VOLUME',
 	default_formula = '~volume + open + close',
-	signature = 'ma = list(SMA(n = 7), SMA(n = 15))',
+	signature = c('ma = list(SMA(n = 7), SMA(n = 15))'),
 	subchart = 1,
 	univariate = 1
 )

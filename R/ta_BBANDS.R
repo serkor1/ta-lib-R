@@ -102,6 +102,8 @@ bollinger_bands.data.frame <- function(
 			x = x,
 			cols = cols,
 			ma = ma,
+			std_up = std_up,
+			std_down = std_down,
 			...
 		)
 	)
@@ -123,6 +125,8 @@ bollinger_bands.matrix <- function(
 		x = x,
 		cols = cols,
 		ma = ma,
+		std_up = std_up,
+		std_down = std_down,
 		...
 	)
 }
@@ -217,7 +221,9 @@ bollinger_bands.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		ma = ma
+		ma = ma,
+		std_up = std_up,
+		std_down = std_down
 	)
 
 	## add conditional idx
