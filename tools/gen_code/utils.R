@@ -12,12 +12,24 @@ impl_generate_indicator <- function(
 	ta_fun,
 	formula,
 	plotly = 1L,
+	subchart = 1L,
 	args,
 	agnostic = NULL,
 	candlestick = 0,
 	maType = -1,
-	rolling = 0
+	rolling = 0,
+	univariate = NULL
 ) {
+	if (missing(univariate) | is.null(univariate)) {
+		has_numeric <- as.integer(
+			as.logical(
+				length(all.vars(as.formula(formula))) == 1
+			)
+		)
+	} else {
+		has_numeric <- univariate
+	}
+
 	args <- gsub("([()])", "\\\\\\1", args, perl = TRUE)
 	args <- gsub("\\s+", "", args, perl = TRUE)
 	system2(
@@ -34,13 +46,10 @@ impl_generate_indicator <- function(
 			sprintf("CANDLESTICK='%s'", candlestick),
 			sprintf("maType='%s'", maType),
 			sprintf("ROLLING='%s'", rolling),
+			sprintf("SUBCHART='%s'", subchart),
 			sprintf(
 				"NUMERIC='%s'",
-				as.integer(
-					as.logical(
-						length(all.vars(as.formula(formula))) == 1
-					)
-				)
+				has_numeric
 			)
 		)
 	)

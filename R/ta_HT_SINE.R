@@ -156,6 +156,7 @@ sine_wave.plotly <- function(
 	cols,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -193,29 +194,51 @@ sine_wave.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- subchart(
-		data = constructed_indicator,
-		y = ~Sine,
-		type = "scatter",
-		mode = "lines",
-		name = "Sine",
-		legendgroup = "sinewave"
+	name <- sprintf("Hilbert Transform - SineWave")
+
+	decorators <- list(
+		function(p) add_limit(p, y_range = c(-1, 1))
 	)
 
-	plotly_object <- plotly::add_lines(
-		p = plotly_object,
-		x = ~idx,
-		y = ~LeadSine,
+	traces <- list(
+		list(
+			y = ~Sine,
+			name = "Sine",
+			legendgroup = name,
+			legendgrouptitle = list(text = name)
+		),
+		list(
+			y = ~LeadSine,
+			name = "Lead Sine",
+			legendgroup = name,
+			legendgrouptitle = list(text = name)
+		)
+	)
+	## splice:plotly-assembly:end
+
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		decorators = get0(
+			x = "decorators",
+			ifnotfound = list()
+		),
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
 		data = constructed_indicator,
-		name = "Lead Sine",
-		legendgroup = "sinewave"
+		title = if (missing(title)) {
+			"Hilbert Transform - SineWave"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## splice:plotly-assembly:end
 
 	plotly_object
 }

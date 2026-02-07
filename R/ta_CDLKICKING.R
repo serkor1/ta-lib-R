@@ -5,7 +5,7 @@
 #' @templateVar .title Kicking
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun kicking
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

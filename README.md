@@ -125,6 +125,16 @@ Below is an example on how to use `chart()` and `indicator()`.
         talib::bollinger_bands
     )
 
+    ## chart RSI
+    talib::indicator(
+        talib::RSI
+    )
+
+    ## chart volume
+    talib::indicator(
+        talib::trading_volume
+    )
+
     ## identify 'Harami'-patterns
     ## from the last 66 candles and
     ## chart 
@@ -136,7 +146,7 @@ Below is an example on how to use `chart()` and `indicator()`.
 }
 ```
 
-<img src="man/figures/README-charting-1.png" style="display: block; margin: auto;" />
+<img src="man/figures/README-charting-1.png" alt="" style="display: block; margin: auto;" />
 
 ## Installation[^1]
 

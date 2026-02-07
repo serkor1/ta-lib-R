@@ -134,6 +134,7 @@ chaikin_accumulation_distribution_oscillator.plotly <- function(
 	slow = 10,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -172,20 +173,36 @@ chaikin_accumulation_distribution_oscillator.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- subchart(
+	name <- sprintf("ADOSC(%d, %d)", fast, slow)
+	decorators <- list()
+	traces <- list(
+		list(y = ~ADOSC)
+	)
+	## splice:plotly-assembly:end
+
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		decorators = get0(
+			x = "decorators",
+			ifnotfound = list()
+		),
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
 		data = constructed_indicator,
-		y = ~ADOSC,
-		type = "scatter",
-		mode = "lines",
-		showlegend = FALSE,
-		title = "Chaikin A/D Line"
+		title = if (missing(title)) {
+			"Chaikin A/D Oscillator"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## splice:plotly-assembly:end
 
 	plotly_object
 }

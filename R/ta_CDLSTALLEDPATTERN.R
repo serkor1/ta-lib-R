@@ -5,7 +5,7 @@
 #' @templateVar .title Stalled Pattern
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun stalled_pattern
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

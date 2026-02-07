@@ -118,6 +118,7 @@ balance_of_power.plotly <- function(
 	cols,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -155,19 +156,47 @@ balance_of_power.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- subchart(
+	name <- "BOP"
+
+	decorators <- list(
+		function(p) add_limit(p, c(-1, 1))
+	)
+
+	traces <- list(
+		list(
+			y = ~BOP,
+			name = "BOP",
+			legendgroup = name,
+			legendgrouptitle = list(
+				text = name
+			)
+		)
+	)
+	## splice:plotly-assembly:end
+
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		decorators = get0(
+			x = "decorators",
+			ifnotfound = list()
+		),
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
 		data = constructed_indicator,
-		y = ~BOP,
-		type = "scatter",
-		mode = "lines",
-		showlegend = FALSE
+		title = if (missing(title)) {
+			"Balance of Power"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## splice:plotly-assembly:end
 
 	plotly_object
 }

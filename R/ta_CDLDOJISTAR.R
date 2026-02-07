@@ -5,7 +5,7 @@
 #' @templateVar .title Doji Star
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun doji_star
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

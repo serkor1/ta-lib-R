@@ -125,6 +125,7 @@ plus_directional_indicator.plotly <- function(
 	n = 10,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -163,19 +164,36 @@ plus_directional_indicator.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- subchart(
+	name <- sprintf("+DI(%d)", n)
+
+	traces <- list(
+		list(y = ~PLUS_DI)
+	)
+	## splice:plotly-assembly:end
+
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		decorators = get0(
+			x = "decorators",
+			ifnotfound = list()
+		),
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
 		data = constructed_indicator,
-		y = ~PLUS_DI,
-		type = "scatter",
-		mode = "lines",
-		showlegend = FALSE
+		title = if (missing(title)) {
+			"Plus Directional Indicator"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## splice:plotly-assembly:end
 
 	plotly_object
 }

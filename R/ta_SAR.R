@@ -184,29 +184,34 @@ parabolic_stop_and_reverse.plotly <- function(
 
 	## constuct chart
 	## element
-	plotly_object <- .plotting_environment[["main"]] <- plotly::add_trace(
-		.plotting_environment[["main"]],
-		data = constructed_indicator,
-		x = ~idx,
-		y = ~SAR,
-		type = "scatter",
-		mode = "markers",
-		name = sprintf(
-			"EPSAR(%f,%f)",
-			1,
-			1
-		),
-		inherit = FALSE,
-		marker = list(
-			size = 5,
-			color = colors,
-			line = list(
-				color = "black",
-				width = 1
+	name <- "SAR"
+	traces <- list(
+		list(
+			y = ~SAR,
+			type = "scatter",
+			mode = "markers",
+			marker = list(
+				size = 5,
+				color = colors,
+				line = list(
+					color = "black",
+					width = 1
+				)
 			)
 		)
 	)
 	## splice:plotly-assembly:end
+
+	plotly_object <- .plotting_environment[["main"]] <- build_plotly(
+		init = .plotting_environment[["main"]],
+		traces = traces,
+		decorators = list(),
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
+		data = constructed_indicator
+	)
 
 	plotly_object
 }

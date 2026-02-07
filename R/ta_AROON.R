@@ -124,6 +124,7 @@ aroon.plotly <- function(
 	n = 10,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -162,30 +163,55 @@ aroon.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- subchart(
-		data = constructed_indicator,
-		y = ~AroonDown,
-		type = "scatter",
-		mode = "lines",
-		name = "AD",
-		legendgroup = "Aroon",
-		showlegend = FALSE
+	name <- sprintf(
+		"Aroon(%d)",
+		n
 	)
 
-	plotly_object <- plotly::add_lines(
-		p = plotly_object,
-		x = ~idx,
-		y = ~AroonUp,
-		showlegend = FALSE,
-		legendgroup = "Aroon",
-		data = constructed_indicator
+	decorators <- list(
+		function(p) add_limit(p, y_range = c(0, 100))
+	)
+
+	traces <- list(
+		list(
+			y = ~AroonDown,
+			name = "AroonDown",
+			legendgroup = name,
+			legendgrouptitle = list(text = name)
+		),
+
+		list(
+			y = ~AroonUp,
+			name = "AroonUp",
+			legendgroup = name,
+			legendgrouptitle = list(text = name)
+		)
+	)
+	## splice:plotly-assembly:end
+
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		decorators = get0(
+			x = "decorators",
+			ifnotfound = list()
+		),
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
+		data = constructed_indicator,
+		title = if (missing(title)) {
+			"Aroon"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## splice:plotly-assembly:end
 
 	plotly_object
 }

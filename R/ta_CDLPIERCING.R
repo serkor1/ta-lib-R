@@ -5,7 +5,7 @@
 #' @templateVar .title Piercing
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun piercing
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

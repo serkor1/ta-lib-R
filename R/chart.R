@@ -183,13 +183,13 @@ chart.default <- function(
 	## skip it
 	if (is.integer(.plotting_environment$idx$label)) {
 		title_text <- sprintf(
-			fmt = "<b>Ticker:</b> %s <br><sub><b>N:</b> %d </sub>",
+			fmt = "<b>Ticker:</b> %s <span style='font-size:50%%;'><b>N:</b> %d </span>",
 			chart_title,
 			nrow(x)
 		)
 	} else {
 		title_text <- sprintf(
-			fmt = "<b>Ticker:</b> %s <br><sub><b>N:</b> %d <b>Period:</b> %s </sub>",
+			fmt = "<b>Ticker:</b> %s <span style='font-size:50%%;'><b>N:</b> %d <b>Period:</b> %s</span>",
 			chart_title,
 			nrow(x),
 			paste(
@@ -202,13 +202,30 @@ chart.default <- function(
 		)
 	}
 
-	## store in main chart
-	## (see description)
-	.plotting_environment$main <- .chart_layout(
-		x = price_chart,
-		title_text = title_text,
-		idx = idx
+	## construct price chart
+	##
+	##
+	fns <- list(
+		function(p) layout_background(p),
+		function(p) layout_axis(p, idx = idx),
+		function(p) {
+			layout_title(
+				p,
+				title = title_text
+			)
+		},
+		function(p) layout_font(p),
+		function(p) layout_legend(p),
+		function(p) add_last_value(p, data = data_frame, remove_cols = "volume")
 	)
 
-	.plotting_environment$main
+	.plotting_environment$main <- Reduce(
+		f = function(p, f) f(p),
+		x = fns,
+		init = price_chart
+	)
+
+	layout_settings(
+		.plotting_environment$main
+	)
 }

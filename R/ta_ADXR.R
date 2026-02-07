@@ -124,7 +124,11 @@ average_directional_movement_index_rating.plotly <- function(
 	cols,
 	n = 10,
 	## splice:optional-plotly:start
+	lower_bound = 25,
+	middle_bound = 50,
+	upper_bound = 75,
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -163,19 +167,46 @@ average_directional_movement_index_rating.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- subchart(
+	name <- sprintf(
+		"ADXR(%d)",
+		n
+	)
+
+	decorators <- list(
+		function(p) add_limit(p, y_range = c(0, 100))
+	)
+
+	traces <- list(
+		plotly_line(lower_bound, nrow(constructed_indicator)),
+		plotly_line(middle_bound, nrow(constructed_indicator)),
+		plotly_line(upper_bound, nrow(constructed_indicator)),
+		list(y = ~ADXR)
+	)
+	## splice:plotly-assembly:end
+
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		decorators = get0(
+			x = "decorators",
+			ifnotfound = list()
+		),
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
 		data = constructed_indicator,
-		y = ~ADXR,
-		type = "scatter",
-		mode = "lines",
-		showlegend = FALSE
+		title = if (missing(title)) {
+			"Average Directional Movement Index Rating"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## splice:plotly-assembly:end
 
 	plotly_object
 }

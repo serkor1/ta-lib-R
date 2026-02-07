@@ -189,6 +189,7 @@ percentage_price_oscillator.plotly <- function(
 	ma = SMA(n = 10),
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -229,19 +230,40 @@ percentage_price_oscillator.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- subchart(
+	name <- sprintf(
+		"PPO(%d, %d)",
+		fast,
+		slow
+	)
+
+	traces <- list(
+		list(y = ~PPO)
+	)
+	## splice:plotly-assembly:end
+
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		decorators = get0(
+			x = "decorators",
+			ifnotfound = list()
+		),
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
 		data = constructed_indicator,
-		y = ~PPO,
-		type = "scatter",
-		mode = "lines",
-		showlegend = FALSE
+		title = if (missing(title)) {
+			"Percentage Price Oscillator"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## splice:plotly-assembly:end
 
 	plotly_object
 }

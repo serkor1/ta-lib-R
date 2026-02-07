@@ -5,7 +5,7 @@
 #' @templateVar .title Unique Three River
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun unique_3_river
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

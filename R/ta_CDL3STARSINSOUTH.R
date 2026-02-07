@@ -5,7 +5,7 @@
 #' @templateVar .title Three Stars in the South
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun three_stars_in_the_south
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

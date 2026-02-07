@@ -116,6 +116,7 @@ on_balance_volume.plotly <- function(
 	cols,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -153,21 +154,33 @@ on_balance_volume.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- subchart(
+	name <- "OBV"
+	traces <- list(list(y = ~OBV))
+	## splice:plotly-assembly:end
+
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		decorators = get0(
+			x = "decorators",
+			ifnotfound = list()
+		),
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
 		data = constructed_indicator,
-		y = ~OBV,
-		type = "scatter",
-		mode = "lines",
-		name = "On-Balance Volume",
-		legendgroup = "obv",
-		showlegend = TRUE
+		title = if (missing(title)) {
+			"On-Balance Volume"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## splice:plotly-assembly:end
 
 	plotly_object
 }

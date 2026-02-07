@@ -5,7 +5,7 @@
 #' @templateVar .title Stick Sandwich
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun stick_sandwich
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

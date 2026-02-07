@@ -166,6 +166,7 @@ triple_exponential_average.plotly <- function(
 	n = 10,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -204,19 +205,36 @@ triple_exponential_average.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- subchart(
+	name <- sprintf("TRIX(%d)", n)
+	decorators <- list()
+	traces <- list(
+		list(y = ~TRIX)
+	)
+	## splice:plotly-assembly:end
+
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		decorators = get0(
+			x = "decorators",
+			ifnotfound = list()
+		),
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
 		data = constructed_indicator,
-		y = ~TRIX,
-		type = "scatter",
-		mode = "lines",
-		showlegend = FALSE
+		title = if (missing(title)) {
+			"Triple Exponential Average"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## splice:plotly-assembly:end
 
 	plotly_object
 }

@@ -189,6 +189,7 @@ absolute_price_oscillator.plotly <- function(
 	ma = SMA(n = 10),
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -229,31 +230,43 @@ absolute_price_oscillator.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- subchart(
-		data = constructed_indicator,
-		y = ~APO,
-		type = "scatter",
-		mode = "lines",
-		showlegend = FALSE
+	name <- sprintf(
+		"APO(%d, %d)",
+		slow,
+		fast
 	)
 
-	plotly_object <- plotly::add_lines(
-		plotly_object,
-		x = constructed_indicator$idx,
-		y = rep(0, nrow(constructed_indicator)),
-		inherit = FALSE,
-		showlegend = FALSE,
-		line = list(
-			color = "lightgray",
-			dash = "dash"
-		)
+	decorators <- list()
+
+	traces <- list(
+		plotly_line(0, nrow(constructed_indicator), TRUE),
+		list(y = ~APO)
+	)
+	## splice:plotly-assembly:end
+
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		decorators = get0(
+			x = "decorators",
+			ifnotfound = list()
+		),
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
+		data = constructed_indicator,
+		title = if (missing(title)) {
+			"Absolute Price Oscillator"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## splice:plotly-assembly:end
 
 	plotly_object
 }

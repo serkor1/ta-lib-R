@@ -5,7 +5,7 @@
 #' @templateVar .title High Wave
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun high_wave
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

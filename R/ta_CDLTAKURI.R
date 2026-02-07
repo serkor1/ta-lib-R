@@ -5,7 +5,7 @@
 #' @templateVar .title Takuri
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun takuri
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

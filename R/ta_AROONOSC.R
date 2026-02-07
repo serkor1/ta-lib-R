@@ -124,6 +124,7 @@ aroon_oscillator.plotly <- function(
 	n = 10,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -162,24 +163,41 @@ aroon_oscillator.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- subchart(
-		data = constructed_indicator,
-		y = ~AROONOSC,
-		type = "scatter",
-		mode = "lines",
-		name = sprintf(
-			fmt = "AD(%d)",
-			n
+	name <- sprintf("AroonOsc(%d)", n)
+
+	decorators <- list(
+		function(p) add_limit(p, y_range = c(0, 100))
+	)
+
+	traces <- list(
+		plotly_line(0, nrow(constructed_indicator)),
+		list(y = ~AROONOSC, name = "AroonOscillator")
+	)
+	## splice:plotly-assembly:end
+
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		decorators = get0(
+			x = "decorators",
+			ifnotfound = list()
 		),
-		legendgroup = "Aroon",
-		showlegend = FALSE
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
+		data = constructed_indicator,
+		title = if (missing(title)) {
+			"Aroon Oscillator"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## splice:plotly-assembly:end
 
 	plotly_object
 }

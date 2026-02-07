@@ -5,7 +5,7 @@
 #' @templateVar .title Engulfing
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun engulfing
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

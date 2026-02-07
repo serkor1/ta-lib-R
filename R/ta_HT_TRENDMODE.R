@@ -156,6 +156,7 @@ trend_cycle_mode.plotly <- function(
 	cols,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -193,20 +194,44 @@ trend_cycle_mode.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- subchart(
+	name <- sprintf("Trendmode")
+	decorators <- list()
+	traces <- list(
+		list(
+			y = ~HT_TRENDMODE,
+			line = list(shape = "hvh"),
+			name = "DC Period",
+			legendgroup = name,
+			legendgrouptitle = list(
+				text = "Hilbert Transform - Trend vs Cycle Mode"
+			)
+		)
+	)
+	## splice:plotly-assembly:end
+
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		decorators = get0(
+			x = "decorators",
+			ifnotfound = list()
+		),
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
 		data = constructed_indicator,
-		y = ~HT_TRENDMODE,
-		type = "scatter",
-		mode = "lines",
-		name = "Trendmode",
-		line = list(shape = "hvh")
+		title = if (missing(title)) {
+			"Hilbert Transform - Trend vs Cycle Mode"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## splice:plotly-assembly:end
 
 	plotly_object
 }

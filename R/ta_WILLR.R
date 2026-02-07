@@ -124,7 +124,10 @@ williams_oscillator.plotly <- function(
 	cols,
 	n = 10,
 	## splice:optional-plotly:start
+	lower_bound = -20,
+	upper_bound = -80,
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -163,19 +166,42 @@ williams_oscillator.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- subchart(
+	name <- paste0("Will %R(", n, ")")
+
+	decorators <- list(
+		function(p) add_limit(p, y_range = c(0, -100))
+	)
+
+	traces <- list(
+		plotly_line(lower_bound, nrow(constructed_indicator), dash = TRUE),
+		plotly_line(upper_bound, nrow(constructed_indicator), dash = TRUE),
+		list(y = ~WILLR)
+	)
+	## splice:plotly-assembly:end
+
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		decorators = get0(
+			x = "decorators",
+			ifnotfound = list()
+		),
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
 		data = constructed_indicator,
-		y = ~WILLR,
-		type = "scatter",
-		mode = "lines",
-		showlegend = FALSE
+		title = if (missing(title)) {
+			"Williams %R"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## splice:plotly-assembly:end
 
 	plotly_object
 }

@@ -5,7 +5,7 @@
 #' @templateVar .title Three-Line Strike
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun three_line_strike
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

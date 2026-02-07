@@ -165,7 +165,10 @@ relative_strength_index.plotly <- function(
 	cols,
 	n = 10,
 	## splice:optional-plotly:start
+	lower_bound = 20,
+	upper_bound = 80,
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -204,31 +207,45 @@ relative_strength_index.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- subchart(
-		data = constructed_indicator,
-		y = ~RSI,
-		type = "scatter",
-		mode = "lines",
-		showlegend = FALSE
+	name <- sprintf(
+		"RSI(%d)",
+		n
 	)
 
-	plotly_object <- plotly::add_ribbons(
-		plotly_object,
-		x = ~idx,
-		ymin = rep(20, nrow(constructed_indicator)),
-		ymax = rep(80, nrow(constructed_indicator)),
-		line = list(width = 0),
-		fillcolor = plotly::toRGB(
-			x = "lightgray",
-			alpha = 0.2
-		)
+	decorators <- list(
+		function(p) add_limit(p, y_range = c(0, 100))
+	)
+
+	traces <- list(
+		plotly_line(lower_bound),
+		plotly_line(upper_bound),
+		list(y = ~RSI)
+	)
+	## splice:plotly-assembly:end
+
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		decorators = get0(
+			x = "decorators",
+			ifnotfound = list()
+		),
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
+		data = constructed_indicator,
+		title = if (missing(title)) {
+			"Relative Strength Index"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## splice:plotly-assembly:end
 
 	plotly_object
 }

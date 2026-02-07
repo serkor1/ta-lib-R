@@ -5,7 +5,7 @@
 #' @templateVar .title Abandoned Baby
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun abandoned_baby
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

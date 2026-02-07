@@ -7,6 +7,7 @@ output: github_document
 ```{r setup, include = FALSE}
 # set options
 Sys.setenv(OPENSSL_CONF = "/dev/null")
+options(talib.chart.modebar =  FALSE)
 
 knitr::opts_chunk$set(
 	collapse  = TRUE,
@@ -102,6 +103,16 @@ Below is an example on how to use `chart()` and `indicator()`.
 	## chart the bollinger bands
 	talib::indicator(
 		talib::bollinger_bands
+	)
+
+	## chart RSI
+	talib::indicator(
+		talib::RSI
+	)
+
+	## chart volume
+	talib::indicator(
+		talib::trading_volume
 	)
 
 	## identify 'Harami'-patterns

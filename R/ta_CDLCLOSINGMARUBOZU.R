@@ -5,7 +5,7 @@
 #' @templateVar .title Closing Marubozu
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun closing_marubozu
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

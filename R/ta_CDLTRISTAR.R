@@ -5,7 +5,7 @@
 #' @templateVar .title Tristar
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun tristar
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

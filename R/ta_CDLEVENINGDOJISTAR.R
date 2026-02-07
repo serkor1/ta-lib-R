@@ -5,7 +5,7 @@
 #' @templateVar .title Evening Doji Star
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun evening_doji_star
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

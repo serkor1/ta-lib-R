@@ -13,6 +13,7 @@
 //      https://github.com/TA-Lib/ta-lib/blob/main/src/ta_func/ta_MA.c
 //
 #include "MAType.h"
+#include "attributes.h"
 #include "container.h"
 #include "lib.h"
 #include "names.h"
@@ -97,6 +98,7 @@ SEXP impl_ta_MA(
   // determine column name
   const char *colname = _MAType_(optInMAType_value);
   set_colnames(output, colname);
+  set_attribute(output, lookback, &protection_count);
 
   UNPROTECT(protection_count);
   return output;

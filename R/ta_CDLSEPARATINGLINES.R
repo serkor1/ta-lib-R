@@ -5,7 +5,7 @@
 #' @templateVar .title Separating Lines
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun separating_lines
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

@@ -165,7 +165,10 @@ chande_momentum_oscillator.plotly <- function(
 	cols,
 	n = 10,
 	## splice:optional-plotly:start
+	lower_bound = -50,
+	upper_bound = 50,
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -204,33 +207,50 @@ chande_momentum_oscillator.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- subchart(
-		data = constructed_indicator,
-		y = ~CMO,
-		type = "scatter",
-		mode = "lines",
-		showlegend = FALSE
+
+	name <- sprintf("CMO(%d)", n)
+
+	decorators <- list(
+		function(p) add_limit(p, y_range = c(-100, 100))
 	)
 
-	plotly_object <- add_ribbons(
-		plotly_object = plotly_object,
+	traces <- list(
+		plotly_line(lower_bound, nrow(constructed_indicator)),
+		plotly_line(upper_bound, nrow(constructed_indicator)),
+		list(
+			y = ~CMO,
+			name = "CMO",
+			legendgroup = name,
+			legendgrouptitle = list(
+				text = name
+			)
+		)
+	)
+	## splice:plotly-assembly:end
+
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		decorators = get0(
+			x = "decorators",
+			ifnotfound = list()
+		),
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
 		data = constructed_indicator,
-		x = ~idx,
-		ymin = rep(-50, nrow(constructed_indicator)),
-		ymax = rep(50, nrow(constructed_indicator)),
-		alpha = 0.5,
-		color = "lightgray",
-		showlegend = FALSE,
-		legendgroup = "cmo_area",
-		name = "cmo_area",
-		dash = "dot"
+		title = if (missing(title)) {
+			"Chande Momentum Oscillator"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## splice:plotly-assembly:end
 
 	plotly_object
 }

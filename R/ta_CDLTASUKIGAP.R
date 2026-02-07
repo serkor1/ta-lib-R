@@ -5,7 +5,7 @@
 #' @templateVar .title Tasuki Gap
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun tasuki_gap
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

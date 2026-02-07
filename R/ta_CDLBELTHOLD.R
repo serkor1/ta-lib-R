@@ -5,7 +5,7 @@
 #' @templateVar .title Belt Hold
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun belt_hold
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

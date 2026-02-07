@@ -5,7 +5,7 @@
 #' @templateVar .title Advance Block
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun advance_block
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

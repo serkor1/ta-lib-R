@@ -5,7 +5,7 @@
 #' @templateVar .title Hikkake Modified
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun hikakke_mod
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Pattern Recognition
 #' @templateVar .formula ~open + high + low + close
 #'
 #' @returns

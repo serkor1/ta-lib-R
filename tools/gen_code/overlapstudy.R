@@ -14,7 +14,8 @@ generate_R <- function(x) {
 		fun = x$fun,
 		args = x$signature,
 		formula = x$default_formula,
-		ta_fun = x$alias
+		ta_fun = x$alias,
+		subchart = x$subcart
 	)
 }
 
@@ -48,7 +49,8 @@ metadata[[1]] <- list(
 	fun = 'bollinger_bands',
 	alias = 'BBANDS',
 	default_formula = '~close',
-	signature = 'ma=SMA(n=10),std_up=2,std_down=2'
+	signature = 'ma=SMA(n=10),std_up=2,std_down=2',
+	subchart = 0L
 )
 
 ## Hilbert Transform - Instantaneous Trendline: metadata
@@ -57,7 +59,8 @@ metadata[[2]] <- list(
 	fun = 'trendline',
 	alias = 'HT_TRENDLINE',
 	default_formula = '~close',
-	signature = ''
+	signature = '',
+	subchart = 0L
 )
 
 ## Parabolic Stop and Reverse (SAR): metadata
@@ -66,7 +69,8 @@ metadata[[3]] <- list(
 	fun = 'parabolic_stop_and_reverse',
 	alias = 'SAR',
 	default_formula = '~high+low',
-	signature = 'acceleration=0.5,maximum=0.75'
+	signature = 'acceleration=0.5,maximum=0.75',
+	subchart = 0L
 )
 
 ## Parabolic Stop and Reverse (SAR) - Extended: metadata
@@ -75,7 +79,8 @@ metadata[[4]] <- list(
 	fun = 'extended_parabolic_stop_and_reverse',
 	alias = 'SAREXT',
 	default_formula = '~high+low',
-	signature = 'init=0,offset=0,init_long=0,long=0,max_long=0,init_short=0,short=0,max_short=0'
+	signature = 'init=0,offset=0,init_long=0,long=0,max_long=0,init_short=0,short=0,max_short=0',
+	subchart = 0L
 )
 
 ## Acceleration Bands: metadata
@@ -84,7 +89,8 @@ metadata[[5]] <- list(
 	fun = 'acceleration_bands',
 	alias = 'ACCBANDS',
 	default_formula = '~ high + low + close',
-	signature = 'n=10'
+	signature = 'n=10',
+	subchart = 0L
 )
 
 for (x in metadata) {

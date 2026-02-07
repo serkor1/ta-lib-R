@@ -145,7 +145,10 @@ stochastic.plotly <- function(
 	slowk = SMA(n = 10),
 	slowd = SMA(n = 8),
 	## splice:optional-plotly:start
+	lower_bound = 20,
+	upper_bound = 80,
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -186,36 +189,46 @@ stochastic.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- subchart(
-		data = constructed_indicator,
-		y = ~SlowK,
-		type = "scatter",
-		mode = "lines",
-		name = "Stocastic %K",
-		legendgroup = "STOCH",
-		showlegend = TRUE
+	name <- sprintf(
+		"Stochastic(%d)",
+		fastk
 	)
 
-	plotly_object <- add_ribbons(
-		plotly_object = plotly_object,
+	decorators <- list(
+		function(p) add_limit(p, y_range = c(0, 100))
+	)
+
+	traces <- list(
+		plotly_line(lower_bound),
+		plotly_line(upper_bound),
+		list(y = ~SlowK, name = "SlowK"),
+		list(y = ~SlowD, name = "SlowD")
+	)
+	## splice:plotly-assembly:end
+
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		decorators = get0(
+			x = "decorators",
+			ifnotfound = list()
+		),
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
 		data = constructed_indicator,
-		x = ~idx,
-		y = ~SlowD,
-		ymin = rep(20, nrow(constructed_indicator)),
-		ymax = rep(80, nrow(constructed_indicator)),
-		color = "lightgray",
-		alpha = 0.7,
-		showlegend = TRUE,
-		dash = c("solid", "dot", "dot"),
-		name = c("Stochastic %D", "Lower", "Upper"),
-		legendgroup = "STOCH"
+		title = if (missing(title)) {
+			"Stochastic"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## splice:plotly-assembly:end
 
 	plotly_object
 }

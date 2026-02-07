@@ -14,7 +14,9 @@ generate_R <- function(x) {
 		fun = x$fun,
 		args = x$signature,
 		ta_fun = x$alias,
-		formula = x$default_formula
+		formula = x$default_formula,
+		subchart = x$subchart,
+		univariate = x$univariate
 	)
 }
 
@@ -49,7 +51,8 @@ metadata[[1]] <- list(
 	fun = 'chaikin_accumulation_distribution_line',
 	alias = 'AD',
 	default_formula = '~high+low+close+volume',
-	signature = ''
+	signature = '',
+	subchart = 1
 )
 
 ## Chaikin A/D Oscillator: metadata
@@ -58,7 +61,8 @@ metadata[[2]] <- list(
 	fun = 'chaikin_accumulation_distribution_oscillator',
 	alias = 'ADOSC',
 	default_formula = '~high+low+close+volume',
-	signature = 'fast=3,slow=10'
+	signature = 'fast=3,slow=10',
+	subchart = 1
 )
 
 ## On-Balance Volume: metadata
@@ -67,7 +71,19 @@ metadata[[3]] <- list(
 	fun = 'on_balance_volume',
 	alias = 'OBV',
 	default_formula = '~close+volume',
-	signature = ''
+	signature = '',
+	subchart = 1
+)
+
+## Trading Volume: metadata
+metadata[[4]] <- list(
+	title = 'Trading Volume',
+	fun = 'trading_volume',
+	alias = 'VOLUME',
+	default_formula = '~volume + open + close',
+	signature = 'ma = list(SMA(n = 7), SMA(n = 15))',
+	subchart = 1,
+	univariate = 1
 )
 
 ## generate code
@@ -76,6 +92,10 @@ for (x in metadata) {
 }
 
 for (x in metadata) {
+	if (x$fun == "trading_volume") {
+		next()
+	}
+
 	generate_C(x)
 }
 

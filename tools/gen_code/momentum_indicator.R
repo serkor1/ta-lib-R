@@ -15,7 +15,8 @@ generate_R <- function(x) {
 		fun = x$fun,
 		args = x$signature,
 		ta_fun = x$alias,
-		formula = x$default_formula
+		formula = x$default_formula,
+		subchart = x$subchart
 	)
 }
 
@@ -57,7 +58,8 @@ metadata[[1]] <- list(
 	fun = "aroon",
 	alias = "AROON",
 	default_formula = "~ high + low",
-	signature = c("n=10")
+	signature = c("n=10"),
+	subchart = 1
 )
 
 ## Aroon Oscillator: metadata
@@ -66,7 +68,8 @@ metadata[[2]] <- list(
 	fun = "aroon_oscillator",
 	alias = "AROONOSC",
 	default_formula = "~ high + low",
-	signature = c("n=10")
+	signature = c("n=10"),
+	subchart = 1
 )
 
 ## Chande Momentum Oscillator: metadata
@@ -75,7 +78,8 @@ metadata[[3]] <- list(
 	fun = "chande_momentum_oscillator",
 	alias = "CMO",
 	default_formula = "~ close",
-	signature = c("n=10")
+	signature = c("n=10"),
+	subchart = 1
 )
 
 ## Commodity Channel Index: metadata
@@ -84,7 +88,8 @@ metadata[[4]] <- list(
 	fun = "commodity_channel_index",
 	alias = "CCI",
 	default_formula = "~ high + low + close",
-	signature = c("n=10")
+	signature = c("n=10"),
+	subchart = 0
 )
 
 ## Fast Stochastic: metadata
@@ -93,7 +98,8 @@ metadata[[5]] <- list(
 	fun = "fast_stochastic",
 	alias = "STOCHF",
 	default_formula = "~ high + low + close",
-	signature = c("fastk=5", "fastd=SMA(n=10)")
+	signature = c("fastk=5", "fastd=SMA(n=10)"),
+	subchart = 1
 )
 
 ## Money Flow Index: metadata
@@ -102,7 +108,8 @@ metadata[[6]] <- list(
 	fun = "money_flow_index",
 	alias = "MFI",
 	default_formula = "~ high + low + close + volume",
-	signature = c("n = 10")
+	signature = c("n = 10"),
+	subchart = 1
 )
 
 ## Moving Average Convergence Divergence: metadata
@@ -111,7 +118,8 @@ metadata[[7]] <- list(
 	fun = "moving_average_convergence_divergence",
 	alias = "MACD",
 	default_formula = "~close",
-	signature = c("fast = 12", "slow = 26", "signal = 9")
+	signature = c("fast = 12", "slow = 26", "signal = 9"),
+	subchart = 1
 )
 
 ## Moving Average Convergence Divergence (Extended): metadata
@@ -124,7 +132,8 @@ metadata[[8]] <- list(
 		"fast = EMA(n = 12)",
 		"slow = EMA(n = 26)",
 		"signal = EMA(n = 9)"
-	)
+	),
+	subchart = 1
 )
 
 ## Moving Average Convergence Divergence (Fixed): metadata
@@ -133,7 +142,8 @@ metadata[[9]] <- list(
 	fun = "fixed_moving_average_convergence_divergence",
 	alias = "MACDFIX",
 	default_formula = "~close",
-	signature = c("signal=9")
+	signature = c("signal=9"),
+	subchart = 1
 )
 
 ## Relative Strength Index: metadata
@@ -142,7 +152,8 @@ metadata[[10]] <- list(
 	fun = "relative_strength_index",
 	alias = "RSI",
 	default_formula = "~close",
-	signature = c("n=10")
+	signature = c("n=10"),
+	subchart = 1
 )
 
 ## Stochastic: metadata
@@ -151,7 +162,8 @@ metadata[[11]] <- list(
 	fun = "stochastic",
 	alias = "STOCH",
 	default_formula = "~ high + low + close",
-	signature = c("fastk = 5", "slowk = SMA(n = 10)", "slowd = SMA(n = 8)")
+	signature = c("fastk = 5", "slowk = SMA(n = 10)", "slowd = SMA(n = 8)"),
+	subchart = 1
 )
 
 ## Stochastic Relative Strength Index: metadata
@@ -160,7 +172,8 @@ metadata[[12]] <- list(
 	fun = "stochastic_relative_strength_index",
 	alias = "STOCHRSI",
 	default_formula = "~ high + low + close",
-	signature = c("n=10", "n_rsi=10", "fastk=5", "fastd=SMA(n=10)")
+	signature = c("n=10", "n_rsi=10", "fastk=5", "fastd=SMA(n=10)"),
+	subchart = 1
 )
 
 ## Ultimate Oscillator: metadata
@@ -169,7 +182,8 @@ metadata[[13]] <- list(
 	fun = "ultimate_oscillator",
 	alias = "ULTOSC",
 	default_formula = "~ high + low + close",
-	signature = c("n=c(7, 14, 28)")
+	signature = c("n=c(7, 14, 28)"),
+	subchart = 1
 )
 
 ## Average Directional Movement Index: metadata
@@ -178,7 +192,8 @@ metadata[[14]] <- list(
 	fun = "average_directional_movement_index",
 	alias = "ADX",
 	default_formula = "~ high + low + close",
-	signature = c("n=10")
+	signature = c("n=10"),
+	subchart = 1
 )
 
 ## Average Directional Movement Index Rating: metadata
@@ -187,7 +202,8 @@ metadata[[15]] <- list(
 	fun = "average_directional_movement_index_rating",
 	alias = "ADXR",
 	default_formula = "~ high + low + close",
-	signature = c("n=10")
+	signature = c("n=10"),
+	subchart = 1
 )
 
 ## Balance of Power: metadata
@@ -196,7 +212,8 @@ metadata[[16]] <- list(
 	fun = "balance_of_power",
 	alias = "BOP",
 	default_formula = "~ open + high + low + close",
-	signature = c(character(0))
+	signature = c(character(0)),
+	subchart = 1
 )
 
 ## Momentum: metadata
@@ -205,7 +222,8 @@ metadata[[17]] <- list(
 	fun = "momentum",
 	alias = "MOM",
 	default_formula = "~ close",
-	signature = c("n=10")
+	signature = c("n=10"),
+	subchart = 1
 )
 
 ## Williams %R: metadata
@@ -214,7 +232,8 @@ metadata[[18]] <- list(
 	fun = "williams_oscillator",
 	alias = "WILLR",
 	default_formula = "~ high + low + close",
-	signature = c("n=10")
+	signature = c("n=10"),
+	subchart = 1
 )
 
 ## Percentage Price Oscillator: metadata
@@ -223,7 +242,8 @@ metadata[[19]] <- list(
 	fun = "percentage_price_oscillator",
 	alias = "PPO",
 	default_formula = "~close",
-	signature = c("fast=7", "slow=14", "ma=SMA(n=10)")
+	signature = c("fast=7", "slow=14", "ma=SMA(n=10)"),
+	subchart = 1
 )
 
 ## Triple Exponential Average: metadata
@@ -232,7 +252,8 @@ metadata[[20]] <- list(
 	fun = "triple_exponential_average",
 	alias = "TRIX",
 	default_formula = "~close",
-	signature = c("n=10")
+	signature = c("n=10"),
+	subchart = 1
 )
 
 ## Directional Movement Index: metadata
@@ -241,7 +262,8 @@ metadata[[21]] <- list(
 	fun = "directional_movement_index",
 	alias = "DX",
 	default_formula = "~high + low + close",
-	signature = c("n=10")
+	signature = c("n=10"),
+	subchart = 1
 )
 
 ## Intraday Movement Index: metadata
@@ -250,7 +272,8 @@ metadata[[22]] <- list(
 	fun = "intraday_movement_index",
 	alias = "IMI",
 	default_formula = "~open + close",
-	signature = c("n=10")
+	signature = c("n=10"),
+	subchart = 1
 )
 
 ## Minus Directional Indicator: metadata
@@ -259,7 +282,8 @@ metadata[[23]] <- list(
 	fun = "minus_directional_indicator",
 	alias = "MINUS_DI",
 	default_formula = "~high + low + close",
-	signature = c("n=10")
+	signature = c("n=10"),
+	subchart = 1
 )
 
 ## Minus Directional Movement: metadata
@@ -268,7 +292,8 @@ metadata[[24]] <- list(
 	fun = "minus_directional_movement",
 	alias = "MINUS_DM",
 	default_formula = "~high + low",
-	signature = c("n=10")
+	signature = c("n=10"),
+	subchart = 1
 )
 
 ## Plus Directional Indicator: metadata
@@ -277,7 +302,8 @@ metadata[[25]] <- list(
 	fun = "plus_directional_indicator",
 	alias = "PLUS_DI",
 	default_formula = "~high + low + close",
-	signature = c("n=10")
+	signature = c("n=10"),
+	subchart = 1
 )
 
 ## Plus Directional Movement: metadata
@@ -286,7 +312,8 @@ metadata[[26]] <- list(
 	fun = "plus_directional_movement",
 	alias = "PLUS_DM",
 	default_formula = "~high + low",
-	signature = c("n=10")
+	signature = c("n=10"),
+	subchart = 1
 )
 
 ## Rate of Change: metadata
@@ -295,7 +322,8 @@ metadata[[27]] <- list(
 	fun = "rate_of_change",
 	alias = "ROC",
 	default_formula = "~close",
-	signature = c("n=10")
+	signature = c("n=10"),
+	subchart = 1
 )
 
 ## Ratio of Change: metadata
@@ -304,7 +332,8 @@ metadata[[28]] <- list(
 	fun = "ratio_of_change",
 	alias = "ROCR",
 	default_formula = "~close",
-	signature = c("n=10")
+	signature = c("n=10"),
+	subchart = 1
 )
 
 metadata[[29]] <- list(
@@ -312,11 +341,13 @@ metadata[[29]] <- list(
 	fun = "absolute_price_oscillator",
 	alias = "APO",
 	default_formula = "~close",
-	signature = c("fast=7", "slow=14", "ma=SMA(n=10)")
+	signature = c("fast=7", "slow=14", "ma=SMA(n=10)"),
+	subchart = 1
 )
 
 for (x in metadata) {
 	generate_R(x)
+	generate_C(x)
 	generate_test(x)
 }
 

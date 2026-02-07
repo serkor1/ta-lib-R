@@ -167,6 +167,7 @@ fixed_moving_average_convergence_divergence.plotly <- function(
 	signal = 9,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -215,48 +216,66 @@ fixed_moving_average_convergence_divergence.plotly <- function(
 	chart_theme <- .chart_theme()
 
 	## construct plotly object
-	plotly_object <- subchart(
-		data = constructed_indicator,
-		y = ~MACDHist,
-		color = ~direction,
-		colors = c(
-			chart_theme$bull_color,
-			chart_theme$bear_color
+	name <- sprintf(
+		"MACD(%d)",
+		if (is.list(signal)) signal$n else signal
+	)
+
+	traces <- list(
+		list(
+			y = ~MACDHist,
+			color = ~direction,
+			colors = c(
+				chart_theme$bull_color,
+				chart_theme$bear_color
+			),
+			type = 'bar',
+			mode = NULL,
+			showlegend = FALSE
 		),
-		type = 'bar',
-		showlegend = FALSE
-	)
-
-	plotly_object <- plotly::add_lines(
-		plotly_object,
-		x = ~idx,
-		y = ~MACDSignal,
-		data = constructed_indicator,
-		inherit = FALSE,
-		name = sprintf(
-			fmt = "Signal(%d)",
-			if (is.list(signal)) signal$n else signal
+		list(
+			y = ~MACDSignal,
+			inherit = FALSE,
+			name = sprintf(
+				fmt = "Signal(%d)",
+				if (is.list(signal)) signal$n else signal
+			)
+		),
+		list(
+			y = ~MACD,
+			inherit = FALSE,
+			name = sprintf(
+				fmt = "MACD(%d, %d)",
+				12,
+				26
+			)
 		)
 	)
+	## splice:plotly-assembly:end
 
-	plotly_object <- plotly::add_lines(
-		plotly_object,
-		x = ~idx,
-		y = ~MACD,
+	plotly_object <- build_plotly(
+		init = plotly_init(),
+		traces = traces,
+		decorators = get0(
+			x = "decorators",
+			ifnotfound = list()
+		),
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
 		data = constructed_indicator,
-		inherit = FALSE,
-		name = sprintf(
-			fmt = "MACD(%d, %d)",
-			12L,
-			26L
-		)
+		title = if (missing(title)) {
+			"Moving Average Convergence Divergence (Fixed)"
+		} else {
+			title
+		}
 	)
 
 	.plotting_environment$sub <- c(
 		.plotting_environment$sub,
 		list(plotly_object)
 	)
-	## splice:plotly-assembly:end
 
 	plotly_object
 }

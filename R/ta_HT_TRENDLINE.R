@@ -193,17 +193,22 @@ trendline.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	plotly_object <- .plotting_environment[["main"]] <- plotly::add_trace(
-		.plotting_environment[["main"]],
-		data = constructed_indicator,
-		x = ~idx,
-		y = ~HT_TRENDLINE,
-		type = "scatter",
-		mode = "lines",
-		name = "Trendline",
-		inherit = FALSE
+	name <- "Trendline"
+	traces <- list(
+		list(y = ~HT_TRENDLINE, name = "Trendline")
 	)
 	## splice:plotly-assembly:end
+
+	plotly_object <- .plotting_environment[["main"]] <- build_plotly(
+		init = .plotting_environment[["main"]],
+		traces = traces,
+		decorators = list(),
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
+		data = constructed_indicator
+	)
 
 	plotly_object
 }

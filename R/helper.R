@@ -49,6 +49,91 @@ add_idx <- function(x) {
 	}
 }
 
-main_chart_exists <- function() {
-	!is.null(.plotting_environment$main)
+modify_traces <- function(trace_list, ...) {
+	lapply(
+		trace_list,
+		function(traces) {
+			utils::modifyList(
+				traces,
+				list(...)
+			)
+		}
+	)
+}
+
+plotly_line <- function(value, length, dash = TRUE) {
+	## if 'length' is missing, infer the length
+	## from parent.frame
+	if (missing(length)) {
+		length <- nrow(
+			get("constructed_indicator", parent.frame())
+		)
+	}
+
+	x <- list(
+		y = rep(value, length),
+		x = ~idx,
+		mode = "lines",
+		type = "scatter",
+		line = list(
+			color = layout_theme()$threshold_color,
+			width = 0.5
+		),
+		inherit = FALSE,
+		showlegend = FALSE,
+		data = get("constructed_indicator", parent.frame())
+	)
+
+	if (dash) {
+		x$line$dash <- "dot"
+	}
+
+	class(x) <- "plotly_line"
+	x
+}
+
+
+plotly_init <- function(...) {
+	plotly::plot_ly(
+		data = get("constructed_indicator", parent.frame()),
+		x = ~idx,
+		...
+	)
+}
+
+is.empty <- function(x) {
+	UseMethod("is.empty")
+}
+
+#' @export
+is.empty.default <- function(x) {
+	missing(x)
+}
+
+#' @export
+is.empty.list <- function(x) {
+	length(x) == 0L
+}
+
+#' @export
+is.empty.character <- function(x) {
+	identical(x, character(0)) | grepl("^[[:space:]]*$", x)
+}
+
+
+label <- function(
+	label,
+	...
+) {
+	x <- c(...)
+	if (!length(x)) {
+		return(label)
+	}
+
+	paste0(
+		label,
+		" (",
+		toString(sprintf("%g", x)),
+		")"
+	)
 }
