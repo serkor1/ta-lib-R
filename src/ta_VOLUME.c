@@ -10,6 +10,8 @@
 //
 // Details
 //   maSpec is a list of integers
+//
+// TODO: Simplify this program
 #include "MAType.h"
 #include "container.h"
 #include "lib.h"
@@ -55,7 +57,8 @@ SEXP impl_ta_VOLUME(
 
   // construct output container with
   // lookback set to 0 (lookbacks are handled by impl_ta_MA)
-  (void)output_container(n, 0, n_cols, &output, &output_ptr, &protection_count);
+  const int proceed =
+    output_container(n, 0, n_cols, &output, &output_ptr, &protection_count);
 
   // copy inReal to the output
   // container
