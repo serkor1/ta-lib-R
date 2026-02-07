@@ -1,5 +1,5 @@
 Package: talib
-Title: An Interface to 'TA-Lib' (Technical Analysis Library)
+Title: Interface to 'TA-Lib' for Technical Analysis and Candlestick Patterns
 Version: 0.9-0
 Authors@R: c(
     person(
@@ -10,12 +10,24 @@ Authors@R: c(
       comment = c(ORCID = "0000-0002-5052-0982")
     )
   )
-Description: An interface to the 'TA-Lib' technical analysis library. The package provides access to about 200 indicators (e.g., ADX, MACD, RSI, Stochastic, Bollinger Bands), candlestick pattern recognition and common rolling-window functions—implemented in 'C' for fast computations on open-high-low-close-volume (OHLC-V) time series for rule-based signal generation.
+Description: Interface to the 'TA-Lib' technical analysis library, providing
+    access to ~200 indicators (e.g., ADX, MACD, RSI, Stochastic, Bollinger
+    Bands), candlestick pattern recognition, and rolling-window utilities.
+    Core computations are implemented in C for fast OHLCV time-series
+    feature engineering and rule-based signal generation, with optional
+    interactive visualization via 'plotly'.
+X-schema.org-keywords: technical analysis, TA-Lib, technical indicators,
+    algorithmic trading, trading signals, quantitative finance,
+    financial time series, OHLCV, candlestick patterns, RSI, MACD,
+    Bollinger Bands, Stochastic, moving averages, plotly
+X-schema.org-applicationCategory: Finance
+X-schema.org-applicationSubCategory: Algorithmic Trading
 SystemRequirements: CMake
 License: BSD_3_clause + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
+NeedsCompilation: yes
 Suggests: 
     knitr,
     rmarkdown,
@@ -28,5 +40,5 @@ Imports:
     plotly,
     stats
 VignetteBuilder: knitr
-URL: https://serkor1.github.io/ta-lib-R/
+URL: https://serkor1.github.io/ta-lib-R/, https://github.com/serkor1/ta-lib-R, https://ta-lib.org/
 BugReports: https://github.com/serkor1/ta-lib-R/issues
