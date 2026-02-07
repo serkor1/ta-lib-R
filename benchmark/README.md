@@ -16,6 +16,6 @@ All benchmarks uses a 200000 row OHLC `<data.frame>`
     #> # A data frame: 3 × 6
     #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
     #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-    #> 1 baseline    922.8µs    1.7ms      707.    4.58MB     101.
-    #> 2 data.frame   1.26ms   1.32ms      662.    9.17MB     420.
-    #> 3 matrix        1.8ms   1.87ms      485.   13.74MB     725.
+    #> 1 baseline   846.75µs   1.47ms      682.    4.58MB     97.4
+    #> 2 data.frame   1.19ms   1.27ms      688.    9.17MB    442. 
+    #> 3 matrix       1.69ms   1.82ms      484.   13.74MB    730.
