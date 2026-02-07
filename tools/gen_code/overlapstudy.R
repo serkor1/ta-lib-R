@@ -49,7 +49,7 @@ metadata[[1]] <- list(
 	fun = 'bollinger_bands',
 	alias = 'BBANDS',
 	default_formula = '~close',
-	signature = 'ma=SMA(n=10),std_up=2,std_down=2',
+	signature = c('ma=SMA(n=10)', 'std_up=2', 'std_down=2'),
 	subchart = 0L
 )
 
@@ -69,7 +69,7 @@ metadata[[3]] <- list(
 	fun = 'parabolic_stop_and_reverse',
 	alias = 'SAR',
 	default_formula = '~high+low',
-	signature = 'acceleration=0.5,maximum=0.75',
+	signature = c('acceleration=0.5', 'maximum=0.75'),
 	subchart = 0L
 )
 
@@ -79,7 +79,16 @@ metadata[[4]] <- list(
 	fun = 'extended_parabolic_stop_and_reverse',
 	alias = 'SAREXT',
 	default_formula = '~high+low',
-	signature = 'init=0,offset=0,init_long=0,long=0,max_long=0,init_short=0,short=0,max_short=0',
+	signature = c(
+		'init=0',
+		'offset=0',
+		'init_long=0',
+		'long=0',
+		'max_long=0',
+		'init_short=0',
+		'short=0',
+		'max_short=0'
+	),
 	subchart = 0L
 )
 
@@ -89,7 +98,7 @@ metadata[[5]] <- list(
 	fun = 'acceleration_bands',
 	alias = 'ACCBANDS',
 	default_formula = '~ high + low + close',
-	signature = 'n=10',
+	signature = c('n=10'),
 	subchart = 0L
 )
 
