@@ -10,14 +10,14 @@
 Source:
 [`DESCRIPTION`](https://github.com/serkor1/ta-lib-R/blob/devel/DESCRIPTION)
 
-Korkmaz S (2025). *talib: An Interface to 'TA-Lib' (Technical Analysis
+Korkmaz S (2026). *talib: An Interface to 'TA-Lib' (Technical Analysis
 Library)*. R package version 0.9-0,
 <https://serkor1.github.io/ta-lib-R/>.
 
     @Manual{,
       title = {talib: An Interface to 'TA-Lib' (Technical Analysis Library)},
       author = {Serkan Korkmaz},
-      year = {2025},
+      year = {2026},
       note = {R package version 0.9-0},
       url = {https://serkor1.github.io/ta-lib-R/},
     }

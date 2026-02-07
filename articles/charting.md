@@ -41,7 +41,6 @@ attach itself to the last chart.
 talib::indicator(
     FUN = talib::MACD
 )
-#> Warning: Ignoring 33 observations
 ```
 
 If you have already called the `chart`-function, and want to plot the
@@ -65,7 +64,6 @@ without any arguments. The indicator can now be re-charted using the
     data = talib::BTC
   )
 }
-#> Warning: Ignoring 33 observations
 ```
 
 Notice here that you have to pass a `data` argument via `...` which gets

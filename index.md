@@ -107,6 +107,16 @@ Below is an example on how to use
         talib::bollinger_bands
     )
 
+    ## chart RSI
+    talib::indicator(
+        talib::RSI
+    )
+
+    ## chart volume
+    talib::indicator(
+        talib::trading_volume
+    )
+
     ## identify 'Harami'-patterns
     ## from the last 66 candles and
     ## chart 

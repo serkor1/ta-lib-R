@@ -212,7 +212,6 @@ Convergence/Divergence indicators to the chart:
         talib::moving_average_convergence_divergence
     )
 }
-#> Warning: Ignoring 33 observations
 ```
 
 One thing to note here is that

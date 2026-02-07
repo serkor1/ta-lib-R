@@ -26,6 +26,7 @@
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/belt_hold.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/bollinger_bands.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/break_away.html</loc></url>
+<url><loc>https://serkor1.github.io/ta-lib-R/reference/build_plotly.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/chaikin_accumulation_distribution_line.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/chaikin_accumulation_distribution_oscillator.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/chande_momentum_oscillator.html</loc></url>
@@ -76,6 +77,7 @@
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/mat_hold.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/matching_low.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/median_price.html</loc></url>
+<url><loc>https://serkor1.github.io/ta-lib-R/reference/merge.plotly.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/mesa_adaptive_moving_average.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/midpoint_price.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/minus_directional_indicator.html</loc></url>
@@ -116,7 +118,6 @@
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/stick_sandwich.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/stochastic.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/stochastic_relative_strength_index.html</loc></url>
-<url><loc>https://serkor1.github.io/ta-lib-R/reference/subchart.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/t3_exponential_moving_average.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/takuri.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/tasuki_gap.html</loc></url>
