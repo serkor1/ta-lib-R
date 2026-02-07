@@ -210,7 +210,7 @@ $FUN.plotly <- function(
 	plotly_object <- .plotting_environment[["main"]] <- build_plotly(
 		init = .plotting_environment[["main"]],
 		traces = list(
-			list(y = ~constructed_indicator[["$ALIAS"]],
+			list(y = ~constructed_indicator[["$ALIAS"]][-(1:attr(constructed_indicator, "lookback", TRUE))],
 		legendgroup = "MovingAverage",
 		legendgrouptitle = list(
 			text = "Moving Averages"

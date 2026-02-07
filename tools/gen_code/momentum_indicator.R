@@ -347,6 +347,7 @@ metadata[[29]] <- list(
 
 for (x in metadata) {
 	generate_R(x)
+	generate_C(x)
 	generate_test(x)
 }
 

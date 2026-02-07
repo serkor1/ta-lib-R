@@ -52,6 +52,11 @@ build_plotly.plotly <- function(
 		name <- title
 	}
 
+	## filter
+	if (!is.null(attr(data, "lookback", TRUE))) {
+		data <- data[-(1:attr(data, "lookback", TRUE)), ]
+	}
+
 	# default for non-line traces
 	default_trace <- list(
 		type = "scatter",

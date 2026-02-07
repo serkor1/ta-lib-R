@@ -249,10 +249,17 @@ map_dfr.double <- function(x) {
 	if (!is.matrix(x)) {
 		stop("'x' has to be a <matrix>")
 	}
-	.Call(
+
+	lookback_attribute <- attr(x, "lookback", TRUE)
+
+	x <- .Call(
 		"map_dfr_double",
 		x
 	)
+
+	attr(x, "lookback") <- lookback_attribute
+
+	x
 }
 
 #' @export
@@ -261,8 +268,13 @@ map_dfr.integer <- function(x) {
 		stop("'x' has to be a <matrix>")
 	}
 
-	.Call(
+	lookback_attribute <- attr(x, "lookback", TRUE)
+
+	x <- .Call(
 		"map_dfr_integer",
 		x
 	)
+	attr(x, "lookback") <- lookback_attribute
+
+	x
 }

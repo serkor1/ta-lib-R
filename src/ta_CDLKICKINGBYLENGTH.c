@@ -15,6 +15,7 @@
 //      https://github.com/TA-Lib/ta-lib/blob/main/src/ta_func/ta_CDLKICKINGBYLENGTH.c
 //
 #include "Rinternals.h"
+#include "attributes.h"
 #include "container.h"
 #include "lib.h"
 #include "names.h"
@@ -33,7 +34,7 @@ SEXP impl_ta_CDLKICKINGBYLENGTH(
 // clang-format on 
 {
     // protection counter
-    int protection_counter = 0;
+    int protection_count = 0;
 
     // pointers to input
     const double *restrict open_ptr  = REAL(inOpen);
@@ -63,7 +64,7 @@ SEXP impl_ta_CDLKICKINGBYLENGTH(
         1,
         &output,
         &output_ptr,
-        &protection_counter
+        &protection_count
     );
 
     if (proceed) {
@@ -90,7 +91,7 @@ SEXP impl_ta_CDLKICKINGBYLENGTH(
         // check if the output is valid
         // and stop function with the TA_RetCode
         // see container.h for more details
-        check_output(return_code, protection_counter);
+        check_output(return_code, protection_count);
 
         // shift the array so it has the same number
         // of rows as 'n' - shifted values is replaced
@@ -107,10 +108,12 @@ SEXP impl_ta_CDLKICKINGBYLENGTH(
         }
     }
 
-    // set the column names of the output
-    // see names.h for more details
+    // set the column names and lookback attribute
+    // of the output container 
+    // see names.h and attributes.h for more details
     set_colnames(output, "CDLKICKINGBYLENGTH");
+    set_attribute(output, lookback, &protection_count);
 
-    UNPROTECT(protection_counter);
+    UNPROTECT(protection_count);
     return output;
 }

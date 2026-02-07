@@ -210,7 +210,9 @@ exponential_moving_average.plotly <- function(
 		init = .plotting_environment[["main"]],
 		traces = list(
 			list(
-				y = ~ constructed_indicator[["EMA"]],
+				y = ~ constructed_indicator[["EMA"]][
+					-(1:attr(constructed_indicator, "lookback", TRUE))
+				],
 				legendgroup = "MovingAverage",
 				legendgrouptitle = list(
 					text = "Moving Averages"

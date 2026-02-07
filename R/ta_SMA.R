@@ -210,7 +210,9 @@ simple_moving_average.plotly <- function(
 		init = .plotting_environment[["main"]],
 		traces = list(
 			list(
-				y = ~ constructed_indicator[["SMA"]],
+				y = ~ constructed_indicator[["SMA"]][
+					-(1:attr(constructed_indicator, "lookback", TRUE))
+				],
 				legendgroup = "MovingAverage",
 				legendgrouptitle = list(
 					text = "Moving Averages"

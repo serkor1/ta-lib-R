@@ -146,7 +146,7 @@ Below is an example on how to use `chart()` and `indicator()`.
 }
 ```
 
-<img src="man/figures/README-charting-1.png" style="display: block; margin: auto;" />
+<img src="man/figures/README-charting-1.png" alt="" style="display: block; margin: auto;" />
 
 ## Installation[^1]
 

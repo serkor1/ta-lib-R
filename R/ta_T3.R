@@ -210,7 +210,9 @@ t3_exponential_moving_average.plotly <- function(
 		init = .plotting_environment[["main"]],
 		traces = list(
 			list(
-				y = ~ constructed_indicator[["T3"]],
+				y = ~ constructed_indicator[["T3"]][
+					-(1:attr(constructed_indicator, "lookback", TRUE))
+				],
 				legendgroup = "MovingAverage",
 				legendgrouptitle = list(
 					text = "Moving Averages"

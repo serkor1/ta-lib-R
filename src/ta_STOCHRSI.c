@@ -21,6 +21,7 @@
 //   otherwise all returned values are <NA>
 //
 #include "MAType.h"
+#include "attributes.h"
 #include "container.h"
 #include "lib.h"
 #include "names.h"
@@ -121,9 +122,11 @@ SEXP impl_ta_STOCHRSI(
     shift_array(fastd, n + offset_value, start_idx + offset_value);
   }
 
-  // set the column names of the output
-  // see names.h for more details
+  // set the column names and lookback attribute
+  // of the output container
+  // see names.h and attributes.h for more details
   set_colnames(output, "FastK", "FastD");
+  set_attribute(output, lookback, &protection_count);
 
   UNPROTECT(protection_count);
   return output;

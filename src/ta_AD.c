@@ -14,6 +14,7 @@
 //      https://github.com/TA-Lib/ta-lib/blob/main/src/ta_func/ta_AD.c
 //
 #include "MAType.h"
+#include "attributes.h"
 #include "container.h"
 #include "lib.h"
 #include "names.h"
@@ -94,9 +95,11 @@ SEXP impl_ta_AD(
     shift_array(real, n, start_idx);
   }
 
-  // set the column names of the output
-  // see names.h for more details
+  // set the column names and lookback attribute
+  // of the output container
+  // see names.h and attributes.h for more details
   set_colnames(output, "AD");
+  set_attribute(output, lookback, &protection_count);
 
   UNPROTECT(protection_count);
   return output;
