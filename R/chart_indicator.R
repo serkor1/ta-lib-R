@@ -146,5 +146,5 @@ indicator.function <- function(FUN, ...) {
 	# 	idx = if (is.null(idx)) 1:nrow(data) else idx
 	# )
 
-	layout_color(layout_settings(fig))
+	layout_color(layout_settings(outcome))
 }
