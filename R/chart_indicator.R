@@ -15,7 +15,13 @@
 #' @example man/examples/indicator.R
 #'
 #' @author Serkan Korkmaz
+#' @export
 indicator <- function(FUN, ...) {
+	UseMethod("indicator")
+}
+
+#' @export
+indicator.function <- function(FUN, ...) {
 	## resolve function name of no
 	## title have been passed
 	title <- input_name(
@@ -128,7 +134,7 @@ indicator <- function(FUN, ...) {
 		.plotting_environment$chart <- fig
 
 		return(
-			layout_settings(fig)
+			layout_color(layout_settings(fig))
 		)
 	}
 
@@ -140,5 +146,5 @@ indicator <- function(FUN, ...) {
 	# 	idx = if (is.null(idx)) 1:nrow(data) else idx
 	# )
 
-	layout_settings(outcome)
+	layout_color(layout_settings(fig))
 }
