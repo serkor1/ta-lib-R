@@ -49,7 +49,7 @@ metadata[[1]] <- list(
 	fun = 'bollinger_bands',
 	alias = 'BBANDS',
 	default_formula = '~close',
-	signature = c('ma=SMA(n=10)', 'std_up=2', 'std_down=2'),
+	signature = c('ma=SMA(n=10)', 'sd=2', 'sd_down', 'sd_up'),
 	subchart = 0L
 )
 

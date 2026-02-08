@@ -10,8 +10,9 @@
 #'
 ## splice:documentation:start
 #' @param ma ([list]). The type of Moving Average (MA) used for the `MiddleBand`. [SMA] by default.
-#' @param std_up ([double]). Deviation multiplier for upper band
-#' @param std_down ([double]). Deviation multiplier for lower band
+#' @param sd ([double]). Deviation multiplier for the upper and lower band.
+#' @param sd_up ([double]). Optional. Deviation multiplier for upper band
+#' @param sd_down ([double]). Optional. Deviation multiplier for lower band
 ## splice:documentation:end
 #'
 #' @template description
@@ -20,8 +21,9 @@ bollinger_bands <- function(
 	x,
 	cols,
 	ma = SMA(n = 10),
-	std_up = 2,
-	std_down = 2,
+	sd = 2,
+	sd_down,
+	sd_up,
 	...
 ) {
 	UseMethod("bollinger_bands")
@@ -42,8 +44,9 @@ bollinger_bands.default <- function(
 	x,
 	cols,
 	ma = SMA(n = 10),
-	std_up = 2,
-	std_down = 2,
+	sd = 2,
+	sd_down,
+	sd_up,
 	...
 ) {
 	## validate 'cols'-argument
@@ -72,8 +75,8 @@ bollinger_bands.default <- function(
 		## splice:call:start
 		constructed_series[[1]],
 		ma$n,
-		as.double(std_up),
-		as.double(std_down),
+		as.double(sd_up %or% sd),
+		as.double(sd_down %or% sd),
 		ma$maType
 		## splice:call:end
 	)
@@ -93,8 +96,9 @@ bollinger_bands.data.frame <- function(
 	x,
 	cols,
 	ma = SMA(n = 10),
-	std_up = 2,
-	std_down = 2,
+	sd = 2,
+	sd_down,
+	sd_up,
 	...
 ) {
 	map_dfr(
@@ -102,8 +106,9 @@ bollinger_bands.data.frame <- function(
 			x = x,
 			cols = cols,
 			ma = ma,
-			std_up = std_up,
-			std_down = std_down,
+			sd = sd,
+			sd_down = sd_down,
+			sd_up = sd_up,
 			...
 		)
 	)
@@ -117,16 +122,18 @@ bollinger_bands.matrix <- function(
 	x,
 	cols,
 	ma = SMA(n = 10),
-	std_up = 2,
-	std_down = 2,
+	sd = 2,
+	sd_down,
+	sd_up,
 	...
 ) {
 	bollinger_bands.default(
 		x = x,
 		cols = cols,
 		ma = ma,
-		std_up = std_up,
-		std_down = std_down,
+		sd = sd,
+		sd_down = sd_down,
+		sd_up = sd_up,
 		...
 	)
 }
@@ -139,8 +146,9 @@ bollinger_bands.numeric <- function(
 	x,
 	cols,
 	ma = SMA(n = 10),
-	std_up = 2,
-	std_down = 2,
+	sd = 2,
+	sd_down,
+	sd_up,
 	...
 ) {
 	## warn if 'cols' have been
@@ -158,8 +166,8 @@ bollinger_bands.numeric <- function(
 		## splice:numeric:start
 		as.double(x),
 		ma$n,
-		as.double(std_up),
-		as.double(std_down),
+		as.double(sd_up %or% sd),
+		as.double(sd_down %or% sd),
 		ma$maType
 		## splice:numeric:end
 	)
@@ -187,8 +195,9 @@ bollinger_bands.plotly <- function(
 	x,
 	cols,
 	ma = SMA(n = 10),
-	std_up = 2,
-	std_down = 2,
+	sd = 2,
+	sd_down,
+	sd_up,
 	## splice:optional-plotly:start
 	color = "steelblue",
 	alpha = 0.2,
@@ -222,8 +231,9 @@ bollinger_bands.plotly <- function(
 			names(constructed_series)
 		),
 		ma = ma,
-		std_up = std_up,
-		std_down = std_down
+		sd = sd,
+		sd_down = sd_down,
+		sd_up = sd_up
 	)
 
 	## add conditional idx
@@ -233,18 +243,23 @@ bollinger_bands.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	if (std_down == std_up) {
+
+	## standard deviations
+	sd_down <- as.double(sd_down %or% sd)
+	sd_up <- as.double(sd_up %or% sd)
+
+	if (sd_down == sd_up) {
 		name <- label(
 			"Bollinger Bands",
 			ma$n,
-			std_up
+			sd_up
 		)
 	} else {
 		name <- label(
 			"Bollinger Bands",
 			ma$n,
-			std_up,
-			std_down
+			sd_up,
+			sd_down
 		)
 	}
 
