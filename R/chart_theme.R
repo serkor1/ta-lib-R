@@ -46,16 +46,16 @@ theme_hawks_and_doves <- function() {
 
 	## colorways
 	.chart_variables$colorway <- c(
-		"#b8b0ac", # grey
-		"#5778a4", # blue
-		"#85b6b2", # teal
-		"#6a9f58", # green
-		"#a87c9f", # purple
-		"#967662", # brown
-		"#e49444", # orange
-		"#d1615d", # red
-		"#f1a2a9", # pink
-		"#e7ca60" # yellow
+		"#b8b0ac",
+		"#5778a4",
+		"#85b6b2",
+		"#6a9f58",
+		"#a87c9f",
+		"#967662",
+		"#e49444",
+		"#d1615d",
+		"#f1a2a9",
+		"#e7ca60"
 	)
 
 	.chart_variables$gridcolor <- "#E6E6E6"

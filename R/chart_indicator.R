@@ -134,7 +134,7 @@ indicator.function <- function(FUN, ...) {
 		.plotting_environment$chart <- fig
 
 		return(
-			layout_color(layout_settings(fig))
+			layout_axis(layout_color(layout_settings(fig)))
 		)
 	}
 
@@ -146,5 +146,5 @@ indicator.function <- function(FUN, ...) {
 	# 	idx = if (is.null(idx)) 1:nrow(data) else idx
 	# )
 
-	layout_color(layout_settings(outcome))
+	layout_axis(layout_color(layout_settings(outcome)))
 }

@@ -20,10 +20,10 @@ layout_background <- function(
 		paper_bgcolor = .chart_variables$background_color,
 		plot_bgcolor = .chart_variables$background_color,
 		yaxis = list(
-			gridcolor = .chart_variables$background_color
+			gridcolor = .chart_variables$gridcolor
 		),
 		xaxis = list(
-			gridcolor = .chart_variables$background_color
+			gridcolor = .chart_variables$gridcolor
 		)
 	)
 }
@@ -45,7 +45,7 @@ layout_axis <- function(
 			title = '',
 			side = "right",
 			showline = TRUE,
-			mirror = FALSE,
+			mirror = TRUE,
 			linecolor = .chart_variables$foreground_color,
 			linewidth = 0.1,
 			zerolinewidth = 0.1,
@@ -58,13 +58,12 @@ layout_axis <- function(
 			tickmode = "auto",
 			ticktext = idx,
 			showline = TRUE,
-			mirror = FALSE,
-			colorcolor = .chart_variables$foreground_color,
+			mirror = "allticks",
+			color = .chart_variables$foreground_color,
 			linewidth = 0.1
 		)
 	)
 }
-
 
 layout_annotate <- function(
 	p,
@@ -98,7 +97,14 @@ layout_title <- function(
 			xref = "paper",
 			yref = "paper",
 			xanchor = "left",
-			yanchor = "bottom"
+			yanchor = "bottom",
+			font = list(
+				size = 16 *
+					getOption(
+						"talib.chart.scale",
+						default = 1
+					)
+			)
 		)
 	)
 }
@@ -120,17 +126,17 @@ layout_font <- function(
 		p = p,
 		title = list(
 			font = list(
-				20 * font_scale
+				14 * font_scale
 			)
 		),
 		font = list(
-			size = 14 * font_scale,
+			size = 10 * font_scale,
 			color = .chart_variables$text_color
 		),
 		legend = list(
 			title = list(
 				font = list(
-					size = 16 * font_scale
+					size = 14 * font_scale
 				)
 			)
 		)
@@ -224,14 +230,6 @@ layout_settings <- function(p) {
 layout_color <- function(p) {
 	plotly::layout(
 		p = p,
-		colorway = c(
-			'#f3cec9',
-			'#e7a4b6',
-			'#cd7eaf',
-			'#a262a9',
-			'#6f4d96',
-			'#3d3b72',
-			'#182844'
-		)
+		colorway = .chart_variables$colorway
 	)
 }

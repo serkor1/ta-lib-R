@@ -13,7 +13,7 @@ add_title <- function(
 		yref = "paper",
 		showarrow = FALSE,
 		font = list(
-			size = 16 *
+			size = 14 *
 				getOption(
 					"talib.chart.scale",
 					default = 1
