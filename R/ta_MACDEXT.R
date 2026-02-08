@@ -258,8 +258,8 @@ extended_moving_average_convergence_divergence.plotly <- function(
 			y = ~MACDHist,
 			color = ~direction,
 			colors = c(
-				chart_theme$bull_color,
-				chart_theme$bear_color
+				.chart_variables$bullish_body,
+				.chart_variables$bearish_body
 			),
 			type = 'bar',
 			mode = NULL,

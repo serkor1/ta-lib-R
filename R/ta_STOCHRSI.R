@@ -197,7 +197,7 @@ stochastic_relative_strength_index.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	name <- ""
+	name <- "Stochastic Relative Strength Index"
 
 	decorators <- list(
 		function(p) add_limit(p, y_range = c(0, 100))
@@ -206,8 +206,8 @@ stochastic_relative_strength_index.plotly <- function(
 	traces <- list(
 		plotly_line(lower_bound),
 		plotly_line(upper_bound),
-		list(y = ~FastK),
-		list(y = ~FastD)
+		list(y = ~FastK, name = "Fast %K"),
+		list(y = ~FastD, name = "Fast %D")
 	)
 	## splice:plotly-assembly:end
 

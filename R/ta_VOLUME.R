@@ -242,7 +242,14 @@ trading_volume.plotly <- function(
 				y = stats::as.formula(
 					paste0("~", col)
 				),
-				name = col
+
+				## reformat extract SMA17 as SMA(17)
+				name = sub(
+					"^([A-Za-z]+)([0-9]+)$",
+					"\\1(\\2)",
+					col,
+					perl = TRUE
+				)
 			)
 		}
 	)
@@ -251,9 +258,10 @@ trading_volume.plotly <- function(
 	## assuming its volume
 	traces[[1]]$color <- ~direction
 	traces[[1]]$colors = c(
-		chart_theme$bull_color,
-		chart_theme$bear_color
+		.chart_variables$bullish_body,
+		.chart_variables$bearish_body
 	)
+	traces[[1]]$showlegend <- FALSE
 	traces[[1]]$type <- 'bar'
 	traces[[1]]["mode"] <- list(NULL)
 	## splice:plotly-assembly:end
