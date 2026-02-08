@@ -1,9 +1,34 @@
-## chart themes
-##
-##
-##
-##
-##
+#' Chart themes
+#'
+#' Set the active chart color theme used by the package's chart rendering
+#' functions.
+#'
+#' @details
+#' These functions **mutate** the package-level theme state stored in
+#' `.chart_variables`. They are intended to be called before drawing charts.
+#'
+#' @section Fields set:
+#' - Candles:
+#'   - `bearish_body`, `bearish_wick`, `bearish_border`
+#'   - `bullish_body`, `bullish_wick`, `bullish_border`
+#' - General:
+#'   - `background_color`, `foreground_color`, `text_color`
+#' - Series:
+#'   - `colorway` (character vector of hex colors; used for multi-trace/indicator series)
+#' - Grid:
+#'   - `gridcolor` (hex or rgba; used for axis grid lines)
+#'
+#' @return Invisibly returns `.chart_variables` after modification.
+#' @family Chart Themes
+#' @name chart_themes
+#'
+NULL
+
+#' Hawks and Doves theme
+#'
+#' Neutral grayscale candles on a light background.
+#'
+#' @rdname chart_themes
 #' @export
 theme_hawks_and_doves <- function() {
 	## candle-colors
@@ -18,8 +43,29 @@ theme_hawks_and_doves <- function() {
 	.chart_variables$background_color <- "#FFFFFF"
 	.chart_variables$foreground_color <- "#333333"
 	.chart_variables$text_color <- "#333333"
+
+	## colorways
+	.chart_variables$colorway <- c(
+		"#b8b0ac", # grey
+		"#5778a4", # blue
+		"#85b6b2", # teal
+		"#6a9f58", # green
+		"#a87c9f", # purple
+		"#967662", # brown
+		"#e49444", # orange
+		"#d1615d", # red
+		"#f1a2a9", # pink
+		"#e7ca60" # yellow
+	)
+
+	.chart_variables$gridcolor <- "#E6E6E6"
 }
 
+#' Payout theme
+#'
+#' Dark background theme with teal bullish candles.
+#'
+#' @rdname chart_themes
 #' @export
 theme_payout <- function() {
 	## candle-colors
@@ -34,8 +80,29 @@ theme_payout <- function() {
 	.chart_variables$background_color <- "#1A1A1A"
 	.chart_variables$foreground_color <- "#CFCFCF"
 	.chart_variables$text_color <- "#CFCFCF"
+
+	## colorway
+	.chart_variables$colorway <- c(
+		"#008080",
+		"#EF553B",
+		"#636EFA",
+		"#AB63FA",
+		"#FFA15A",
+		"#19D3F3",
+		"#FF6692",
+		"#B6E880",
+		"#FF97FF",
+		"#FECB52"
+	)
+
+	.chart_variables$gridcolor <- "#2B2B2B"
 }
 
+#' TP Slapped theme
+#'
+#' High-contrast red/green candles on a light background.
+#'
+#' @rdname chart_themes
 #' @export
 theme_tp_slapped <- function() {
 	## candle-colors
@@ -50,4 +117,20 @@ theme_tp_slapped <- function() {
 	.chart_variables$background_color <- "#ecf0f1"
 	.chart_variables$foreground_color <- "#2c3e50"
 	.chart_variables$text_color <- "#2c3e50"
+
+	## colorway
+	.chart_variables$colorway <- c(
+		"#1abc9c",
+		"#2ecc71",
+		"#3498db",
+		"#9b59b6",
+		"#f1c40f",
+		"#f39c12",
+		"#e67e22",
+		"#e74c3c",
+		"#34495e",
+		"#95a5a6"
+	)
+
+	.chart_variables$gridcolor <- "#D7DDE0"
 }
