@@ -17,13 +17,13 @@ layout_background <- function(
 	## apply colors
 	plotly::layout(
 		p = p,
-		paper_bgcolor = paper_bgcolor,
-		plot_bgcolor = plot_bgcolor,
+		paper_bgcolor = .chart_variables$background_color,
+		plot_bgcolor = .chart_variables$background_color,
 		yaxis = list(
-			gridcolor = grid_color
+			gridcolor = .chart_variables$background_color
 		),
 		xaxis = list(
-			gridcolor = grid_color
+			gridcolor = .chart_variables$background_color
 		)
 	)
 }
@@ -42,13 +42,25 @@ layout_axis <- function(
 	plotly::layout(
 		p = p,
 		yaxis = list(
-			title = ''
+			title = '',
+			side = "right",
+			showline = TRUE,
+			mirror = FALSE,
+			linecolor = .chart_variables$foreground_color,
+			linewidth = 0.1,
+			zerolinewidth = 0.1,
+			zeroline = FALSE,
+			zerolinecolor = .chart_variables$foreground_color
 		),
 		xaxis = list(
 			title = '',
 			tickvals = seq_along(idx),
 			tickmode = "auto",
-			ticktext = idx
+			ticktext = idx,
+			showline = TRUE,
+			mirror = FALSE,
+			colorcolor = .chart_variables$foreground_color,
+			linewidth = 0.1
 		)
 	)
 }
@@ -97,7 +109,7 @@ layout_font <- function(
 	theme_element = layout_theme()
 ) {
 	## font color and scale
-	font_color <- theme_element$font_color
+	font_color <- .chart_variables$text_color
 	font_scale <- getOption(
 		"talib.chart.scale",
 		default = 1
@@ -113,7 +125,7 @@ layout_font <- function(
 		),
 		font = list(
 			size = 14 * font_scale,
-			color = font_color
+			color = .chart_variables$text_color
 		),
 		legend = list(
 			title = list(
@@ -173,12 +185,17 @@ layout_settings <- function(p) {
 				visible = range_slider,
 				thickness = range_slider_size
 			)
-		),
-		margin = list(
-			l = 0,
-			b = 0,
-			pad = 0
 		)
+		## TODO: Understand how this
+		## actually works. Its still a
+		## black box.
+		# margin = list(
+		# 	r = 5,
+		# 	t = 5,
+		# 	l = 5,
+		# 	b = 0,
+		# 	pad = 0
+		# )
 	)
 
 	## configurations
@@ -201,5 +218,20 @@ layout_settings <- function(p) {
 		##       redundant too. These will be
 		##       removed later (TM)
 		displaylogo = FALSE
+	)
+}
+
+layout_color <- function(p) {
+	plotly::layout(
+		p = p,
+		colorway = c(
+			'#f3cec9',
+			'#e7a4b6',
+			'#cd7eaf',
+			'#a262a9',
+			'#6f4d96',
+			'#3d3b72',
+			'#182844'
+		)
 	)
 }

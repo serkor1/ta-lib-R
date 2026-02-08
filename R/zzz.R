@@ -10,6 +10,26 @@
 	parent = emptyenv()
 )
 
+## initialize theme
+## environment
+.chart_variables <- new.env(
+	parent = emptyenv()
+)
+
+## set default theme
+## candle-colors
+.chart_variables$bearish_body <- "#4682B4"
+.chart_variables$bearish_wick <- "#4682B4"
+.chart_variables$bearish_border <- "#3B6A93"
+.chart_variables$bullish_body <- "#E0FFFF"
+.chart_variables$bullish_wick <- "#E0FFFF"
+.chart_variables$bullish_border <- "#C0D9D9"
+
+## general-colors
+.chart_variables$background_color <- "#141414"
+.chart_variables$foreground_color <- "#E0FFFF"
+.chart_variables$text_color <- "#E0FFFF"
+
 ## actions on attach
 ## and load
 .onAttach <- function(
@@ -22,6 +42,17 @@
 	.Call(
 		"initialize_ta_lib",
 		PACKAGE = pkgname
+	)
+
+	## startup message when
+	## library(talib)
+	packageStartupMessage(
+		paste0(
+			"Loading {",
+			utils::packageName(),
+			"} v",
+			utils::packageVersion(pkgname)
+		)
 	)
 }
 

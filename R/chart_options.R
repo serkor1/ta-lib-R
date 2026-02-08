@@ -5,8 +5,8 @@ layout_theme <- .chart_theme <- function() {
 		bull_color = "#5d8ca8"
 		bear_color = "#d3ba68"
 	} else {
-		bull_color = "#65a479"
-		bear_color = "#d5695d"
+		bull_color = "#4D4D4D"
+		bear_color = "#A9A9A9"
 	}
 
 	if (getOption("talib.chart.dark", default = TRUE)) {
@@ -21,11 +21,11 @@ layout_theme <- .chart_theme <- function() {
 		)
 	} else {
 		list(
-			paper_bgcolor = '#E3E3E3',
-			plot_bgcolor = '#E3E3E3',
-			font_color = '#A3A3A3',
-			threshold_color = '#8A8C90',
-			grid_color = '#D3D3D3',
+			paper_bgcolor = '#FFFFFF',
+			plot_bgcolor = '#FFFFFF',
+			font_color = '#333333',
+			threshold_color = '##333333',
+			grid_color = '#FFFFFF',
 			bull_color = bull_color,
 			bear_color = bear_color
 		)

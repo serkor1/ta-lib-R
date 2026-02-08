@@ -145,22 +145,22 @@ chart.default <- function(
 		##       If there is eventual demand this can be changed
 		increasing = list(
 			line = list(
-				color = .color_values$bull_color,
+				color = .chart_variables$bullish_body,
 				width = 3 - 1.75
 			),
 			fillcolor = plotly::toRGB(
-				x = .color_values$bull_color,
+				x = .chart_variables$bullish_body,
 				alpha = 1 ## This should be controlled from .chart_theme()
 			)
 		),
 		decreasing = list(
 			line = list(
-				color = .color_values$bear_color,
+				color = .chart_variables$bearish_body,
 				width = 3 - 1.75
 			),
 
 			fillcolor = plotly::toRGB(
-				x = .color_values$bear_color,
+				x = .chart_variables$bearish_body,
 				alpha = 1 ## This should be controlled from .chart_theme()
 			)
 		),
@@ -183,13 +183,13 @@ chart.default <- function(
 	## skip it
 	if (is.integer(.plotting_environment$idx$label)) {
 		title_text <- sprintf(
-			fmt = "<b>Ticker:</b> %s <span style='font-size:50%%;'><b>N:</b> %d </span>",
+			fmt = "%s <span style='font-size:50%%;'><b>N:</b> %d </span>",
 			chart_title,
 			nrow(x)
 		)
 	} else {
 		title_text <- sprintf(
-			fmt = "<b>Ticker:</b> %s <span style='font-size:50%%;'><b>N:</b> %d <b>Period:</b> %s</span>",
+			fmt = "%s <span style='font-size:50%%;'><b>N:</b> %d <b>Period:</b> %s</span>",
 			chart_title,
 			nrow(x),
 			paste(
@@ -216,7 +216,10 @@ chart.default <- function(
 		},
 		function(p) layout_font(p),
 		function(p) layout_legend(p),
-		function(p) add_last_value(p, data = data_frame, remove_cols = "volume")
+		function(p) {
+			add_last_value(p, data = data_frame, remove_cols = "volume")
+		},
+		function(p) layout_color(p)
 	)
 
 	.plotting_environment$main <- Reduce(
