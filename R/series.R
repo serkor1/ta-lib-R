@@ -108,9 +108,21 @@ series.formula <- function(
 			paste0("Expected 'cols' length to be ", default_length, "."),
 
 			## actual
-			paste0("Got length", formula_length, ".")
+			paste0("Got length ", formula_length, "."),
+
+			## default formula
+			paste0(
+				"Uses ",
+				paste0("'", all.vars(default), "'", collapse = ", "),
+				" by default."
+			)
 		)
 	}
+
+	assert_column_names(
+		formula = x,
+		available_variables = colnames(data)
+	)
 
 	# Fast path: no extra args -> select columns directly
 	if (length(dotsQ) == 0) {

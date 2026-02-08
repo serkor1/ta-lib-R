@@ -64,6 +64,48 @@ assert_plotly <- function(x) {
 	)
 }
 
+assert_column_names <- function(formula, available_variables) {
+	## this assert function will give an error
+	## if the variables are not found. If it finds
+	## similar variables, it will print those.
+	##
+	## formula is the ultimate truth
+
+	## passed variables
+	passed_variables <- all.vars(formula)
+	identified_variables <- intersect(
+		passed_variables,
+		available_variables
+	)
+
+	all_identified <- all(passed_variables %in% identified_variables)
+	if (!all_identified) {
+		## identify similar variables so the user
+		## has an idea why it fails
+		similar_variables <- grep(
+			pattern = paste(passed_variables, collapse = "|"),
+			x = available_variables,
+			value = TRUE,
+			ignore.case = TRUE
+		)
+
+		assert(
+			x = all_identified,
+			call = sys.call(sys.parent(n = 2)),
+			paste(
+				"Expected to find columns",
+				paste0("'", passed_variables, "'", collapse = ", ")
+			),
+			if (!identical(character(0), similar_variables)) {
+				paste0(
+					"similar columns found: ",
+					paste0("'", similar_variables, "'", collapse = ", ")
+				)
+			}
+		)
+	}
+}
+
 ## class related utility
 ## functions
 is.formula <- function(x) {

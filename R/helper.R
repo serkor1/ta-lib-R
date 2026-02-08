@@ -137,3 +137,12 @@ label <- function(
 		")"
 	)
 }
+
+
+`%or%` <- function(x, y) {
+	if (missing(x)) {
+		y
+	} else {
+		x
+	}
+}
