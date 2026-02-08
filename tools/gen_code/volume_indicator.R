@@ -61,7 +61,7 @@ metadata[[2]] <- list(
 	fun = 'chaikin_accumulation_distribution_oscillator',
 	alias = 'ADOSC',
 	default_formula = '~high+low+close+volume',
-	signature = 'fast=3,slow=10',
+	signature = c('fast=3', 'slow=10'),
 	subchart = 1
 )
 
