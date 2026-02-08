@@ -44,6 +44,10 @@ reference:
   contents:
   - chart
   - indicator
+- title: Chart Themes
+  desc: |
+    Charting Themes
+  contents: has_concept('Chart Themes')
 - title: Rolling Statistics
   desc: |
     The collection of Rolling Statistics. 
