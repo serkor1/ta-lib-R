@@ -183,13 +183,13 @@ chart.default <- function(
 	## skip it
 	if (is.integer(.plotting_environment$idx$label)) {
 		title_text <- sprintf(
-			fmt = "%s <span style='font-size:50%%;'><b>N:</b> %d </span>",
+			fmt = "%s <span style='font-size:10;'><b>N:</b> %d </span>",
 			chart_title,
 			nrow(x)
 		)
 	} else {
 		title_text <- sprintf(
-			fmt = "%s <span style='font-size:50%%;'><b>N:</b> %d <b>Period:</b> %s</span>",
+			fmt = "%s <span style='font-size:10;'><b>N:</b> %d <b>Period:</b> %s</span>",
 			chart_title,
 			nrow(x),
 			paste(

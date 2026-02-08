@@ -88,23 +88,22 @@ layout_title <- function(
 	...
 ) {
 	## apply layout
-	plotly::layout(
+	plotly::add_annotations(
 		p = p,
-		title = list(
-			text = title,
-			x = 0,
-			y = 1,
-			xref = "paper",
-			yref = "paper",
-			xanchor = "left",
-			yanchor = "bottom",
-			font = list(
-				size = 16 *
-					getOption(
-						"talib.chart.scale",
-						default = 1
-					)
-			)
+		text = title,
+		x = 0,
+		y = 1,
+		xref = "paper",
+		yref = "paper",
+		xanchor = "left",
+		yanchor = "bottom",
+		showarrow = FALSE,
+		font = list(
+			size = 14 *
+				getOption(
+					"talib.chart.scale",
+					default = 1
+				)
 		)
 	)
 }
