@@ -128,52 +128,67 @@ chart.default <- function(
 	assert(is.character(type) && length(type) == 1)
 	assert(type %in% c("candlestick", "ohlc"))
 
-	price_chart <- plotly::plot_ly(
+	candle_style <- function(
+		bull_candle,
+		bear_candle,
+		line_width,
+		alpha = 1
+	) {
+		side <- function(col) {
+			list(
+				line = list(
+					color = col,
+					width = line_width
+				),
+				fillcolor = plotly::toRGB(
+					col,
+					alpha = alpha
+				)
+			)
+		}
+
+		list(
+			increasing = side(bull_candle),
+			decreasing = side(bear_candle)
+		)
+	}
+
+	base <- plotly::plot_ly(
 		data = data_frame,
-		type = type,
 		x = ~idx,
 		open = ~open,
 		close = ~close,
 		high = ~high,
 		low = ~low,
-
-		## colors of bullish
-		## and bearish candles/bars
-		##
-		## NOTE: if fillcolor is NULL
-		##       the candles are hollow.
-		##       If there is eventual demand this can be changed
-		increasing = list(
-			line = list(
-				color = .chart_variables$bullish_body,
-				width = 3 - 1.75
-			),
-			fillcolor = plotly::toRGB(
-				x = .chart_variables$bullish_body,
-				alpha = 1 ## This should be controlled from .chart_theme()
-			)
-		),
-		decreasing = list(
-			line = list(
-				color = .chart_variables$bearish_body,
-				width = 3 - 1.75
-			),
-
-			fillcolor = plotly::toRGB(
-				x = .chart_variables$bearish_body,
-				alpha = 1 ## This should be controlled from .chart_theme()
-			)
-		),
-
-		## remove legend
-		## there is no reason to display
-		## it in the legend.
-		##
-		## If there is demand for it we can
-		## implement a heuristic to determine intervals
-		## for 1h, 2h, etc. Similar to {cryptoQuotes}
 		showlegend = FALSE,
 		...
+	)
+
+	border_chart <- do.call(
+		plotly::add_trace,
+		c(
+			list(p = base, type = type),
+			candle_style(
+				.chart_variables$bullish_border,
+				.chart_variables$bearish_border,
+				line_width = 2
+			)
+		)
+	)
+
+	price_chart <- do.call(
+		plotly::add_trace,
+		c(
+			list(
+				p = border_chart,
+				type = type
+			),
+			candle_style(
+				.chart_variables$bullish_body,
+				.chart_variables$bearish_body,
+				line_width = 1
+			)
+		)
 	)
 
 	## construct chart meta data
@@ -217,7 +232,11 @@ chart.default <- function(
 		function(p) layout_font(p),
 		function(p) layout_legend(p),
 		function(p) {
-			add_last_value(p, data = data_frame, remove_cols = "volume")
+			add_last_value(
+				p,
+				data = data_frame,
+				remove_cols = "volume"
+			)
 		},
 		function(p) layout_color(p)
 	)
