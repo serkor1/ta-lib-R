@@ -234,8 +234,7 @@ chart.default <- function(
 		function(p) {
 			add_last_value(
 				p,
-				data = data_frame,
-				remove_cols = "volume"
+				data = data_frame
 			)
 		},
 		function(p) layout_color(p)
