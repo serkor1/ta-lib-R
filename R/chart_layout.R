@@ -50,7 +50,8 @@ layout_axis <- function(
 			linewidth = 0.1,
 			zerolinewidth = 0.1,
 			zeroline = FALSE,
-			zerolinecolor = .chart_variables$foreground_color
+			zerolinecolor = .chart_variables$foreground_color,
+			tickformat = "~s"
 		),
 		xaxis = list(
 			title = '',
