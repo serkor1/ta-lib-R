@@ -266,7 +266,7 @@ percentage_price_oscillator.plotly <- function(
 				title
 			}
 		),
-		data = constructed_indicator,
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract
 	)
 
