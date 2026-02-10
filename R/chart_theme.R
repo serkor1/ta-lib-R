@@ -134,3 +134,34 @@ theme_tp_slapped <- function() {
 
 	.chart_variables$gridcolor <- "#D7DDE0"
 }
+
+#' @export
+theme_trust_the_process <- function() {
+	## candle-colors
+	.chart_variables$bearish_body <- "#A9A9A9"
+	.chart_variables$bearish_wick <- "#696969"
+	.chart_variables$bearish_border <- "#B0B0B0"
+	.chart_variables$bullish_body <- "#808080"
+	.chart_variables$bullish_wick <- "#696969"
+	.chart_variables$bullish_border <- "#707070"
+
+	## general-colors
+	.chart_variables$background_color <- "#F5F5F5"
+	.chart_variables$foreground_color <- "#333333"
+	.chart_variables$text_color <- "#333333"
+
+	.chart_variables$colorway <- c(
+		"#272E31",
+		"#6C514D",
+		"#5C6F5F",
+		"#6E8785",
+		"#756F6D",
+		"#AF804B",
+		"#B3B186",
+		"#D9BDA5",
+		"#E0C9A6",
+		"#D16014"
+	)
+
+	.chart_variables$gridcolor <- "#E6E6E6"
+}
