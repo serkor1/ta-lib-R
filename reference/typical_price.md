@@ -9,6 +9,11 @@ wrapper of [model.frame](https://rdrr.io/r/stats/model.frame.html) and
 therefore the OHLC-V series must be coercible to a
 [data.frame](https://rdrr.io/r/base/data.frame.html).
 
+### Handling of -values
+
+`typical_price()` iterates over valid values, and returns `NA` for the
+remaing part of series.
+
 ## Usage
 
 ``` r

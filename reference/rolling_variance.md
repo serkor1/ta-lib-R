@@ -6,6 +6,11 @@ package-wide dependencies. Ie.
 [class](https://rdrr.io/r/base/class.html) in,
 [class](https://rdrr.io/r/base/class.html) out.
 
+### Handling of -values
+
+`rolling_variance()` iterates over valid values, and returns `NA` for
+the remaing part of series.
+
 ## Usage
 
 ``` r
