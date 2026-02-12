@@ -252,8 +252,8 @@ relative_strength_index.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.plotting_environment$sub <- c(
-		.plotting_environment$sub,
+	.chart_environment$sub <- c(
+		.chart_environment$sub,
 		list(plotly_object)
 	)
 

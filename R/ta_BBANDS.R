@@ -294,8 +294,8 @@ bollinger_bands.plotly <- function(
 	)
 	## splice:plotly-assembly:end
 
-	plotly_object <- .plotting_environment[["main"]] <- build_plotly(
-		init = .plotting_environment[["main"]],
+	plotly_object <- .chart_environment[["main"]] <- build_plotly(
+		init = .chart_environment[["main"]],
 		traces = traces,
 		decorators = list(),
 		name = get0(

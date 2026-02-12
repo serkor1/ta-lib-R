@@ -48,7 +48,7 @@ indicator.function <- function(FUN, ...) {
 	## locate the main chart
 	## NOTE: if its not there we might need
 	##       to initialize a new
-	plt <- .plotting_environment$main
+	plt <- .chart_environment$main
 
 	if (is.null(plt)) {
 		chart_called <- FALSE
@@ -76,7 +76,7 @@ indicator.function <- function(FUN, ...) {
 			)
 		}
 
-		.plotting_environment$idx$label <- idx
+		.chart_environment$idx$label <- idx
 	}
 
 	## construct {plotly}-object
@@ -108,7 +108,7 @@ indicator.function <- function(FUN, ...) {
 	}
 
 	if (chart_called) {
-		panels <- c(list(.plotting_environment$main), .plotting_environment$sub)
+		panels <- c(list(.chart_environment$main), .chart_environment$sub)
 		n <- length(panels)
 		main_h <- getOption("talib.chart.main", 0.7)
 		heights <- if (n > 1) {
@@ -131,7 +131,7 @@ indicator.function <- function(FUN, ...) {
 				tickmode = "auto"
 			)
 		)
-		.plotting_environment$chart <- fig
+		.chart_environment$chart <- fig
 
 		return(
 			layout_axis(layout_color(layout_settings(fig)))

@@ -6,7 +6,7 @@
 
 ## initialize plotting
 ## environment
-.plotting_environment <- new.env(
+.chart_environment <- new.env(
 	parent = emptyenv()
 )
 

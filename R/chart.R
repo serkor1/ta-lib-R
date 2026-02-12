@@ -43,8 +43,8 @@ chart <- function(
 	## without passing 'x'
 	if (missing(x)) {
 		rm(
-			list = ls(envir = .plotting_environment, all.names = TRUE),
-			envir = .plotting_environment
+			list = ls(envir = .chart_environment, all.names = TRUE),
+			envir = .chart_environment
 		)
 
 		return(invisible(NULL))
@@ -88,10 +88,10 @@ chart.default <- function(
 		chart_title <- title
 	}
 	.color_values <- .chart_theme()
-	.plotting_environment$sub <- .plotting_environment$chart <- list()
+	.chart_environment$sub <- .chart_environment$chart <- list()
 
 	## convert input to data.frame object
-	## and store in the .plotting_environment
+	## and store in the .chart_environment
 	## to avoid having to pass OHLC on every call
 	##
 	## NOTE: it is also a hard requirement on
@@ -113,8 +113,8 @@ chart.default <- function(
 	} else {
 		idx
 	}
-	.plotting_environment$x <- data_frame <- x
-	.plotting_environment$idx <- list(
+	.chart_environment$x <- data_frame <- x
+	.chart_environment$idx <- list(
 		label = x$idx,
 		index = seq_along(x$idx)
 	)
@@ -196,7 +196,7 @@ chart.default <- function(
 	## There is no relevant information in the range 1:N
 	## so if the rownames only contrains integers the chart will
 	## skip it
-	if (is.integer(.plotting_environment$idx$label)) {
+	if (is.integer(.chart_environment$idx$label)) {
 		title_text <- sprintf(
 			fmt = "%s <span style='font-size:10;'><b>N:</b> %d </span>",
 			chart_title,
@@ -208,10 +208,10 @@ chart.default <- function(
 			chart_title,
 			nrow(x),
 			paste(
-				.plotting_environment$idx$label[1],
+				.chart_environment$idx$label[1],
 				"-",
-				.plotting_environment$idx$label[length(
-					.plotting_environment$idx$label
+				.chart_environment$idx$label[length(
+					.chart_environment$idx$label
 				)]
 			)
 		)
@@ -240,13 +240,13 @@ chart.default <- function(
 		function(p) layout_color(p)
 	)
 
-	.plotting_environment$main <- Reduce(
+	.chart_environment$main <- Reduce(
 		f = function(p, f) f(p),
 		x = fns,
 		init = price_chart
 	)
 
 	layout_settings(
-		.plotting_environment$main
+		.chart_environment$main
 	)
 }

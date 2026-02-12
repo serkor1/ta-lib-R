@@ -34,7 +34,7 @@ rebuild_formula <- function(
 
 add_idx <- function(x) {
 	## store idx
-	idx <- .plotting_environment$idx$label
+	idx <- .chart_environment$idx$label
 
 	if (!is.null(idx)) {
 		idx[
