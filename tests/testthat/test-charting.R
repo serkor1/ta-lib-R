@@ -32,3 +32,35 @@ testthat::test_that(desc = "Charting", code = {
 		}
 	)
 })
+
+## test charting with themes
+testthat::test_that(desc = "Charting with Themes", code = {
+	## 1) test chart with set_theme()
+	testthat::expect_no_error(
+		{
+			set_theme$hawks_and_doves()
+			chart(SPY)
+		}
+	)
+
+	testthat::expect_no_error(
+		{
+			set_theme$payout()
+			chart(SPY)
+		}
+	)
+
+	testthat::expect_no_error(
+		{
+			set_theme$tp_slapped()
+			chart(SPY)
+		}
+	)
+
+	testthat::expect_no_error(
+		{
+			set_theme$trust_the_process()
+			chart(SPY)
+		}
+	)
+})

@@ -264,9 +264,22 @@ bollinger_bands.plotly <- function(
 	}
 
 	traces <- list(
-		list(y = ~UpperBand, name = "Upper Band"),
-		list(y = ~MiddleBand, name = "Middle Band", fill = "tonexty"),
-		list(y = ~LowerBand, name = "Lower Band", fill = "tonexty")
+		list(
+			y = ~UpperBand,
+			name = paste("Upper Bollinger Band", paste0("+", sd_up, " sd")),
+			showlegend = FALSE
+		),
+		list(
+			y = ~MiddleBand,
+			name = sub("\\(.*$", "", input_name(substitute(ma)), perl = TRUE),
+			fill = "tonexty"
+		),
+		list(
+			y = ~LowerBand,
+			name = paste("Lower Bollinger Band", paste0("-", sd_down, " sd")),
+			fill = "tonexty",
+			showlegend = FALSE
+		)
 	)
 
 	traces <- modify_traces(
@@ -281,8 +294,8 @@ bollinger_bands.plotly <- function(
 	)
 	## splice:plotly-assembly:end
 
-	plotly_object <- .plotting_environment[["main"]] <- build_plotly(
-		init = .plotting_environment[["main"]],
+	plotly_object <- .chart_environment[["main"]] <- build_plotly(
+		init = .chart_environment[["main"]],
 		traces = traces,
 		decorators = list(),
 		name = get0(

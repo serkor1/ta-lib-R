@@ -235,38 +235,46 @@ extended_parabolic_stop_and_reverse.plotly <- function(
 	## splice:plotly-assembly:start
 	## identify bullish
 	## signals
-	bull <- (constructed_indicator$SAR < as.numeric(constructed_series[[2L]]))
+	bull <- (constructed_indicator$SAR[
+		-c(1:attr(constructed_indicator, "lookback"))
+	] <
+		as.numeric(
+			constructed_series[[2L]][
+				-c(1:attr(constructed_indicator, "lookback"))
+			]
+		))
 	chart_theme <- .chart_theme()
 	## determine colors
 	##
 	colors <- ifelse(
 		bull,
-		plotly::toRGB(chart_theme$bull_color, alpha = 0.8),
-		plotly::toRGB(chart_theme$bear_color, alpha = 0.8)
+		plotly::toRGB(.chart_variables$bullish_body, alpha = 0.8),
+		plotly::toRGB(.chart_variables$bearish_body <- "#A9A9A9", alpha = 0.8)
 	)
 
 	## constuct chart
 	## element
-	name <- "SAR"
+	name <- "Parabolic Stop and Reverse (Extended)"
 	traces <- list(
 		list(
 			y = ~SAREXT,
 			type = "scatter",
 			mode = "markers",
+			color = colors,
 			marker = list(
 				size = 5,
 				color = colors,
 				line = list(
 					color = "black",
-					width = 1
+					width = 0.75
 				)
 			)
 		)
 	)
 	## splice:plotly-assembly:end
 
-	plotly_object <- .plotting_environment[["main"]] <- build_plotly(
-		init = .plotting_environment[["main"]],
+	plotly_object <- .chart_environment[["main"]] <- build_plotly(
+		init = .chart_environment[["main"]],
 		traces = traces,
 		decorators = list(),
 		name = get0(

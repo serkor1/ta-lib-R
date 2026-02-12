@@ -170,8 +170,8 @@ tasuki_gap.plotly <- function(
 	)
 
 	## construct {plotly}-object
-	plotly_object <- .plotting_environment[["main"]] <- pattern(
-		p = .plotting_environment[["main"]],
+	plotly_object <- .chart_environment[["main"]] <- pattern(
+		p = .chart_environment[["main"]],
 		x = constructed_indicator,
 		high = constructed_series[[2]],
 		low = constructed_series[[3]],

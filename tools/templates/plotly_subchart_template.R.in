@@ -39,6 +39,12 @@ ${FUN}.plotly <- function(
 		${PPARGS}
 	)
 
+	## the constructed indicator
+	## always returns excpected
+	## columns which can be passed
+	## down to add_last_values()
+	values_to_extract <- colnames(constructed_indicator)
+
 	## add conditional idx
 	constructed_indicator[["idx"]] <- add_idx(
 		constructed_series
@@ -49,7 +55,8 @@ ${FUN}.plotly <- function(
 	## initial scaffold
 	## splice:plotly-assembly:end
 
-	plotly_object <- build_plotly(
+	plotly_object <- add_last_value(
+		build_plotly(
 				init = plotly_init(),
 				traces = traces,
 				decorators = get0(
@@ -62,7 +69,10 @@ ${FUN}.plotly <- function(
 				),
 				data = constructed_indicator,
 				title = if (missing(title)) {"${TITLE}"} else {title}
-			)
+			),
+		data = constructed_indicator[,values_to_extract, drop = FALSE],
+		values_to_extract = values_to_extract
+	)
 
     .plotting_environment$sub <- c(
 		.plotting_environment$sub,

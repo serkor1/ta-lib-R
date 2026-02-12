@@ -43,8 +43,8 @@ chart <- function(
 	## without passing 'x'
 	if (missing(x)) {
 		rm(
-			list = ls(envir = .plotting_environment, all.names = TRUE),
-			envir = .plotting_environment
+			list = ls(envir = .chart_environment, all.names = TRUE),
+			envir = .chart_environment
 		)
 
 		return(invisible(NULL))
@@ -88,10 +88,10 @@ chart.default <- function(
 		chart_title <- title
 	}
 	.color_values <- .chart_theme()
-	.plotting_environment$sub <- .plotting_environment$chart <- list()
+	.chart_environment$sub <- .chart_environment$chart <- list()
 
 	## convert input to data.frame object
-	## and store in the .plotting_environment
+	## and store in the .chart_environment
 	## to avoid having to pass OHLC on every call
 	##
 	## NOTE: it is also a hard requirement on
@@ -113,8 +113,8 @@ chart.default <- function(
 	} else {
 		idx
 	}
-	.plotting_environment$x <- data_frame <- x
-	.plotting_environment$idx <- list(
+	.chart_environment$x <- data_frame <- x
+	.chart_environment$idx <- list(
 		label = x$idx,
 		index = seq_along(x$idx)
 	)
@@ -128,52 +128,67 @@ chart.default <- function(
 	assert(is.character(type) && length(type) == 1)
 	assert(type %in% c("candlestick", "ohlc"))
 
-	price_chart <- plotly::plot_ly(
+	candle_style <- function(
+		bull_candle,
+		bear_candle,
+		line_width,
+		alpha = 1
+	) {
+		side <- function(col) {
+			list(
+				line = list(
+					color = col,
+					width = line_width
+				),
+				fillcolor = plotly::toRGB(
+					col,
+					alpha = alpha
+				)
+			)
+		}
+
+		list(
+			increasing = side(bull_candle),
+			decreasing = side(bear_candle)
+		)
+	}
+
+	base <- plotly::plot_ly(
 		data = data_frame,
-		type = type,
 		x = ~idx,
 		open = ~open,
 		close = ~close,
 		high = ~high,
 		low = ~low,
-
-		## colors of bullish
-		## and bearish candles/bars
-		##
-		## NOTE: if fillcolor is NULL
-		##       the candles are hollow.
-		##       If there is eventual demand this can be changed
-		increasing = list(
-			line = list(
-				color = .color_values$bull_color,
-				width = 3 - 1.75
-			),
-			fillcolor = plotly::toRGB(
-				x = .color_values$bull_color,
-				alpha = 1 ## This should be controlled from .chart_theme()
-			)
-		),
-		decreasing = list(
-			line = list(
-				color = .color_values$bear_color,
-				width = 3 - 1.75
-			),
-
-			fillcolor = plotly::toRGB(
-				x = .color_values$bear_color,
-				alpha = 1 ## This should be controlled from .chart_theme()
-			)
-		),
-
-		## remove legend
-		## there is no reason to display
-		## it in the legend.
-		##
-		## If there is demand for it we can
-		## implement a heuristic to determine intervals
-		## for 1h, 2h, etc. Similar to {cryptoQuotes}
 		showlegend = FALSE,
 		...
+	)
+
+	border_chart <- do.call(
+		plotly::add_trace,
+		c(
+			list(p = base, type = type),
+			candle_style(
+				.chart_variables$bullish_border,
+				.chart_variables$bearish_border,
+				line_width = 2
+			)
+		)
+	)
+
+	price_chart <- do.call(
+		plotly::add_trace,
+		c(
+			list(
+				p = border_chart,
+				type = type
+			),
+			candle_style(
+				.chart_variables$bullish_body,
+				.chart_variables$bearish_body,
+				line_width = 1
+			)
+		)
 	)
 
 	## construct chart meta data
@@ -181,22 +196,22 @@ chart.default <- function(
 	## There is no relevant information in the range 1:N
 	## so if the rownames only contrains integers the chart will
 	## skip it
-	if (is.integer(.plotting_environment$idx$label)) {
+	if (is.integer(.chart_environment$idx$label)) {
 		title_text <- sprintf(
-			fmt = "<b>Ticker:</b> %s <span style='font-size:50%%;'><b>N:</b> %d </span>",
+			fmt = "%s <span style='font-size:10;'><b>N:</b> %d </span>",
 			chart_title,
 			nrow(x)
 		)
 	} else {
 		title_text <- sprintf(
-			fmt = "<b>Ticker:</b> %s <span style='font-size:50%%;'><b>N:</b> %d <b>Period:</b> %s</span>",
+			fmt = "%s <span style='font-size:10;'><b>N:</b> %d <b>Period:</b> %s</span>",
 			chart_title,
 			nrow(x),
 			paste(
-				.plotting_environment$idx$label[1],
+				.chart_environment$idx$label[1],
 				"-",
-				.plotting_environment$idx$label[length(
-					.plotting_environment$idx$label
+				.chart_environment$idx$label[length(
+					.chart_environment$idx$label
 				)]
 			)
 		)
@@ -216,16 +231,22 @@ chart.default <- function(
 		},
 		function(p) layout_font(p),
 		function(p) layout_legend(p),
-		function(p) add_last_value(p, data = data_frame, remove_cols = "volume")
+		function(p) {
+			add_last_value(
+				p,
+				data = data_frame
+			)
+		},
+		function(p) layout_color(p)
 	)
 
-	.plotting_environment$main <- Reduce(
+	.chart_environment$main <- Reduce(
 		f = function(p, f) f(p),
 		x = fns,
 		init = price_chart
 	)
 
 	layout_settings(
-		.plotting_environment$main
+		.chart_environment$main
 	)
 }

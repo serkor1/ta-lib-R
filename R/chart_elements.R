@@ -13,7 +13,7 @@ add_title <- function(
 		yref = "paper",
 		showarrow = FALSE,
 		font = list(
-			size = 16 *
+			size = 14 *
 				getOption(
 					"talib.chart.scale",
 					default = 1
@@ -37,7 +37,7 @@ add_limit <- function(
 add_last_value <- function(
 	p,
 	data,
-	remove_cols = NULL
+	values_to_extract = c("open", "high", "low", "close")
 ) {
 	## construct last value
 	## text
@@ -45,21 +45,26 @@ add_last_value <- function(
 		nrow(data),
 		grep(
 			x = colnames(data),
-			pattern = paste(
-				c("idx", remove_cols),
-				collapse = "|"
-			),
+			pattern = paste0(values_to_extract, collapse = "|"),
 			value = TRUE,
-			invert = TRUE,
+			invert = FALSE,
 			ignore.case = TRUE
-		)
+		),
+		drop = FALSE
 	]
 
-	value_text <- paste0(
-		"<b>",
-		colnames(last_values),
-		"</b>: ",
+	## extract values
+	## and names
+	values <- vapply(
 		last_values,
+		function(col) col[[1]],
+		numeric(1)
+	)
+
+	ohlc <- names(values)
+
+	value_text <- paste(
+		sprintf("<b>%s:</b> %.2f", ohlc, values),
 		collapse = " "
 	)
 

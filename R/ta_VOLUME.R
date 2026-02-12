@@ -206,6 +206,12 @@ trading_volume.plotly <- function(
 		ma = ma
 	)
 
+	## the constructed indicator
+	## always returns excpected
+	## columns which can be passed
+	## down to add_last_values()
+	values_to_extract <- colnames(constructed_indicator)
+
 	## add conditional idx
 	constructed_indicator[["idx"]] <- add_idx(
 		constructed_series
@@ -242,7 +248,14 @@ trading_volume.plotly <- function(
 				y = stats::as.formula(
 					paste0("~", col)
 				),
-				name = col
+
+				## reformat extract SMA17 as SMA(17)
+				name = sub(
+					"^([A-Za-z]+)([0-9]+)$",
+					"\\1(\\2)",
+					col,
+					perl = TRUE
+				)
 			)
 		}
 	)
@@ -251,34 +264,39 @@ trading_volume.plotly <- function(
 	## assuming its volume
 	traces[[1]]$color <- ~direction
 	traces[[1]]$colors = c(
-		chart_theme$bull_color,
-		chart_theme$bear_color
+		.chart_variables$bullish_body,
+		.chart_variables$bearish_body
 	)
+	traces[[1]]$showlegend <- FALSE
 	traces[[1]]$type <- 'bar'
 	traces[[1]]["mode"] <- list(NULL)
 	## splice:plotly-assembly:end
 
-	plotly_object <- build_plotly(
-		init = plotly_init(),
-		traces = traces,
-		decorators = get0(
-			x = "decorators",
-			ifnotfound = list()
+	plotly_object <- add_last_value(
+		build_plotly(
+			init = plotly_init(),
+			traces = traces,
+			decorators = get0(
+				x = "decorators",
+				ifnotfound = list()
+			),
+			name = get0(
+				x = "name",
+				ifnotfound = NULL
+			),
+			data = constructed_indicator,
+			title = if (missing(title)) {
+				"Trading Volume"
+			} else {
+				title
+			}
 		),
-		name = get0(
-			x = "name",
-			ifnotfound = NULL
-		),
-		data = constructed_indicator,
-		title = if (missing(title)) {
-			"Trading Volume"
-		} else {
-			title
-		}
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		values_to_extract = values_to_extract
 	)
 
-	.plotting_environment$sub <- c(
-		.plotting_environment$sub,
+	.chart_environment$sub <- c(
+		.chart_environment$sub,
 		list(plotly_object)
 	)
 

@@ -17,13 +17,13 @@ layout_background <- function(
 	## apply colors
 	plotly::layout(
 		p = p,
-		paper_bgcolor = paper_bgcolor,
-		plot_bgcolor = plot_bgcolor,
+		paper_bgcolor = .chart_variables$background_color,
+		plot_bgcolor = .chart_variables$background_color,
 		yaxis = list(
-			gridcolor = grid_color
+			gridcolor = .chart_variables$gridcolor
 		),
 		xaxis = list(
-			gridcolor = grid_color
+			gridcolor = .chart_variables$gridcolor
 		)
 	)
 }
@@ -42,17 +42,29 @@ layout_axis <- function(
 	plotly::layout(
 		p = p,
 		yaxis = list(
-			title = ''
+			title = '',
+			side = "right",
+			showline = TRUE,
+			mirror = TRUE,
+			linecolor = .chart_variables$foreground_color,
+			linewidth = 0.1,
+			zerolinewidth = 0.1,
+			zeroline = FALSE,
+			zerolinecolor = .chart_variables$foreground_color,
+			tickformat = "~s"
 		),
 		xaxis = list(
 			title = '',
 			tickvals = seq_along(idx),
 			tickmode = "auto",
-			ticktext = idx
+			ticktext = idx,
+			showline = TRUE,
+			mirror = "allticks",
+			color = .chart_variables$foreground_color,
+			linewidth = 0.1
 		)
 	)
 }
-
 
 layout_annotate <- function(
 	p,
@@ -77,16 +89,22 @@ layout_title <- function(
 	...
 ) {
 	## apply layout
-	plotly::layout(
+	plotly::add_annotations(
 		p = p,
-		title = list(
-			text = title,
-			x = 0,
-			y = 1,
-			xref = "paper",
-			yref = "paper",
-			xanchor = "left",
-			yanchor = "bottom"
+		text = title,
+		x = 0,
+		y = 1,
+		xref = "paper",
+		yref = "paper",
+		xanchor = "left",
+		yanchor = "bottom",
+		showarrow = FALSE,
+		font = list(
+			size = 14 *
+				getOption(
+					"talib.chart.scale",
+					default = 1
+				)
 		)
 	)
 }
@@ -97,7 +115,7 @@ layout_font <- function(
 	theme_element = layout_theme()
 ) {
 	## font color and scale
-	font_color <- theme_element$font_color
+	font_color <- .chart_variables$text_color
 	font_scale <- getOption(
 		"talib.chart.scale",
 		default = 1
@@ -108,17 +126,17 @@ layout_font <- function(
 		p = p,
 		title = list(
 			font = list(
-				20 * font_scale
+				14 * font_scale
 			)
 		),
 		font = list(
-			size = 14 * font_scale,
-			color = font_color
+			size = 10 * font_scale,
+			color = .chart_variables$text_color
 		),
 		legend = list(
 			title = list(
 				font = list(
-					size = 16 * font_scale
+					size = 14 * font_scale
 				)
 			)
 		)
@@ -173,12 +191,17 @@ layout_settings <- function(p) {
 				visible = range_slider,
 				thickness = range_slider_size
 			)
-		),
-		margin = list(
-			l = 0,
-			b = 0,
-			pad = 0
 		)
+		## TODO: Understand how this
+		## actually works. Its still a
+		## black box.
+		# margin = list(
+		# 	r = 5,
+		# 	t = 5,
+		# 	l = 5,
+		# 	b = 0,
+		# 	pad = 0
+		# )
 	)
 
 	## configurations
@@ -201,5 +224,12 @@ layout_settings <- function(p) {
 		##       redundant too. These will be
 		##       removed later (TM)
 		displaylogo = FALSE
+	)
+}
+
+layout_color <- function(p) {
+	plotly::layout(
+		p = p,
+		colorway = .chart_variables$colorway
 	)
 }

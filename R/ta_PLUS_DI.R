@@ -157,6 +157,12 @@ plus_directional_indicator.plotly <- function(
 		n = n
 	)
 
+	## the constructed indicator
+	## always returns excpected
+	## columns which can be passed
+	## down to add_last_values()
+	values_to_extract <- colnames(constructed_indicator)
+
 	## add conditional idx
 	constructed_indicator[["idx"]] <- add_idx(
 		constructed_series
@@ -171,27 +177,31 @@ plus_directional_indicator.plotly <- function(
 	)
 	## splice:plotly-assembly:end
 
-	plotly_object <- build_plotly(
-		init = plotly_init(),
-		traces = traces,
-		decorators = get0(
-			x = "decorators",
-			ifnotfound = list()
+	plotly_object <- add_last_value(
+		build_plotly(
+			init = plotly_init(),
+			traces = traces,
+			decorators = get0(
+				x = "decorators",
+				ifnotfound = list()
+			),
+			name = get0(
+				x = "name",
+				ifnotfound = NULL
+			),
+			data = constructed_indicator,
+			title = if (missing(title)) {
+				"Plus Directional Indicator"
+			} else {
+				title
+			}
 		),
-		name = get0(
-			x = "name",
-			ifnotfound = NULL
-		),
-		data = constructed_indicator,
-		title = if (missing(title)) {
-			"Plus Directional Indicator"
-		} else {
-			title
-		}
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		values_to_extract = values_to_extract
 	)
 
-	.plotting_environment$sub <- c(
-		.plotting_environment$sub,
+	.chart_environment$sub <- c(
+		.chart_environment$sub,
 		list(plotly_object)
 	)
 

@@ -10,6 +10,12 @@
 #' `<%= tolower(.fun) %>()` also accepts a [double] vector in which case the indicator is calculated 'as-is' without passing through [model.frame]. `<%= tolower(.fun) %>()` returns an `n` by `k` [matrix] computed in C by default. When `k = 1`, the result is simplified to a [double] vector; for `k > 1`, the full `n` by `k` [matrix] is returned.
 #' 
 <% } %>
+#'
+#' ## Handling of <NA>-values
+#' 
+#' `<%= tolower(.fun) %>()` iterates over valid values, and returns `NA` for the remaing part of series. 
+#'  
+#' 
 #' @param x An OHLC-V series that is coercible to [data.frame].
 <% if (n_vars == 1) { %>
 #' Alternatively, `x` may also be supplied as a [double] vector.

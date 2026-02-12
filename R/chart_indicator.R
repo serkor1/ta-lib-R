@@ -15,7 +15,13 @@
 #' @example man/examples/indicator.R
 #'
 #' @author Serkan Korkmaz
+#' @export
 indicator <- function(FUN, ...) {
+	UseMethod("indicator")
+}
+
+#' @export
+indicator.function <- function(FUN, ...) {
 	## resolve function name of no
 	## title have been passed
 	title <- input_name(
@@ -42,7 +48,7 @@ indicator <- function(FUN, ...) {
 	## locate the main chart
 	## NOTE: if its not there we might need
 	##       to initialize a new
-	plt <- .plotting_environment$main
+	plt <- .chart_environment$main
 
 	if (is.null(plt)) {
 		chart_called <- FALSE
@@ -70,7 +76,7 @@ indicator <- function(FUN, ...) {
 			)
 		}
 
-		.plotting_environment$idx$label <- idx
+		.chart_environment$idx$label <- idx
 	}
 
 	## construct {plotly}-object
@@ -102,7 +108,7 @@ indicator <- function(FUN, ...) {
 	}
 
 	if (chart_called) {
-		panels <- c(list(.plotting_environment$main), .plotting_environment$sub)
+		panels <- c(list(.chart_environment$main), .chart_environment$sub)
 		n <- length(panels)
 		main_h <- getOption("talib.chart.main", 0.7)
 		heights <- if (n > 1) {
@@ -125,10 +131,10 @@ indicator <- function(FUN, ...) {
 				tickmode = "auto"
 			)
 		)
-		.plotting_environment$chart <- fig
+		.chart_environment$chart <- fig
 
 		return(
-			layout_settings(fig)
+			layout_axis(layout_color(layout_settings(fig)))
 		)
 	}
 
@@ -140,5 +146,5 @@ indicator <- function(FUN, ...) {
 	# 	idx = if (is.null(idx)) 1:nrow(data) else idx
 	# )
 
-	layout_settings(outcome)
+	layout_axis(layout_color(layout_settings(outcome)))
 }

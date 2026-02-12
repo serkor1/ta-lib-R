@@ -190,6 +190,12 @@ stochastic_relative_strength_index.plotly <- function(
 		fastd = fastd
 	)
 
+	## the constructed indicator
+	## always returns excpected
+	## columns which can be passed
+	## down to add_last_values()
+	values_to_extract <- colnames(constructed_indicator)
+
 	## add conditional idx
 	constructed_indicator[["idx"]] <- add_idx(
 		constructed_series
@@ -197,7 +203,7 @@ stochastic_relative_strength_index.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	name <- ""
+	name <- "Stochastic Relative Strength Index"
 
 	decorators <- list(
 		function(p) add_limit(p, y_range = c(0, 100))
@@ -206,32 +212,36 @@ stochastic_relative_strength_index.plotly <- function(
 	traces <- list(
 		plotly_line(lower_bound),
 		plotly_line(upper_bound),
-		list(y = ~FastK),
-		list(y = ~FastD)
+		list(y = ~FastK, name = "Fast %K"),
+		list(y = ~FastD, name = "Fast %D")
 	)
 	## splice:plotly-assembly:end
 
-	plotly_object <- build_plotly(
-		init = plotly_init(),
-		traces = traces,
-		decorators = get0(
-			x = "decorators",
-			ifnotfound = list()
+	plotly_object <- add_last_value(
+		build_plotly(
+			init = plotly_init(),
+			traces = traces,
+			decorators = get0(
+				x = "decorators",
+				ifnotfound = list()
+			),
+			name = get0(
+				x = "name",
+				ifnotfound = NULL
+			),
+			data = constructed_indicator,
+			title = if (missing(title)) {
+				"Stochastic Relative Strength Index"
+			} else {
+				title
+			}
 		),
-		name = get0(
-			x = "name",
-			ifnotfound = NULL
-		),
-		data = constructed_indicator,
-		title = if (missing(title)) {
-			"Stochastic Relative Strength Index"
-		} else {
-			title
-		}
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		values_to_extract = values_to_extract
 	)
 
-	.plotting_environment$sub <- c(
-		.plotting_environment$sub,
+	.chart_environment$sub <- c(
+		.chart_environment$sub,
 		list(plotly_object)
 	)
 

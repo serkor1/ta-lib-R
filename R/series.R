@@ -37,7 +37,7 @@ series.plotly <- function(
 
 	# If caller didn't provide data=..., default to the chart's data
 	if (!("data" %in% dn)) {
-		dotsQ$data <- quote(.plotting_environment$x)
+		dotsQ$data <- quote(.chart_environment$x)
 	}
 
 	out <- as.data.frame(

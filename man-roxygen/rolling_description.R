@@ -1,6 +1,11 @@
 #' @description 
 #' The `<%= tolower(.fun) %>()` is a generic S3 function that builds upon 'type-safe'-esque workflows limited to classes in in base `R`, and the package-wide dependencies. Ie. [class] in, [class] out.
 #' 
+#' ## Handling of <NA>-values
+#' 
+#' `<%= tolower(.fun) %>()` iterates over valid values, and returns `NA` for the remaing part of series. 
+#'  
+#' 
 <%
 	if (all(c("x","y") %in% names(formals(.fun))))
 { %>

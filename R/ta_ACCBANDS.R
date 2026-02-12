@@ -171,9 +171,23 @@ acceleration_bands.plotly <- function(
 	)
 
 	traces <- list(
-		list(y = ~UpperBand, name = "Upper Band"),
-		list(y = ~MiddleBand, name = "Middle Band", fill = "tonexty"),
-		list(y = ~LowerBand, name = "Lower Band", fill = "tonexty")
+		list(
+			y = ~UpperBand,
+			name = "Upper Acceleration Band",
+			showlegend = FALSE
+		),
+		list(
+			y = ~MiddleBand,
+			name = "SMA",
+			fill = "tonexty",
+			showlegend = TRUE
+		),
+		list(
+			y = ~LowerBand,
+			name = "Lower Acceleration Band",
+			fill = "tonexty",
+			showlegend = FALSE
+		)
 	)
 
 	traces <- modify_traces(
@@ -188,8 +202,8 @@ acceleration_bands.plotly <- function(
 	)
 	## splice:plotly-assembly:end
 
-	plotly_object <- .plotting_environment[["main"]] <- build_plotly(
-		init = .plotting_environment[["main"]],
+	plotly_object <- .chart_environment[["main"]] <- build_plotly(
+		init = .chart_environment[["main"]],
 		traces = traces,
 		decorators = list(),
 		name = get0(
