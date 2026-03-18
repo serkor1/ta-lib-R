@@ -81,6 +81,74 @@ Notice here that you have to pass a `data` argument via `...` which gets passed 
 
 The charts can be globally modified via `options` use `?talib::chart` to see the full range of modifications available for the charting. Below is an example on how to modify the color scheme of the charts.
 
+### chart themes
+
+```{r}
+{
+  talib::chart(talib::BTC)
+  talib::indicator(talib::SMA, n = 7)
+  talib::indicator(talib::SMA, n = 14)
+  talib::indicator(talib::SMA, n = 21)
+  talib::indicator(talib::SMA, n = 28)
+  talib::indicator(talib::MACD)
+  talib::indicator(talib::trading_volume)
+}
+```
+
+```{r}
+{
+  talib::set_theme$hawks_and_doves()
+  talib::chart(talib::BTC)
+  talib::indicator(talib::SMA, n = 7)
+  talib::indicator(talib::SMA, n = 14)
+  talib::indicator(talib::SMA, n = 21)
+  talib::indicator(talib::SMA, n = 28)
+  talib::indicator(talib::MACD)
+  talib::indicator(talib::trading_volume)
+}
+```
+
+
+```{r}
+{
+  talib::set_theme$payout()
+  talib::chart(talib::BTC)
+  talib::indicator(talib::SMA, n = 7)
+  talib::indicator(talib::SMA, n = 14)
+  talib::indicator(talib::SMA, n = 21)
+  talib::indicator(talib::SMA, n = 28)
+  talib::indicator(talib::MACD)
+  talib::indicator(talib::trading_volume)
+}
+```
+
+```{r}
+{
+  talib::set_theme$tp_slapped()
+  talib::chart(talib::BTC)
+  talib::indicator(talib::SMA, n = 7)
+  talib::indicator(talib::SMA, n = 14)
+  talib::indicator(talib::SMA, n = 21)
+  talib::indicator(talib::SMA, n = 28)
+  talib::indicator(talib::MACD)
+  talib::indicator(talib::trading_volume)
+}
+```
+
+```{r}
+{
+  talib::set_theme$trust_the_process()
+  talib::chart(talib::BTC)
+  talib::indicator(talib::SMA, n = 7)
+  talib::indicator(talib::SMA, n = 14)
+  talib::indicator(talib::SMA, n = 21)
+  talib::indicator(talib::SMA, n = 28)
+  talib::indicator(talib::MACD)
+  talib::indicator(talib::trading_volume)
+}
+```
+
+
 ```{r}
 ## modify options
 ## to create charts in
