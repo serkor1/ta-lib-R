@@ -131,9 +131,9 @@ plus_directional_indicator.plotly <- function(
 	x,
 	cols,
 	n = 10,
+	na.rm = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
-	na.rm = FALSE,
 	title,
 	...
 ) {

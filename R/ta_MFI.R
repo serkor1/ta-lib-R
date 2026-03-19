@@ -132,11 +132,11 @@ money_flow_index.plotly <- function(
 	x,
 	cols,
 	n = 10,
+	na.rm = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = -20,
 	upper_bound = 80,
 	## splice:optional-plotly:end
-	na.rm = FALSE,
 	title,
 	...
 ) {

@@ -198,9 +198,9 @@ percentage_price_oscillator.plotly <- function(
 	fast = 7,
 	slow = 14,
 	ma = SMA(n = 10),
+	na.rm = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
-	na.rm = FALSE,
 	title,
 	...
 ) {

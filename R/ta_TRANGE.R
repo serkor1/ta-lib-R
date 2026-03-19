@@ -123,9 +123,9 @@ true_range.matrix <- function(
 true_range.plotly <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
-	na.rm = FALSE,
 	title,
 	...
 ) {

@@ -165,9 +165,9 @@ sine_wave.numeric <- function(
 sine_wave.plotly <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
-	na.rm = FALSE,
 	title,
 	...
 ) {

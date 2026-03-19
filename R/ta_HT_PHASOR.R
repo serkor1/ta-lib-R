@@ -165,9 +165,9 @@ phasor_components.numeric <- function(
 phasor_components.plotly <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
-	na.rm = FALSE,
 	title,
 	...
 ) {

@@ -198,9 +198,9 @@ moving_average_convergence_divergence.plotly <- function(
 	fast = 12,
 	slow = 26,
 	signal = 9,
+	na.rm = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
-	na.rm = FALSE,
 	title,
 	...
 ) {

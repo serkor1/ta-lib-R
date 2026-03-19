@@ -152,11 +152,11 @@ stochastic.plotly <- function(
 	fastk = 5,
 	slowk = SMA(n = 10),
 	slowd = SMA(n = 8),
+	na.rm = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 20,
 	upper_bound = 80,
 	## splice:optional-plotly:end
-	na.rm = FALSE,
 	title,
 	...
 ) {

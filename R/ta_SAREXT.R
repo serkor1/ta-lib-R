@@ -194,9 +194,9 @@ extended_parabolic_stop_and_reverse.plotly <- function(
 	init_short = 0,
 	short = 0,
 	max_short = 0,
+	na.rm = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
-	na.rm = FALSE,
 	...
 ) {
 	## check that input value

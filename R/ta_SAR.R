@@ -140,9 +140,9 @@ parabolic_stop_and_reverse.plotly <- function(
 	cols,
 	acceleration = 0.5,
 	maximum = 0.75,
+	na.rm = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
-	na.rm = FALSE,
 	...
 ) {
 	## check that input value

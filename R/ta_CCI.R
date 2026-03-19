@@ -131,11 +131,11 @@ commodity_channel_index.plotly <- function(
 	x,
 	cols,
 	n = 10,
+	na.rm = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = -100,
 	upper_bound = 100,
 	## splice:optional-plotly:end
-	na.rm = FALSE,
 	...
 ) {
 	## check that input value

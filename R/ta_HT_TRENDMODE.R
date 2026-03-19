@@ -165,9 +165,9 @@ trend_cycle_mode.numeric <- function(
 trend_cycle_mode.plotly <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
-	na.rm = FALSE,
 	title,
 	...
 ) {

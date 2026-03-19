@@ -131,12 +131,12 @@ average_directional_movement_index_rating.plotly <- function(
 	x,
 	cols,
 	n = 10,
+	na.rm = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 25,
 	middle_bound = 50,
 	upper_bound = 75,
 	## splice:optional-plotly:end
-	na.rm = FALSE,
 	title,
 	...
 ) {

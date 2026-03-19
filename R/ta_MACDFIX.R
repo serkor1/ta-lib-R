@@ -176,9 +176,9 @@ fixed_moving_average_convergence_divergence.plotly <- function(
 	x,
 	cols,
 	signal = 9,
+	na.rm = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
-	na.rm = FALSE,
 	title,
 	...
 ) {

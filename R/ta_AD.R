@@ -124,9 +124,9 @@ chaikin_accumulation_distribution_line.matrix <- function(
 chaikin_accumulation_distribution_line.plotly <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
-	na.rm = FALSE,
 	title,
 	...
 ) {

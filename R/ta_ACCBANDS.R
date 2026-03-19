@@ -131,11 +131,11 @@ acceleration_bands.plotly <- function(
 	x,
 	cols,
 	n = 10,
+	na.rm = FALSE,
 	## splice:optional-plotly:start
 	color = "steelblue",
 	alpha = 0.2,
 	## splice:optional-plotly:end
-	na.rm = FALSE,
 	...
 ) {
 	## check that input value

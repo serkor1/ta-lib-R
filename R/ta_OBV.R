@@ -122,9 +122,9 @@ on_balance_volume.matrix <- function(
 on_balance_volume.plotly <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
-	na.rm = FALSE,
 	title,
 	...
 ) {

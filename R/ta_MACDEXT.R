@@ -204,9 +204,9 @@ extended_moving_average_convergence_divergence.plotly <- function(
 	fast = EMA(n = 12),
 	slow = EMA(n = 26),
 	signal = EMA(n = 9),
+	na.rm = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
-	na.rm = FALSE,
 	title,
 	...
 ) {

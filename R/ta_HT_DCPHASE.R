@@ -165,9 +165,9 @@ dominant_cycle_phase.numeric <- function(
 dominant_cycle_phase.plotly <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
-	na.rm = FALSE,
 	title,
 	...
 ) {

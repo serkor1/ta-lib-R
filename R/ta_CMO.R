@@ -175,11 +175,11 @@ chande_momentum_oscillator.plotly <- function(
 	x,
 	cols,
 	n = 10,
+	na.rm = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = -50,
 	upper_bound = 50,
 	## splice:optional-plotly:end
-	na.rm = FALSE,
 	title,
 	...
 ) {

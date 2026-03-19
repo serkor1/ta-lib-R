@@ -183,9 +183,9 @@ trading_volume.plotly <- function(
 	x,
 	cols,
 	ma = list(SMA(n = 7), SMA(n = 15)),
+	na.rm = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
-	na.rm = FALSE,
 	title,
 	...
 ) {

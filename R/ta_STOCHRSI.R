@@ -161,11 +161,11 @@ stochastic_relative_strength_index.plotly <- function(
 	n_rsi = 10,
 	fastk = 5,
 	fastd = SMA(n = 10),
+	na.rm = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 20,
 	upper_bound = 80,
 	## splice:optional-plotly:end
-	na.rm = FALSE,
 	title,
 	...
 ) {

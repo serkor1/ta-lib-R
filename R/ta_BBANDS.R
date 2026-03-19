@@ -209,11 +209,11 @@ bollinger_bands.plotly <- function(
 	sd = 2,
 	sd_down,
 	sd_up,
+	na.rm = FALSE,
 	## splice:optional-plotly:start
 	color = "steelblue",
 	alpha = 0.2,
 	## splice:optional-plotly:end
-	na.rm = FALSE,
 	...
 ) {
 	## check that input value

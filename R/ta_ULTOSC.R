@@ -133,11 +133,11 @@ ultimate_oscillator.plotly <- function(
 	x,
 	cols,
 	n = c(7, 14, 28),
+	na.rm = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 30,
 	upper_bound = 70,
 	## splice:optional-plotly:end
-	na.rm = FALSE,
 	title,
 	...
 ) {
