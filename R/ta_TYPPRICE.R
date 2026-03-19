@@ -58,13 +58,6 @@ typical_price.default <- function(
 	## for later attachment
 	x_names <- rownames(constructed_series)
 
-	## handle missing values
-	if (na.rm) {
-		na_info <- strip_na(constructed_series, x_names)
-		constructed_series <- na_info$series
-		x_names <- na_info$x_names
-	}
-
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -72,15 +65,10 @@ typical_price.default <- function(
 		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
-		constructed_series[[3]]
+		constructed_series[[3]],
 		## splice:call:end
+		as.logical(na.rm)
 	)
-
-	## re-expand NA rows
-	if (na.rm && !is.null(na_info$na_idx)) {
-		x <- reexpand_na(x, na_info)
-		x_names <- na_info$x_names_all
-	}
 
 	## readd rownames
 	set_rownames(x, x_names)

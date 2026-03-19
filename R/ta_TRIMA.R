@@ -79,27 +79,15 @@ triangular_moving_average.default <- function(
 	## for later attachment
 	x_names <- rownames(constructed_series)
 
-	## handle missing values
-	if (na.rm) {
-		na_info <- strip_na(constructed_series, x_names)
-		constructed_series <- na_info$series
-		x_names <- na_info$x_names
-	}
-
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		"impl_ta_MA",
 		as.double(constructed_series[[1]]),
 		as.integer(n),
-		5L
+		5L,
+		as.logical(na.rm)
 	)
-
-	## re-expand NA rows
-	if (na.rm && !is.null(na_info$na_idx)) {
-		x <- reexpand_na(x, na_info)
-		x_names <- na_info$x_names_all
-	}
 
 	## readd rownames
 	set_rownames(x, x_names)
@@ -166,29 +154,19 @@ triangular_moving_average.numeric <- function(
 		warning("'cols' is passed but is unused for vectors.")
 	}
 
-	## handle missing values
-	if (na.rm) {
-		na_info <- strip_na_vector(x)
-		x <- na_info$x
-	}
-
 	## pass to 'C' directly
 	## with the input vector
 	x <- .Call(
 		"impl_ta_MA",
 		as.double(x),
 		as.integer(n),
-		5L
+		5L,
+		as.logical(na.rm)
 	)
 
 	## 'C' returns a named matrix
 	## return the first column
 	x <- as.double(x)
-
-	## re-expand NA positions
-	if (na.rm && !is.null(na_info$na_idx)) {
-		x <- reexpand_na_vector(x, na_info)
-	}
 
 	x
 }

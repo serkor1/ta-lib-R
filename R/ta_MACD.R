@@ -67,13 +67,6 @@ moving_average_convergence_divergence.default <- function(
 	## for later attachment
 	x_names <- rownames(constructed_series)
 
-	## handle missing values
-	if (na.rm) {
-		na_info <- strip_na(constructed_series, x_names)
-		constructed_series <- na_info$series
-		x_names <- na_info$x_names
-	}
-
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -82,15 +75,10 @@ moving_average_convergence_divergence.default <- function(
 		constructed_series[[1]],
 		as.integer(fast),
 		as.integer(slow),
-		as.integer(signal)
+		as.integer(signal),
 		## splice:call:end
+		as.logical(na.rm)
 	)
-
-	## re-expand NA rows
-	if (na.rm && !is.null(na_info$na_idx)) {
-		x <- reexpand_na(x, na_info)
-		x_names <- na_info$x_names_all
-	}
 
 	## readd rownames
 	set_rownames(x, x_names)
@@ -149,6 +137,7 @@ moving_average_convergence_divergence.matrix <- function(
 	)
 }
 
+
 #' @usage NULL
 #' @aliases moving_average_convergence_divergence
 #'
@@ -170,12 +159,6 @@ moving_average_convergence_divergence.numeric <- function(
 		warning("'cols' is passed but is unused for vectors.")
 	}
 
-	## handle missing values
-	if (na.rm) {
-		na_info <- strip_na_vector(x)
-		x <- na_info$x
-	}
-
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
@@ -184,8 +167,9 @@ moving_average_convergence_divergence.numeric <- function(
 		as.double(x),
 		as.integer(fast),
 		as.integer(slow),
-		as.integer(signal)
+		as.integer(signal),
 		## splice:numeric:end
+		as.logical(na.rm)
 	)
 
 	## check if it has 'dims'
@@ -200,13 +184,9 @@ moving_average_convergence_divergence.numeric <- function(
 		x <- as.double(x)
 	}
 
-	## re-expand NA positions
-	if (na.rm && !is.null(na_info$na_idx)) {
-		x <- reexpand_na_vector(x, na_info)
-	}
-
 	x
 }
+
 
 #' @usage NULL
 #' @aliases moving_average_convergence_divergence

@@ -23,6 +23,7 @@
 #include "attributes.h"
 #include "container.h"
 #include "lib.h"
+#include "na.h"
 #include "names.h"
 #include "shift.h"
 #include <R.h>
@@ -41,6 +42,8 @@ SEXP impl_ta_SAREXT(
 	SEXP optInAccelerationInitShort,
 	SEXP optInAccelerationShort,
 	SEXP optInAccelerationMaxShort
+,
+	SEXP na_rm
 )
 // clang-format on
 {
@@ -48,11 +51,11 @@ SEXP impl_ta_SAREXT(
   int protection_count = 0;
 
   // get length of 'inHigh' (assumes equal length across input)
-  const int n = LENGTH(inHigh);
+  int n = LENGTH(inHigh);
 
   // pointers to input arrays
-  const double *restrict inHigh_ptr = REAL(inHigh);
-  const double *restrict inLow_ptr = REAL(inLow);
+  const double *inHigh_ptr = REAL(inHigh);
+  const double *inLow_ptr = REAL(inLow);
 
   // extract input values
   const double optInStartValue_value = REAL(optInStartValue)[0];
@@ -67,6 +70,28 @@ SEXP impl_ta_SAREXT(
   const double optInAccelerationShort_value = REAL(optInAccelerationShort)[0];
   const double optInAccelerationMaxShort_value =
     REAL(optInAccelerationMaxShort)[0];
+
+  // NA handling
+  // see na.h for more details
+  int *na_mask = NULL;
+  const int n_original = n;
+
+  if (LOGICAL(na_rm)[0]) {
+    na_mask = (int *)R_alloc(n, sizeof(int));
+    const double *na_arrays[] = {inHigh_ptr, inLow_ptr};
+    n = build_na_mask(na_mask, n, 2, na_arrays);
+    if (n < n_original) {
+      double *compact_0 = (double *)R_alloc(n, sizeof(double));
+      compact_array(compact_0, inHigh_ptr, na_mask, n_original);
+      inHigh_ptr = compact_0;
+      double *compact_1 = (double *)R_alloc(n, sizeof(double));
+      compact_array(compact_1, inLow_ptr, na_mask, n_original);
+      inLow_ptr = compact_1;
+
+    } else {
+      na_mask = NULL;
+    }
+  }
 
   // output
   SEXP output;
@@ -138,6 +163,17 @@ SEXP impl_ta_SAREXT(
   // see names.h and attributes.h for more details
   set_colnames(output, "SAREXT");
   set_attribute(output, lookback, &protection_count);
+
+  // re-expand output if NAs were stripped
+  // see na.h for more details
+  if (na_mask != NULL) {
+    output = reexpand_matrix(
+      output,
+      output_ptr,
+      na_mask,
+      n_original,
+      &protection_count);
+  }
 
   UNPROTECT(protection_count);
   return output;

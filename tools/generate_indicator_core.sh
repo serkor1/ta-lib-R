@@ -196,7 +196,7 @@ VALUES=$''
 first_arr_name=${in_arrays_name[0]}
 first_arr_type=${in_arrays_type[0]}
 VALUES+=$'// get length of \''"${first_arr_name}"$'\' (assumes equal length across input)\n'
-VALUES+=$'const int n = LENGTH('"${first_arr_name}"$');\n\n'
+VALUES+=$'int n = LENGTH('"${first_arr_name}"$');\n\n'
 
 ## 7.2) extract the input array(s)
 ## 
@@ -207,18 +207,18 @@ VALUES+=$'const int n = LENGTH('"${first_arr_name}"$');\n\n'
 ##  const double *restrict inLow_ptr = REAL(inLow);
 if [ "$first_arr_type" = "double" ]; then
   VALUES+=$'// pointers to input arrays\n'
-  VALUES+=$'const double *restrict '"${first_arr_name}"$'_ptr = REAL('"${first_arr_name}"$');\n'
+  VALUES+=$'const double *'"${first_arr_name}"$'_ptr = REAL('"${first_arr_name}"$');\n'
 else
-  VALUES+=$'const int *restrict '"${first_arr_name}"$'_ptr = INTEGER('"${first_arr_name}"$');\n'
+  VALUES+=$'const int *'"${first_arr_name}"$'_ptr = INTEGER('"${first_arr_name}"$');\n'
 fi
 for i in "${!in_arrays_name[@]}"; do
   [ "$i" -eq 0 ] && continue
   n=${in_arrays_name[$i]}
   t=${in_arrays_type[$i]}
   if [ "$t" = "double" ]; then
-    VALUES+=$'const double *restrict '"$n"$'_ptr = REAL('"$n"$');\n'
+    VALUES+=$'const double *'"$n"$'_ptr = REAL('"$n"$');\n'
   else
-    VALUES+=$'const int *restrict '"$n"$'_ptr = INTEGER('"$n"$');\n'
+    VALUES+=$'const int *'"$n"$'_ptr = INTEGER('"$n"$');\n'
   fi
 done
 
@@ -366,7 +366,39 @@ fi
 ## 10.3) output type
 OUTPUT_TYPE=${out_arrays_type[0]}
 
-# 11) export and run envsubst
+## 11) NA handling code generation
+##
+## 11.1) build_na_mask call with all double input arrays
+NA_MASK_PTRS=""
+NA_N_ARRAYS=0
+for i in "${!in_arrays_name[@]}"; do
+  t=${in_arrays_type[$i]}
+  if [ "$t" = "double" ]; then
+    NA_MASK_PTRS+="${in_arrays_name[$i]}_ptr, "
+    ((NA_N_ARRAYS++)) || true
+  fi
+done
+NA_MASK_PTRS=${NA_MASK_PTRS%, }
+
+NA_MASK_BUILD=$''
+NA_MASK_BUILD+="const double *na_arrays[] = {${NA_MASK_PTRS}};"$'\n'
+NA_MASK_BUILD+="        n = build_na_mask(na_mask, n, ${NA_N_ARRAYS}, na_arrays);"
+
+## 11.2) compact_array calls for each double input
+NA_COMPACT=$''
+ci=0
+for i in "${!in_arrays_name[@]}"; do
+  t=${in_arrays_type[$i]}
+  nm=${in_arrays_name[$i]}
+  if [ "$t" = "double" ]; then
+    NA_COMPACT+="double *compact_${ci} = (double *)R_alloc(n, sizeof(double));"$'\n'
+    NA_COMPACT+="            compact_array(compact_${ci}, ${nm}_ptr, na_mask, n_original);"$'\n'
+    NA_COMPACT+="            ${nm}_ptr = compact_${ci};"$'\n'
+    ((ci++)) || true
+  fi
+done
+
+# 12) export and run envsubst
 export NAME
 export R_SIGNATURE
 export PARAM_DOC
@@ -381,6 +413,8 @@ export SHIFT_ARRAYS
 export SET_COLUMN_NAMES
 export RETURN_COLS
 export OUTPUT_TYPE
+export NA_MASK_BUILD
+export NA_COMPACT
 
 TEMPLATE_FILE=${TEMPLATE:-tools/templates/indicator_template.c.in}
 envsubst < "$TEMPLATE_FILE"

@@ -16,6 +16,7 @@
 #include "attributes.h"
 #include "container.h"
 #include "lib.h"
+#include "na.h"
 #include "names.h"
 #include "shift.h"
 #include <R.h>
@@ -26,7 +27,8 @@
 SEXP impl_ta_MA(
 	SEXP inReal,
 	SEXP optInTimePeriod,
-	SEXP optInMAType
+	SEXP optInMAType,
+	SEXP na_rm
 )
 // clang-format on
 {
@@ -34,14 +36,32 @@ SEXP impl_ta_MA(
   int protection_count = 0;
 
   // get length of 'inReal' (assumes equal length across input)
-  const int n = LENGTH(inReal);
+  int n = LENGTH(inReal);
 
   // pointers to input arrays
-  const double *restrict inReal_ptr = REAL(inReal);
+  const double *inReal_ptr = REAL(inReal);
 
   // extract input values
   const int optInTimePeriod_value = INTEGER(optInTimePeriod)[0];
   const TA_MAType optInMAType_value = as_MAType(optInMAType);
+
+  // NA handling
+  // see na.h for more details
+  int *na_mask = NULL;
+  const int n_original = n;
+
+  if (LOGICAL(na_rm)[0]) {
+    na_mask = (int *)R_alloc(n, sizeof(int));
+    const double *na_arrays[] = {inReal_ptr};
+    n = build_na_mask(na_mask, n, 1, na_arrays);
+    if (n < n_original) {
+      double *compact_0 = (double *)R_alloc(n, sizeof(double));
+      compact_array(compact_0, inReal_ptr, na_mask, n_original);
+      inReal_ptr = compact_0;
+    } else {
+      na_mask = NULL;
+    }
+  }
 
   // output
   SEXP output;
@@ -99,6 +119,17 @@ SEXP impl_ta_MA(
   const char *colname = _MAType_(optInMAType_value);
   set_colnames(output, colname);
   set_attribute(output, lookback, &protection_count);
+
+  // re-expand output if NAs were stripped
+  // see na.h for more details
+  if (na_mask != NULL) {
+    output = reexpand_matrix(
+      output,
+      output_ptr,
+      na_mask,
+      n_original,
+      &protection_count);
+  }
 
   UNPROTECT(protection_count);
   return output;

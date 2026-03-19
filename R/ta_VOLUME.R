@@ -61,13 +61,6 @@ trading_volume.default <- function(
 	## for later attachment
 	x_names <- rownames(constructed_series)
 
-	## handle missing values
-	if (na.rm) {
-		na_info <- strip_na(constructed_series, x_names)
-		constructed_series <- na_info$series
-		x_names <- na_info$x_names
-	}
-
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -81,15 +74,10 @@ trading_volume.default <- function(
 					unlist(x, use.names = FALSE)
 				)
 			}
-		)
+		),
 		## splice:call:end
+		as.logical(na.rm)
 	)
-
-	## re-expand NA rows
-	if (na.rm && !is.null(na_info$na_idx)) {
-		x <- reexpand_na(x, na_info)
-		x_names <- na_info$x_names_all
-	}
 
 	## readd rownames
 	set_rownames(x, x_names)
@@ -140,6 +128,7 @@ trading_volume.matrix <- function(
 	)
 }
 
+
 #' @usage NULL
 #' @aliases trading_volume
 #'
@@ -159,20 +148,15 @@ trading_volume.numeric <- function(
 		warning("'cols' is passed but is unused for vectors.")
 	}
 
-	## handle missing values
-	if (na.rm) {
-		na_info <- strip_na_vector(x)
-		x <- na_info$x
-	}
-
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
 		"impl_ta_VOLUME",
 		## splice:numeric:start
 		as.double(x),
-		ma
+		ma,
 		## splice:numeric:end
+		as.logical(na.rm)
 	)
 
 	## check if it has 'dims'
@@ -187,13 +171,9 @@ trading_volume.numeric <- function(
 		x <- as.double(x)
 	}
 
-	## re-expand NA positions
-	if (na.rm && !is.null(na_info$na_idx)) {
-		x <- reexpand_na_vector(x, na_info)
-	}
-
 	x
 }
+
 
 #' @usage NULL
 #' @aliases trading_volume

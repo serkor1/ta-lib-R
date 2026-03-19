@@ -16,6 +16,7 @@
 #include "attributes.h"
 #include "container.h"
 #include "lib.h"
+#include "na.h"
 #include "names.h"
 #include "shift.h"
 #include <R.h>
@@ -27,6 +28,8 @@ SEXP impl_ta_BETA(
 	SEXP inReal0,
 	SEXP inReal1,
 	SEXP optInTimePeriod
+,
+	SEXP na_rm
 )
 // clang-format on
 {
@@ -34,14 +37,36 @@ SEXP impl_ta_BETA(
   int protection_count = 0;
 
   // get length of 'inReal0' (assumes equal length across input)
-  const int n = LENGTH(inReal0);
+  int n = LENGTH(inReal0);
 
   // pointers to input arrays
-  const double *restrict inReal0_ptr = REAL(inReal0);
-  const double *restrict inReal1_ptr = REAL(inReal1);
+  const double *inReal0_ptr = REAL(inReal0);
+  const double *inReal1_ptr = REAL(inReal1);
 
   // extract input values
   const int optInTimePeriod_value = INTEGER(optInTimePeriod)[0];
+
+  // NA handling
+  // see na.h for more details
+  int *na_mask = NULL;
+  const int n_original = n;
+
+  if (LOGICAL(na_rm)[0]) {
+    na_mask = (int *)R_alloc(n, sizeof(int));
+    const double *na_arrays[] = {inReal0_ptr, inReal1_ptr};
+    n = build_na_mask(na_mask, n, 2, na_arrays);
+    if (n < n_original) {
+      double *compact_0 = (double *)R_alloc(n, sizeof(double));
+      compact_array(compact_0, inReal0_ptr, na_mask, n_original);
+      inReal0_ptr = compact_0;
+      double *compact_1 = (double *)R_alloc(n, sizeof(double));
+      compact_array(compact_1, inReal1_ptr, na_mask, n_original);
+      inReal1_ptr = compact_1;
+
+    } else {
+      na_mask = NULL;
+    }
+  }
 
   // output
   SEXP output;
@@ -98,6 +123,17 @@ SEXP impl_ta_BETA(
   // see names.h and attributes.h for more details
   set_colnames(output, "BETA");
   set_attribute(output, lookback, &protection_count);
+
+  // re-expand output if NAs were stripped
+  // see na.h for more details
+  if (na_mask != NULL) {
+    output = reexpand_matrix(
+      output,
+      output_ptr,
+      na_mask,
+      n_original,
+      &protection_count);
+  }
 
   UNPROTECT(protection_count);
   return output;

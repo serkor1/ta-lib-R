@@ -35,31 +35,19 @@ rolling_max.default <- function(
 	n = 10,
 	na.rm = FALSE
 ) {
-	## handle missing values
-	if (na.rm) {
-		na_info <- strip_na_vector(x)
-		x <- na_info$x
-	}
-
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		"impl_ta_MAX",
 		## splice:call:start
 		as.double(x),
-		as.integer(n)
+		as.integer(n),
 		## splice:call:end
+		as.logical(na.rm)
 	)
 
 	## return indicator
-	x <- as.double(x)
-
-	## re-expand NA positions
-	if (na.rm && !is.null(na_info$na_idx)) {
-		x <- reexpand_na_vector(x, na_info)
-	}
-
-	x
+	as.double(x)
 }
 
 #' @usage NULL
