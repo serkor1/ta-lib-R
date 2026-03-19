@@ -26,6 +26,7 @@
 thrusting <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("thrusting")
@@ -45,6 +46,7 @@ CDLTHRUSTING <- thrusting
 thrusting.default <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	## get candlestick pattern
@@ -87,7 +89,8 @@ thrusting.default <- function(
 			constructed_series[[2]],
 			constructed_series[[3]],
 			constructed_series[[4]],
-			normalize
+			normalize,
+			as.logical(na.ignore)
 		)
 	)
 
@@ -108,6 +111,7 @@ thrusting.default <- function(
 thrusting.data.frame <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -122,6 +126,7 @@ thrusting.data.frame <- function(
 thrusting.matrix <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	NextMethod()
@@ -134,6 +139,7 @@ thrusting.matrix <- function(
 thrusting.plotly <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	## check that input value

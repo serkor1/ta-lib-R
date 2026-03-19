@@ -26,6 +26,7 @@
 two_crows <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("two_crows")
@@ -45,6 +46,7 @@ CDL2CROWS <- two_crows
 two_crows.default <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	## get candlestick pattern
@@ -87,7 +89,8 @@ two_crows.default <- function(
 			constructed_series[[2]],
 			constructed_series[[3]],
 			constructed_series[[4]],
-			normalize
+			normalize,
+			as.logical(na.ignore)
 		)
 	)
 
@@ -108,6 +111,7 @@ two_crows.default <- function(
 two_crows.data.frame <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -122,6 +126,7 @@ two_crows.data.frame <- function(
 two_crows.matrix <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	NextMethod()
@@ -134,6 +139,7 @@ two_crows.matrix <- function(
 two_crows.plotly <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	## check that input value

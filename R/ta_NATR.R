@@ -17,6 +17,7 @@ normalized_average_true_range <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("normalized_average_true_range")
@@ -37,6 +38,7 @@ normalized_average_true_range.default <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -66,8 +68,9 @@ normalized_average_true_range.default <- function(
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		as.integer(n)
+		as.integer(n),
 		## splice:call:end
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -85,6 +88,7 @@ normalized_average_true_range.data.frame <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -92,6 +96,7 @@ normalized_average_true_range.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -105,15 +110,18 @@ normalized_average_true_range.matrix <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	normalized_average_true_range.default(
 		x = x,
 		cols = cols,
 		n = n,
+		na.ignore = na.ignore,
 		...
 	)
 }
+
 
 #' @usage NULL
 #' @aliases normalized_average_true_range
@@ -123,6 +131,7 @@ normalized_average_true_range.plotly <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -154,7 +163,8 @@ normalized_average_true_range.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n
+		n = n,
+		na.ignore = TRUE
 	)
 
 	## the constructed indicator

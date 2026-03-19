@@ -3,12 +3,13 @@
 #' 
 #' @export
 ${FUN}.plotly <- function(
-	x, 
+	x,
 	cols,${ARGS}
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
-	...) { 
+	...) {
 
 	## check that input value
 	## 'x' is <plotly>-object
@@ -36,7 +37,8 @@ ${FUN}.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		)
-		${PPARGS}
+		${PPARGS},
+		na.ignore = TRUE
 	)
 
 	## the constructed indicator
@@ -74,8 +76,8 @@ ${FUN}.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-    .plotting_environment$sub <- c(
-		.plotting_environment$sub,
+    .chart_environment$sub <- c(
+		.chart_environment$sub,
 		list(plotly_object)
 	)
 

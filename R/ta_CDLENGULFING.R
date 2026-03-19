@@ -26,6 +26,7 @@
 engulfing <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("engulfing")
@@ -45,6 +46,7 @@ CDLENGULFING <- engulfing
 engulfing.default <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	## get candlestick pattern
@@ -87,7 +89,8 @@ engulfing.default <- function(
 			constructed_series[[2]],
 			constructed_series[[3]],
 			constructed_series[[4]],
-			normalize
+			normalize,
+			as.logical(na.ignore)
 		)
 	)
 
@@ -108,6 +111,7 @@ engulfing.default <- function(
 engulfing.data.frame <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -122,6 +126,7 @@ engulfing.data.frame <- function(
 engulfing.matrix <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	NextMethod()
@@ -134,6 +139,7 @@ engulfing.matrix <- function(
 engulfing.plotly <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	## check that input value

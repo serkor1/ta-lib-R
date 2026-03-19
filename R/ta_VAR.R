@@ -15,7 +15,8 @@
 rolling_variance <- function(
 	x,
 	n = 10,
-	k = 1
+	k = 1,
+	na.ignore = FALSE
 ) {
 	UseMethod("rolling_variance")
 }
@@ -34,7 +35,8 @@ VAR <- rolling_variance
 rolling_variance.default <- function(
 	x,
 	n = 10,
-	k = 1
+	k = 1,
+	na.ignore = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
@@ -43,8 +45,9 @@ rolling_variance.default <- function(
 		## splice:call:start
 		as.double(x),
 		as.integer(n),
-		as.double(k)
+		as.double(k),
 		## splice:call:end
+		as.logical(na.ignore)
 	)
 
 	## return indicator
@@ -58,14 +61,16 @@ rolling_variance.default <- function(
 rolling_variance.numeric <- function(
 	x,
 	n = 10,
-	k = 1
+	k = 1,
+	na.ignore = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
 	x <- rolling_variance.default(
 		x = x,
 		n = n,
-		k = k
+		k = k,
+		na.ignore = na.ignore
 	)
 
 	## return indicator

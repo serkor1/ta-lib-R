@@ -26,6 +26,7 @@
 closing_marubozu <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("closing_marubozu")
@@ -45,6 +46,7 @@ CDLCLOSINGMARUBOZU <- closing_marubozu
 closing_marubozu.default <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	## get candlestick pattern
@@ -87,7 +89,8 @@ closing_marubozu.default <- function(
 			constructed_series[[2]],
 			constructed_series[[3]],
 			constructed_series[[4]],
-			normalize
+			normalize,
+			as.logical(na.ignore)
 		)
 	)
 
@@ -108,6 +111,7 @@ closing_marubozu.default <- function(
 closing_marubozu.data.frame <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -122,6 +126,7 @@ closing_marubozu.data.frame <- function(
 closing_marubozu.matrix <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	NextMethod()
@@ -134,6 +139,7 @@ closing_marubozu.matrix <- function(
 closing_marubozu.plotly <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	## check that input value

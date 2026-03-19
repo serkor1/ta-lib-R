@@ -26,6 +26,7 @@
 homing_pigeon <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("homing_pigeon")
@@ -45,6 +46,7 @@ CDLHOMINGPIGEON <- homing_pigeon
 homing_pigeon.default <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	## get candlestick pattern
@@ -87,7 +89,8 @@ homing_pigeon.default <- function(
 			constructed_series[[2]],
 			constructed_series[[3]],
 			constructed_series[[4]],
-			normalize
+			normalize,
+			as.logical(na.ignore)
 		)
 	)
 
@@ -108,6 +111,7 @@ homing_pigeon.default <- function(
 homing_pigeon.data.frame <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -122,6 +126,7 @@ homing_pigeon.data.frame <- function(
 homing_pigeon.matrix <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	NextMethod()
@@ -134,6 +139,7 @@ homing_pigeon.matrix <- function(
 homing_pigeon.plotly <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	## check that input value

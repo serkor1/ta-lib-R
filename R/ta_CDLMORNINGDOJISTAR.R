@@ -27,6 +27,7 @@ morning_doji_star <- function(
 	x,
 	cols,
 	eps = 0,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("morning_doji_star")
@@ -47,6 +48,7 @@ morning_doji_star.default <- function(
 	x,
 	cols,
 	eps = 0,
+	na.ignore = FALSE,
 	...
 ) {
 	## get candlestick pattern
@@ -90,7 +92,8 @@ morning_doji_star.default <- function(
 			constructed_series[[3]],
 			constructed_series[[4]],
 			eps,
-			normalize
+			normalize,
+			as.logical(na.ignore)
 		)
 	)
 
@@ -112,6 +115,7 @@ morning_doji_star.data.frame <- function(
 	x,
 	cols,
 	eps = 0,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -127,6 +131,7 @@ morning_doji_star.matrix <- function(
 	x,
 	cols,
 	eps = 0,
+	na.ignore = FALSE,
 	...
 ) {
 	NextMethod()
@@ -140,6 +145,7 @@ morning_doji_star.plotly <- function(
 	x,
 	cols,
 	eps = 0,
+	na.ignore = FALSE,
 	...
 ) {
 	## check that input value

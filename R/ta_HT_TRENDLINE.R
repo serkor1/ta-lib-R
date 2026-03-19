@@ -16,6 +16,7 @@
 trendline <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("trendline")
@@ -35,6 +36,7 @@ HT_TRENDLINE <- trendline
 trendline.default <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -61,8 +63,9 @@ trendline.default <- function(
 	x <- .Call(
 		"impl_ta_HT_TRENDLINE",
 		## splice:call:start
-		constructed_series[[1]]
+		constructed_series[[1]],
 		## splice:call:end
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -79,12 +82,14 @@ trendline.default <- function(
 trendline.data.frame <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
 		trendline.default(
 			x = x,
 			cols = cols,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -97,14 +102,17 @@ trendline.data.frame <- function(
 trendline.matrix <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	trendline.default(
 		x = x,
 		cols = cols,
+		na.ignore = na.ignore,
 		...
 	)
 }
+
 
 #' @usage NULL
 #' @aliases trendline
@@ -113,6 +121,7 @@ trendline.matrix <- function(
 trendline.numeric <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -128,8 +137,9 @@ trendline.numeric <- function(
 	x <- .Call(
 		"impl_ta_HT_TRENDLINE",
 		## splice:numeric:start
-		as.double(x)
+		as.double(x),
 		## splice:numeric:end
+		as.logical(na.ignore)
 	)
 
 	## check if it has 'dims'
@@ -147,6 +157,7 @@ trendline.numeric <- function(
 	x
 }
 
+
 #' @usage NULL
 #' @aliases trendline
 #'
@@ -154,6 +165,7 @@ trendline.numeric <- function(
 trendline.plotly <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	...
@@ -183,7 +195,8 @@ trendline.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.ignore = TRUE
 	)
 
 	## add conditional idx

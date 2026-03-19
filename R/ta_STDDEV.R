@@ -15,7 +15,8 @@
 rolling_standard_deviation <- function(
 	x,
 	n = 10,
-	k = 1
+	k = 1,
+	na.ignore = FALSE
 ) {
 	UseMethod("rolling_standard_deviation")
 }
@@ -34,7 +35,8 @@ STDDEV <- rolling_standard_deviation
 rolling_standard_deviation.default <- function(
 	x,
 	n = 10,
-	k = 1
+	k = 1,
+	na.ignore = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
@@ -43,8 +45,9 @@ rolling_standard_deviation.default <- function(
 		## splice:call:start
 		as.double(x),
 		as.integer(n),
-		as.double(k)
+		as.double(k),
 		## splice:call:end
+		as.logical(na.ignore)
 	)
 
 	## return indicator
@@ -58,14 +61,16 @@ rolling_standard_deviation.default <- function(
 rolling_standard_deviation.numeric <- function(
 	x,
 	n = 10,
-	k = 1
+	k = 1,
+	na.ignore = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
 	x <- rolling_standard_deviation.default(
 		x = x,
 		n = n,
-		k = k
+		k = k,
+		na.ignore = na.ignore
 	)
 
 	## return indicator

@@ -17,6 +17,7 @@ ultimate_oscillator <- function(
 	x,
 	cols,
 	n = c(7, 14, 28),
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("ultimate_oscillator")
@@ -37,6 +38,7 @@ ultimate_oscillator.default <- function(
 	x,
 	cols,
 	n = c(7, 14, 28),
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -68,8 +70,9 @@ ultimate_oscillator.default <- function(
 		constructed_series[[3]],
 		as.integer(n[1]),
 		as.integer(n[2]),
-		as.integer(n[3])
+		as.integer(n[3]),
 		## splice:call:end
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -87,6 +90,7 @@ ultimate_oscillator.data.frame <- function(
 	x,
 	cols,
 	n = c(7, 14, 28),
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -94,6 +98,7 @@ ultimate_oscillator.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -107,15 +112,18 @@ ultimate_oscillator.matrix <- function(
 	x,
 	cols,
 	n = c(7, 14, 28),
+	na.ignore = FALSE,
 	...
 ) {
 	ultimate_oscillator.default(
 		x = x,
 		cols = cols,
 		n = n,
+		na.ignore = na.ignore,
 		...
 	)
 }
+
 
 #' @usage NULL
 #' @aliases ultimate_oscillator
@@ -125,6 +133,7 @@ ultimate_oscillator.plotly <- function(
 	x,
 	cols,
 	n = c(7, 14, 28),
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 30,
 	upper_bound = 70,
@@ -158,7 +167,8 @@ ultimate_oscillator.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n
+		n = n,
+		na.ignore = TRUE
 	)
 
 	## the constructed indicator

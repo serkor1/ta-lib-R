@@ -26,6 +26,7 @@
 concealing_baby_swallow <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("concealing_baby_swallow")
@@ -45,6 +46,7 @@ CDLCONCEALBABYSWALL <- concealing_baby_swallow
 concealing_baby_swallow.default <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	## get candlestick pattern
@@ -87,7 +89,8 @@ concealing_baby_swallow.default <- function(
 			constructed_series[[2]],
 			constructed_series[[3]],
 			constructed_series[[4]],
-			normalize
+			normalize,
+			as.logical(na.ignore)
 		)
 	)
 
@@ -108,6 +111,7 @@ concealing_baby_swallow.default <- function(
 concealing_baby_swallow.data.frame <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -122,6 +126,7 @@ concealing_baby_swallow.data.frame <- function(
 concealing_baby_swallow.matrix <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	NextMethod()
@@ -134,6 +139,7 @@ concealing_baby_swallow.matrix <- function(
 concealing_baby_swallow.plotly <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	## check that input value

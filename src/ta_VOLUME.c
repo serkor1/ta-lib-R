@@ -11,6 +11,7 @@
 #include "MAType.h"
 #include "container.h"
 #include "lib.h"
+#include "na.h"
 #include "names.h"
 #include "shift.h"
 #include <R.h>
@@ -21,17 +22,36 @@
 
 // clang-format off
 SEXP impl_ta_VOLUME(
-  SEXP inReal, 
-  SEXP maSpec
+  SEXP inReal,
+  SEXP maSpec,
+  SEXP na_rm
 )
 // clang-format on
 {
   // protection counter
   int protection_count = 0;
 
-  // get length of 'inHigh' (assumes equal length across input)
-  const int n = LENGTH(inReal);
-  const double *restrict x = REAL(inReal);
+  // get length of 'inReal' (assumes equal length across input)
+  int n = LENGTH(inReal);
+  const double *x = REAL(inReal);
+
+  // NA handling
+  // see na.h for more details
+  int *na_mask = NULL;
+  const int n_original = n;
+
+  if (LOGICAL(na_rm)[0]) {
+    na_mask = (int *)R_alloc(n, sizeof(int));
+    const double *na_arrays[] = {x};
+    n = build_na_mask(na_mask, n, 1, na_arrays);
+    if (n < n_original) {
+      double *compact_0 = (double *)R_alloc(n, sizeof(double));
+      compact_array(compact_0, x, na_mask, n_original);
+      x = compact_0;
+    } else {
+      na_mask = NULL;
+    }
+  }
 
   // determine maSpec input
   const int n_ma = isNull(maSpec) ? 0 : LENGTH(maSpec);
@@ -78,10 +98,10 @@ SEXP impl_ta_VOLUME(
       0,
       n - 1,
       x,
-      period, 
-      ma_type, 
-      &start_idx, 
-      &end_idx, 
+      period,
+      ma_type,
+      &start_idx,
+      &end_idx,
       offset_real
     );
 
@@ -103,6 +123,13 @@ SEXP impl_ta_VOLUME(
   // set the remaining column names
   // see names.h for more details
   column_names(output, n_cols, colname);
+
+  // re-expand output if NAs were stripped
+  // see na.h for more details
+  if (na_mask != NULL) {
+    output =
+      reexpand_double_matrix(output, na_mask, n_original, &protection_count);
+  }
 
   UNPROTECT(protection_count);
   return output;

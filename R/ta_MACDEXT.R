@@ -22,6 +22,7 @@ extended_moving_average_convergence_divergence <- function(
 	fast = EMA(n = 12),
 	slow = EMA(n = 26),
 	signal = EMA(n = 9),
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("extended_moving_average_convergence_divergence")
@@ -44,6 +45,7 @@ extended_moving_average_convergence_divergence.default <- function(
 	fast = EMA(n = 12),
 	slow = EMA(n = 26),
 	signal = EMA(n = 9),
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -76,8 +78,9 @@ extended_moving_average_convergence_divergence.default <- function(
 		slow$n,
 		slow$maType,
 		signal$n,
-		signal$maType
+		signal$maType,
 		## splice:call:end
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -97,6 +100,7 @@ extended_moving_average_convergence_divergence.data.frame <- function(
 	fast = EMA(n = 12),
 	slow = EMA(n = 26),
 	signal = EMA(n = 9),
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -106,6 +110,7 @@ extended_moving_average_convergence_divergence.data.frame <- function(
 			fast = fast,
 			slow = slow,
 			signal = signal,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -121,6 +126,7 @@ extended_moving_average_convergence_divergence.matrix <- function(
 	fast = EMA(n = 12),
 	slow = EMA(n = 26),
 	signal = EMA(n = 9),
+	na.ignore = FALSE,
 	...
 ) {
 	extended_moving_average_convergence_divergence.default(
@@ -129,9 +135,11 @@ extended_moving_average_convergence_divergence.matrix <- function(
 		fast = fast,
 		slow = slow,
 		signal = signal,
+		na.ignore = na.ignore,
 		...
 	)
 }
+
 
 #' @usage NULL
 #' @aliases extended_moving_average_convergence_divergence
@@ -143,6 +151,7 @@ extended_moving_average_convergence_divergence.numeric <- function(
 	fast = EMA(n = 12),
 	slow = EMA(n = 26),
 	signal = EMA(n = 9),
+	na.ignore = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -164,8 +173,9 @@ extended_moving_average_convergence_divergence.numeric <- function(
 		slow$n,
 		slow$maType,
 		signal$n,
-		signal$maType
+		signal$maType,
 		## splice:numeric:end
+		as.logical(na.ignore)
 	)
 
 	## check if it has 'dims'
@@ -183,6 +193,7 @@ extended_moving_average_convergence_divergence.numeric <- function(
 	x
 }
 
+
 #' @usage NULL
 #' @aliases extended_moving_average_convergence_divergence
 #'
@@ -193,6 +204,7 @@ extended_moving_average_convergence_divergence.plotly <- function(
 	fast = EMA(n = 12),
 	slow = EMA(n = 26),
 	signal = EMA(n = 9),
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -226,7 +238,8 @@ extended_moving_average_convergence_divergence.plotly <- function(
 		),
 		fast = fast,
 		slow = slow,
-		signal = signal
+		signal = signal,
+		na.ignore = TRUE
 	)
 
 	## the constructed indicator

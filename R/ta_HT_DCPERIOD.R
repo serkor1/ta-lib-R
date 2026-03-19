@@ -16,6 +16,7 @@
 dominant_cycle_period <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("dominant_cycle_period")
@@ -35,6 +36,7 @@ HT_DCPERIOD <- dominant_cycle_period
 dominant_cycle_period.default <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -61,8 +63,9 @@ dominant_cycle_period.default <- function(
 	x <- .Call(
 		"impl_ta_HT_DCPERIOD",
 		## splice:call:start
-		constructed_series[[1]]
+		constructed_series[[1]],
 		## splice:call:end
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -79,12 +82,14 @@ dominant_cycle_period.default <- function(
 dominant_cycle_period.data.frame <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
 		dominant_cycle_period.default(
 			x = x,
 			cols = cols,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -97,14 +102,17 @@ dominant_cycle_period.data.frame <- function(
 dominant_cycle_period.matrix <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	dominant_cycle_period.default(
 		x = x,
 		cols = cols,
+		na.ignore = na.ignore,
 		...
 	)
 }
+
 
 #' @usage NULL
 #' @aliases dominant_cycle_period
@@ -113,6 +121,7 @@ dominant_cycle_period.matrix <- function(
 dominant_cycle_period.numeric <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -128,8 +137,9 @@ dominant_cycle_period.numeric <- function(
 	x <- .Call(
 		"impl_ta_HT_DCPERIOD",
 		## splice:numeric:start
-		as.double(x)
+		as.double(x),
 		## splice:numeric:end
+		as.logical(na.ignore)
 	)
 
 	## check if it has 'dims'
@@ -147,6 +157,7 @@ dominant_cycle_period.numeric <- function(
 	x
 }
 
+
 #' @usage NULL
 #' @aliases dominant_cycle_period
 #'
@@ -154,6 +165,7 @@ dominant_cycle_period.numeric <- function(
 dominant_cycle_period.plotly <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -184,7 +196,8 @@ dominant_cycle_period.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.ignore = TRUE
 	)
 
 	## the constructed indicator

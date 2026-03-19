@@ -7,19 +7,20 @@
 #' @templateVar .fun $FUN
 #' @templateVar .family ${FAMILY}
 #' @templateVar .formula ${FORMULA}
-#' 
+#'
 #' @details
-#' When passed without 'x', [$FUN] functions as an 'Moving Average'-specification which is used in, for example, [stochastic] when constructing the smoothing lines. 
-#' 
+#' When passed without 'x', [$FUN] functions as an 'Moving Average'-specification which is used in, for example, [stochastic] when constructing the smoothing lines.
+#'
 #' When called without 'x' it will return a named list which is used for the
 #' indicators that supports various Moving Average specifications.
-#'    
+#'
 #' @template description
 #' @template returns
 $FUN <- function(
-	x, 
-	cols, 
+	x,
+	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...) {
 
 		## if 'x' is missing $FUN functions
@@ -32,7 +33,7 @@ $FUN <- function(
 				list(
 					n = if (missing(n)) 10L else as.integer(n),
 					maType = ${maType}
-				)	
+				)
 				}
 			)
 
@@ -44,21 +45,22 @@ $FUN <- function(
 #' @export
 #' @usage NULL
 #' @rdname $FUN
-#' 
+#'
 #' @aliases $FUN
 $ALIAS <- $FUN
 
 #' @usage NULL
 #' @aliases $FUN
-#' 
+#'
 #' @export
 $FUN.default <- function(
-	x, 
-	cols, 
-	n = 10, 
+	x,
+	cols,
+	n = 10,
+	na.ignore = FALSE,
 	...) {
 
-	## validate 'cols'-argument 
+	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
 		assert_formula(cols)
@@ -83,7 +85,8 @@ $FUN.default <- function(
 		"impl_ta_MA",
 		as.double(constructed_series[[1]]),
 		as.integer(n),
-		${maType}
+		${maType},
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -95,48 +98,52 @@ $FUN.default <- function(
 
 #' @usage NULL
 #' @aliases $FUN
-#' 
+#'
 #' @export
 $FUN.data.frame <- function(
-	x, 
-	cols, 
-	n = 10, 
+	x,
+	cols,
+	n = 10,
+	na.ignore = FALSE,
 	...) {
 
 	map_dfr(
 		NextMethod()
-	) 
+	)
 }
 
 #' @usage NULL
 #' @aliases $FUN
-#' 
+#'
 #' @export
 $FUN.matrix <- function(
-	x, 
+	x,
 	cols,
-	n = 10, 
-	...) { 
+	n = 10,
+	na.ignore = FALSE,
+	...) {
 
-		## pass directly to 
+		## pass directly to
 		## $FUN.default to avoid
 		## shenanigans with NextMethod()
 		$FUN.default(
 				x = x,
 				cols = cols,
 				n = n,
+				na.ignore = na.ignore,
 				...
 		)
 }
 
 #' @usage NULL
 #' @aliases $FUN
-#' 
+#'
 #' @export
 $FUN.numeric <- function(
-	x, 
+	x,
 	cols,
-	n = 10, 
+	n = 10,
+	na.ignore = FALSE,
 	...) {
 
 		## warn if 'cols' have been
@@ -153,24 +160,28 @@ $FUN.numeric <- function(
 			"impl_ta_MA",
 			as.double(x),
 			as.integer(n),
-			${maType}
+			${maType},
+			as.logical(na.ignore)
 		)
 
 		## 'C' returns a named matrix
 		## return the first column
-		as.double(x)
+		x <- as.double(x)
+
+		x
 
 }
 
 #' @usage NULL
 #' @aliases $FUN
-#' 
+#'
 #' @export
 $FUN.plotly <- function(
-	x, 
-	cols, 
+	x,
+	cols,
 	n = 10,
-	...) { 
+	na.ignore = FALSE,
+	...) {
 
 	## check that input value
 	## 'x' is <plotly>-object
@@ -182,7 +193,7 @@ $FUN.plotly <- function(
 		assert_formula(cols)
 	}
 
-	## construct series from 
+	## construct series from
 	## {plotly}-object
 	constructed_series <- series(
 		x = x,
@@ -207,8 +218,8 @@ $FUN.plotly <- function(
 	)
 
 	## construct {plotly}-object
-	plotly_object <- .plotting_environment[["main"]] <- build_plotly(
-		init = .plotting_environment[["main"]],
+	plotly_object <- .chart_environment[["main"]] <- build_plotly(
+		init = .chart_environment[["main"]],
 		traces = list(
 			list(y = ~constructed_indicator[["$ALIAS"]][-(1:attr(constructed_indicator, "lookback", TRUE))],
 		legendgroup = "MovingAverage",

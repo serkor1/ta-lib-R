@@ -17,6 +17,7 @@ acceleration_bands <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("acceleration_bands")
@@ -37,6 +38,7 @@ acceleration_bands.default <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -66,8 +68,9 @@ acceleration_bands.default <- function(
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		as.integer(n)
+		as.integer(n),
 		## splice:call:end
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -85,6 +88,7 @@ acceleration_bands.data.frame <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -92,6 +96,7 @@ acceleration_bands.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -105,15 +110,18 @@ acceleration_bands.matrix <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	acceleration_bands.default(
 		x = x,
 		cols = cols,
 		n = n,
+		na.ignore = na.ignore,
 		...
 	)
 }
+
 
 #' @usage NULL
 #' @aliases acceleration_bands
@@ -123,6 +131,7 @@ acceleration_bands.plotly <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	color = "steelblue",
 	alpha = 0.2,
@@ -155,7 +164,8 @@ acceleration_bands.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n
+		n = n,
+		na.ignore = TRUE
 	)
 
 	## add conditional idx

@@ -16,6 +16,7 @@
 typical_price <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("typical_price")
@@ -35,6 +36,7 @@ TYPPRICE <- typical_price
 typical_price.default <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -63,8 +65,9 @@ typical_price.default <- function(
 		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
-		constructed_series[[3]]
+		constructed_series[[3]],
 		## splice:call:end
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -81,12 +84,14 @@ typical_price.default <- function(
 typical_price.data.frame <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
 		typical_price.default(
 			x = x,
 			cols = cols,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -99,11 +104,13 @@ typical_price.data.frame <- function(
 typical_price.matrix <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	typical_price.default(
 		x = x,
 		cols = cols,
+		na.ignore = na.ignore,
 		...
 	)
 }

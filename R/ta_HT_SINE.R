@@ -16,6 +16,7 @@
 sine_wave <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("sine_wave")
@@ -35,6 +36,7 @@ HT_SINE <- sine_wave
 sine_wave.default <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -61,8 +63,9 @@ sine_wave.default <- function(
 	x <- .Call(
 		"impl_ta_HT_SINE",
 		## splice:call:start
-		constructed_series[[1]]
+		constructed_series[[1]],
 		## splice:call:end
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -79,12 +82,14 @@ sine_wave.default <- function(
 sine_wave.data.frame <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
 		sine_wave.default(
 			x = x,
 			cols = cols,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -97,14 +102,17 @@ sine_wave.data.frame <- function(
 sine_wave.matrix <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	sine_wave.default(
 		x = x,
 		cols = cols,
+		na.ignore = na.ignore,
 		...
 	)
 }
+
 
 #' @usage NULL
 #' @aliases sine_wave
@@ -113,6 +121,7 @@ sine_wave.matrix <- function(
 sine_wave.numeric <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -128,8 +137,9 @@ sine_wave.numeric <- function(
 	x <- .Call(
 		"impl_ta_HT_SINE",
 		## splice:numeric:start
-		as.double(x)
+		as.double(x),
 		## splice:numeric:end
+		as.logical(na.ignore)
 	)
 
 	## check if it has 'dims'
@@ -147,6 +157,7 @@ sine_wave.numeric <- function(
 	x
 }
 
+
 #' @usage NULL
 #' @aliases sine_wave
 #'
@@ -154,6 +165,7 @@ sine_wave.numeric <- function(
 sine_wave.plotly <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -184,7 +196,8 @@ sine_wave.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.ignore = TRUE
 	)
 
 	## the constructed indicator

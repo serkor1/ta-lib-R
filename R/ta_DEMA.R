@@ -20,6 +20,7 @@ double_exponential_moving_average <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	## if 'x' is missing double_exponential_moving_average functions
@@ -56,6 +57,7 @@ double_exponential_moving_average.default <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -83,7 +85,8 @@ double_exponential_moving_average.default <- function(
 		"impl_ta_MA",
 		as.double(constructed_series[[1]]),
 		as.integer(n),
-		3L
+		3L,
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -101,6 +104,7 @@ double_exponential_moving_average.data.frame <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -116,6 +120,7 @@ double_exponential_moving_average.matrix <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	## pass directly to
@@ -125,6 +130,7 @@ double_exponential_moving_average.matrix <- function(
 		x = x,
 		cols = cols,
 		n = n,
+		na.ignore = na.ignore,
 		...
 	)
 }
@@ -137,6 +143,7 @@ double_exponential_moving_average.numeric <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -153,12 +160,15 @@ double_exponential_moving_average.numeric <- function(
 		"impl_ta_MA",
 		as.double(x),
 		as.integer(n),
-		3L
+		3L,
+		as.logical(na.ignore)
 	)
 
 	## 'C' returns a named matrix
 	## return the first column
-	as.double(x)
+	x <- as.double(x)
+
+	x
 }
 
 #' @usage NULL
@@ -169,6 +179,7 @@ double_exponential_moving_average.plotly <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	## check that input value

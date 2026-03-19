@@ -17,6 +17,7 @@ chande_momentum_oscillator <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("chande_momentum_oscillator")
@@ -37,6 +38,7 @@ chande_momentum_oscillator.default <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -64,8 +66,9 @@ chande_momentum_oscillator.default <- function(
 		"impl_ta_CMO",
 		## splice:call:start
 		constructed_series[[1]],
-		as.integer(n)
+		as.integer(n),
 		## splice:call:end
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -83,6 +86,7 @@ chande_momentum_oscillator.data.frame <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -90,6 +94,7 @@ chande_momentum_oscillator.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -103,15 +108,18 @@ chande_momentum_oscillator.matrix <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	chande_momentum_oscillator.default(
 		x = x,
 		cols = cols,
 		n = n,
+		na.ignore = na.ignore,
 		...
 	)
 }
+
 
 #' @usage NULL
 #' @aliases chande_momentum_oscillator
@@ -121,6 +129,7 @@ chande_momentum_oscillator.numeric <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -137,8 +146,9 @@ chande_momentum_oscillator.numeric <- function(
 		"impl_ta_CMO",
 		## splice:numeric:start
 		as.double(x),
-		as.integer(n)
+		as.integer(n),
 		## splice:numeric:end
+		as.logical(na.ignore)
 	)
 
 	## check if it has 'dims'
@@ -156,6 +166,7 @@ chande_momentum_oscillator.numeric <- function(
 	x
 }
 
+
 #' @usage NULL
 #' @aliases chande_momentum_oscillator
 #'
@@ -164,6 +175,7 @@ chande_momentum_oscillator.plotly <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = -50,
 	upper_bound = 50,
@@ -197,7 +209,8 @@ chande_momentum_oscillator.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n
+		n = n,
+		na.ignore = TRUE
 	)
 
 	## the constructed indicator

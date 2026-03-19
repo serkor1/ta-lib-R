@@ -17,6 +17,7 @@ intraday_movement_index <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("intraday_movement_index")
@@ -37,6 +38,7 @@ intraday_movement_index.default <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -65,8 +67,9 @@ intraday_movement_index.default <- function(
 		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
-		as.integer(n)
+		as.integer(n),
 		## splice:call:end
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -84,6 +87,7 @@ intraday_movement_index.data.frame <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -91,6 +95,7 @@ intraday_movement_index.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -104,15 +109,18 @@ intraday_movement_index.matrix <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	intraday_movement_index.default(
 		x = x,
 		cols = cols,
 		n = n,
+		na.ignore = na.ignore,
 		...
 	)
 }
+
 
 #' @usage NULL
 #' @aliases intraday_movement_index
@@ -122,6 +130,7 @@ intraday_movement_index.plotly <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -153,7 +162,8 @@ intraday_movement_index.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n
+		n = n,
+		na.ignore = TRUE
 	)
 
 	## the constructed indicator

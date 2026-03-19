@@ -5,7 +5,7 @@
 #' @templateVar .title ${TITLE}
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun ${FUN}
-#' 
+#'
 ## splice:documentation:start
 ## splice:documentation:end
 #'
@@ -13,7 +13,8 @@
 #' @template rolling_returns
 ${FUN} <- function(
 	x,
-    ${ARGS}
+    ${ARGS},
+	na.ignore = FALSE
 	) {
   UseMethod("${FUN}")
 }
@@ -21,17 +22,18 @@ ${FUN} <- function(
 #' @export
 #' @usage NULL
 #' @rdname ${FUN}
-#' 
+#'
 #' @aliases ${FUN}
 ${ALIAS} <- ${FUN}
 
 #' @usage NULL
 #' @aliases ${FUN}
-#' 
+#'
 #' @export
 ${FUN}.default <- function(
 	x,
-    ${ARGS} 
+    ${ARGS},
+	na.ignore = FALSE
 	) {
 
 	## calculate indicator and
@@ -40,6 +42,7 @@ ${FUN}.default <- function(
 		"impl_ta_${TA_FUN}",
         ## splice:call:start
 		## splice:call:end
+		as.logical(na.ignore)
 	)
 
 	## return indicator
@@ -48,18 +51,20 @@ ${FUN}.default <- function(
 
 #' @usage NULL
 #' @aliases ${FUN}
-#' 
+#'
 #' @export
 ${FUN}.numeric <- function(
 	x,
-    ${ARGS} 
+    ${ARGS},
+	na.ignore = FALSE
 	) {
 
 	## calculate indicator and
 	## return as data.frame
 	x <- ${FUN}.default(
-			x = x ${PARGS}
-			
+			x = x ${PARGS},
+			na.ignore = na.ignore
+
 	)
 
 	## return indicator

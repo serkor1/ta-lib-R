@@ -16,6 +16,7 @@
 balance_of_power <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("balance_of_power")
@@ -35,6 +36,7 @@ BOP <- balance_of_power
 balance_of_power.default <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -64,8 +66,9 @@ balance_of_power.default <- function(
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		constructed_series[[4]]
+		constructed_series[[4]],
 		## splice:call:end
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -82,12 +85,14 @@ balance_of_power.default <- function(
 balance_of_power.data.frame <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
 		balance_of_power.default(
 			x = x,
 			cols = cols,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -100,14 +105,17 @@ balance_of_power.data.frame <- function(
 balance_of_power.matrix <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	balance_of_power.default(
 		x = x,
 		cols = cols,
+		na.ignore = na.ignore,
 		...
 	)
 }
+
 
 #' @usage NULL
 #' @aliases balance_of_power
@@ -116,6 +124,7 @@ balance_of_power.matrix <- function(
 balance_of_power.plotly <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -146,7 +155,8 @@ balance_of_power.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.ignore = TRUE
 	)
 
 	## the constructed indicator

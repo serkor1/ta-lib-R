@@ -23,6 +23,7 @@ stochastic_relative_strength_index <- function(
 	n_rsi = 10,
 	fastk = 5,
 	fastd = SMA(n = 10),
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("stochastic_relative_strength_index")
@@ -46,6 +47,7 @@ stochastic_relative_strength_index.default <- function(
 	n_rsi = 10,
 	fastk = 5,
 	fastd = SMA(n = 10),
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -72,15 +74,22 @@ stochastic_relative_strength_index.default <- function(
 	x <- .Call(
 		"impl_ta_STOCHRSI",
 		## splice:call:start
-		relative_strength_index(constructed_series, n = n_rsi)[[1]][
+		relative_strength_index(
+			constructed_series,
+			n = n_rsi,
+			na.ignore = na.ignore
+		)[[
+			1
+		]][
 			-seq_len(n_rsi)
 		],
 		as.integer(n),
 		as.integer(fastk),
 		fastd$n,
 		fastd$maType,
-		as.integer(n_rsi)
+		as.integer(n_rsi),
 		## splice:call:end
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -101,6 +110,7 @@ stochastic_relative_strength_index.data.frame <- function(
 	n_rsi = 10,
 	fastk = 5,
 	fastd = SMA(n = 10),
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -111,6 +121,7 @@ stochastic_relative_strength_index.data.frame <- function(
 			n_rsi = n_rsi,
 			fastk = fastk,
 			fastd = fastd,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -127,6 +138,7 @@ stochastic_relative_strength_index.matrix <- function(
 	n_rsi = 10,
 	fastk = 5,
 	fastd = SMA(n = 10),
+	na.ignore = FALSE,
 	...
 ) {
 	stochastic_relative_strength_index.default(
@@ -136,9 +148,11 @@ stochastic_relative_strength_index.matrix <- function(
 		n_rsi = n_rsi,
 		fastk = fastk,
 		fastd = fastd,
+		na.ignore = na.ignore,
 		...
 	)
 }
+
 
 #' @usage NULL
 #' @aliases stochastic_relative_strength_index
@@ -151,6 +165,7 @@ stochastic_relative_strength_index.plotly <- function(
 	n_rsi = 10,
 	fastk = 5,
 	fastd = SMA(n = 10),
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 20,
 	upper_bound = 80,
@@ -187,7 +202,8 @@ stochastic_relative_strength_index.plotly <- function(
 		n = n,
 		n_rsi = n_rsi,
 		fastk = fastk,
-		fastd = fastd
+		fastd = fastd,
+		na.ignore = TRUE
 	)
 
 	## the constructed indicator

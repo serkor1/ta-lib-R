@@ -18,6 +18,7 @@
 #include "attributes.h"
 #include "container.h"
 #include "lib.h"
+#include "na.h"
 #include "names.h"
 #include "normalize.h"
 #include "shift.h"
@@ -29,91 +30,114 @@ SEXP impl_ta_CDLSEPARATINGLINES(
     SEXP inHigh,
     SEXP inLow,
     SEXP inClose,
-    SEXP flag
+    SEXP flag,
+    SEXP na_ignore
 )
-// clang-format on 
+// clang-format on
 {
-    // protection counter
-    int protection_count = 0;
+  // protection counter
+  int protection_count = 0;
 
-    // pointers to input
-    const double *restrict open_ptr  = REAL(inOpen);
-    const double *restrict high_ptr  = REAL(inHigh);
-    const double *restrict low_ptr   = REAL(inLow);
-    const double *restrict close_ptr = REAL(inClose);
-    const int n = LENGTH(inOpen);
+  // pointers to input
+  const double *open_ptr = REAL(inOpen);
+  const double *high_ptr = REAL(inHigh);
+  const double *low_ptr = REAL(inLow);
+  const double *close_ptr = REAL(inClose);
+  int n = LENGTH(inOpen);
 
-    
-    SEXP output;
-    int *output_ptr;
+  // NA handling
+  // see na.h for more details
+  int *na_mask = NULL;
+  const int n_original = n;
 
-    // calculate look back and exit
-    // the function function early if
-    // there is a mismatch
-    const int lookback = TA_CDLSEPARATINGLINES_Lookback();
-
-    // the output container is either a INTSXP or 
-    // REALSXP depending on the type and will
-    // return a matrix with <NA> if there is a mismatch
-    // between lookback and n
-    //
-    // see container.h for more details
-    const int proceed = output_container(
-        n,
-        lookback,
-        1,
-        &output,
-        &output_ptr,
-        &protection_count
-    );
-
-    if (proceed) {
-        int start_idx = 0;
-        int end_idx   = 0;
-
-        // TA_CDLSEPARATINGLINES returns an TA_RetCode
-        // which is TA_SUCCESS if it succeeds
-        // values in output_ptr gets populated
-        // by pointers
-        TA_RetCode return_code = TA_CDLSEPARATINGLINES(
-            0,
-            n - 1,
-            open_ptr,
-            high_ptr,
-            low_ptr,
-            close_ptr
-            ,
-            &start_idx,
-            &end_idx,
-            output_ptr
-        );
-
-        // check if the output is valid
-        // and stop function with the TA_RetCode
-        // see container.h for more details
-        check_output(return_code, protection_count);
-
-        // shift the array so it has the same number
-        // of rows as 'n' - shifted values is replaced
-        // with <NA> 
-        // see shift.h for more details
-        shift_array(output_ptr, n, start_idx);
-
-        // ta_CDLSEPARATINGLINES returns values as -100, 100 and 0
-        // if flag is TRUE the output values will be normalized
-        // to -1, 1, 0 
-        // see normalize.h for more details
-        if (LOGICAL_VALUE(flag)) {
-            normalize(output_ptr, n, 100, start_idx);
-        }
+  if (LOGICAL(na_ignore)[0]) {
+    na_mask = (int *)R_alloc(n, sizeof(int));
+    const double *na_arrays[] = {open_ptr, high_ptr, low_ptr, close_ptr};
+    n = build_na_mask(na_mask, n, 4, na_arrays);
+    if (n < n_original) {
+      compact_arrays(na_arrays, 4, na_mask, n_original, n);
+      open_ptr = na_arrays[0];
+      high_ptr = na_arrays[1];
+      low_ptr = na_arrays[2];
+      close_ptr = na_arrays[3];
+    } else {
+      na_mask = NULL;
     }
+  }
 
-    // set the column names and lookback attribute
-    // of the output container 
-    // see names.h and attributes.h for more details
-    set_colnames(output, "CDLSEPARATINGLINES");
-    set_attribute(output, lookback, &protection_count);
+  SEXP output;
+  int *output_ptr;
 
-    UNPROTECT(protection_count);
-    return output;
+  // calculate look back and exit
+  // the function function early if
+  // there is a mismatch
+  const int lookback = TA_CDLSEPARATINGLINES_Lookback();
+
+  // the output container is either a INTSXP or
+  // REALSXP depending on the type and will
+  // return a matrix with <NA> if there is a mismatch
+  // between lookback and n
+  //
+  // see container.h for more details
+  const int proceed =
+    output_container(n, lookback, 1, &output, &output_ptr, &protection_count);
+
+  if (proceed) {
+    int start_idx = 0;
+    int end_idx = 0;
+
+    // TA_CDLSEPARATINGLINES returns an TA_RetCode
+    // which is TA_SUCCESS if it succeeds
+    // values in output_ptr gets populated
+    // by pointers
+    TA_RetCode return_code = TA_CDLSEPARATINGLINES(
+      0,
+      n - 1,
+      open_ptr,
+      high_ptr,
+      low_ptr,
+      close_ptr,
+      &start_idx,
+      &end_idx,
+      output_ptr);
+
+    // check if the output is valid
+    // and stop function with the TA_RetCode
+    // see container.h for more details
+    check_output(return_code, protection_count);
+
+    // shift the array so it has the same number
+    // of rows as 'n' - shifted values is replaced
+    // with <NA>
+    // see shift.h for more details
+    shift_array(output_ptr, n, start_idx);
+
+    // ta_CDLSEPARATINGLINES returns values as -100, 100 and 0
+    // if flag is TRUE the output values will be normalized
+    // to -1, 1, 0
+    // see normalize.h for more details
+    if (LOGICAL_VALUE(flag)) {
+      normalize(output_ptr, n, 100, start_idx);
+    }
+  }
+
+  // set the column names and lookback attribute
+  // of the output container
+  // see names.h and attributes.h for more details
+  set_colnames(output, "CDLSEPARATINGLINES");
+  set_attribute(output, lookback, &protection_count);
+
+  // re-expand output if NAs were stripped
+  // see na.h for more details
+  if (na_mask != NULL) {
+    output = reexpand_matrix(
+      output,
+      output_ptr,
+      na_mask,
+      n_original,
+      &protection_count);
+  }
+
+  UNPROTECT(protection_count);
+  return output;
 }

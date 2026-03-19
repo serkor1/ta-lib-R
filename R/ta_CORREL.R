@@ -14,7 +14,8 @@
 rolling_correlation <- function(
 	x,
 	y,
-	n = 10
+	n = 10,
+	na.ignore = FALSE
 ) {
 	UseMethod("rolling_correlation")
 }
@@ -33,7 +34,8 @@ CORREL <- rolling_correlation
 rolling_correlation.default <- function(
 	x,
 	y,
-	n = 10
+	n = 10,
+	na.ignore = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
@@ -42,8 +44,9 @@ rolling_correlation.default <- function(
 		## splice:call:start
 		as.double(x),
 		as.double(y),
-		as.integer(n)
+		as.integer(n),
 		## splice:call:end
+		as.logical(na.ignore)
 	)
 
 	## return indicator
@@ -57,14 +60,16 @@ rolling_correlation.default <- function(
 rolling_correlation.numeric <- function(
 	x,
 	y,
-	n = 10
+	n = 10,
+	na.ignore = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
 	x <- rolling_correlation.default(
 		x = x,
 		y = y,
-		n = n
+		n = n,
+		na.ignore = na.ignore
 	)
 
 	## return indicator

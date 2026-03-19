@@ -13,7 +13,8 @@
 #' @template rolling_returns
 rolling_min <- function(
 	x,
-	n = 10
+	n = 10,
+	na.ignore = FALSE
 ) {
 	UseMethod("rolling_min")
 }
@@ -31,7 +32,8 @@ MIN <- rolling_min
 #' @export
 rolling_min.default <- function(
 	x,
-	n = 10
+	n = 10,
+	na.ignore = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
@@ -39,8 +41,9 @@ rolling_min.default <- function(
 		"impl_ta_MIN",
 		## splice:call:start
 		as.double(x),
-		as.integer(n)
+		as.integer(n),
 		## splice:call:end
+		as.logical(na.ignore)
 	)
 
 	## return indicator
@@ -53,13 +56,15 @@ rolling_min.default <- function(
 #' @export
 rolling_min.numeric <- function(
 	x,
-	n = 10
+	n = 10,
+	na.ignore = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
 	x <- rolling_min.default(
 		x = x,
-		n = n
+		n = n,
+		na.ignore = na.ignore
 	)
 
 	## return indicator

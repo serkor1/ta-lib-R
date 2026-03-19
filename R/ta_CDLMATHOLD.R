@@ -27,6 +27,7 @@ mat_hold <- function(
 	x,
 	cols,
 	eps = 0,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("mat_hold")
@@ -47,6 +48,7 @@ mat_hold.default <- function(
 	x,
 	cols,
 	eps = 0,
+	na.ignore = FALSE,
 	...
 ) {
 	## get candlestick pattern
@@ -90,7 +92,8 @@ mat_hold.default <- function(
 			constructed_series[[3]],
 			constructed_series[[4]],
 			eps,
-			normalize
+			normalize,
+			as.logical(na.ignore)
 		)
 	)
 
@@ -112,6 +115,7 @@ mat_hold.data.frame <- function(
 	x,
 	cols,
 	eps = 0,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -127,6 +131,7 @@ mat_hold.matrix <- function(
 	x,
 	cols,
 	eps = 0,
+	na.ignore = FALSE,
 	...
 ) {
 	NextMethod()
@@ -140,6 +145,7 @@ mat_hold.plotly <- function(
 	x,
 	cols,
 	eps = 0,
+	na.ignore = FALSE,
 	...
 ) {
 	## check that input value

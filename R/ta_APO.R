@@ -22,6 +22,7 @@ absolute_price_oscillator <- function(
 	fast = 7,
 	slow = 14,
 	ma = SMA(n = 10),
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("absolute_price_oscillator")
@@ -44,6 +45,7 @@ absolute_price_oscillator.default <- function(
 	fast = 7,
 	slow = 14,
 	ma = SMA(n = 10),
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -73,8 +75,9 @@ absolute_price_oscillator.default <- function(
 		constructed_series[[1]],
 		as.integer(fast),
 		as.integer(slow),
-		ma$maType
+		ma$maType,
 		## splice:call:end
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -94,6 +97,7 @@ absolute_price_oscillator.data.frame <- function(
 	fast = 7,
 	slow = 14,
 	ma = SMA(n = 10),
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -103,6 +107,7 @@ absolute_price_oscillator.data.frame <- function(
 			fast = fast,
 			slow = slow,
 			ma = ma,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -118,6 +123,7 @@ absolute_price_oscillator.matrix <- function(
 	fast = 7,
 	slow = 14,
 	ma = SMA(n = 10),
+	na.ignore = FALSE,
 	...
 ) {
 	absolute_price_oscillator.default(
@@ -126,9 +132,11 @@ absolute_price_oscillator.matrix <- function(
 		fast = fast,
 		slow = slow,
 		ma = ma,
+		na.ignore = na.ignore,
 		...
 	)
 }
+
 
 #' @usage NULL
 #' @aliases absolute_price_oscillator
@@ -140,6 +148,7 @@ absolute_price_oscillator.numeric <- function(
 	fast = 7,
 	slow = 14,
 	ma = SMA(n = 10),
+	na.ignore = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -158,8 +167,9 @@ absolute_price_oscillator.numeric <- function(
 		as.double(x),
 		as.integer(fast),
 		as.integer(slow),
-		ma$maType
+		ma$maType,
 		## splice:numeric:end
+		as.logical(na.ignore)
 	)
 
 	## check if it has 'dims'
@@ -177,6 +187,7 @@ absolute_price_oscillator.numeric <- function(
 	x
 }
 
+
 #' @usage NULL
 #' @aliases absolute_price_oscillator
 #'
@@ -187,6 +198,7 @@ absolute_price_oscillator.plotly <- function(
 	fast = 7,
 	slow = 14,
 	ma = SMA(n = 10),
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -220,7 +232,8 @@ absolute_price_oscillator.plotly <- function(
 		),
 		fast = fast,
 		slow = slow,
-		ma = ma
+		ma = ma,
+		na.ignore = TRUE
 	)
 
 	## the constructed indicator

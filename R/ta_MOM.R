@@ -17,6 +17,7 @@ momentum <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("momentum")
@@ -37,6 +38,7 @@ momentum.default <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -64,8 +66,9 @@ momentum.default <- function(
 		"impl_ta_MOM",
 		## splice:call:start
 		constructed_series[[1]],
-		as.integer(n)
+		as.integer(n),
 		## splice:call:end
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -83,6 +86,7 @@ momentum.data.frame <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -90,6 +94,7 @@ momentum.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -103,15 +108,18 @@ momentum.matrix <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	momentum.default(
 		x = x,
 		cols = cols,
 		n = n,
+		na.ignore = na.ignore,
 		...
 	)
 }
+
 
 #' @usage NULL
 #' @aliases momentum
@@ -121,6 +129,7 @@ momentum.numeric <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -137,8 +146,9 @@ momentum.numeric <- function(
 		"impl_ta_MOM",
 		## splice:numeric:start
 		as.double(x),
-		as.integer(n)
+		as.integer(n),
 		## splice:numeric:end
+		as.logical(na.ignore)
 	)
 
 	## check if it has 'dims'
@@ -156,6 +166,7 @@ momentum.numeric <- function(
 	x
 }
 
+
 #' @usage NULL
 #' @aliases momentum
 #'
@@ -164,6 +175,7 @@ momentum.plotly <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -195,7 +207,8 @@ momentum.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n
+		n = n,
+		na.ignore = TRUE
 	)
 
 	## the constructed indicator

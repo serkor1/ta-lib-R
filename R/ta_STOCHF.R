@@ -20,6 +20,7 @@ fast_stochastic <- function(
 	cols,
 	fastk = 5,
 	fastd = SMA(n = 10),
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("fast_stochastic")
@@ -41,6 +42,7 @@ fast_stochastic.default <- function(
 	cols,
 	fastk = 5,
 	fastd = SMA(n = 10),
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -72,8 +74,9 @@ fast_stochastic.default <- function(
 		constructed_series[[3]],
 		as.integer(fastk),
 		as.integer(fastd$n),
-		as.integer(fastd$maType)
+		as.integer(fastd$maType),
 		## splice:call:end
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -92,6 +95,7 @@ fast_stochastic.data.frame <- function(
 	cols,
 	fastk = 5,
 	fastd = SMA(n = 10),
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -100,6 +104,7 @@ fast_stochastic.data.frame <- function(
 			cols = cols,
 			fastk = fastk,
 			fastd = fastd,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -114,6 +119,7 @@ fast_stochastic.matrix <- function(
 	cols,
 	fastk = 5,
 	fastd = SMA(n = 10),
+	na.ignore = FALSE,
 	...
 ) {
 	fast_stochastic.default(
@@ -121,9 +127,11 @@ fast_stochastic.matrix <- function(
 		cols = cols,
 		fastk = fastk,
 		fastd = fastd,
+		na.ignore = na.ignore,
 		...
 	)
 }
+
 
 #' @usage NULL
 #' @aliases fast_stochastic
@@ -134,6 +142,7 @@ fast_stochastic.plotly <- function(
 	cols,
 	fastk = 5,
 	fastd = SMA(n = 10),
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 20,
 	upper_bound = 80,
@@ -168,7 +177,8 @@ fast_stochastic.plotly <- function(
 			names(constructed_series)
 		),
 		fastk = fastk,
-		fastd = fastd
+		fastd = fastd,
+		na.ignore = TRUE
 	)
 
 	## the constructed indicator

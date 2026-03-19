@@ -1,10 +1,11 @@
 #' @usage NULL
 #' @aliases ${FUN}
-#' 
+#'
 #' @export
 ${FUN}.numeric <- function(
-	x, 
+	x,
 	cols,${ARGS}
+	na.ignore = FALSE,
 	...) {
 
 		## warn if 'cols' have been
@@ -22,10 +23,11 @@ ${FUN}.numeric <- function(
 			## splice:numeric:start
 			${CARGS}
 			## splice:numeric:end
+			as.logical(na.ignore)
 		)
 
 		## check if it has 'dims'
-		## and convert to double if 
+		## and convert to double if
 		## not to honor the 'type-safety'-esque
 		## approach
 		##
@@ -34,7 +36,7 @@ ${FUN}.numeric <- function(
 		##       manually. Any suggestions are welcome
 		if (is.null(dim(x))) {
 			x <- as.double(x)
-		} 
+		}
 
 		x
 }

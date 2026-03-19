@@ -20,6 +20,7 @@ chaikin_accumulation_distribution_oscillator <- function(
 	cols,
 	fast = 3,
 	slow = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("chaikin_accumulation_distribution_oscillator")
@@ -41,6 +42,7 @@ chaikin_accumulation_distribution_oscillator.default <- function(
 	cols,
 	fast = 3,
 	slow = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -72,8 +74,9 @@ chaikin_accumulation_distribution_oscillator.default <- function(
 		constructed_series[[3]],
 		constructed_series[[4]],
 		as.integer(fast),
-		as.integer(slow)
+		as.integer(slow),
 		## splice:call:end
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -92,6 +95,7 @@ chaikin_accumulation_distribution_oscillator.data.frame <- function(
 	cols,
 	fast = 3,
 	slow = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -100,6 +104,7 @@ chaikin_accumulation_distribution_oscillator.data.frame <- function(
 			cols = cols,
 			fast = fast,
 			slow = slow,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -114,6 +119,7 @@ chaikin_accumulation_distribution_oscillator.matrix <- function(
 	cols,
 	fast = 3,
 	slow = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	chaikin_accumulation_distribution_oscillator.default(
@@ -121,9 +127,11 @@ chaikin_accumulation_distribution_oscillator.matrix <- function(
 		cols = cols,
 		fast = fast,
 		slow = slow,
+		na.ignore = na.ignore,
 		...
 	)
 }
+
 
 #' @usage NULL
 #' @aliases chaikin_accumulation_distribution_oscillator
@@ -134,6 +142,7 @@ chaikin_accumulation_distribution_oscillator.plotly <- function(
 	cols,
 	fast = 3,
 	slow = 10,
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -166,7 +175,8 @@ chaikin_accumulation_distribution_oscillator.plotly <- function(
 			names(constructed_series)
 		),
 		fast = fast,
-		slow = slow
+		slow = slow,
+		na.ignore = TRUE
 	)
 
 	## the constructed indicator

@@ -13,7 +13,8 @@
 #' @template rolling_returns
 rolling_max <- function(
 	x,
-	n = 10
+	n = 10,
+	na.ignore = FALSE
 ) {
 	UseMethod("rolling_max")
 }
@@ -31,7 +32,8 @@ MAX <- rolling_max
 #' @export
 rolling_max.default <- function(
 	x,
-	n = 10
+	n = 10,
+	na.ignore = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
@@ -39,8 +41,9 @@ rolling_max.default <- function(
 		"impl_ta_MAX",
 		## splice:call:start
 		as.double(x),
-		as.integer(n)
+		as.integer(n),
 		## splice:call:end
+		as.logical(na.ignore)
 	)
 
 	## return indicator
@@ -53,13 +56,15 @@ rolling_max.default <- function(
 #' @export
 rolling_max.numeric <- function(
 	x,
-	n = 10
+	n = 10,
+	na.ignore = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
 	x <- rolling_max.default(
 		x = x,
-		n = n
+		n = n,
+		na.ignore = na.ignore
 	)
 
 	## return indicator

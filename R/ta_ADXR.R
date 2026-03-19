@@ -17,6 +17,7 @@ average_directional_movement_index_rating <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("average_directional_movement_index_rating")
@@ -37,6 +38,7 @@ average_directional_movement_index_rating.default <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -66,8 +68,9 @@ average_directional_movement_index_rating.default <- function(
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		as.integer(n)
+		as.integer(n),
 		## splice:call:end
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -85,6 +88,7 @@ average_directional_movement_index_rating.data.frame <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -92,6 +96,7 @@ average_directional_movement_index_rating.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -105,15 +110,18 @@ average_directional_movement_index_rating.matrix <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	average_directional_movement_index_rating.default(
 		x = x,
 		cols = cols,
 		n = n,
+		na.ignore = na.ignore,
 		...
 	)
 }
+
 
 #' @usage NULL
 #' @aliases average_directional_movement_index_rating
@@ -123,6 +131,7 @@ average_directional_movement_index_rating.plotly <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 25,
 	middle_bound = 50,
@@ -157,7 +166,8 @@ average_directional_movement_index_rating.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n
+		n = n,
+		na.ignore = TRUE
 	)
 
 	## the constructed indicator

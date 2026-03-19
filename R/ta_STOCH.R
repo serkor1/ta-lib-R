@@ -22,6 +22,7 @@ stochastic <- function(
 	fastk = 5,
 	slowk = SMA(n = 10),
 	slowd = SMA(n = 8),
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("stochastic")
@@ -44,6 +45,7 @@ stochastic.default <- function(
 	fastk = 5,
 	slowk = SMA(n = 10),
 	slowd = SMA(n = 8),
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -77,8 +79,9 @@ stochastic.default <- function(
 		as.integer(slowk$n),
 		as.integer(slowk$maType),
 		as.integer(slowd$n),
-		as.integer(slowd$maType)
+		as.integer(slowd$maType),
 		## splice:call:end
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -98,6 +101,7 @@ stochastic.data.frame <- function(
 	fastk = 5,
 	slowk = SMA(n = 10),
 	slowd = SMA(n = 8),
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -107,6 +111,7 @@ stochastic.data.frame <- function(
 			fastk = fastk,
 			slowk = slowk,
 			slowd = slowd,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -122,6 +127,7 @@ stochastic.matrix <- function(
 	fastk = 5,
 	slowk = SMA(n = 10),
 	slowd = SMA(n = 8),
+	na.ignore = FALSE,
 	...
 ) {
 	stochastic.default(
@@ -130,9 +136,11 @@ stochastic.matrix <- function(
 		fastk = fastk,
 		slowk = slowk,
 		slowd = slowd,
+		na.ignore = na.ignore,
 		...
 	)
 }
+
 
 #' @usage NULL
 #' @aliases stochastic
@@ -144,6 +152,7 @@ stochastic.plotly <- function(
 	fastk = 5,
 	slowk = SMA(n = 10),
 	slowd = SMA(n = 8),
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 20,
 	upper_bound = 80,
@@ -179,7 +188,8 @@ stochastic.plotly <- function(
 		),
 		fastk = fastk,
 		slowk = slowk,
-		slowd = slowd
+		slowd = slowd,
+		na.ignore = TRUE
 	)
 
 	## the constructed indicator

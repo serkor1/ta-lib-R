@@ -14,18 +14,19 @@
 #' \describe{
 #'  \item{$ALIAS}{[integer]}
 #' }
-#' 
+#'
 #' Pattern codes depend on `options(talib.normalize)`:
 #'
 #' * If `TRUE`: `1` = identified pattern; `-1` = identified bearish pattern.
 #' * If `FALSE`: `100` = identified pattern; `-100` = identified bearish pattern.
 #' * `0` = no pattern.
-#' 
+#'
 #' @template description
 #' @template candlestick
 $FUN <- function(
-	x, 
+	x,
 	cols, ${ARGS}
+	na.ignore = FALSE,
 	...) {
   UseMethod("$FUN")
 }
@@ -33,32 +34,33 @@ $FUN <- function(
 #' @export
 #' @usage NULL
 #' @rdname $FUN
-#' 
+#'
 #' @aliases $FUN
 $ALIAS <- $FUN
 
 #' @usage NULL
 #' @aliases $FUN
-#' 
+#'
 #' @export
 $FUN.default <- function(
-	x, 
-	cols, ${ARGS} 
+	x,
+	cols, ${ARGS}
+	na.ignore = FALSE,
 	...) {
 
 	## get candlestick pattern
 	## options
 	##
-	## NOTE: this adds an overhead 
+	## NOTE: this adds an overhead
 	##       of ~60% (from 50 microseconds to 80 microseconds) it needs to be set outside of the function without bloating the number of functions
-	candlestick_setting() 
+	candlestick_setting()
 
 	## get normalization option
 	normalize <- as.logical(
 		getOption("talib.normalize", TRUE)
 	)
 
-	## validate 'cols'-argument 
+	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
 		assert_formula(cols)
@@ -86,7 +88,8 @@ $FUN.default <- function(
 		constructed_series[[2]],
 		constructed_series[[3]],
 		constructed_series[[4]] ${CARGS},
-		normalize
+		normalize,
+		as.logical(na.ignore)
 	)
 	)
 
@@ -102,37 +105,40 @@ $FUN.default <- function(
 
 #' @usage NULL
 #' @aliases $FUN
-#' 
+#'
 #' @export
 $FUN.data.frame <- function(
-	x, 
-	cols, ${ARGS} 
+	x,
+	cols, ${ARGS}
+	na.ignore = FALSE,
 	...) {
 
 	map_dfr(
 		NextMethod()
-	) 
+	)
 }
 
 #' @usage NULL
 #' @aliases $FUN
-#' 
+#'
 #' @export
 $FUN.matrix <- function(
-	x, 
-	cols,${ARGS} 
-	...) { 
-		NextMethod() 
+	x,
+	cols,${ARGS}
+	na.ignore = FALSE,
+	...) {
+		NextMethod()
 }
 
 #' @usage NULL
 #' @aliases $FUN
-#' 
+#'
 #' @export
 $FUN.plotly <- function(
-	x, 
+	x,
 	cols, ${ARGS}
-	...) { 
+	na.ignore = FALSE,
+	...) {
 
 	## check that input value
 	## 'x' is <plotly>-object
@@ -144,7 +150,7 @@ $FUN.plotly <- function(
 		assert_formula(cols)
 	}
 
-	## construct series from 
+	## construct series from
 	## {plotly}-object
 	constructed_series <- series(
 		x = x,
@@ -168,8 +174,8 @@ $FUN.plotly <- function(
 	)
 
 	## construct {plotly}-object
-	plotly_object <- .plotting_environment[["main"]] <-  pattern(
-		p = .plotting_environment[["main"]],
+	plotly_object <- .chart_environment[["main"]] <-  pattern(
+		p = .chart_environment[["main"]],
 		x = constructed_indicator,
 		high = constructed_series[[2]],
 		low = constructed_series[[3]],

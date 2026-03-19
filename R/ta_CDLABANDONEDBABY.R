@@ -27,6 +27,7 @@ abandoned_baby <- function(
 	x,
 	cols,
 	eps = 0,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("abandoned_baby")
@@ -47,6 +48,7 @@ abandoned_baby.default <- function(
 	x,
 	cols,
 	eps = 0,
+	na.ignore = FALSE,
 	...
 ) {
 	## get candlestick pattern
@@ -90,7 +92,8 @@ abandoned_baby.default <- function(
 			constructed_series[[3]],
 			constructed_series[[4]],
 			eps,
-			normalize
+			normalize,
+			as.logical(na.ignore)
 		)
 	)
 
@@ -112,6 +115,7 @@ abandoned_baby.data.frame <- function(
 	x,
 	cols,
 	eps = 0,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -127,6 +131,7 @@ abandoned_baby.matrix <- function(
 	x,
 	cols,
 	eps = 0,
+	na.ignore = FALSE,
 	...
 ) {
 	NextMethod()
@@ -140,6 +145,7 @@ abandoned_baby.plotly <- function(
 	x,
 	cols,
 	eps = 0,
+	na.ignore = FALSE,
 	...
 ) {
 	## check that input value

@@ -3,11 +3,12 @@
 #' 
 #' @export
 ${FUN}.plotly <- function(
-	x, 
+	x,
 	cols,${ARGS}
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
-	...) { 
+	...) {
 
 	## check that input value
 	## 'x' is <plotly>-object
@@ -35,7 +36,8 @@ ${FUN}.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		)
-		${PPARGS}
+		${PPARGS},
+		na.ignore = TRUE
 	)
 
 	## add conditional idx
@@ -48,8 +50,8 @@ ${FUN}.plotly <- function(
 	## initial scaffold
 	## splice:plotly-assembly:end
 
-	plotly_object <- .plotting_environment[["main"]] <- build_plotly(
-		init = .plotting_environment[["main"]],
+	plotly_object <- .chart_environment[["main"]] <- build_plotly(
+		init = .chart_environment[["main"]],
 		traces = traces,
 		decorators = list(),
 		name = get0(

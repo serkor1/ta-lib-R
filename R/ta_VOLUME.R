@@ -18,6 +18,7 @@ trading_volume <- function(
 	x,
 	cols,
 	ma = list(SMA(n = 7), SMA(n = 15)),
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("trading_volume")
@@ -38,6 +39,7 @@ trading_volume.default <- function(
 	x,
 	cols,
 	ma = list(SMA(n = 7), SMA(n = 15)),
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -72,8 +74,9 @@ trading_volume.default <- function(
 					unlist(x, use.names = FALSE)
 				)
 			}
-		)
+		),
 		## splice:call:end
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -91,6 +94,7 @@ trading_volume.data.frame <- function(
 	x,
 	cols,
 	ma = list(SMA(n = 7), SMA(n = 15)),
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -98,6 +102,7 @@ trading_volume.data.frame <- function(
 			x = x,
 			cols = cols,
 			ma = ma,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -111,15 +116,18 @@ trading_volume.matrix <- function(
 	x,
 	cols,
 	ma = list(SMA(n = 7), SMA(n = 15)),
+	na.ignore = FALSE,
 	...
 ) {
 	trading_volume.default(
 		x = x,
 		cols = cols,
 		ma = ma,
+		na.ignore = na.ignore,
 		...
 	)
 }
+
 
 #' @usage NULL
 #' @aliases trading_volume
@@ -129,6 +137,7 @@ trading_volume.numeric <- function(
 	x,
 	cols,
 	ma = list(SMA(n = 7), SMA(n = 15)),
+	na.ignore = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -145,8 +154,9 @@ trading_volume.numeric <- function(
 		"impl_ta_VOLUME",
 		## splice:numeric:start
 		as.double(x),
-		ma
+		ma,
 		## splice:numeric:end
+		as.logical(na.ignore)
 	)
 
 	## check if it has 'dims'
@@ -164,6 +174,7 @@ trading_volume.numeric <- function(
 	x
 }
 
+
 #' @usage NULL
 #' @aliases trading_volume
 #'
@@ -172,6 +183,7 @@ trading_volume.plotly <- function(
 	x,
 	cols,
 	ma = list(SMA(n = 7), SMA(n = 15)),
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -203,7 +215,8 @@ trading_volume.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		ma = ma
+		ma = ma,
+		na.ignore = TRUE
 	)
 
 	## the constructed indicator

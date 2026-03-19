@@ -17,6 +17,7 @@ rate_of_change <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("rate_of_change")
@@ -37,6 +38,7 @@ rate_of_change.default <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -64,8 +66,9 @@ rate_of_change.default <- function(
 		"impl_ta_ROC",
 		## splice:call:start
 		constructed_series[[1]],
-		as.integer(n)
+		as.integer(n),
 		## splice:call:end
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -83,6 +86,7 @@ rate_of_change.data.frame <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -90,6 +94,7 @@ rate_of_change.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -103,15 +108,18 @@ rate_of_change.matrix <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	rate_of_change.default(
 		x = x,
 		cols = cols,
 		n = n,
+		na.ignore = na.ignore,
 		...
 	)
 }
+
 
 #' @usage NULL
 #' @aliases rate_of_change
@@ -121,6 +129,7 @@ rate_of_change.numeric <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -137,8 +146,9 @@ rate_of_change.numeric <- function(
 		"impl_ta_ROC",
 		## splice:numeric:start
 		as.double(x),
-		as.integer(n)
+		as.integer(n),
 		## splice:numeric:end
+		as.logical(na.ignore)
 	)
 
 	## check if it has 'dims'
@@ -156,6 +166,7 @@ rate_of_change.numeric <- function(
 	x
 }
 
+
 #' @usage NULL
 #' @aliases rate_of_change
 #'
@@ -164,6 +175,7 @@ rate_of_change.plotly <- function(
 	x,
 	cols,
 	n = 10,
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -195,7 +207,8 @@ rate_of_change.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n
+		n = n,
+		na.ignore = TRUE
 	)
 
 	## the constructed indicator

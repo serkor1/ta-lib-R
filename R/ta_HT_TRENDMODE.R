@@ -16,6 +16,7 @@
 trend_cycle_mode <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("trend_cycle_mode")
@@ -35,6 +36,7 @@ HT_TRENDMODE <- trend_cycle_mode
 trend_cycle_mode.default <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -61,8 +63,9 @@ trend_cycle_mode.default <- function(
 	x <- .Call(
 		"impl_ta_HT_TRENDMODE",
 		## splice:call:start
-		constructed_series[[1]]
+		constructed_series[[1]],
 		## splice:call:end
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -79,12 +82,14 @@ trend_cycle_mode.default <- function(
 trend_cycle_mode.data.frame <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
 		trend_cycle_mode.default(
 			x = x,
 			cols = cols,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -97,14 +102,17 @@ trend_cycle_mode.data.frame <- function(
 trend_cycle_mode.matrix <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	trend_cycle_mode.default(
 		x = x,
 		cols = cols,
+		na.ignore = na.ignore,
 		...
 	)
 }
+
 
 #' @usage NULL
 #' @aliases trend_cycle_mode
@@ -113,6 +121,7 @@ trend_cycle_mode.matrix <- function(
 trend_cycle_mode.numeric <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -128,8 +137,9 @@ trend_cycle_mode.numeric <- function(
 	x <- .Call(
 		"impl_ta_HT_TRENDMODE",
 		## splice:numeric:start
-		as.double(x)
+		as.double(x),
 		## splice:numeric:end
+		as.logical(na.ignore)
 	)
 
 	## check if it has 'dims'
@@ -147,6 +157,7 @@ trend_cycle_mode.numeric <- function(
 	x
 }
 
+
 #' @usage NULL
 #' @aliases trend_cycle_mode
 #'
@@ -154,6 +165,7 @@ trend_cycle_mode.numeric <- function(
 trend_cycle_mode.plotly <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -184,7 +196,8 @@ trend_cycle_mode.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.ignore = TRUE
 	)
 
 	## the constructed indicator

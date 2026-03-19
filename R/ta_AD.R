@@ -16,6 +16,7 @@
 chaikin_accumulation_distribution_line <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("chaikin_accumulation_distribution_line")
@@ -35,6 +36,7 @@ AD <- chaikin_accumulation_distribution_line
 chaikin_accumulation_distribution_line.default <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -64,8 +66,9 @@ chaikin_accumulation_distribution_line.default <- function(
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		constructed_series[[4]]
+		constructed_series[[4]],
 		## splice:call:end
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -82,12 +85,14 @@ chaikin_accumulation_distribution_line.default <- function(
 chaikin_accumulation_distribution_line.data.frame <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
 		chaikin_accumulation_distribution_line.default(
 			x = x,
 			cols = cols,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -100,14 +105,17 @@ chaikin_accumulation_distribution_line.data.frame <- function(
 chaikin_accumulation_distribution_line.matrix <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	...
 ) {
 	chaikin_accumulation_distribution_line.default(
 		x = x,
 		cols = cols,
+		na.ignore = na.ignore,
 		...
 	)
 }
+
 
 #' @usage NULL
 #' @aliases chaikin_accumulation_distribution_line
@@ -116,6 +124,7 @@ chaikin_accumulation_distribution_line.matrix <- function(
 chaikin_accumulation_distribution_line.plotly <- function(
 	x,
 	cols,
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -146,7 +155,8 @@ chaikin_accumulation_distribution_line.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.ignore = TRUE
 	)
 
 	## the constructed indicator
