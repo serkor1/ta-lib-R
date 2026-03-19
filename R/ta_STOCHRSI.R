@@ -83,6 +83,7 @@ stochastic_relative_strength_index.default <- function(
 		fastd$maType,
 		as.integer(n_rsi),
 		## splice:call:end
+		,
 		as.logical(na.rm)
 	)
 
@@ -249,8 +250,8 @@ stochastic_relative_strength_index.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.charting_environment$sub <- c(
-		.charting_environment$sub,
+	.chart_environment$sub <- c(
+		.chart_environment$sub,
 		list(plotly_object)
 	)
 

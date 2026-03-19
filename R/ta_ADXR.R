@@ -70,6 +70,7 @@ average_directional_movement_index_rating.default <- function(
 		constructed_series[[3]],
 		as.integer(n),
 		## splice:call:end
+		,
 		as.logical(na.rm)
 	)
 
@@ -222,8 +223,8 @@ average_directional_movement_index_rating.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.charting_environment$sub <- c(
-		.charting_environment$sub,
+	.chart_environment$sub <- c(
+		.chart_environment$sub,
 		list(plotly_object)
 	)
 

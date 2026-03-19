@@ -98,6 +98,7 @@ extended_parabolic_stop_and_reverse.default <- function(
 		short,
 		max_short,
 		## splice:call:end
+		,
 		as.logical(na.rm)
 	)
 

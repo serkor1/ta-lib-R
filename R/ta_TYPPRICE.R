@@ -67,6 +67,7 @@ typical_price.default <- function(
 		constructed_series[[2]],
 		constructed_series[[3]],
 		## splice:call:end
+		,
 		as.logical(na.rm)
 	)
 

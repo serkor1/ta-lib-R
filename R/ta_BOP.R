@@ -68,6 +68,7 @@ balance_of_power.default <- function(
 		constructed_series[[3]],
 		constructed_series[[4]],
 		## splice:call:end
+		,
 		as.logical(na.rm)
 	)
 
@@ -212,8 +213,8 @@ balance_of_power.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.charting_environment$sub <- c(
-		.charting_environment$sub,
+	.chart_environment$sub <- c(
+		.chart_environment$sub,
 		list(plotly_object)
 	)
 

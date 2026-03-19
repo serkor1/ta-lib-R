@@ -66,6 +66,7 @@ on_balance_volume.default <- function(
 		constructed_series[[1]],
 		constructed_series[[2]],
 		## splice:call:end
+		,
 		as.logical(na.rm)
 	)
 
@@ -196,8 +197,8 @@ on_balance_volume.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.charting_environment$sub <- c(
-		.charting_environment$sub,
+	.chart_environment$sub <- c(
+		.chart_environment$sub,
 		list(plotly_object)
 	)
 

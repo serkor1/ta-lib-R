@@ -69,6 +69,7 @@ fixed_moving_average_convergence_divergence.default <- function(
 		constructed_series[[1]],
 		as.integer(signal),
 		## splice:call:end
+		,
 		as.logical(na.rm)
 	)
 
@@ -149,6 +150,7 @@ fixed_moving_average_convergence_divergence.numeric <- function(
 		as.double(x),
 		as.integer(signal),
 		## splice:numeric:end
+		,
 		as.logical(na.rm)
 	)
 
@@ -294,8 +296,8 @@ fixed_moving_average_convergence_divergence.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.charting_environment$sub <- c(
-		.charting_environment$sub,
+	.chart_environment$sub <- c(
+		.chart_environment$sub,
 		list(plotly_object)
 	)
 

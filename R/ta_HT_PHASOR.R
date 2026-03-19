@@ -65,6 +65,7 @@ phasor_components.default <- function(
 		## splice:call:start
 		constructed_series[[1]],
 		## splice:call:end
+		,
 		as.logical(na.rm)
 	)
 
@@ -139,6 +140,7 @@ phasor_components.numeric <- function(
 		## splice:numeric:start
 		as.double(x),
 		## splice:numeric:end
+		,
 		as.logical(na.rm)
 	)
 
@@ -259,8 +261,8 @@ phasor_components.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.charting_environment$sub <- c(
-		.charting_environment$sub,
+	.chart_environment$sub <- c(
+		.chart_environment$sub,
 		list(plotly_object)
 	)
 

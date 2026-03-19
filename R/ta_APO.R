@@ -77,6 +77,7 @@ absolute_price_oscillator.default <- function(
 		as.integer(slow),
 		ma$maType,
 		## splice:call:end
+		,
 		as.logical(na.rm)
 	)
 
@@ -169,6 +170,7 @@ absolute_price_oscillator.numeric <- function(
 		as.integer(slow),
 		ma$maType,
 		## splice:numeric:end
+		,
 		as.logical(na.rm)
 	)
 
@@ -285,8 +287,8 @@ absolute_price_oscillator.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.charting_environment$sub <- c(
-		.charting_environment$sub,
+	.chart_environment$sub <- c(
+		.chart_environment$sub,
 		list(plotly_object)
 	)
 

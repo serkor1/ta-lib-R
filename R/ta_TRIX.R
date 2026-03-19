@@ -68,6 +68,7 @@ triple_exponential_average.default <- function(
 		constructed_series[[1]],
 		as.integer(n),
 		## splice:call:end
+		,
 		as.logical(na.rm)
 	)
 
@@ -148,6 +149,7 @@ triple_exponential_average.numeric <- function(
 		as.double(x),
 		as.integer(n),
 		## splice:numeric:end
+		,
 		as.logical(na.rm)
 	)
 
@@ -253,8 +255,8 @@ triple_exponential_average.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.charting_environment$sub <- c(
-		.charting_environment$sub,
+	.chart_environment$sub <- c(
+		.chart_environment$sub,
 		list(plotly_object)
 	)
 

@@ -68,6 +68,7 @@ average_price.default <- function(
 		constructed_series[[3]],
 		constructed_series[[4]],
 		## splice:call:end
+		,
 		as.logical(na.rm)
 	)
 

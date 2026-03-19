@@ -72,6 +72,7 @@ ultimate_oscillator.default <- function(
 		as.integer(n[2]),
 		as.integer(n[3]),
 		## splice:call:end
+		,
 		as.logical(na.rm)
 	)
 
@@ -224,8 +225,8 @@ ultimate_oscillator.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.charting_environment$sub <- c(
-		.charting_environment$sub,
+	.chart_environment$sub <- c(
+		.chart_environment$sub,
 		list(plotly_object)
 	)
 

@@ -74,6 +74,7 @@ parabolic_stop_and_reverse.default <- function(
 		as.double(acceleration),
 		as.double(maximum),
 		## splice:call:end
+		,
 		as.logical(na.rm)
 	)
 

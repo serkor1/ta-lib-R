@@ -76,6 +76,7 @@ trading_volume.default <- function(
 			}
 		),
 		## splice:call:end
+		,
 		as.logical(na.rm)
 	)
 
@@ -156,6 +157,7 @@ trading_volume.numeric <- function(
 		as.double(x),
 		ma,
 		## splice:numeric:end
+		,
 		as.logical(na.rm)
 	)
 
@@ -307,8 +309,8 @@ trading_volume.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.charting_environment$sub <- c(
-		.charting_environment$sub,
+	.chart_environment$sub <- c(
+		.chart_environment$sub,
 		list(plotly_object)
 	)
 
