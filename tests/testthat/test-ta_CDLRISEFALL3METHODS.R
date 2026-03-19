@@ -61,6 +61,35 @@ testthat::test_that(desc = 'Default calls', code = {
 })
 
 ## check that the length of the input
+## matches the output length with na.rm = TRUE
+##
+## <data.frame> object
+testthat::test_that(desc = 'Equal length of input and output for <data.frame> with na.rm = TRUE', code = {
+	testthat::expect_equal(
+		object = nrow(rise_fall_3_methods(
+			ATOM,
+			na.rm = TRUE
+		)),
+		expected = nrow(ATOM)
+	)
+})
+
+## check that the rownames are being
+## respected for <data.frame> with na.rm = TRUE
+testthat::test_that(desc = 'Row names are respected for <data.frame>, na.rm = TRUE', code = {
+	## extract row names
+	x_names <- row.names(ATOM)
+
+	## calculate indicator
+	indicator <- rise_fall_3_methods(ATOM, na.rm = TRUE)
+
+	testthat::expect_equal(
+		object = x_names,
+		expected = rownames(indicator)
+	)
+})
+
+## check that the length of the input
 ## matches the output length
 ##
 ## <data.frame> object
