@@ -106,6 +106,13 @@ n ?= 1e6
 bench-data: ## Generate data for benchmark(s) 
 	@Rscript ./benchmark/benchmark-data.R $(n)
 
+validate: ## Validate R output against TA-Lib core
+	@PKG_CFLAGS="-Isrc/ta-lib/local/include -Isrc/ta-lib/local/include/ta-lib" \
+	PKG_LIBS="src/ta-lib/local/lib/libta-lib.a -lm" \
+	R CMD SHLIB tools/validation/validate.c
+	@Rscript tools/validation/validate.R
+	@rm -f tools/validation/validate.o tools/validation/validate.so
+
 gen-code: ## Generate R wrappers and unit-tests
 	@Rscript --verbose ./tools/gen_code/cycle_indicator.R
 	@Rscript --verbose ./tools/gen_code/candlestick_pattern.R
