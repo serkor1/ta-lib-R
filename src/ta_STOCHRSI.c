@@ -150,9 +150,19 @@ SEXP impl_ta_STOCHRSI(
 
   // re-expand output if NAs were stripped
   // see na.h for more details
+  //
+  // The output has (n_compacted + offset_value) rows but must expand to
+  // (n_original + offset_value) rows.  Build an extended mask: the first
+  // offset_value entries are 0 (pass-through for the shift-generated NA
+  // padding), followed by the original data mask.
   if (na_mask != NULL) {
+    const int n_full = n_original + offset_value;
+    int *ext_mask = (int *)R_alloc(n_full, sizeof(int));
+    memset(ext_mask, 0, offset_value * sizeof(int));
+    memcpy(ext_mask + offset_value, na_mask, n_original * sizeof(int));
+
     output =
-      reexpand_double_matrix(output, na_mask, n_original, &protection_count);
+      reexpand_double_matrix(output, ext_mask, n_full, &protection_count);
   }
 
   UNPROTECT(protection_count);

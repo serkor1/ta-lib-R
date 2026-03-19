@@ -74,7 +74,9 @@ stochastic_relative_strength_index.default <- function(
 	x <- .Call(
 		"impl_ta_STOCHRSI",
 		## splice:call:start
-		relative_strength_index(constructed_series, n = n_rsi)[[1]][
+		relative_strength_index(constructed_series, n = n_rsi, na.rm = na.rm)[[
+			1
+		]][
 			-seq_len(n_rsi)
 		],
 		as.integer(n),
