@@ -14,7 +14,7 @@ the remaing part of series.
 ## Usage
 
 ``` r
-rolling_variance(x, n = 10, k = 1)
+rolling_variance(x, n = 10, k = 1, na.ignore = FALSE)
 ```
 
 ## Arguments
@@ -32,6 +32,15 @@ rolling_variance(x, n = 10, k = 1)
 - k:
 
   multiplier
+
+- na.ignore:
+
+  ([logical](https://rdrr.io/r/base/logical.html)). A
+  [logical](https://rdrr.io/r/base/logical.html) of
+  [length](https://rdrr.io/r/base/length.html) 1.
+  [FALSE](https://rdrr.io/r/base/logical.html) by default. If
+  [TRUE](https://rdrr.io/r/base/logical.html) 's are ignored during
+  calculation to avoid returning `x` filled with 's.
 
 ## Value
 

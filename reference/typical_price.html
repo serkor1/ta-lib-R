@@ -70,7 +70,7 @@ dependencies. Ie. <a href="https://rdrr.io/r/base/class.html" class="external-li
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">typical_price</span><span class="op">(</span><span class="va">x</span>, <span class="va">cols</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">typical_price</span><span class="op">(</span><span class="va">x</span>, <span class="va">cols</span>, na.ignore <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -84,6 +84,10 @@ dependencies. Ie. <a href="https://rdrr.io/r/base/class.html" class="external-li
 <dt id="arg-cols">cols<a class="anchor" aria-label="anchor" href="#arg-cols"></a></dt>
 <dd><p>(<a href="https://rdrr.io/r/stats/formula.html" class="external-link">formula</a>). An optional <code>3</code> variable <a href="https://rdrr.io/r/stats/formula.html" class="external-link">formula</a> passed into <a href="https://rdrr.io/r/stats/model.frame.html" class="external-link">model.frame</a>. Internally uses
 <code>~high + low + close</code> by default.</p></dd>
+
+
+<dt id="arg-na-ignore">na.ignore<a class="anchor" aria-label="anchor" href="#arg-na-ignore"></a></dt>
+<dd><p>(<a href="https://rdrr.io/r/base/logical.html" class="external-link">logical</a>). A <a href="https://rdrr.io/r/base/logical.html" class="external-link">logical</a> of <a href="https://rdrr.io/r/base/length.html" class="external-link">length</a> 1. <a href="https://rdrr.io/r/base/logical.html" class="external-link">FALSE</a> by default. If <a href="https://rdrr.io/r/base/logical.html" class="external-link">TRUE</a> <na>'s are ignored during calculation to avoid returning <code>x</code> filled with <na>'s.</na></na></p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

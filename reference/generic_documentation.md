@@ -36,6 +36,15 @@ downstream.
   [length](https://rdrr.io/r/base/length.html) 1. Percentage of
   penetration of a candle within another candle.
 
+- na.ignore:
+
+  ([logical](https://rdrr.io/r/base/logical.html)). A
+  [logical](https://rdrr.io/r/base/logical.html) of
+  [length](https://rdrr.io/r/base/length.html) 1.
+  [FALSE](https://rdrr.io/r/base/logical.html) by default. If
+  [TRUE](https://rdrr.io/r/base/logical.html) 's are ignored during
+  calculation to avoid returning `x` filled with 's.
+
 - ...:
 
   Additional parameters passed into

@@ -17,7 +17,7 @@ remaing part of series.
 ## Usage
 
 ``` r
-typical_price(x, cols, ...)
+typical_price(x, cols, na.ignore = FALSE, ...)
 ```
 
 ## Arguments
@@ -33,6 +33,15 @@ typical_price(x, cols, ...)
   variable [formula](https://rdrr.io/r/stats/formula.html) passed into
   [model.frame](https://rdrr.io/r/stats/model.frame.html). Internally
   uses `~high + low + close` by default.
+
+- na.ignore:
+
+  ([logical](https://rdrr.io/r/base/logical.html)). A
+  [logical](https://rdrr.io/r/base/logical.html) of
+  [length](https://rdrr.io/r/base/length.html) 1.
+  [FALSE](https://rdrr.io/r/base/logical.html) by default. If
+  [TRUE](https://rdrr.io/r/base/logical.html) 's are ignored during
+  calculation to avoid returning `x` filled with 's.
 
 - ...:
 

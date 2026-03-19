@@ -17,7 +17,7 @@ remaing part of series.
 ## Usage
 
 ``` r
-midpoint_price(x, cols, n = 10, ...)
+midpoint_price(x, cols, n = 10, na.ignore = FALSE, ...)
 ```
 
 ## Arguments
@@ -39,6 +39,15 @@ midpoint_price(x, cols, n = 10, ...)
   ([integer](https://rdrr.io/r/base/integer.html)). An
   [integer](https://rdrr.io/r/base/integer.html) of
   [length](https://rdrr.io/r/base/length.html) 1.
+
+- na.ignore:
+
+  ([logical](https://rdrr.io/r/base/logical.html)). A
+  [logical](https://rdrr.io/r/base/logical.html) of
+  [length](https://rdrr.io/r/base/length.html) 1.
+  [FALSE](https://rdrr.io/r/base/logical.html) by default. If
+  [TRUE](https://rdrr.io/r/base/logical.html) 's are ignored during
+  calculation to avoid returning `x` filled with 's.
 
 - ...:
 

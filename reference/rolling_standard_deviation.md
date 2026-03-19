@@ -14,7 +14,7 @@ the package-wide dependencies. Ie.
 ## Usage
 
 ``` r
-rolling_standard_deviation(x, n = 10, k = 1)
+rolling_standard_deviation(x, n = 10, k = 1, na.ignore = FALSE)
 ```
 
 ## Arguments
@@ -33,6 +33,15 @@ rolling_standard_deviation(x, n = 10, k = 1)
 
   ([double](https://rdrr.io/r/base/double.html)). Multiplier for the
   standard deviation.
+
+- na.ignore:
+
+  ([logical](https://rdrr.io/r/base/logical.html)). A
+  [logical](https://rdrr.io/r/base/logical.html) of
+  [length](https://rdrr.io/r/base/length.html) 1.
+  [FALSE](https://rdrr.io/r/base/logical.html) by default. If
+  [TRUE](https://rdrr.io/r/base/logical.html) 's are ignored during
+  calculation to avoid returning `x` filled with 's.
 
 ## Value
 

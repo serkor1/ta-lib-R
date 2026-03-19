@@ -324,3 +324,5 @@ Preloaded financial data
   S&P 500 ETF (SPY)
 - [`NVDA`](https://serkor1.github.io/ta-lib-R/reference/NVDA.md) :
   NVIDIA Corporation (NVDA)
+- [`ATOM`](https://serkor1.github.io/ta-lib-R/reference/ATOM.md) :
+  Cosmos (ATOM)
