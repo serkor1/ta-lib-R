@@ -3,11 +3,12 @@
 #' 
 #' @export
 ${FUN}.plotly <- function(
-	x, 
+	x,
 	cols,${ARGS}
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
-	...) { 
+	na.rm = FALSE,
+	...) {
 
 	## check that input value
 	## 'x' is <plotly>-object
@@ -48,8 +49,8 @@ ${FUN}.plotly <- function(
 	## initial scaffold
 	## splice:plotly-assembly:end
 
-	plotly_object <- .plotting_environment[["main"]] <- build_plotly(
-		init = .plotting_environment[["main"]],
+	plotly_object <- .chart_environment[["main"]] <- build_plotly(
+		init = .chart_environment[["main"]],
 		traces = traces,
 		decorators = list(),
 		name = get0(

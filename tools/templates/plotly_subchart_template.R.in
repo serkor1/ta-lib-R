@@ -3,12 +3,13 @@
 #' 
 #' @export
 ${FUN}.plotly <- function(
-	x, 
+	x,
 	cols,${ARGS}
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	na.rm = FALSE,
 	title,
-	...) { 
+	...) {
 
 	## check that input value
 	## 'x' is <plotly>-object
@@ -74,8 +75,8 @@ ${FUN}.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-    .plotting_environment$sub <- c(
-		.plotting_environment$sub,
+    .charting_environment$sub <- c(
+		.charting_environment$sub,
 		list(plotly_object)
 	)
 
