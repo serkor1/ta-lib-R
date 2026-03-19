@@ -8,9 +8,17 @@
 //   PKG_LIBS="src/ta-lib/local/lib/libta-lib.a -lm" \
 //   R CMD SHLIB tools/validation/validate.c
 //
+// R and TA-Lib both define Int32 (unsigned vs signed).
+// Use the same workaround as src/lib.h: guard R_ext/Random.h,
+// then rename TA-Lib's Int32 to avoid the clash.
+#define R_RANDOM_H
 #include <R.h>
 #include <Rinternals.h>
+#undef R_RANDOM_H
+
+#define Int32 TA_Lib_Int32
 #include <ta_libc.h>
+#undef Int32
 
 // build_result: create an n x ncol REALSXP matrix filled with NA,
 // then copy each TA-Lib output column into the correct position.
@@ -53,7 +61,7 @@ SEXP validate_SMA(SEXP inReal, SEXP optInTimePeriod)
     Rf_error("TA_MA(SMA) failed: %d", rc);
 
   double *cols[] = {out};
-  return build_result(n, 1, si, ei - si + 1, cols);
+  return build_result(n, 1, si, ei, cols);
 }
 
 // --- RSI (single input, single output, momentum) ---
@@ -69,7 +77,7 @@ SEXP validate_RSI(SEXP inReal, SEXP optInTimePeriod)
     Rf_error("TA_RSI failed: %d", rc);
 
   double *cols[] = {out};
-  return build_result(n, 1, si, ei - si + 1, cols);
+  return build_result(n, 1, si, ei, cols);
 }
 
 // --- BBANDS (single input, 3 outputs) ---
@@ -98,7 +106,7 @@ SEXP validate_BBANDS(
     Rf_error("TA_BBANDS failed: %d", rc);
 
   double *cols[] = {upper, middle, lower};
-  return build_result(n, 3, si, ei - si + 1, cols);
+  return build_result(n, 3, si, ei, cols);
 }
 
 // --- STOCHRSI (single input, 2 outputs) ---
@@ -127,7 +135,7 @@ SEXP validate_STOCHRSI(
     Rf_error("TA_STOCHRSI failed: %d", rc);
 
   double *cols[] = {outK, outD};
-  return build_result(n, 2, si, ei - si + 1, cols);
+  return build_result(n, 2, si, ei, cols);
 }
 
 // --- ATR (multi-input HLC, single output) ---
@@ -148,5 +156,5 @@ SEXP validate_ATR(
     Rf_error("TA_ATR failed: %d", rc);
 
   double *cols[] = {out};
-  return build_result(n, 1, si, ei - si + 1, cols);
+  return build_result(n, 1, si, ei, cols);
 }
