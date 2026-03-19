@@ -51,12 +51,9 @@ SEXP impl_ta_OBV(
     const double *na_arrays[] = {inReal_ptr, inVolume_ptr};
     n = build_na_mask(na_mask, n, 2, na_arrays);
     if (n < n_original) {
-      double *compact_0 = (double *)R_alloc(n, sizeof(double));
-      compact_array(compact_0, inReal_ptr, na_mask, n_original);
-      inReal_ptr = compact_0;
-      double *compact_1 = (double *)R_alloc(n, sizeof(double));
-      compact_array(compact_1, inVolume_ptr, na_mask, n_original);
-      inVolume_ptr = compact_1;
+      compact_arrays(na_arrays, 2, na_mask, n_original, n);
+      inReal_ptr = na_arrays[0];
+      inVolume_ptr = na_arrays[1];
 
     } else {
       na_mask = NULL;

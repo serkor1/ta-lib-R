@@ -59,15 +59,10 @@ SEXP impl_ta_ACCBANDS(
     const double *na_arrays[] = {inHigh_ptr, inLow_ptr, inClose_ptr};
     n = build_na_mask(na_mask, n, 3, na_arrays);
     if (n < n_original) {
-      double *compact_0 = (double *)R_alloc(n, sizeof(double));
-      compact_array(compact_0, inHigh_ptr, na_mask, n_original);
-      inHigh_ptr = compact_0;
-      double *compact_1 = (double *)R_alloc(n, sizeof(double));
-      compact_array(compact_1, inLow_ptr, na_mask, n_original);
-      inLow_ptr = compact_1;
-      double *compact_2 = (double *)R_alloc(n, sizeof(double));
-      compact_array(compact_2, inClose_ptr, na_mask, n_original);
-      inClose_ptr = compact_2;
+      compact_arrays(na_arrays, 3, na_mask, n_original, n);
+      inHigh_ptr = na_arrays[0];
+      inLow_ptr = na_arrays[1];
+      inClose_ptr = na_arrays[2];
 
     } else {
       na_mask = NULL;

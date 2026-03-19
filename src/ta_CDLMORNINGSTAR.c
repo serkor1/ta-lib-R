@@ -59,18 +59,11 @@ SEXP impl_ta_CDLMORNINGSTAR(
     const double *na_arrays[] = {open_ptr, high_ptr, low_ptr, close_ptr};
     n = build_na_mask(na_mask, n, 4, na_arrays);
     if (n < n_original) {
-      double *c0 = (double *)R_alloc(n, sizeof(double));
-      double *c1 = (double *)R_alloc(n, sizeof(double));
-      double *c2 = (double *)R_alloc(n, sizeof(double));
-      double *c3 = (double *)R_alloc(n, sizeof(double));
-      compact_array(c0, open_ptr, na_mask, n_original);
-      compact_array(c1, high_ptr, na_mask, n_original);
-      compact_array(c2, low_ptr, na_mask, n_original);
-      compact_array(c3, close_ptr, na_mask, n_original);
-      open_ptr = c0;
-      high_ptr = c1;
-      low_ptr = c2;
-      close_ptr = c3;
+      compact_arrays(na_arrays, 4, na_mask, n_original, n);
+      open_ptr = na_arrays[0];
+      high_ptr = na_arrays[1];
+      low_ptr = na_arrays[2];
+      close_ptr = na_arrays[3];
     } else {
       na_mask = NULL;
     }

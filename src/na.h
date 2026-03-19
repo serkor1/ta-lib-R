@@ -58,6 +58,25 @@ static inline void compact_array(
   }
 }
 
+// Compact multiple input arrays in-place.
+// For each pointer in ptrs[], allocates a clean buffer via R_alloc,
+// copies non-masked elements into it, and replaces the pointer.
+// clang-format off
+static inline void compact_arrays(
+  const double **ptrs,
+  int n_arrays,
+  const int *mask,
+  int n_original,
+  int n_clean
+) {
+  // clang-format on
+  for (int j = 0; j < n_arrays; j++) {
+    double *buf = (double *)R_alloc(n_clean, sizeof(double));
+    compact_array(buf, ptrs[j], mask, n_original);
+    ptrs[j] = buf;
+  }
+}
+
 // Re-expand a compact double matrix to full size,
 // inserting NA_REAL at masked positions.
 // Returns new PROTECTed SEXP; increments protection_count.

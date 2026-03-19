@@ -56,12 +56,9 @@ SEXP impl_ta_IMI(
     const double *na_arrays[] = {inOpen_ptr, inClose_ptr};
     n = build_na_mask(na_mask, n, 2, na_arrays);
     if (n < n_original) {
-      double *compact_0 = (double *)R_alloc(n, sizeof(double));
-      compact_array(compact_0, inOpen_ptr, na_mask, n_original);
-      inOpen_ptr = compact_0;
-      double *compact_1 = (double *)R_alloc(n, sizeof(double));
-      compact_array(compact_1, inClose_ptr, na_mask, n_original);
-      inClose_ptr = compact_1;
+      compact_arrays(na_arrays, 2, na_mask, n_original, n);
+      inOpen_ptr = na_arrays[0];
+      inClose_ptr = na_arrays[1];
 
     } else {
       na_mask = NULL;

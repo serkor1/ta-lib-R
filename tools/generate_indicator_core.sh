@@ -384,16 +384,15 @@ NA_MASK_BUILD=$''
 NA_MASK_BUILD+="const double *na_arrays[] = {${NA_MASK_PTRS}};"$'\n'
 NA_MASK_BUILD+="        n = build_na_mask(na_mask, n, ${NA_N_ARRAYS}, na_arrays);"
 
-## 11.2) compact_array calls for each double input
+## 11.2) compact_arrays call + pointer reassignment
 NA_COMPACT=$''
+NA_COMPACT+="compact_arrays(na_arrays, ${NA_N_ARRAYS}, na_mask, n_original, n);"$'\n'
 ci=0
 for i in "${!in_arrays_name[@]}"; do
   t=${in_arrays_type[$i]}
   nm=${in_arrays_name[$i]}
   if [ "$t" = "double" ]; then
-    NA_COMPACT+="double *compact_${ci} = (double *)R_alloc(n, sizeof(double));"$'\n'
-    NA_COMPACT+="            compact_array(compact_${ci}, ${nm}_ptr, na_mask, n_original);"$'\n'
-    NA_COMPACT+="            ${nm}_ptr = compact_${ci};"$'\n'
+    NA_COMPACT+="            ${nm}_ptr = na_arrays[${ci}];"$'\n'
     ((ci++)) || true
   fi
 done
