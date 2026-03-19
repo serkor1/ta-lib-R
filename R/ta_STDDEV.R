@@ -47,7 +47,6 @@ rolling_standard_deviation.default <- function(
 		as.integer(n),
 		as.double(k),
 		## splice:call:end
-		,
 		as.logical(na.rm)
 	)
 

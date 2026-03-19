@@ -68,7 +68,6 @@ chande_momentum_oscillator.default <- function(
 		constructed_series[[1]],
 		as.integer(n),
 		## splice:call:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -149,7 +148,6 @@ chande_momentum_oscillator.numeric <- function(
 		as.double(x),
 		as.integer(n),
 		## splice:numeric:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -211,7 +209,8 @@ chande_momentum_oscillator.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n
+		n = n,
+		na.rm = TRUE
 	)
 
 	## the constructed indicator

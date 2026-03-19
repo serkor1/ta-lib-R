@@ -76,7 +76,6 @@ chaikin_accumulation_distribution_oscillator.default <- function(
 		as.integer(fast),
 		as.integer(slow),
 		## splice:call:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -176,7 +175,8 @@ chaikin_accumulation_distribution_oscillator.plotly <- function(
 			names(constructed_series)
 		),
 		fast = fast,
-		slow = slow
+		slow = slow,
+		na.rm = TRUE
 	)
 
 	## the constructed indicator

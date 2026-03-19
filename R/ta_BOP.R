@@ -68,7 +68,6 @@ balance_of_power.default <- function(
 		constructed_series[[3]],
 		constructed_series[[4]],
 		## splice:call:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -156,7 +155,8 @@ balance_of_power.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.rm = TRUE
 	)
 
 	## the constructed indicator

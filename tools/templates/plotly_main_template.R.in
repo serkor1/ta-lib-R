@@ -36,7 +36,8 @@ ${FUN}.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		)
-		${PPARGS}
+		${PPARGS},
+		na.rm = TRUE
 	)
 
 	## add conditional idx

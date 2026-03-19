@@ -66,7 +66,6 @@ on_balance_volume.default <- function(
 		constructed_series[[1]],
 		constructed_series[[2]],
 		## splice:call:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -154,7 +153,8 @@ on_balance_volume.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.rm = TRUE
 	)
 
 	## the constructed indicator

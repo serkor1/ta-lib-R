@@ -69,7 +69,6 @@ midpoint_price.default <- function(
 		constructed_series[[2]],
 		as.integer(n),
 		## splice:call:end
-		,
 		as.logical(na.rm)
 	)
 

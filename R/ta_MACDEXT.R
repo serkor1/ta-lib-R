@@ -80,7 +80,6 @@ extended_moving_average_convergence_divergence.default <- function(
 		signal$n,
 		signal$maType,
 		## splice:call:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -176,7 +175,6 @@ extended_moving_average_convergence_divergence.numeric <- function(
 		signal$n,
 		signal$maType,
 		## splice:numeric:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -240,7 +238,8 @@ extended_moving_average_convergence_divergence.plotly <- function(
 		),
 		fast = fast,
 		slow = slow,
-		signal = signal
+		signal = signal,
+		na.rm = TRUE
 	)
 
 	## the constructed indicator

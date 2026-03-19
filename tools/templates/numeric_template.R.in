@@ -23,7 +23,7 @@ ${FUN}.numeric <- function(
 			## splice:numeric:start
 			${CARGS}
 			## splice:numeric:end
-			,as.logical(na.rm)
+			as.logical(na.rm)
 		)
 
 		## check if it has 'dims'

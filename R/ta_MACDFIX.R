@@ -69,7 +69,6 @@ fixed_moving_average_convergence_divergence.default <- function(
 		constructed_series[[1]],
 		as.integer(signal),
 		## splice:call:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -150,7 +149,6 @@ fixed_moving_average_convergence_divergence.numeric <- function(
 		as.double(x),
 		as.integer(signal),
 		## splice:numeric:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -210,7 +208,8 @@ fixed_moving_average_convergence_divergence.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		signal = signal
+		signal = signal,
+		na.rm = TRUE
 	)
 
 	## the constructed indicator

@@ -98,7 +98,6 @@ extended_parabolic_stop_and_reverse.default <- function(
 		short,
 		max_short,
 		## splice:call:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -233,7 +232,8 @@ extended_parabolic_stop_and_reverse.plotly <- function(
 		max_long = max_long,
 		init_short = init_short,
 		short = short,
-		max_short = max_short
+		max_short = max_short,
+		na.rm = TRUE
 	)
 
 	## add conditional idx

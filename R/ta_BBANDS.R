@@ -81,7 +81,6 @@ bollinger_bands.default <- function(
 		as.double(sd_down %or% sd),
 		ma$maType,
 		## splice:call:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -180,7 +179,6 @@ bollinger_bands.numeric <- function(
 		as.double(sd_down %or% sd),
 		ma$maType,
 		## splice:numeric:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -247,7 +245,8 @@ bollinger_bands.plotly <- function(
 		ma = ma,
 		sd = sd,
 		sd_down = sd_down,
-		sd_up = sd_up
+		sd_up = sd_up,
+		na.rm = TRUE
 	)
 
 	## add conditional idx

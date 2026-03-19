@@ -43,7 +43,6 @@ rolling_max.default <- function(
 		as.double(x),
 		as.integer(n),
 		## splice:call:end
-		,
 		as.logical(na.rm)
 	)
 

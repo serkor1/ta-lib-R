@@ -63,7 +63,7 @@ ${FUN}.default <- function(
 		"impl_ta_${TA_FUN}",
 		## splice:call:start
 		## splice:call:end
-		,as.logical(na.rm)
+		as.logical(na.rm)
 	)
 
 	## readd rownames

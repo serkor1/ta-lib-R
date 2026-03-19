@@ -83,7 +83,6 @@ stochastic_relative_strength_index.default <- function(
 		fastd$maType,
 		as.integer(n_rsi),
 		## splice:call:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -197,7 +196,8 @@ stochastic_relative_strength_index.plotly <- function(
 		n = n,
 		n_rsi = n_rsi,
 		fastk = fastk,
-		fastd = fastd
+		fastd = fastd,
+		na.rm = TRUE
 	)
 
 	## the constructed indicator

@@ -67,7 +67,6 @@ true_range.default <- function(
 		constructed_series[[2]],
 		constructed_series[[3]],
 		## splice:call:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -155,7 +154,8 @@ true_range.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.rm = TRUE
 	)
 
 	## the constructed indicator

@@ -77,7 +77,6 @@ absolute_price_oscillator.default <- function(
 		as.integer(slow),
 		ma$maType,
 		## splice:call:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -170,7 +169,6 @@ absolute_price_oscillator.numeric <- function(
 		as.integer(slow),
 		ma$maType,
 		## splice:numeric:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -234,7 +232,8 @@ absolute_price_oscillator.plotly <- function(
 		),
 		fast = fast,
 		slow = slow,
-		ma = ma
+		ma = ma,
+		na.rm = TRUE
 	)
 
 	## the constructed indicator

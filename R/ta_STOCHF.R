@@ -76,7 +76,6 @@ fast_stochastic.default <- function(
 		as.integer(fastd$n),
 		as.integer(fastd$maType),
 		## splice:call:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -178,7 +177,8 @@ fast_stochastic.plotly <- function(
 			names(constructed_series)
 		),
 		fastk = fastk,
-		fastd = fastd
+		fastd = fastd,
+		na.rm = TRUE
 	)
 
 	## the constructed indicator

@@ -81,7 +81,6 @@ stochastic.default <- function(
 		as.integer(slowd$n),
 		as.integer(slowd$maType),
 		## splice:call:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -189,7 +188,8 @@ stochastic.plotly <- function(
 		),
 		fastk = fastk,
 		slowk = slowk,
-		slowd = slowd
+		slowd = slowd,
+		na.rm = TRUE
 	)
 
 	## the constructed indicator

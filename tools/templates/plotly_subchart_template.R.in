@@ -37,7 +37,8 @@ ${FUN}.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		)
-		${PPARGS}
+		${PPARGS},
+		na.rm = TRUE
 	)
 
 	## the constructed indicator

@@ -76,7 +76,6 @@ trading_volume.default <- function(
 			}
 		),
 		## splice:call:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -157,7 +156,6 @@ trading_volume.numeric <- function(
 		as.double(x),
 		ma,
 		## splice:numeric:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -217,7 +215,8 @@ trading_volume.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		ma = ma
+		ma = ma,
+		na.rm = TRUE
 	)
 
 	## the constructed indicator

@@ -65,7 +65,6 @@ trend_cycle_mode.default <- function(
 		## splice:call:start
 		constructed_series[[1]],
 		## splice:call:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -140,7 +139,6 @@ trend_cycle_mode.numeric <- function(
 		## splice:numeric:start
 		as.double(x),
 		## splice:numeric:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -198,7 +196,8 @@ trend_cycle_mode.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.rm = TRUE
 	)
 
 	## the constructed indicator

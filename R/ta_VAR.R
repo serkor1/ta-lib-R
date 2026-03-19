@@ -47,7 +47,6 @@ rolling_variance.default <- function(
 		as.integer(n),
 		as.double(k),
 		## splice:call:end
-		,
 		as.logical(na.rm)
 	)
 

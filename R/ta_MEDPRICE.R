@@ -66,7 +66,6 @@ median_price.default <- function(
 		constructed_series[[1]],
 		constructed_series[[2]],
 		## splice:call:end
-		,
 		as.logical(na.rm)
 	)
 

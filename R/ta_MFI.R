@@ -71,7 +71,6 @@ money_flow_index.default <- function(
 		constructed_series[[4]],
 		as.integer(n),
 		## splice:call:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -167,7 +166,8 @@ money_flow_index.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n
+		n = n,
+		na.rm = TRUE
 	)
 
 	## the constructed indicator

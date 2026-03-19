@@ -70,7 +70,6 @@ commodity_channel_index.default <- function(
 		constructed_series[[3]],
 		as.integer(n),
 		## splice:call:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -165,7 +164,8 @@ commodity_channel_index.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n
+		n = n,
+		na.rm = TRUE
 	)
 
 	## add conditional idx

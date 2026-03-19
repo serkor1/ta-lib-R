@@ -74,7 +74,6 @@ parabolic_stop_and_reverse.default <- function(
 		as.double(acceleration),
 		as.double(maximum),
 		## splice:call:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -173,7 +172,8 @@ parabolic_stop_and_reverse.plotly <- function(
 			names(constructed_series)
 		),
 		acceleration = acceleration,
-		maximum = maximum
+		maximum = maximum,
+		na.rm = TRUE
 	)
 
 	## add conditional idx

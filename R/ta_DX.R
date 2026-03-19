@@ -70,7 +70,6 @@ directional_movement_index.default <- function(
 		constructed_series[[3]],
 		as.integer(n),
 		## splice:call:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -164,7 +163,8 @@ directional_movement_index.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n
+		n = n,
+		na.rm = TRUE
 	)
 
 	## the constructed indicator

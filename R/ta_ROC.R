@@ -68,7 +68,6 @@ rate_of_change.default <- function(
 		constructed_series[[1]],
 		as.integer(n),
 		## splice:call:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -149,7 +148,6 @@ rate_of_change.numeric <- function(
 		as.double(x),
 		as.integer(n),
 		## splice:numeric:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -209,7 +207,8 @@ rate_of_change.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n
+		n = n,
+		na.rm = TRUE
 	)
 
 	## the constructed indicator

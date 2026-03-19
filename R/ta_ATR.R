@@ -70,7 +70,6 @@ average_true_range.default <- function(
 		constructed_series[[3]],
 		as.integer(n),
 		## splice:call:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -164,7 +163,8 @@ average_true_range.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n
+		n = n,
+		na.rm = TRUE
 	)
 
 	## the constructed indicator

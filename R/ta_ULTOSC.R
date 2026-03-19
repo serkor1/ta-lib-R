@@ -72,7 +72,6 @@ ultimate_oscillator.default <- function(
 		as.integer(n[2]),
 		as.integer(n[3]),
 		## splice:call:end
-		,
 		as.logical(na.rm)
 	)
 
@@ -168,7 +167,8 @@ ultimate_oscillator.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n
+		n = n,
+		na.rm = TRUE
 	)
 
 	## the constructed indicator

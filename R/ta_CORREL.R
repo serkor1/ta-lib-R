@@ -46,7 +46,6 @@ rolling_correlation.default <- function(
 		as.double(y),
 		as.integer(n),
 		## splice:call:end
-		,
 		as.logical(na.rm)
 	)
 
