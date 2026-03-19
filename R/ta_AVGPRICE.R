@@ -16,6 +16,7 @@
 average_price <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	UseMethod("average_price")
@@ -35,6 +36,7 @@ AVGPRICE <- average_price
 average_price.default <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -56,6 +58,13 @@ average_price.default <- function(
 	## for later attachment
 	x_names <- rownames(constructed_series)
 
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na(constructed_series, x_names)
+		constructed_series <- na_info$series
+		x_names <- na_info$x_names
+	}
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -67,6 +76,12 @@ average_price.default <- function(
 		constructed_series[[4]]
 		## splice:call:end
 	)
+
+	## re-expand NA rows
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na(x, na_info)
+		x_names <- na_info$x_names_all
+	}
 
 	## readd rownames
 	set_rownames(x, x_names)
@@ -82,12 +97,14 @@ average_price.default <- function(
 average_price.data.frame <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	map_dfr(
 		average_price.default(
 			x = x,
 			cols = cols,
+			na.rm = na.rm,
 			...
 		)
 	)
@@ -100,11 +117,13 @@ average_price.data.frame <- function(
 average_price.matrix <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	average_price.default(
 		x = x,
 		cols = cols,
+		na.rm = na.rm,
 		...
 	)
 }

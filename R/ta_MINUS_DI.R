@@ -17,6 +17,7 @@ minus_directional_indicator <- function(
 	x,
 	cols,
 	n = 10,
+	na.rm = FALSE,
 	...
 ) {
 	UseMethod("minus_directional_indicator")
@@ -37,6 +38,7 @@ minus_directional_indicator.default <- function(
 	x,
 	cols,
 	n = 10,
+	na.rm = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -58,6 +60,13 @@ minus_directional_indicator.default <- function(
 	## for later attachment
 	x_names <- rownames(constructed_series)
 
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na(constructed_series, x_names)
+		constructed_series <- na_info$series
+		x_names <- na_info$x_names
+	}
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -69,6 +78,12 @@ minus_directional_indicator.default <- function(
 		as.integer(n)
 		## splice:call:end
 	)
+
+	## re-expand NA rows
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na(x, na_info)
+		x_names <- na_info$x_names_all
+	}
 
 	## readd rownames
 	set_rownames(x, x_names)
@@ -85,6 +100,7 @@ minus_directional_indicator.data.frame <- function(
 	x,
 	cols,
 	n = 10,
+	na.rm = FALSE,
 	...
 ) {
 	map_dfr(
@@ -92,6 +108,7 @@ minus_directional_indicator.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
+			na.rm = na.rm,
 			...
 		)
 	)
@@ -105,12 +122,14 @@ minus_directional_indicator.matrix <- function(
 	x,
 	cols,
 	n = 10,
+	na.rm = FALSE,
 	...
 ) {
 	minus_directional_indicator.default(
 		x = x,
 		cols = cols,
 		n = n,
+		na.rm = na.rm,
 		...
 	)
 }
@@ -125,6 +144,7 @@ minus_directional_indicator.plotly <- function(
 	n = 10,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	na.rm = FALSE,
 	title,
 	...
 ) {
@@ -200,8 +220,8 @@ minus_directional_indicator.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
+	.charting_environment$sub <- c(
+		.charting_environment$sub,
 		list(plotly_object)
 	)
 

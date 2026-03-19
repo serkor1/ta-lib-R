@@ -20,6 +20,7 @@ exponential_moving_average <- function(
 	x,
 	cols,
 	n = 10,
+	na.rm = FALSE,
 	...
 ) {
 	## if 'x' is missing exponential_moving_average functions
@@ -56,6 +57,7 @@ exponential_moving_average.default <- function(
 	x,
 	cols,
 	n = 10,
+	na.rm = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -77,6 +79,13 @@ exponential_moving_average.default <- function(
 	## for later attachment
 	x_names <- rownames(constructed_series)
 
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na(constructed_series, x_names)
+		constructed_series <- na_info$series
+		x_names <- na_info$x_names
+	}
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -85,6 +94,12 @@ exponential_moving_average.default <- function(
 		as.integer(n),
 		1L
 	)
+
+	## re-expand NA rows
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na(x, na_info)
+		x_names <- na_info$x_names_all
+	}
 
 	## readd rownames
 	set_rownames(x, x_names)
@@ -101,6 +116,7 @@ exponential_moving_average.data.frame <- function(
 	x,
 	cols,
 	n = 10,
+	na.rm = FALSE,
 	...
 ) {
 	map_dfr(
@@ -116,6 +132,7 @@ exponential_moving_average.matrix <- function(
 	x,
 	cols,
 	n = 10,
+	na.rm = FALSE,
 	...
 ) {
 	## pass directly to
@@ -125,6 +142,7 @@ exponential_moving_average.matrix <- function(
 		x = x,
 		cols = cols,
 		n = n,
+		na.rm = na.rm,
 		...
 	)
 }
@@ -137,6 +155,7 @@ exponential_moving_average.numeric <- function(
 	x,
 	cols,
 	n = 10,
+	na.rm = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -145,6 +164,12 @@ exponential_moving_average.numeric <- function(
 	## or relevant
 	if (!missing(cols)) {
 		warning("'cols' is passed but is unused for vectors.")
+	}
+
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na_vector(x)
+		x <- na_info$x
 	}
 
 	## pass to 'C' directly
@@ -158,7 +183,14 @@ exponential_moving_average.numeric <- function(
 
 	## 'C' returns a named matrix
 	## return the first column
-	as.double(x)
+	x <- as.double(x)
+
+	## re-expand NA positions
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na_vector(x, na_info)
+	}
+
+	x
 }
 
 #' @usage NULL
@@ -169,6 +201,7 @@ exponential_moving_average.plotly <- function(
 	x,
 	cols,
 	n = 10,
+	na.rm = FALSE,
 	...
 ) {
 	## check that input value
@@ -206,8 +239,8 @@ exponential_moving_average.plotly <- function(
 	)
 
 	## construct {plotly}-object
-	plotly_object <- .chart_environment[["main"]] <- build_plotly(
-		init = .chart_environment[["main"]],
+	plotly_object <- .plotting_environment[["main"]] <- build_plotly(
+		init = .plotting_environment[["main"]],
 		traces = list(
 			list(
 				y = ~ constructed_indicator[["EMA"]][

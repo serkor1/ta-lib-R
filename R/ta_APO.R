@@ -22,6 +22,7 @@ absolute_price_oscillator <- function(
 	fast = 7,
 	slow = 14,
 	ma = SMA(n = 10),
+	na.rm = FALSE,
 	...
 ) {
 	UseMethod("absolute_price_oscillator")
@@ -44,6 +45,7 @@ absolute_price_oscillator.default <- function(
 	fast = 7,
 	slow = 14,
 	ma = SMA(n = 10),
+	na.rm = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -65,6 +67,13 @@ absolute_price_oscillator.default <- function(
 	## for later attachment
 	x_names <- rownames(constructed_series)
 
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na(constructed_series, x_names)
+		constructed_series <- na_info$series
+		x_names <- na_info$x_names
+	}
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -76,6 +85,12 @@ absolute_price_oscillator.default <- function(
 		ma$maType
 		## splice:call:end
 	)
+
+	## re-expand NA rows
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na(x, na_info)
+		x_names <- na_info$x_names_all
+	}
 
 	## readd rownames
 	set_rownames(x, x_names)
@@ -94,6 +109,7 @@ absolute_price_oscillator.data.frame <- function(
 	fast = 7,
 	slow = 14,
 	ma = SMA(n = 10),
+	na.rm = FALSE,
 	...
 ) {
 	map_dfr(
@@ -103,6 +119,7 @@ absolute_price_oscillator.data.frame <- function(
 			fast = fast,
 			slow = slow,
 			ma = ma,
+			na.rm = na.rm,
 			...
 		)
 	)
@@ -118,6 +135,7 @@ absolute_price_oscillator.matrix <- function(
 	fast = 7,
 	slow = 14,
 	ma = SMA(n = 10),
+	na.rm = FALSE,
 	...
 ) {
 	absolute_price_oscillator.default(
@@ -126,6 +144,7 @@ absolute_price_oscillator.matrix <- function(
 		fast = fast,
 		slow = slow,
 		ma = ma,
+		na.rm = na.rm,
 		...
 	)
 }
@@ -140,6 +159,7 @@ absolute_price_oscillator.numeric <- function(
 	fast = 7,
 	slow = 14,
 	ma = SMA(n = 10),
+	na.rm = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -148,6 +168,12 @@ absolute_price_oscillator.numeric <- function(
 	## or relevant
 	if (!missing(cols)) {
 		warning("'cols' is passed but is unused for vectors.")
+	}
+
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na_vector(x)
+		x <- na_info$x
 	}
 
 	## pass the argument directly
@@ -174,6 +200,11 @@ absolute_price_oscillator.numeric <- function(
 		x <- as.double(x)
 	}
 
+	## re-expand NA positions
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na_vector(x, na_info)
+	}
+
 	x
 }
 
@@ -189,6 +220,7 @@ absolute_price_oscillator.plotly <- function(
 	ma = SMA(n = 10),
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	na.rm = FALSE,
 	title,
 	...
 ) {
@@ -273,8 +305,8 @@ absolute_price_oscillator.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
+	.charting_environment$sub <- c(
+		.charting_environment$sub,
 		list(plotly_object)
 	)
 

@@ -17,6 +17,7 @@ normalized_average_true_range <- function(
 	x,
 	cols,
 	n = 10,
+	na.rm = FALSE,
 	...
 ) {
 	UseMethod("normalized_average_true_range")
@@ -37,6 +38,7 @@ normalized_average_true_range.default <- function(
 	x,
 	cols,
 	n = 10,
+	na.rm = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -58,6 +60,13 @@ normalized_average_true_range.default <- function(
 	## for later attachment
 	x_names <- rownames(constructed_series)
 
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na(constructed_series, x_names)
+		constructed_series <- na_info$series
+		x_names <- na_info$x_names
+	}
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -69,6 +78,12 @@ normalized_average_true_range.default <- function(
 		as.integer(n)
 		## splice:call:end
 	)
+
+	## re-expand NA rows
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na(x, na_info)
+		x_names <- na_info$x_names_all
+	}
 
 	## readd rownames
 	set_rownames(x, x_names)
@@ -85,6 +100,7 @@ normalized_average_true_range.data.frame <- function(
 	x,
 	cols,
 	n = 10,
+	na.rm = FALSE,
 	...
 ) {
 	map_dfr(
@@ -92,6 +108,7 @@ normalized_average_true_range.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
+			na.rm = na.rm,
 			...
 		)
 	)
@@ -105,12 +122,14 @@ normalized_average_true_range.matrix <- function(
 	x,
 	cols,
 	n = 10,
+	na.rm = FALSE,
 	...
 ) {
 	normalized_average_true_range.default(
 		x = x,
 		cols = cols,
 		n = n,
+		na.rm = na.rm,
 		...
 	)
 }
@@ -125,6 +144,7 @@ normalized_average_true_range.plotly <- function(
 	n = 10,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	na.rm = FALSE,
 	title,
 	...
 ) {
@@ -199,8 +219,8 @@ normalized_average_true_range.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
+	.charting_environment$sub <- c(
+		.charting_environment$sub,
 		list(plotly_object)
 	)
 

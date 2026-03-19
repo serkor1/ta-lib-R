@@ -18,6 +18,7 @@ trading_volume <- function(
 	x,
 	cols,
 	ma = list(SMA(n = 7), SMA(n = 15)),
+	na.rm = FALSE,
 	...
 ) {
 	UseMethod("trading_volume")
@@ -38,6 +39,7 @@ trading_volume.default <- function(
 	x,
 	cols,
 	ma = list(SMA(n = 7), SMA(n = 15)),
+	na.rm = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -59,6 +61,13 @@ trading_volume.default <- function(
 	## for later attachment
 	x_names <- rownames(constructed_series)
 
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na(constructed_series, x_names)
+		constructed_series <- na_info$series
+		x_names <- na_info$x_names
+	}
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -76,6 +85,12 @@ trading_volume.default <- function(
 		## splice:call:end
 	)
 
+	## re-expand NA rows
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na(x, na_info)
+		x_names <- na_info$x_names_all
+	}
+
 	## readd rownames
 	set_rownames(x, x_names)
 
@@ -91,6 +106,7 @@ trading_volume.data.frame <- function(
 	x,
 	cols,
 	ma = list(SMA(n = 7), SMA(n = 15)),
+	na.rm = FALSE,
 	...
 ) {
 	map_dfr(
@@ -98,6 +114,7 @@ trading_volume.data.frame <- function(
 			x = x,
 			cols = cols,
 			ma = ma,
+			na.rm = na.rm,
 			...
 		)
 	)
@@ -111,12 +128,14 @@ trading_volume.matrix <- function(
 	x,
 	cols,
 	ma = list(SMA(n = 7), SMA(n = 15)),
+	na.rm = FALSE,
 	...
 ) {
 	trading_volume.default(
 		x = x,
 		cols = cols,
 		ma = ma,
+		na.rm = na.rm,
 		...
 	)
 }
@@ -129,6 +148,7 @@ trading_volume.numeric <- function(
 	x,
 	cols,
 	ma = list(SMA(n = 7), SMA(n = 15)),
+	na.rm = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -137,6 +157,12 @@ trading_volume.numeric <- function(
 	## or relevant
 	if (!missing(cols)) {
 		warning("'cols' is passed but is unused for vectors.")
+	}
+
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na_vector(x)
+		x <- na_info$x
 	}
 
 	## pass the argument directly
@@ -161,6 +187,11 @@ trading_volume.numeric <- function(
 		x <- as.double(x)
 	}
 
+	## re-expand NA positions
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na_vector(x, na_info)
+	}
+
 	x
 }
 
@@ -174,6 +205,7 @@ trading_volume.plotly <- function(
 	ma = list(SMA(n = 7), SMA(n = 15)),
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	na.rm = FALSE,
 	title,
 	...
 ) {
@@ -295,8 +327,8 @@ trading_volume.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
+	.charting_environment$sub <- c(
+		.charting_environment$sub,
 		list(plotly_object)
 	)
 

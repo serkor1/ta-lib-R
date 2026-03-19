@@ -13,7 +13,8 @@
 #' @template rolling_returns
 rolling_min <- function(
 	x,
-	n = 10
+	n = 10,
+	na.rm = FALSE
 ) {
 	UseMethod("rolling_min")
 }
@@ -31,8 +32,15 @@ MIN <- rolling_min
 #' @export
 rolling_min.default <- function(
 	x,
-	n = 10
+	n = 10,
+	na.rm = FALSE
 ) {
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na_vector(x)
+		x <- na_info$x
+	}
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -44,7 +52,14 @@ rolling_min.default <- function(
 	)
 
 	## return indicator
-	as.double(x)
+	x <- as.double(x)
+
+	## re-expand NA positions
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na_vector(x, na_info)
+	}
+
+	x
 }
 
 #' @usage NULL
@@ -53,13 +68,15 @@ rolling_min.default <- function(
 #' @export
 rolling_min.numeric <- function(
 	x,
-	n = 10
+	n = 10,
+	na.rm = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
 	x <- rolling_min.default(
 		x = x,
-		n = n
+		n = n,
+		na.rm = na.rm
 	)
 
 	## return indicator

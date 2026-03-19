@@ -15,7 +15,8 @@
 rolling_standard_deviation <- function(
 	x,
 	n = 10,
-	k = 1
+	k = 1,
+	na.rm = FALSE
 ) {
 	UseMethod("rolling_standard_deviation")
 }
@@ -34,8 +35,15 @@ STDDEV <- rolling_standard_deviation
 rolling_standard_deviation.default <- function(
 	x,
 	n = 10,
-	k = 1
+	k = 1,
+	na.rm = FALSE
 ) {
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na_vector(x)
+		x <- na_info$x
+	}
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -48,7 +56,14 @@ rolling_standard_deviation.default <- function(
 	)
 
 	## return indicator
-	as.double(x)
+	x <- as.double(x)
+
+	## re-expand NA positions
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na_vector(x, na_info)
+	}
+
+	x
 }
 
 #' @usage NULL
@@ -58,14 +73,16 @@ rolling_standard_deviation.default <- function(
 rolling_standard_deviation.numeric <- function(
 	x,
 	n = 10,
-	k = 1
+	k = 1,
+	na.rm = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
 	x <- rolling_standard_deviation.default(
 		x = x,
 		n = n,
-		k = k
+		k = k,
+		na.rm = na.rm
 	)
 
 	## return indicator

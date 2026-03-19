@@ -17,6 +17,7 @@ midpoint_price <- function(
 	x,
 	cols,
 	n = 10,
+	na.rm = FALSE,
 	...
 ) {
 	UseMethod("midpoint_price")
@@ -37,6 +38,7 @@ midpoint_price.default <- function(
 	x,
 	cols,
 	n = 10,
+	na.rm = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -58,6 +60,13 @@ midpoint_price.default <- function(
 	## for later attachment
 	x_names <- rownames(constructed_series)
 
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na(constructed_series, x_names)
+		constructed_series <- na_info$series
+		x_names <- na_info$x_names
+	}
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -68,6 +77,12 @@ midpoint_price.default <- function(
 		as.integer(n)
 		## splice:call:end
 	)
+
+	## re-expand NA rows
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na(x, na_info)
+		x_names <- na_info$x_names_all
+	}
 
 	## readd rownames
 	set_rownames(x, x_names)
@@ -84,6 +99,7 @@ midpoint_price.data.frame <- function(
 	x,
 	cols,
 	n = 10,
+	na.rm = FALSE,
 	...
 ) {
 	map_dfr(
@@ -91,6 +107,7 @@ midpoint_price.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
+			na.rm = na.rm,
 			...
 		)
 	)
@@ -104,12 +121,14 @@ midpoint_price.matrix <- function(
 	x,
 	cols,
 	n = 10,
+	na.rm = FALSE,
 	...
 ) {
 	midpoint_price.default(
 		x = x,
 		cols = cols,
 		n = n,
+		na.rm = na.rm,
 		...
 	)
 }

@@ -16,6 +16,7 @@
 dominant_cycle_period <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	UseMethod("dominant_cycle_period")
@@ -35,6 +36,7 @@ HT_DCPERIOD <- dominant_cycle_period
 dominant_cycle_period.default <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -56,6 +58,13 @@ dominant_cycle_period.default <- function(
 	## for later attachment
 	x_names <- rownames(constructed_series)
 
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na(constructed_series, x_names)
+		constructed_series <- na_info$series
+		x_names <- na_info$x_names
+	}
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -64,6 +73,12 @@ dominant_cycle_period.default <- function(
 		constructed_series[[1]]
 		## splice:call:end
 	)
+
+	## re-expand NA rows
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na(x, na_info)
+		x_names <- na_info$x_names_all
+	}
 
 	## readd rownames
 	set_rownames(x, x_names)
@@ -79,12 +94,14 @@ dominant_cycle_period.default <- function(
 dominant_cycle_period.data.frame <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	map_dfr(
 		dominant_cycle_period.default(
 			x = x,
 			cols = cols,
+			na.rm = na.rm,
 			...
 		)
 	)
@@ -97,11 +114,13 @@ dominant_cycle_period.data.frame <- function(
 dominant_cycle_period.matrix <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	dominant_cycle_period.default(
 		x = x,
 		cols = cols,
+		na.rm = na.rm,
 		...
 	)
 }
@@ -113,6 +132,7 @@ dominant_cycle_period.matrix <- function(
 dominant_cycle_period.numeric <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -121,6 +141,12 @@ dominant_cycle_period.numeric <- function(
 	## or relevant
 	if (!missing(cols)) {
 		warning("'cols' is passed but is unused for vectors.")
+	}
+
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na_vector(x)
+		x <- na_info$x
 	}
 
 	## pass the argument directly
@@ -144,6 +170,11 @@ dominant_cycle_period.numeric <- function(
 		x <- as.double(x)
 	}
 
+	## re-expand NA positions
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na_vector(x, na_info)
+	}
+
 	x
 }
 
@@ -156,6 +187,7 @@ dominant_cycle_period.plotly <- function(
 	cols,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	na.rm = FALSE,
 	title,
 	...
 ) {
@@ -239,8 +271,8 @@ dominant_cycle_period.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
+	.charting_environment$sub <- c(
+		.charting_environment$sub,
 		list(plotly_object)
 	)
 

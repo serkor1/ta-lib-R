@@ -16,6 +16,7 @@
 trendline <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	UseMethod("trendline")
@@ -35,6 +36,7 @@ HT_TRENDLINE <- trendline
 trendline.default <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -56,6 +58,13 @@ trendline.default <- function(
 	## for later attachment
 	x_names <- rownames(constructed_series)
 
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na(constructed_series, x_names)
+		constructed_series <- na_info$series
+		x_names <- na_info$x_names
+	}
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -64,6 +73,12 @@ trendline.default <- function(
 		constructed_series[[1]]
 		## splice:call:end
 	)
+
+	## re-expand NA rows
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na(x, na_info)
+		x_names <- na_info$x_names_all
+	}
 
 	## readd rownames
 	set_rownames(x, x_names)
@@ -79,12 +94,14 @@ trendline.default <- function(
 trendline.data.frame <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	map_dfr(
 		trendline.default(
 			x = x,
 			cols = cols,
+			na.rm = na.rm,
 			...
 		)
 	)
@@ -97,11 +114,13 @@ trendline.data.frame <- function(
 trendline.matrix <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	trendline.default(
 		x = x,
 		cols = cols,
+		na.rm = na.rm,
 		...
 	)
 }
@@ -113,6 +132,7 @@ trendline.matrix <- function(
 trendline.numeric <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -121,6 +141,12 @@ trendline.numeric <- function(
 	## or relevant
 	if (!missing(cols)) {
 		warning("'cols' is passed but is unused for vectors.")
+	}
+
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na_vector(x)
+		x <- na_info$x
 	}
 
 	## pass the argument directly
@@ -144,6 +170,11 @@ trendline.numeric <- function(
 		x <- as.double(x)
 	}
 
+	## re-expand NA positions
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na_vector(x, na_info)
+	}
+
 	x
 }
 
@@ -156,6 +187,7 @@ trendline.plotly <- function(
 	cols,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	na.rm = FALSE,
 	...
 ) {
 	## check that input value

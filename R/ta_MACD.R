@@ -22,6 +22,7 @@ moving_average_convergence_divergence <- function(
 	fast = 12,
 	slow = 26,
 	signal = 9,
+	na.rm = FALSE,
 	...
 ) {
 	UseMethod("moving_average_convergence_divergence")
@@ -44,6 +45,7 @@ moving_average_convergence_divergence.default <- function(
 	fast = 12,
 	slow = 26,
 	signal = 9,
+	na.rm = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -65,6 +67,13 @@ moving_average_convergence_divergence.default <- function(
 	## for later attachment
 	x_names <- rownames(constructed_series)
 
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na(constructed_series, x_names)
+		constructed_series <- na_info$series
+		x_names <- na_info$x_names
+	}
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -76,6 +85,12 @@ moving_average_convergence_divergence.default <- function(
 		as.integer(signal)
 		## splice:call:end
 	)
+
+	## re-expand NA rows
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na(x, na_info)
+		x_names <- na_info$x_names_all
+	}
 
 	## readd rownames
 	set_rownames(x, x_names)
@@ -94,6 +109,7 @@ moving_average_convergence_divergence.data.frame <- function(
 	fast = 12,
 	slow = 26,
 	signal = 9,
+	na.rm = FALSE,
 	...
 ) {
 	map_dfr(
@@ -103,6 +119,7 @@ moving_average_convergence_divergence.data.frame <- function(
 			fast = fast,
 			slow = slow,
 			signal = signal,
+			na.rm = na.rm,
 			...
 		)
 	)
@@ -118,6 +135,7 @@ moving_average_convergence_divergence.matrix <- function(
 	fast = 12,
 	slow = 26,
 	signal = 9,
+	na.rm = FALSE,
 	...
 ) {
 	moving_average_convergence_divergence.default(
@@ -126,6 +144,7 @@ moving_average_convergence_divergence.matrix <- function(
 		fast = fast,
 		slow = slow,
 		signal = signal,
+		na.rm = na.rm,
 		...
 	)
 }
@@ -140,6 +159,7 @@ moving_average_convergence_divergence.numeric <- function(
 	fast = 12,
 	slow = 26,
 	signal = 9,
+	na.rm = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -148,6 +168,12 @@ moving_average_convergence_divergence.numeric <- function(
 	## or relevant
 	if (!missing(cols)) {
 		warning("'cols' is passed but is unused for vectors.")
+	}
+
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na_vector(x)
+		x <- na_info$x
 	}
 
 	## pass the argument directly
@@ -174,6 +200,11 @@ moving_average_convergence_divergence.numeric <- function(
 		x <- as.double(x)
 	}
 
+	## re-expand NA positions
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na_vector(x, na_info)
+	}
+
 	x
 }
 
@@ -189,6 +220,7 @@ moving_average_convergence_divergence.plotly <- function(
 	signal = 9,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	na.rm = FALSE,
 	title,
 	...
 ) {
@@ -308,8 +340,8 @@ moving_average_convergence_divergence.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
+	.charting_environment$sub <- c(
+		.charting_environment$sub,
 		list(plotly_object)
 	)
 

@@ -16,6 +16,7 @@
 median_price <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	UseMethod("median_price")
@@ -35,6 +36,7 @@ MEDPRICE <- median_price
 median_price.default <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -56,6 +58,13 @@ median_price.default <- function(
 	## for later attachment
 	x_names <- rownames(constructed_series)
 
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na(constructed_series, x_names)
+		constructed_series <- na_info$series
+		x_names <- na_info$x_names
+	}
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -65,6 +74,12 @@ median_price.default <- function(
 		constructed_series[[2]]
 		## splice:call:end
 	)
+
+	## re-expand NA rows
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na(x, na_info)
+		x_names <- na_info$x_names_all
+	}
 
 	## readd rownames
 	set_rownames(x, x_names)
@@ -80,12 +95,14 @@ median_price.default <- function(
 median_price.data.frame <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	map_dfr(
 		median_price.default(
 			x = x,
 			cols = cols,
+			na.rm = na.rm,
 			...
 		)
 	)
@@ -98,11 +115,13 @@ median_price.data.frame <- function(
 median_price.matrix <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	median_price.default(
 		x = x,
 		cols = cols,
+		na.rm = na.rm,
 		...
 	)
 }

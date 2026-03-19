@@ -26,6 +26,7 @@
 three_line_strike <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	UseMethod("three_line_strike")
@@ -45,6 +46,7 @@ CDL3LINESTRIKE <- three_line_strike
 three_line_strike.default <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	## get candlestick pattern
@@ -78,6 +80,13 @@ three_line_strike.default <- function(
 	## for later attachment
 	x_names <- rownames(constructed_series)
 
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na(constructed_series, x_names)
+		constructed_series <- na_info$series
+		x_names <- na_info$x_names
+	}
+
 	## calculate indicator and
 	## return as data.frame
 	x <- as.matrix(
@@ -94,6 +103,12 @@ three_line_strike.default <- function(
 	## add column name
 	colnames(x) <- "CDL3LINESTRIKE"
 
+	## re-expand NA rows
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na(x, na_info)
+		x_names <- na_info$x_names_all
+	}
+
 	## readd rownames
 	set_rownames(x, x_names)
 
@@ -108,6 +123,7 @@ three_line_strike.default <- function(
 three_line_strike.data.frame <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	map_dfr(
@@ -122,6 +138,7 @@ three_line_strike.data.frame <- function(
 three_line_strike.matrix <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	NextMethod()
@@ -134,6 +151,7 @@ three_line_strike.matrix <- function(
 three_line_strike.plotly <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	## check that input value
@@ -170,8 +188,8 @@ three_line_strike.plotly <- function(
 	)
 
 	## construct {plotly}-object
-	plotly_object <- .chart_environment[["main"]] <- pattern(
-		p = .chart_environment[["main"]],
+	plotly_object <- .plotting_environment[["main"]] <- pattern(
+		p = .plotting_environment[["main"]],
 		x = constructed_indicator,
 		high = constructed_series[[2]],
 		low = constructed_series[[3]],

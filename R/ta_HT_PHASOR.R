@@ -16,6 +16,7 @@
 phasor_components <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	UseMethod("phasor_components")
@@ -35,6 +36,7 @@ HT_PHASOR <- phasor_components
 phasor_components.default <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -56,6 +58,13 @@ phasor_components.default <- function(
 	## for later attachment
 	x_names <- rownames(constructed_series)
 
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na(constructed_series, x_names)
+		constructed_series <- na_info$series
+		x_names <- na_info$x_names
+	}
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -64,6 +73,12 @@ phasor_components.default <- function(
 		constructed_series[[1]]
 		## splice:call:end
 	)
+
+	## re-expand NA rows
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na(x, na_info)
+		x_names <- na_info$x_names_all
+	}
 
 	## readd rownames
 	set_rownames(x, x_names)
@@ -79,12 +94,14 @@ phasor_components.default <- function(
 phasor_components.data.frame <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	map_dfr(
 		phasor_components.default(
 			x = x,
 			cols = cols,
+			na.rm = na.rm,
 			...
 		)
 	)
@@ -97,11 +114,13 @@ phasor_components.data.frame <- function(
 phasor_components.matrix <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	phasor_components.default(
 		x = x,
 		cols = cols,
+		na.rm = na.rm,
 		...
 	)
 }
@@ -113,6 +132,7 @@ phasor_components.matrix <- function(
 phasor_components.numeric <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -121,6 +141,12 @@ phasor_components.numeric <- function(
 	## or relevant
 	if (!missing(cols)) {
 		warning("'cols' is passed but is unused for vectors.")
+	}
+
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na_vector(x)
+		x <- na_info$x
 	}
 
 	## pass the argument directly
@@ -144,6 +170,11 @@ phasor_components.numeric <- function(
 		x <- as.double(x)
 	}
 
+	## re-expand NA positions
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na_vector(x, na_info)
+	}
+
 	x
 }
 
@@ -156,6 +187,7 @@ phasor_components.plotly <- function(
 	cols,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	na.rm = FALSE,
 	title,
 	...
 ) {
@@ -247,8 +279,8 @@ phasor_components.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
+	.charting_environment$sub <- c(
+		.charting_environment$sub,
 		list(plotly_object)
 	)
 

@@ -32,6 +32,7 @@ extended_parabolic_stop_and_reverse <- function(
 	init_short = 0,
 	short = 0,
 	max_short = 0,
+	na.rm = FALSE,
 	...
 ) {
 	UseMethod("extended_parabolic_stop_and_reverse")
@@ -59,6 +60,7 @@ extended_parabolic_stop_and_reverse.default <- function(
 	init_short = 0,
 	short = 0,
 	max_short = 0,
+	na.rm = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -80,6 +82,13 @@ extended_parabolic_stop_and_reverse.default <- function(
 	## for later attachment
 	x_names <- rownames(constructed_series)
 
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na(constructed_series, x_names)
+		constructed_series <- na_info$series
+		x_names <- na_info$x_names
+	}
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -97,6 +106,12 @@ extended_parabolic_stop_and_reverse.default <- function(
 		max_short
 		## splice:call:end
 	)
+
+	## re-expand NA rows
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na(x, na_info)
+		x_names <- na_info$x_names_all
+	}
 
 	## readd rownames
 	set_rownames(x, x_names)
@@ -120,6 +135,7 @@ extended_parabolic_stop_and_reverse.data.frame <- function(
 	init_short = 0,
 	short = 0,
 	max_short = 0,
+	na.rm = FALSE,
 	...
 ) {
 	map_dfr(
@@ -134,6 +150,7 @@ extended_parabolic_stop_and_reverse.data.frame <- function(
 			init_short = init_short,
 			short = short,
 			max_short = max_short,
+			na.rm = na.rm,
 			...
 		)
 	)
@@ -154,6 +171,7 @@ extended_parabolic_stop_and_reverse.matrix <- function(
 	init_short = 0,
 	short = 0,
 	max_short = 0,
+	na.rm = FALSE,
 	...
 ) {
 	extended_parabolic_stop_and_reverse.default(
@@ -167,6 +185,7 @@ extended_parabolic_stop_and_reverse.matrix <- function(
 		init_short = init_short,
 		short = short,
 		max_short = max_short,
+		na.rm = na.rm,
 		...
 	)
 }
@@ -188,6 +207,7 @@ extended_parabolic_stop_and_reverse.plotly <- function(
 	max_short = 0,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	na.rm = FALSE,
 	...
 ) {
 	## check that input value

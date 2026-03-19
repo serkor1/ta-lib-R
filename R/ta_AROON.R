@@ -17,6 +17,7 @@ aroon <- function(
 	x,
 	cols,
 	n = 10,
+	na.rm = FALSE,
 	...
 ) {
 	UseMethod("aroon")
@@ -37,6 +38,7 @@ aroon.default <- function(
 	x,
 	cols,
 	n = 10,
+	na.rm = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -58,6 +60,13 @@ aroon.default <- function(
 	## for later attachment
 	x_names <- rownames(constructed_series)
 
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na(constructed_series, x_names)
+		constructed_series <- na_info$series
+		x_names <- na_info$x_names
+	}
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -68,6 +77,12 @@ aroon.default <- function(
 		as.integer(n)
 		## splice:call:end
 	)
+
+	## re-expand NA rows
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na(x, na_info)
+		x_names <- na_info$x_names_all
+	}
 
 	## readd rownames
 	set_rownames(x, x_names)
@@ -84,6 +99,7 @@ aroon.data.frame <- function(
 	x,
 	cols,
 	n = 10,
+	na.rm = FALSE,
 	...
 ) {
 	map_dfr(
@@ -91,6 +107,7 @@ aroon.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
+			na.rm = na.rm,
 			...
 		)
 	)
@@ -104,12 +121,14 @@ aroon.matrix <- function(
 	x,
 	cols,
 	n = 10,
+	na.rm = FALSE,
 	...
 ) {
 	aroon.default(
 		x = x,
 		cols = cols,
 		n = n,
+		na.rm = na.rm,
 		...
 	)
 }
@@ -124,6 +143,7 @@ aroon.plotly <- function(
 	n = 10,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	na.rm = FALSE,
 	title,
 	...
 ) {
@@ -218,8 +238,8 @@ aroon.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
+	.charting_environment$sub <- c(
+		.charting_environment$sub,
 		list(plotly_object)
 	)
 

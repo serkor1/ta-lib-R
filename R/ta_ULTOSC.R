@@ -17,6 +17,7 @@ ultimate_oscillator <- function(
 	x,
 	cols,
 	n = c(7, 14, 28),
+	na.rm = FALSE,
 	...
 ) {
 	UseMethod("ultimate_oscillator")
@@ -37,6 +38,7 @@ ultimate_oscillator.default <- function(
 	x,
 	cols,
 	n = c(7, 14, 28),
+	na.rm = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -58,6 +60,13 @@ ultimate_oscillator.default <- function(
 	## for later attachment
 	x_names <- rownames(constructed_series)
 
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na(constructed_series, x_names)
+		constructed_series <- na_info$series
+		x_names <- na_info$x_names
+	}
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -71,6 +80,12 @@ ultimate_oscillator.default <- function(
 		as.integer(n[3])
 		## splice:call:end
 	)
+
+	## re-expand NA rows
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na(x, na_info)
+		x_names <- na_info$x_names_all
+	}
 
 	## readd rownames
 	set_rownames(x, x_names)
@@ -87,6 +102,7 @@ ultimate_oscillator.data.frame <- function(
 	x,
 	cols,
 	n = c(7, 14, 28),
+	na.rm = FALSE,
 	...
 ) {
 	map_dfr(
@@ -94,6 +110,7 @@ ultimate_oscillator.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
+			na.rm = na.rm,
 			...
 		)
 	)
@@ -107,12 +124,14 @@ ultimate_oscillator.matrix <- function(
 	x,
 	cols,
 	n = c(7, 14, 28),
+	na.rm = FALSE,
 	...
 ) {
 	ultimate_oscillator.default(
 		x = x,
 		cols = cols,
 		n = n,
+		na.rm = na.rm,
 		...
 	)
 }
@@ -129,6 +148,7 @@ ultimate_oscillator.plotly <- function(
 	lower_bound = 30,
 	upper_bound = 70,
 	## splice:optional-plotly:end
+	na.rm = FALSE,
 	title,
 	...
 ) {
@@ -215,8 +235,8 @@ ultimate_oscillator.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
+	.charting_environment$sub <- c(
+		.charting_environment$sub,
 		list(plotly_object)
 	)
 

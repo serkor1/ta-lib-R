@@ -20,6 +20,7 @@ fast_stochastic <- function(
 	cols,
 	fastk = 5,
 	fastd = SMA(n = 10),
+	na.rm = FALSE,
 	...
 ) {
 	UseMethod("fast_stochastic")
@@ -41,6 +42,7 @@ fast_stochastic.default <- function(
 	cols,
 	fastk = 5,
 	fastd = SMA(n = 10),
+	na.rm = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -62,6 +64,13 @@ fast_stochastic.default <- function(
 	## for later attachment
 	x_names <- rownames(constructed_series)
 
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na(constructed_series, x_names)
+		constructed_series <- na_info$series
+		x_names <- na_info$x_names
+	}
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -75,6 +84,12 @@ fast_stochastic.default <- function(
 		as.integer(fastd$maType)
 		## splice:call:end
 	)
+
+	## re-expand NA rows
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na(x, na_info)
+		x_names <- na_info$x_names_all
+	}
 
 	## readd rownames
 	set_rownames(x, x_names)
@@ -92,6 +107,7 @@ fast_stochastic.data.frame <- function(
 	cols,
 	fastk = 5,
 	fastd = SMA(n = 10),
+	na.rm = FALSE,
 	...
 ) {
 	map_dfr(
@@ -100,6 +116,7 @@ fast_stochastic.data.frame <- function(
 			cols = cols,
 			fastk = fastk,
 			fastd = fastd,
+			na.rm = na.rm,
 			...
 		)
 	)
@@ -114,6 +131,7 @@ fast_stochastic.matrix <- function(
 	cols,
 	fastk = 5,
 	fastd = SMA(n = 10),
+	na.rm = FALSE,
 	...
 ) {
 	fast_stochastic.default(
@@ -121,6 +139,7 @@ fast_stochastic.matrix <- function(
 		cols = cols,
 		fastk = fastk,
 		fastd = fastd,
+		na.rm = na.rm,
 		...
 	)
 }
@@ -138,6 +157,7 @@ fast_stochastic.plotly <- function(
 	lower_bound = 20,
 	upper_bound = 80,
 	## splice:optional-plotly:end
+	na.rm = FALSE,
 	title,
 	...
 ) {
@@ -222,8 +242,8 @@ fast_stochastic.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
+	.charting_environment$sub <- c(
+		.charting_environment$sub,
 		list(plotly_object)
 	)
 

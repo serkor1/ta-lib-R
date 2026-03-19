@@ -24,6 +24,7 @@ bollinger_bands <- function(
 	sd = 2,
 	sd_down,
 	sd_up,
+	na.rm = FALSE,
 	...
 ) {
 	UseMethod("bollinger_bands")
@@ -47,6 +48,7 @@ bollinger_bands.default <- function(
 	sd = 2,
 	sd_down,
 	sd_up,
+	na.rm = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -68,6 +70,13 @@ bollinger_bands.default <- function(
 	## for later attachment
 	x_names <- rownames(constructed_series)
 
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na(constructed_series, x_names)
+		constructed_series <- na_info$series
+		x_names <- na_info$x_names
+	}
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -80,6 +89,12 @@ bollinger_bands.default <- function(
 		ma$maType
 		## splice:call:end
 	)
+
+	## re-expand NA rows
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na(x, na_info)
+		x_names <- na_info$x_names_all
+	}
 
 	## readd rownames
 	set_rownames(x, x_names)
@@ -99,6 +114,7 @@ bollinger_bands.data.frame <- function(
 	sd = 2,
 	sd_down,
 	sd_up,
+	na.rm = FALSE,
 	...
 ) {
 	map_dfr(
@@ -109,6 +125,7 @@ bollinger_bands.data.frame <- function(
 			sd = sd,
 			sd_down = sd_down,
 			sd_up = sd_up,
+			na.rm = na.rm,
 			...
 		)
 	)
@@ -125,6 +142,7 @@ bollinger_bands.matrix <- function(
 	sd = 2,
 	sd_down,
 	sd_up,
+	na.rm = FALSE,
 	...
 ) {
 	bollinger_bands.default(
@@ -134,6 +152,7 @@ bollinger_bands.matrix <- function(
 		sd = sd,
 		sd_down = sd_down,
 		sd_up = sd_up,
+		na.rm = na.rm,
 		...
 	)
 }
@@ -149,6 +168,7 @@ bollinger_bands.numeric <- function(
 	sd = 2,
 	sd_down,
 	sd_up,
+	na.rm = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -157,6 +177,12 @@ bollinger_bands.numeric <- function(
 	## or relevant
 	if (!missing(cols)) {
 		warning("'cols' is passed but is unused for vectors.")
+	}
+
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na_vector(x)
+		x <- na_info$x
 	}
 
 	## pass the argument directly
@@ -184,6 +210,11 @@ bollinger_bands.numeric <- function(
 		x <- as.double(x)
 	}
 
+	## re-expand NA positions
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na_vector(x, na_info)
+	}
+
 	x
 }
 
@@ -202,6 +233,7 @@ bollinger_bands.plotly <- function(
 	color = "steelblue",
 	alpha = 0.2,
 	## splice:optional-plotly:end
+	na.rm = FALSE,
 	...
 ) {
 	## check that input value

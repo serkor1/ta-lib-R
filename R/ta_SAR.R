@@ -20,6 +20,7 @@ parabolic_stop_and_reverse <- function(
 	cols,
 	acceleration = 0.5,
 	maximum = 0.75,
+	na.rm = FALSE,
 	...
 ) {
 	UseMethod("parabolic_stop_and_reverse")
@@ -41,6 +42,7 @@ parabolic_stop_and_reverse.default <- function(
 	cols,
 	acceleration = 0.5,
 	maximum = 0.75,
+	na.rm = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -62,6 +64,13 @@ parabolic_stop_and_reverse.default <- function(
 	## for later attachment
 	x_names <- rownames(constructed_series)
 
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na(constructed_series, x_names)
+		constructed_series <- na_info$series
+		x_names <- na_info$x_names
+	}
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -73,6 +82,12 @@ parabolic_stop_and_reverse.default <- function(
 		as.double(maximum)
 		## splice:call:end
 	)
+
+	## re-expand NA rows
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na(x, na_info)
+		x_names <- na_info$x_names_all
+	}
 
 	## readd rownames
 	set_rownames(x, x_names)
@@ -90,6 +105,7 @@ parabolic_stop_and_reverse.data.frame <- function(
 	cols,
 	acceleration = 0.5,
 	maximum = 0.75,
+	na.rm = FALSE,
 	...
 ) {
 	map_dfr(
@@ -98,6 +114,7 @@ parabolic_stop_and_reverse.data.frame <- function(
 			cols = cols,
 			acceleration = acceleration,
 			maximum = maximum,
+			na.rm = na.rm,
 			...
 		)
 	)
@@ -112,6 +129,7 @@ parabolic_stop_and_reverse.matrix <- function(
 	cols,
 	acceleration = 0.5,
 	maximum = 0.75,
+	na.rm = FALSE,
 	...
 ) {
 	parabolic_stop_and_reverse.default(
@@ -119,6 +137,7 @@ parabolic_stop_and_reverse.matrix <- function(
 		cols = cols,
 		acceleration = acceleration,
 		maximum = maximum,
+		na.rm = na.rm,
 		...
 	)
 }
@@ -134,6 +153,7 @@ parabolic_stop_and_reverse.plotly <- function(
 	maximum = 0.75,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	na.rm = FALSE,
 	...
 ) {
 	## check that input value

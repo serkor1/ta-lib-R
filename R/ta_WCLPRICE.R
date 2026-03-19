@@ -16,6 +16,7 @@
 weighted_close_price <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	UseMethod("weighted_close_price")
@@ -35,6 +36,7 @@ WCLPRICE <- weighted_close_price
 weighted_close_price.default <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -56,6 +58,13 @@ weighted_close_price.default <- function(
 	## for later attachment
 	x_names <- rownames(constructed_series)
 
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na(constructed_series, x_names)
+		constructed_series <- na_info$series
+		x_names <- na_info$x_names
+	}
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -66,6 +75,12 @@ weighted_close_price.default <- function(
 		constructed_series[[3]]
 		## splice:call:end
 	)
+
+	## re-expand NA rows
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na(x, na_info)
+		x_names <- na_info$x_names_all
+	}
 
 	## readd rownames
 	set_rownames(x, x_names)
@@ -81,12 +96,14 @@ weighted_close_price.default <- function(
 weighted_close_price.data.frame <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	map_dfr(
 		weighted_close_price.default(
 			x = x,
 			cols = cols,
+			na.rm = na.rm,
 			...
 		)
 	)
@@ -99,11 +116,13 @@ weighted_close_price.data.frame <- function(
 weighted_close_price.matrix <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	weighted_close_price.default(
 		x = x,
 		cols = cols,
+		na.rm = na.rm,
 		...
 	)
 }

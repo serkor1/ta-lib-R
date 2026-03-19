@@ -14,7 +14,8 @@
 rolling_beta <- function(
 	x,
 	y,
-	n = 10
+	n = 10,
+	na.rm = FALSE
 ) {
 	UseMethod("rolling_beta")
 }
@@ -33,8 +34,15 @@ BETA <- rolling_beta
 rolling_beta.default <- function(
 	x,
 	y,
-	n = 10
+	n = 10,
+	na.rm = FALSE
 ) {
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na_vector(x)
+		x <- na_info$x
+	}
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -47,7 +55,14 @@ rolling_beta.default <- function(
 	)
 
 	## return indicator
-	as.double(x)
+	x <- as.double(x)
+
+	## re-expand NA positions
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na_vector(x, na_info)
+	}
+
+	x
 }
 
 #' @usage NULL
@@ -57,14 +72,16 @@ rolling_beta.default <- function(
 rolling_beta.numeric <- function(
 	x,
 	y,
-	n = 10
+	n = 10,
+	na.rm = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
 	x <- rolling_beta.default(
 		x = x,
 		y = y,
-		n = n
+		n = n,
+		na.rm = na.rm
 	)
 
 	## return indicator

@@ -20,6 +20,7 @@ chaikin_accumulation_distribution_oscillator <- function(
 	cols,
 	fast = 3,
 	slow = 10,
+	na.rm = FALSE,
 	...
 ) {
 	UseMethod("chaikin_accumulation_distribution_oscillator")
@@ -41,6 +42,7 @@ chaikin_accumulation_distribution_oscillator.default <- function(
 	cols,
 	fast = 3,
 	slow = 10,
+	na.rm = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -62,6 +64,13 @@ chaikin_accumulation_distribution_oscillator.default <- function(
 	## for later attachment
 	x_names <- rownames(constructed_series)
 
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na(constructed_series, x_names)
+		constructed_series <- na_info$series
+		x_names <- na_info$x_names
+	}
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -75,6 +84,12 @@ chaikin_accumulation_distribution_oscillator.default <- function(
 		as.integer(slow)
 		## splice:call:end
 	)
+
+	## re-expand NA rows
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na(x, na_info)
+		x_names <- na_info$x_names_all
+	}
 
 	## readd rownames
 	set_rownames(x, x_names)
@@ -92,6 +107,7 @@ chaikin_accumulation_distribution_oscillator.data.frame <- function(
 	cols,
 	fast = 3,
 	slow = 10,
+	na.rm = FALSE,
 	...
 ) {
 	map_dfr(
@@ -100,6 +116,7 @@ chaikin_accumulation_distribution_oscillator.data.frame <- function(
 			cols = cols,
 			fast = fast,
 			slow = slow,
+			na.rm = na.rm,
 			...
 		)
 	)
@@ -114,6 +131,7 @@ chaikin_accumulation_distribution_oscillator.matrix <- function(
 	cols,
 	fast = 3,
 	slow = 10,
+	na.rm = FALSE,
 	...
 ) {
 	chaikin_accumulation_distribution_oscillator.default(
@@ -121,6 +139,7 @@ chaikin_accumulation_distribution_oscillator.matrix <- function(
 		cols = cols,
 		fast = fast,
 		slow = slow,
+		na.rm = na.rm,
 		...
 	)
 }
@@ -136,6 +155,7 @@ chaikin_accumulation_distribution_oscillator.plotly <- function(
 	slow = 10,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	na.rm = FALSE,
 	title,
 	...
 ) {
@@ -212,8 +232,8 @@ chaikin_accumulation_distribution_oscillator.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
+	.charting_environment$sub <- c(
+		.charting_environment$sub,
 		list(plotly_object)
 	)
 

@@ -16,6 +16,7 @@
 balance_of_power <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	UseMethod("balance_of_power")
@@ -35,6 +36,7 @@ BOP <- balance_of_power
 balance_of_power.default <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -56,6 +58,13 @@ balance_of_power.default <- function(
 	## for later attachment
 	x_names <- rownames(constructed_series)
 
+	## handle missing values
+	if (na.rm) {
+		na_info <- strip_na(constructed_series, x_names)
+		constructed_series <- na_info$series
+		x_names <- na_info$x_names
+	}
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -67,6 +76,12 @@ balance_of_power.default <- function(
 		constructed_series[[4]]
 		## splice:call:end
 	)
+
+	## re-expand NA rows
+	if (na.rm && !is.null(na_info$na_idx)) {
+		x <- reexpand_na(x, na_info)
+		x_names <- na_info$x_names_all
+	}
 
 	## readd rownames
 	set_rownames(x, x_names)
@@ -82,12 +97,14 @@ balance_of_power.default <- function(
 balance_of_power.data.frame <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	map_dfr(
 		balance_of_power.default(
 			x = x,
 			cols = cols,
+			na.rm = na.rm,
 			...
 		)
 	)
@@ -100,11 +117,13 @@ balance_of_power.data.frame <- function(
 balance_of_power.matrix <- function(
 	x,
 	cols,
+	na.rm = FALSE,
 	...
 ) {
 	balance_of_power.default(
 		x = x,
 		cols = cols,
+		na.rm = na.rm,
 		...
 	)
 }
@@ -118,6 +137,7 @@ balance_of_power.plotly <- function(
 	cols,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
+	na.rm = FALSE,
 	title,
 	...
 ) {
@@ -203,8 +223,8 @@ balance_of_power.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
+	.charting_environment$sub <- c(
+		.charting_environment$sub,
 		list(plotly_object)
 	)
 
