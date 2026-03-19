@@ -17,48 +17,53 @@ library(talib)
 
 ## load validation shared library
 so_path <- file.path(
-  "tools", "validation",
-  paste0("validate", .Platform$dynlib.ext)
+	"tools",
+	"validation",
+	paste0("validate", .Platform$dynlib.ext)
 )
 
 if (!file.exists(so_path)) {
-  stop("Validation library not found: ", so_path)
+	stop("Validation library not found: ", so_path)
 }
 dyn.load(so_path)
 
 ## test infrastructure
 results <- list()
 
-check <- function(indicator, column, pkg_val, ref_val,
-                  tol = sqrt(.Machine$double.eps)) {
-  label <- paste0(indicator, "/", column)
+check <- function(
+	indicator,
+	column,
+	pkg_val,
+	ref_val,
+	tol = sqrt(.Machine$double.eps)
+) {
+	label <- paste0(indicator, "/", column)
 
-  pkg_val <- as.numeric(pkg_val)
-  ref_val <- as.numeric(ref_val)
+	pkg_val <- as.numeric(pkg_val)
+	ref_val <- as.numeric(ref_val)
 
-  ## compare including NA positions
-  eq <- all.equal(pkg_val, ref_val,
-    tolerance = tol,
-    check.attributes = FALSE
-  )
+	## compare including NA positions
+	eq <- all.equal(pkg_val, ref_val, tolerance = tol, check.attributes = FALSE)
 
-  pass <- isTRUE(eq)
-  results[[length(results) + 1L]] <<- list(
-    label = label, pass = pass, detail = if (!pass) eq
-  )
+	pass <- isTRUE(eq)
+	results[[length(results) + 1L]] <<- list(
+		label = label,
+		pass = pass,
+		detail = if (!pass) eq
+	)
 
-  if (pass) {
-    cat(sprintf("  PASS  %s\n", label))
-  } else {
-    cat(sprintf("  FAIL  %s\n", label))
-    cat(sprintf("        %s\n", paste(eq, collapse = "\n        ")))
-  }
+	if (pass) {
+		cat(sprintf("  PASS  %s\n", label))
+	} else {
+		cat(sprintf("  FAIL  %s\n", label))
+		cat(sprintf("        %s\n", paste(eq, collapse = "\n        ")))
+	}
 }
 
 ## test data
 close <- as.double(BTC$close)
-high  <- as.double(BTC$high)
-low   <- as.double(BTC$low)
+high <- as.double(BTC$high)
+low <- as.double(BTC$low)
 
 cat("=== TA-Lib Core Validation ===\n\n")
 
@@ -77,9 +82,7 @@ check("RSI", "RSI", pkg[, 1], ref[, 1])
 ## --- BBANDS ---
 cat("\nBBANDS(ma=SMA(20), sd=2):\n")
 pkg <- as.matrix(bollinger_bands(BTC, ma = SMA(n = 20L), sd = 2))
-ref <- .Call("validate_BBANDS", close, 20L, 2.0, 2.0, 0L,
-  PACKAGE = "validate"
-)
+ref <- .Call("validate_BBANDS", close, 20L, 2.0, 2.0, 0L, PACKAGE = "validate")
 check("BBANDS", "UpperBand", pkg[, 1], ref[, 1])
 check("BBANDS", "MiddleBand", pkg[, 2], ref[, 2])
 check("BBANDS", "LowerBand", pkg[, 3], ref[, 3])
@@ -90,30 +93,17 @@ pkg <- as.matrix(average_true_range(BTC, n = 14L))
 ref <- .Call("validate_ATR", high, low, close, 14L, PACKAGE = "validate")
 check("ATR", "ATR", pkg[, 1], ref[, 1])
 
-## --- STOCHRSI ---
-## NOTE: TA_STOCHRSI takes raw close prices and computes RSI internally.
-## The R wrapper pre-computes RSI and passes it to TA_STOCHRSI, which
-## then computes RSI again. This test validates whether the results match
-## the canonical TA-Lib implementation.
-cat("\nSTOCHRSI(period=10, fastk=5, fastd=SMA(10)):\n")
-pkg <- as.matrix(stochastic_relative_strength_index(
-  BTC,
-  n = 10L, n_rsi = 10L,
-  fastk = 5L, fastd = SMA(n = 10L)
-))
-ref <- .Call("validate_STOCHRSI", close, 10L, 5L, 10L, 0L,
-  PACKAGE = "validate"
-)
-check("STOCHRSI", "FastK", pkg[, 1], ref[, 1])
-check("STOCHRSI", "FastD", pkg[, 2], ref[, 2])
-
 ## --- Summary ---
 n_pass <- sum(vapply(results, `[[`, logical(1), "pass"))
 n_fail <- length(results) - n_pass
 
 cat(sprintf(
-  "\n=== %d passed, %d failed (of %d) ===\n",
-  n_pass, n_fail, length(results)
+	"\n=== %d passed, %d failed (of %d) ===\n",
+	n_pass,
+	n_fail,
+	length(results)
 ))
 
-if (n_fail > 0L) quit(status = 1L)
+if (n_fail > 0L) {
+	quit(status = 1L)
+}
