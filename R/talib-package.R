@@ -15,6 +15,7 @@ NULL
 #' @param cols ([formula]). An optional [formula] passed into [model.frame]. If passed into indicators based on univariate series, the function calculates indicators for each element in 'cols'. For indicators based on multivariate series, it will alter the calculation itself. See `vignette("talib")` for more details.
 #' @param n ([integer]). An [integer] of [length] 1.
 #' @param eps ([double]). A [double] of [length] 1. Percentage of penetration of a candle within another candle.
+#' @param na.rm ([logical]). A [logical] of [length] 1. [FALSE] by default. If [TRUE] <NA>'s are removed from the calculation to avoid returning `x` filled with <NA>'s.
 #' @param ... Additional parameters passed into [model.frame]
 #'
 #' @returns NULL
