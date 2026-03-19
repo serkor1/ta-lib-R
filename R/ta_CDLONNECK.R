@@ -26,7 +26,7 @@
 on_neck <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("on_neck")
@@ -46,7 +46,7 @@ CDLONNECK <- on_neck
 on_neck.default <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## get candlestick pattern
@@ -90,7 +90,7 @@ on_neck.default <- function(
 			constructed_series[[3]],
 			constructed_series[[4]],
 			normalize,
-			as.logical(na.rm)
+			as.logical(na.ignore)
 		)
 	)
 
@@ -111,7 +111,7 @@ on_neck.default <- function(
 on_neck.data.frame <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -126,7 +126,7 @@ on_neck.data.frame <- function(
 on_neck.matrix <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	NextMethod()
@@ -139,7 +139,7 @@ on_neck.matrix <- function(
 on_neck.plotly <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## check that input value

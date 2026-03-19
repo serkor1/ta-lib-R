@@ -20,7 +20,7 @@ parabolic_stop_and_reverse <- function(
 	cols,
 	acceleration = 0.5,
 	maximum = 0.75,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("parabolic_stop_and_reverse")
@@ -42,7 +42,7 @@ parabolic_stop_and_reverse.default <- function(
 	cols,
 	acceleration = 0.5,
 	maximum = 0.75,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -74,7 +74,7 @@ parabolic_stop_and_reverse.default <- function(
 		as.double(acceleration),
 		as.double(maximum),
 		## splice:call:end
-		as.logical(na.rm)
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -93,7 +93,7 @@ parabolic_stop_and_reverse.data.frame <- function(
 	cols,
 	acceleration = 0.5,
 	maximum = 0.75,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -102,7 +102,7 @@ parabolic_stop_and_reverse.data.frame <- function(
 			cols = cols,
 			acceleration = acceleration,
 			maximum = maximum,
-			na.rm = na.rm,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -117,7 +117,7 @@ parabolic_stop_and_reverse.matrix <- function(
 	cols,
 	acceleration = 0.5,
 	maximum = 0.75,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	parabolic_stop_and_reverse.default(
@@ -125,7 +125,7 @@ parabolic_stop_and_reverse.matrix <- function(
 		cols = cols,
 		acceleration = acceleration,
 		maximum = maximum,
-		na.rm = na.rm,
+		na.ignore = na.ignore,
 		...
 	)
 }
@@ -140,7 +140,7 @@ parabolic_stop_and_reverse.plotly <- function(
 	cols,
 	acceleration = 0.5,
 	maximum = 0.75,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	...
@@ -173,7 +173,7 @@ parabolic_stop_and_reverse.plotly <- function(
 		),
 		acceleration = acceleration,
 		maximum = maximum,
-		na.rm = TRUE
+		na.ignore = TRUE
 	)
 
 	## add conditional idx

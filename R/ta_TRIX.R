@@ -17,7 +17,7 @@ triple_exponential_average <- function(
 	x,
 	cols,
 	n = 10,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("triple_exponential_average")
@@ -38,7 +38,7 @@ triple_exponential_average.default <- function(
 	x,
 	cols,
 	n = 10,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -68,7 +68,7 @@ triple_exponential_average.default <- function(
 		constructed_series[[1]],
 		as.integer(n),
 		## splice:call:end
-		as.logical(na.rm)
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -86,7 +86,7 @@ triple_exponential_average.data.frame <- function(
 	x,
 	cols,
 	n = 10,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -94,7 +94,7 @@ triple_exponential_average.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
-			na.rm = na.rm,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -108,14 +108,14 @@ triple_exponential_average.matrix <- function(
 	x,
 	cols,
 	n = 10,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	triple_exponential_average.default(
 		x = x,
 		cols = cols,
 		n = n,
-		na.rm = na.rm,
+		na.ignore = na.ignore,
 		...
 	)
 }
@@ -129,7 +129,7 @@ triple_exponential_average.numeric <- function(
 	x,
 	cols,
 	n = 10,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -148,7 +148,7 @@ triple_exponential_average.numeric <- function(
 		as.double(x),
 		as.integer(n),
 		## splice:numeric:end
-		as.logical(na.rm)
+		as.logical(na.ignore)
 	)
 
 	## check if it has 'dims'
@@ -175,7 +175,7 @@ triple_exponential_average.plotly <- function(
 	x,
 	cols,
 	n = 10,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -208,7 +208,7 @@ triple_exponential_average.plotly <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.rm = TRUE
+		na.ignore = TRUE
 	)
 
 	## the constructed indicator

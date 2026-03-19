@@ -26,7 +26,7 @@
 three_inside <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("three_inside")
@@ -46,7 +46,7 @@ CDL3INSIDE <- three_inside
 three_inside.default <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## get candlestick pattern
@@ -90,7 +90,7 @@ three_inside.default <- function(
 			constructed_series[[3]],
 			constructed_series[[4]],
 			normalize,
-			as.logical(na.rm)
+			as.logical(na.ignore)
 		)
 	)
 
@@ -111,7 +111,7 @@ three_inside.default <- function(
 three_inside.data.frame <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -126,7 +126,7 @@ three_inside.data.frame <- function(
 three_inside.matrix <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	NextMethod()
@@ -139,7 +139,7 @@ three_inside.matrix <- function(
 three_inside.plotly <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## check that input value

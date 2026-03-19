@@ -26,7 +26,7 @@
 long_line <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("long_line")
@@ -46,7 +46,7 @@ CDLLONGLINE <- long_line
 long_line.default <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## get candlestick pattern
@@ -90,7 +90,7 @@ long_line.default <- function(
 			constructed_series[[3]],
 			constructed_series[[4]],
 			normalize,
-			as.logical(na.rm)
+			as.logical(na.ignore)
 		)
 	)
 
@@ -111,7 +111,7 @@ long_line.default <- function(
 long_line.data.frame <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -126,7 +126,7 @@ long_line.data.frame <- function(
 long_line.matrix <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	NextMethod()
@@ -139,7 +139,7 @@ long_line.matrix <- function(
 long_line.plotly <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## check that input value

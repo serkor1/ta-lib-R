@@ -14,7 +14,7 @@
 rolling_sum <- function(
 	x,
 	n = 10,
-	na.rm = FALSE
+	na.ignore = FALSE
 ) {
 	UseMethod("rolling_sum")
 }
@@ -33,7 +33,7 @@ SUM <- rolling_sum
 rolling_sum.default <- function(
 	x,
 	n = 10,
-	na.rm = FALSE
+	na.ignore = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
@@ -43,7 +43,7 @@ rolling_sum.default <- function(
 		as.double(x),
 		as.integer(n),
 		## splice:call:end
-		as.logical(na.rm)
+		as.logical(na.ignore)
 	)
 
 	## return indicator
@@ -57,14 +57,14 @@ rolling_sum.default <- function(
 rolling_sum.numeric <- function(
 	x,
 	n = 10,
-	na.rm = FALSE
+	na.ignore = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
 	x <- rolling_sum.default(
 		x = x,
 		n = n,
-		na.rm = na.rm
+		na.ignore = na.ignore
 	)
 
 	## return indicator

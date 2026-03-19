@@ -17,7 +17,7 @@ relative_strength_index <- function(
 	x,
 	cols,
 	n = 10,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("relative_strength_index")
@@ -38,7 +38,7 @@ relative_strength_index.default <- function(
 	x,
 	cols,
 	n = 10,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -68,7 +68,7 @@ relative_strength_index.default <- function(
 		constructed_series[[1]],
 		as.integer(n),
 		## splice:call:end
-		as.logical(na.rm)
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -86,7 +86,7 @@ relative_strength_index.data.frame <- function(
 	x,
 	cols,
 	n = 10,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -94,7 +94,7 @@ relative_strength_index.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
-			na.rm = na.rm,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -108,14 +108,14 @@ relative_strength_index.matrix <- function(
 	x,
 	cols,
 	n = 10,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	relative_strength_index.default(
 		x = x,
 		cols = cols,
 		n = n,
-		na.rm = na.rm,
+		na.ignore = na.ignore,
 		...
 	)
 }
@@ -129,7 +129,7 @@ relative_strength_index.numeric <- function(
 	x,
 	cols,
 	n = 10,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -148,7 +148,7 @@ relative_strength_index.numeric <- function(
 		as.double(x),
 		as.integer(n),
 		## splice:numeric:end
-		as.logical(na.rm)
+		as.logical(na.ignore)
 	)
 
 	## check if it has 'dims'
@@ -175,7 +175,7 @@ relative_strength_index.plotly <- function(
 	x,
 	cols,
 	n = 10,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 20,
 	upper_bound = 80,
@@ -210,7 +210,7 @@ relative_strength_index.plotly <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.rm = TRUE
+		na.ignore = TRUE
 	)
 
 	## the constructed indicator

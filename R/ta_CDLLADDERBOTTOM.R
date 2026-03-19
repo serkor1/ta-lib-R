@@ -26,7 +26,7 @@
 ladder_bottom <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("ladder_bottom")
@@ -46,7 +46,7 @@ CDLLADDERBOTTOM <- ladder_bottom
 ladder_bottom.default <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## get candlestick pattern
@@ -90,7 +90,7 @@ ladder_bottom.default <- function(
 			constructed_series[[3]],
 			constructed_series[[4]],
 			normalize,
-			as.logical(na.rm)
+			as.logical(na.ignore)
 		)
 	)
 
@@ -111,7 +111,7 @@ ladder_bottom.default <- function(
 ladder_bottom.data.frame <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -126,7 +126,7 @@ ladder_bottom.data.frame <- function(
 ladder_bottom.matrix <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	NextMethod()
@@ -139,7 +139,7 @@ ladder_bottom.matrix <- function(
 ladder_bottom.plotly <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## check that input value

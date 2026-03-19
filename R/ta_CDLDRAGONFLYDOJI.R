@@ -26,7 +26,7 @@
 dragonfly_doji <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("dragonfly_doji")
@@ -46,7 +46,7 @@ CDLDRAGONFLYDOJI <- dragonfly_doji
 dragonfly_doji.default <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## get candlestick pattern
@@ -90,7 +90,7 @@ dragonfly_doji.default <- function(
 			constructed_series[[3]],
 			constructed_series[[4]],
 			normalize,
-			as.logical(na.rm)
+			as.logical(na.ignore)
 		)
 	)
 
@@ -111,7 +111,7 @@ dragonfly_doji.default <- function(
 dragonfly_doji.data.frame <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -126,7 +126,7 @@ dragonfly_doji.data.frame <- function(
 dragonfly_doji.matrix <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	NextMethod()
@@ -139,7 +139,7 @@ dragonfly_doji.matrix <- function(
 dragonfly_doji.plotly <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## check that input value

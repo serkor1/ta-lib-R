@@ -16,7 +16,7 @@
 on_balance_volume <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("on_balance_volume")
@@ -36,7 +36,7 @@ OBV <- on_balance_volume
 on_balance_volume.default <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -66,7 +66,7 @@ on_balance_volume.default <- function(
 		constructed_series[[1]],
 		constructed_series[[2]],
 		## splice:call:end
-		as.logical(na.rm)
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -83,14 +83,14 @@ on_balance_volume.default <- function(
 on_balance_volume.data.frame <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
 		on_balance_volume.default(
 			x = x,
 			cols = cols,
-			na.rm = na.rm,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -103,13 +103,13 @@ on_balance_volume.data.frame <- function(
 on_balance_volume.matrix <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	on_balance_volume.default(
 		x = x,
 		cols = cols,
-		na.rm = na.rm,
+		na.ignore = na.ignore,
 		...
 	)
 }
@@ -122,7 +122,7 @@ on_balance_volume.matrix <- function(
 on_balance_volume.plotly <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -154,7 +154,7 @@ on_balance_volume.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		na.rm = TRUE
+		na.ignore = TRUE
 	)
 
 	## the constructed indicator

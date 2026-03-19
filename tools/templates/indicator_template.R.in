@@ -16,7 +16,7 @@
 ${FUN} <- function(
 	x,
 	cols,${ARGS}
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...) {
   UseMethod("${FUN}")
 }
@@ -35,7 +35,7 @@ ${ALIAS} <- ${FUN}
 ${FUN}.default <- function(
 	x,
 	cols,${ARGS}
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...) {
 
 	## validate 'cols'-argument
@@ -63,7 +63,7 @@ ${FUN}.default <- function(
 		"impl_ta_${TA_FUN}",
 		## splice:call:start
 		## splice:call:end
-		as.logical(na.rm)
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -80,13 +80,13 @@ ${FUN}.default <- function(
 ${FUN}.data.frame <- function(
 	x,
 	cols,${ARGS}
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...) {
 	map_dfr(
 		${FUN}.default(
 			x = x,
 			cols = cols ${PARGS}
-			na.rm = na.rm,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -100,13 +100,13 @@ ${FUN}.data.frame <- function(
 ${FUN}.matrix <- function(
 	x,
 	cols,${ARGS}
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...) {
 
 	${FUN}.default(
 			x = x,
 			cols = cols ${PARGS}
-			na.rm = na.rm,
+			na.ignore = na.ignore,
 			...
 		)
 }

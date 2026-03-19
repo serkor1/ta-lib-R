@@ -16,7 +16,7 @@
 median_price <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("median_price")
@@ -36,7 +36,7 @@ MEDPRICE <- median_price
 median_price.default <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -66,7 +66,7 @@ median_price.default <- function(
 		constructed_series[[1]],
 		constructed_series[[2]],
 		## splice:call:end
-		as.logical(na.rm)
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -83,14 +83,14 @@ median_price.default <- function(
 median_price.data.frame <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
 		median_price.default(
 			x = x,
 			cols = cols,
-			na.rm = na.rm,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -103,13 +103,13 @@ median_price.data.frame <- function(
 median_price.matrix <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	median_price.default(
 		x = x,
 		cols = cols,
-		na.rm = na.rm,
+		na.ignore = na.ignore,
 		...
 	)
 }

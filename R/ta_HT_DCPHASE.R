@@ -16,7 +16,7 @@
 dominant_cycle_phase <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("dominant_cycle_phase")
@@ -36,7 +36,7 @@ HT_DCPHASE <- dominant_cycle_phase
 dominant_cycle_phase.default <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -65,7 +65,7 @@ dominant_cycle_phase.default <- function(
 		## splice:call:start
 		constructed_series[[1]],
 		## splice:call:end
-		as.logical(na.rm)
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -82,14 +82,14 @@ dominant_cycle_phase.default <- function(
 dominant_cycle_phase.data.frame <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
 		dominant_cycle_phase.default(
 			x = x,
 			cols = cols,
-			na.rm = na.rm,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -102,13 +102,13 @@ dominant_cycle_phase.data.frame <- function(
 dominant_cycle_phase.matrix <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	dominant_cycle_phase.default(
 		x = x,
 		cols = cols,
-		na.rm = na.rm,
+		na.ignore = na.ignore,
 		...
 	)
 }
@@ -121,7 +121,7 @@ dominant_cycle_phase.matrix <- function(
 dominant_cycle_phase.numeric <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -139,7 +139,7 @@ dominant_cycle_phase.numeric <- function(
 		## splice:numeric:start
 		as.double(x),
 		## splice:numeric:end
-		as.logical(na.rm)
+		as.logical(na.ignore)
 	)
 
 	## check if it has 'dims'
@@ -165,7 +165,7 @@ dominant_cycle_phase.numeric <- function(
 dominant_cycle_phase.plotly <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -197,7 +197,7 @@ dominant_cycle_phase.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		na.rm = TRUE
+		na.ignore = TRUE
 	)
 
 	## the constructed indicator

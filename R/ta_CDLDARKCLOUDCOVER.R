@@ -27,7 +27,7 @@ dark_cloud_cover <- function(
 	x,
 	cols,
 	eps = 0,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("dark_cloud_cover")
@@ -48,7 +48,7 @@ dark_cloud_cover.default <- function(
 	x,
 	cols,
 	eps = 0,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## get candlestick pattern
@@ -93,7 +93,7 @@ dark_cloud_cover.default <- function(
 			constructed_series[[4]],
 			eps,
 			normalize,
-			as.logical(na.rm)
+			as.logical(na.ignore)
 		)
 	)
 
@@ -115,7 +115,7 @@ dark_cloud_cover.data.frame <- function(
 	x,
 	cols,
 	eps = 0,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -131,7 +131,7 @@ dark_cloud_cover.matrix <- function(
 	x,
 	cols,
 	eps = 0,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	NextMethod()
@@ -145,7 +145,7 @@ dark_cloud_cover.plotly <- function(
 	x,
 	cols,
 	eps = 0,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## check that input value

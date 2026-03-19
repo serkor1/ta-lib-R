@@ -31,7 +31,7 @@ SEXP impl_ta_CDLBELTHOLD(
     SEXP inLow,
     SEXP inClose,
     SEXP flag,
-    SEXP na_rm
+    SEXP na_ignore
 )
 // clang-format on
 {
@@ -50,7 +50,7 @@ SEXP impl_ta_CDLBELTHOLD(
   int *na_mask = NULL;
   const int n_original = n;
 
-  if (LOGICAL(na_rm)[0]) {
+  if (LOGICAL(na_ignore)[0]) {
     na_mask = (int *)R_alloc(n, sizeof(int));
     const double *na_arrays[] = {open_ptr, high_ptr, low_ptr, close_ptr};
     n = build_na_mask(na_mask, n, 4, na_arrays);

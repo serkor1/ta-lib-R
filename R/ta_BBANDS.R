@@ -24,7 +24,7 @@ bollinger_bands <- function(
 	sd = 2,
 	sd_down,
 	sd_up,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("bollinger_bands")
@@ -48,7 +48,7 @@ bollinger_bands.default <- function(
 	sd = 2,
 	sd_down,
 	sd_up,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -81,7 +81,7 @@ bollinger_bands.default <- function(
 		as.double(sd_down %or% sd),
 		ma$maType,
 		## splice:call:end
-		as.logical(na.rm)
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -102,7 +102,7 @@ bollinger_bands.data.frame <- function(
 	sd = 2,
 	sd_down,
 	sd_up,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -113,7 +113,7 @@ bollinger_bands.data.frame <- function(
 			sd = sd,
 			sd_down = sd_down,
 			sd_up = sd_up,
-			na.rm = na.rm,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -130,7 +130,7 @@ bollinger_bands.matrix <- function(
 	sd = 2,
 	sd_down,
 	sd_up,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	bollinger_bands.default(
@@ -140,7 +140,7 @@ bollinger_bands.matrix <- function(
 		sd = sd,
 		sd_down = sd_down,
 		sd_up = sd_up,
-		na.rm = na.rm,
+		na.ignore = na.ignore,
 		...
 	)
 }
@@ -157,7 +157,7 @@ bollinger_bands.numeric <- function(
 	sd = 2,
 	sd_down,
 	sd_up,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -179,7 +179,7 @@ bollinger_bands.numeric <- function(
 		as.double(sd_down %or% sd),
 		ma$maType,
 		## splice:numeric:end
-		as.logical(na.rm)
+		as.logical(na.ignore)
 	)
 
 	## check if it has 'dims'
@@ -209,7 +209,7 @@ bollinger_bands.plotly <- function(
 	sd = 2,
 	sd_down,
 	sd_up,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	color = "steelblue",
 	alpha = 0.2,
@@ -246,7 +246,7 @@ bollinger_bands.plotly <- function(
 		sd = sd,
 		sd_down = sd_down,
 		sd_up = sd_up,
-		na.rm = TRUE
+		na.ignore = TRUE
 	)
 
 	## add conditional idx

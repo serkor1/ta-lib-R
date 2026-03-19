@@ -26,7 +26,7 @@
 $FUN <- function(
 	x,
 	cols, ${ARGS}
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...) {
   UseMethod("$FUN")
 }
@@ -45,7 +45,7 @@ $ALIAS <- $FUN
 $FUN.default <- function(
 	x,
 	cols, ${ARGS}
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...) {
 
 	## get candlestick pattern
@@ -89,7 +89,7 @@ $FUN.default <- function(
 		constructed_series[[3]],
 		constructed_series[[4]] ${CARGS},
 		normalize,
-		as.logical(na.rm)
+		as.logical(na.ignore)
 	)
 	)
 
@@ -110,7 +110,7 @@ $FUN.default <- function(
 $FUN.data.frame <- function(
 	x,
 	cols, ${ARGS}
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...) {
 
 	map_dfr(
@@ -125,7 +125,7 @@ $FUN.data.frame <- function(
 $FUN.matrix <- function(
 	x,
 	cols,${ARGS}
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...) {
 		NextMethod()
 }
@@ -137,7 +137,7 @@ $FUN.matrix <- function(
 $FUN.plotly <- function(
 	x,
 	cols, ${ARGS}
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...) {
 
 	## check that input value

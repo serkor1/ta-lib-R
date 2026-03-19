@@ -22,7 +22,7 @@
 
 // clang-format off
 SEXP impl_ta_${NAME}($R_SIGNATURE,
-	SEXP na_rm
+	SEXP na_ignore
 )
 // clang-format on
 {
@@ -36,7 +36,7 @@ SEXP impl_ta_${NAME}($R_SIGNATURE,
     int *na_mask = NULL;
     const int n_original = n;
 
-    if (LOGICAL(na_rm)[0]) {
+    if (LOGICAL(na_ignore)[0]) {
         na_mask = (int *)R_alloc(n, sizeof(int));
         $NA_MASK_BUILD
         if (n < n_original) {

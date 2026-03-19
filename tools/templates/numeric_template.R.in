@@ -5,7 +5,7 @@
 ${FUN}.numeric <- function(
 	x,
 	cols,${ARGS}
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...) {
 
 		## warn if 'cols' have been
@@ -23,7 +23,7 @@ ${FUN}.numeric <- function(
 			## splice:numeric:start
 			${CARGS}
 			## splice:numeric:end
-			as.logical(na.rm)
+			as.logical(na.ignore)
 		)
 
 		## check if it has 'dims'

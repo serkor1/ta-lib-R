@@ -20,7 +20,7 @@ mesa_adaptive_moving_average <- function(
 	x,
 	cols,
 	n = 10,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## if 'x' is missing mesa_adaptive_moving_average functions
@@ -57,7 +57,7 @@ mesa_adaptive_moving_average.default <- function(
 	x,
 	cols,
 	n = 10,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -86,7 +86,7 @@ mesa_adaptive_moving_average.default <- function(
 		as.double(constructed_series[[1]]),
 		as.integer(n),
 		7L,
-		as.logical(na.rm)
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -104,7 +104,7 @@ mesa_adaptive_moving_average.data.frame <- function(
 	x,
 	cols,
 	n = 10,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -120,7 +120,7 @@ mesa_adaptive_moving_average.matrix <- function(
 	x,
 	cols,
 	n = 10,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## pass directly to
@@ -130,7 +130,7 @@ mesa_adaptive_moving_average.matrix <- function(
 		x = x,
 		cols = cols,
 		n = n,
-		na.rm = na.rm,
+		na.ignore = na.ignore,
 		...
 	)
 }
@@ -143,7 +143,7 @@ mesa_adaptive_moving_average.numeric <- function(
 	x,
 	cols,
 	n = 10,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -161,7 +161,7 @@ mesa_adaptive_moving_average.numeric <- function(
 		as.double(x),
 		as.integer(n),
 		7L,
-		as.logical(na.rm)
+		as.logical(na.ignore)
 	)
 
 	## 'C' returns a named matrix
@@ -179,7 +179,7 @@ mesa_adaptive_moving_average.plotly <- function(
 	x,
 	cols,
 	n = 10,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## check that input value

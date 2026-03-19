@@ -16,7 +16,7 @@
 average_price <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("average_price")
@@ -36,7 +36,7 @@ AVGPRICE <- average_price
 average_price.default <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -68,7 +68,7 @@ average_price.default <- function(
 		constructed_series[[3]],
 		constructed_series[[4]],
 		## splice:call:end
-		as.logical(na.rm)
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -85,14 +85,14 @@ average_price.default <- function(
 average_price.data.frame <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
 		average_price.default(
 			x = x,
 			cols = cols,
-			na.rm = na.rm,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -105,13 +105,13 @@ average_price.data.frame <- function(
 average_price.matrix <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	average_price.default(
 		x = x,
 		cols = cols,
-		na.rm = na.rm,
+		na.ignore = na.ignore,
 		...
 	)
 }

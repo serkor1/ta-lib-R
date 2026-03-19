@@ -5,7 +5,7 @@
 ${FUN}.plotly <- function(
 	x,
 	cols,${ARGS}
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -38,7 +38,7 @@ ${FUN}.plotly <- function(
 			names(constructed_series)
 		)
 		${PPARGS},
-		na.rm = TRUE
+		na.ignore = TRUE
 	)
 
 	## the constructed indicator

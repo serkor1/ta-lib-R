@@ -61,29 +61,29 @@ testthat::test_that(desc = 'Default calls', code = {
 })
 
 ## check that the length of the input
-## matches the output length with na.rm = TRUE
+## matches the output length with na.ignore = TRUE
 ##
 ## <data.frame> object
-testthat::test_that(desc = 'Equal length of input and output for <data.frame> with na.rm = TRUE', code = {
+testthat::test_that(desc = 'Equal length of input and output for <data.frame> with na.ignore = TRUE', code = {
 	testthat::expect_equal(
 		object = nrow(chaikin_accumulation_distribution_oscillator(
 			ATOM,
-			na.rm = TRUE
+			na.ignore = TRUE
 		)),
 		expected = nrow(ATOM)
 	)
 })
 
 ## check that the rownames are being
-## respected for <data.frame> with na.rm = TRUE
-testthat::test_that(desc = 'Row names are respected for <data.frame>, na.rm = TRUE', code = {
+## respected for <data.frame> with na.ignore = TRUE
+testthat::test_that(desc = 'Row names are respected for <data.frame>, na.ignore = TRUE', code = {
 	## extract row names
 	x_names <- row.names(ATOM)
 
 	## calculate indicator
 	indicator <- chaikin_accumulation_distribution_oscillator(
 		ATOM,
-		na.rm = TRUE
+		na.ignore = TRUE
 	)
 
 	testthat::expect_equal(

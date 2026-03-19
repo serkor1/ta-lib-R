@@ -20,7 +20,7 @@ $FUN <- function(
 	x,
 	cols,
 	n = 10,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...) {
 
 		## if 'x' is missing $FUN functions
@@ -57,7 +57,7 @@ $FUN.default <- function(
 	x,
 	cols,
 	n = 10,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...) {
 
 	## validate 'cols'-argument
@@ -86,7 +86,7 @@ $FUN.default <- function(
 		as.double(constructed_series[[1]]),
 		as.integer(n),
 		${maType},
-		as.logical(na.rm)
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -104,7 +104,7 @@ $FUN.data.frame <- function(
 	x,
 	cols,
 	n = 10,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...) {
 
 	map_dfr(
@@ -120,7 +120,7 @@ $FUN.matrix <- function(
 	x,
 	cols,
 	n = 10,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...) {
 
 		## pass directly to
@@ -130,7 +130,7 @@ $FUN.matrix <- function(
 				x = x,
 				cols = cols,
 				n = n,
-				na.rm = na.rm,
+				na.ignore = na.ignore,
 				...
 		)
 }
@@ -143,7 +143,7 @@ $FUN.numeric <- function(
 	x,
 	cols,
 	n = 10,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...) {
 
 		## warn if 'cols' have been
@@ -161,7 +161,7 @@ $FUN.numeric <- function(
 			as.double(x),
 			as.integer(n),
 			${maType},
-			as.logical(na.rm)
+			as.logical(na.ignore)
 		)
 
 		## 'C' returns a named matrix
@@ -180,7 +180,7 @@ $FUN.plotly <- function(
 	x,
 	cols,
 	n = 10,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...) {
 
 	## check that input value

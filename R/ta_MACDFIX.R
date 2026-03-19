@@ -18,7 +18,7 @@ fixed_moving_average_convergence_divergence <- function(
 	x,
 	cols,
 	signal = 9,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("fixed_moving_average_convergence_divergence")
@@ -39,7 +39,7 @@ fixed_moving_average_convergence_divergence.default <- function(
 	x,
 	cols,
 	signal = 9,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -69,7 +69,7 @@ fixed_moving_average_convergence_divergence.default <- function(
 		constructed_series[[1]],
 		as.integer(signal),
 		## splice:call:end
-		as.logical(na.rm)
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -87,7 +87,7 @@ fixed_moving_average_convergence_divergence.data.frame <- function(
 	x,
 	cols,
 	signal = 9,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -95,7 +95,7 @@ fixed_moving_average_convergence_divergence.data.frame <- function(
 			x = x,
 			cols = cols,
 			signal = signal,
-			na.rm = na.rm,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -109,14 +109,14 @@ fixed_moving_average_convergence_divergence.matrix <- function(
 	x,
 	cols,
 	signal = 9,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	fixed_moving_average_convergence_divergence.default(
 		x = x,
 		cols = cols,
 		signal = signal,
-		na.rm = na.rm,
+		na.ignore = na.ignore,
 		...
 	)
 }
@@ -130,7 +130,7 @@ fixed_moving_average_convergence_divergence.numeric <- function(
 	x,
 	cols,
 	signal = 9,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -149,7 +149,7 @@ fixed_moving_average_convergence_divergence.numeric <- function(
 		as.double(x),
 		as.integer(signal),
 		## splice:numeric:end
-		as.logical(na.rm)
+		as.logical(na.ignore)
 	)
 
 	## check if it has 'dims'
@@ -176,7 +176,7 @@ fixed_moving_average_convergence_divergence.plotly <- function(
 	x,
 	cols,
 	signal = 9,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -209,7 +209,7 @@ fixed_moving_average_convergence_divergence.plotly <- function(
 			names(constructed_series)
 		),
 		signal = signal,
-		na.rm = TRUE
+		na.ignore = TRUE
 	)
 
 	## the constructed indicator

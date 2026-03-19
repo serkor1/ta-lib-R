@@ -16,7 +16,7 @@
 true_range <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("true_range")
@@ -36,7 +36,7 @@ TRANGE <- true_range
 true_range.default <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -67,7 +67,7 @@ true_range.default <- function(
 		constructed_series[[2]],
 		constructed_series[[3]],
 		## splice:call:end
-		as.logical(na.rm)
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -84,14 +84,14 @@ true_range.default <- function(
 true_range.data.frame <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
 		true_range.default(
 			x = x,
 			cols = cols,
-			na.rm = na.rm,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -104,13 +104,13 @@ true_range.data.frame <- function(
 true_range.matrix <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	true_range.default(
 		x = x,
 		cols = cols,
-		na.rm = na.rm,
+		na.ignore = na.ignore,
 		...
 	)
 }
@@ -123,7 +123,7 @@ true_range.matrix <- function(
 true_range.plotly <- function(
 	x,
 	cols,
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -155,7 +155,7 @@ true_range.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		na.rm = TRUE
+		na.ignore = TRUE
 	)
 
 	## the constructed indicator

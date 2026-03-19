@@ -1,6 +1,6 @@
 // na.h
 //
-// C-level NA handling for the na.rm parameter.
+// C-level NA handling for the na.ignore parameter.
 //
 // Provides:
 //   build_na_mask   - scan input arrays, build boolean mask, return clean count

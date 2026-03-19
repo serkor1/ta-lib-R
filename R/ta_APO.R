@@ -22,7 +22,7 @@ absolute_price_oscillator <- function(
 	fast = 7,
 	slow = 14,
 	ma = SMA(n = 10),
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	UseMethod("absolute_price_oscillator")
@@ -45,7 +45,7 @@ absolute_price_oscillator.default <- function(
 	fast = 7,
 	slow = 14,
 	ma = SMA(n = 10),
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -77,7 +77,7 @@ absolute_price_oscillator.default <- function(
 		as.integer(slow),
 		ma$maType,
 		## splice:call:end
-		as.logical(na.rm)
+		as.logical(na.ignore)
 	)
 
 	## readd rownames
@@ -97,7 +97,7 @@ absolute_price_oscillator.data.frame <- function(
 	fast = 7,
 	slow = 14,
 	ma = SMA(n = 10),
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	map_dfr(
@@ -107,7 +107,7 @@ absolute_price_oscillator.data.frame <- function(
 			fast = fast,
 			slow = slow,
 			ma = ma,
-			na.rm = na.rm,
+			na.ignore = na.ignore,
 			...
 		)
 	)
@@ -123,7 +123,7 @@ absolute_price_oscillator.matrix <- function(
 	fast = 7,
 	slow = 14,
 	ma = SMA(n = 10),
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	absolute_price_oscillator.default(
@@ -132,7 +132,7 @@ absolute_price_oscillator.matrix <- function(
 		fast = fast,
 		slow = slow,
 		ma = ma,
-		na.rm = na.rm,
+		na.ignore = na.ignore,
 		...
 	)
 }
@@ -148,7 +148,7 @@ absolute_price_oscillator.numeric <- function(
 	fast = 7,
 	slow = 14,
 	ma = SMA(n = 10),
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -169,7 +169,7 @@ absolute_price_oscillator.numeric <- function(
 		as.integer(slow),
 		ma$maType,
 		## splice:numeric:end
-		as.logical(na.rm)
+		as.logical(na.ignore)
 	)
 
 	## check if it has 'dims'
@@ -198,7 +198,7 @@ absolute_price_oscillator.plotly <- function(
 	fast = 7,
 	slow = 14,
 	ma = SMA(n = 10),
-	na.rm = FALSE,
+	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -233,7 +233,7 @@ absolute_price_oscillator.plotly <- function(
 		fast = fast,
 		slow = slow,
 		ma = ma,
-		na.rm = TRUE
+		na.ignore = TRUE
 	)
 
 	## the constructed indicator
