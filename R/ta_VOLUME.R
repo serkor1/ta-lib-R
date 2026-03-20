@@ -244,8 +244,6 @@ trading_volume.plotly <- function(
 
 	## construct theme object for
 	## coloring
-	chart_theme <- layout_theme()
-
 	## identify column names
 	## that are not 'idx' or 'direction'
 	trace_cols <- setdiff(

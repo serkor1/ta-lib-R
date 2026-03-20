@@ -253,7 +253,6 @@ extended_parabolic_stop_and_reverse.plotly <- function(
 				-c(1:attr(constructed_indicator, "lookback"))
 			]
 		))
-	chart_theme <- .chart_theme()
 	## determine colors
 	##
 	colors <- ifelse(

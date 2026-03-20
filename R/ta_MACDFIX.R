@@ -230,10 +230,6 @@ fixed_moving_average_convergence_divergence.plotly <- function(
 	constructed_indicator$direction <- constructed_indicator$MACDSignal >=
 		constructed_indicator$MACD
 
-	## generate plotly object
-	## of the indicator
-	chart_theme <- .chart_theme()
-
 	## construct plotly object
 	name <- sprintf(
 		"MACD(%d)",

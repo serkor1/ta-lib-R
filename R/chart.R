@@ -87,7 +87,6 @@ chart.default <- function(
 	} else {
 		chart_title <- title
 	}
-	.color_values <- .chart_theme()
 	.chart_environment$sub <- .chart_environment$chart <- list()
 
 	## convert input to data.frame object

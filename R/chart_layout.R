@@ -5,15 +5,8 @@
 ## for <plotly> objects
 ##
 layout_background <- function(
-	p,
-	theme_element = layout_theme()
+	p
 ) {
-	## extract backround and
-	## grid colors
-	grid_color <- theme_element$grid_color
-	paper_bgcolor <- theme_element$paper_bgcolor
-	plot_bgcolor <- theme_element$plot_bgcolor
-
 	## apply colors
 	plotly::layout(
 		p = p,
@@ -66,23 +59,6 @@ layout_axis <- function(
 	)
 }
 
-layout_annotate <- function(
-	p,
-	text,
-	x = 0,
-	y = 1,
-	...
-) {
-	plotly::add_annotations(
-		p = p,
-		text = text,
-		x = x,
-		y = y,
-		showarrow = FALSE,
-		...
-	)
-}
-
 layout_title <- function(
 	p,
 	title,
@@ -111,11 +87,9 @@ layout_title <- function(
 
 
 layout_font <- function(
-	p,
-	theme_element = layout_theme()
+	p
 ) {
-	## font color and scale
-	font_color <- .chart_variables$text_color
+	## font scale
 	font_scale <- getOption(
 		"talib.chart.scale",
 		default = 1
