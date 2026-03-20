@@ -232,7 +232,12 @@ assemble_ggplot2 <- function() {
 	}
 
 	## convert to grobs and align column widths
-	## so that y-axes line up across panels
+	## so that y-axes line up across panels.
+	## use a null device to prevent Rplots.pdf
+	## from being created in non-interactive sessions
+	grDevices::pdf(nullfile())
+	dev_null <- grDevices::dev.cur()
+	on.exit(grDevices::dev.off(dev_null), add = TRUE)
 	grobs <- lapply(panels, ggplot2::ggplotGrob)
 	max_widths <- do.call(
 		grid::unit.pmax,
