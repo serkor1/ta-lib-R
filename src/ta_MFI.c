@@ -31,8 +31,7 @@ SEXP impl_ta_MFI(
 	SEXP inLow,
 	SEXP inClose,
 	SEXP inVolume,
-	SEXP optInTimePeriod
-,
+	SEXP optInTimePeriod,
 	SEXP na_ignore
 )
 // clang-format on

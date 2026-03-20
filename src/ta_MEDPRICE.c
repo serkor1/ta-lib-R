@@ -25,8 +25,7 @@
 // clang-format off
 SEXP impl_ta_MEDPRICE(
 	SEXP inHigh,
-	SEXP inLow
-,
+	SEXP inLow,
 	SEXP na_ignore
 )
 // clang-format on

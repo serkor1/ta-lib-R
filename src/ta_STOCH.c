@@ -37,8 +37,7 @@ SEXP impl_ta_STOCH(
 	SEXP optInSlowK_Period,
 	SEXP optInSlowK_MAType,
 	SEXP optInSlowD_Period,
-	SEXP optInSlowD_MAType
-,
+	SEXP optInSlowD_MAType,
 	SEXP na_ignore
 )
 // clang-format on

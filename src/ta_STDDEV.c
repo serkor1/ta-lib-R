@@ -27,8 +27,7 @@
 SEXP impl_ta_STDDEV(
 	SEXP inReal,
 	SEXP optInTimePeriod,
-	SEXP optInNbDev
-,
+	SEXP optInNbDev,
 	SEXP na_ignore
 )
 // clang-format on

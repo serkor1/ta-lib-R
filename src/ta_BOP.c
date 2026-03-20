@@ -29,8 +29,7 @@ SEXP impl_ta_BOP(
 	SEXP inOpen,
 	SEXP inHigh,
 	SEXP inLow,
-	SEXP inClose
-,
+	SEXP inClose,
 	SEXP na_ignore
 )
 // clang-format on

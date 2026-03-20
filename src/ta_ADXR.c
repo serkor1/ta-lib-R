@@ -29,8 +29,7 @@ SEXP impl_ta_ADXR(
 	SEXP inHigh,
 	SEXP inLow,
 	SEXP inClose,
-	SEXP optInTimePeriod
-,
+	SEXP optInTimePeriod,
 	SEXP na_ignore
 )
 // clang-format on

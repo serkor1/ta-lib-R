@@ -29,8 +29,7 @@ SEXP impl_ta_AVGPRICE(
 	SEXP inOpen,
 	SEXP inHigh,
 	SEXP inLow,
-	SEXP inClose
-,
+	SEXP inClose,
 	SEXP na_ignore
 )
 // clang-format on

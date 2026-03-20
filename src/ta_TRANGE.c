@@ -27,8 +27,7 @@
 SEXP impl_ta_TRANGE(
 	SEXP inHigh,
 	SEXP inLow,
-	SEXP inClose
-,
+	SEXP inClose,
 	SEXP na_ignore
 )
 // clang-format on

@@ -25,8 +25,7 @@
 // clang-format off
 SEXP impl_ta_MACDFIX(
 	SEXP inReal,
-	SEXP optInSignalPeriod
-,
+	SEXP optInSignalPeriod,
 	SEXP na_ignore
 )
 // clang-format on

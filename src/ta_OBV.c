@@ -25,8 +25,7 @@
 // clang-format off
 SEXP impl_ta_OBV(
 	SEXP inReal,
-	SEXP inVolume
-,
+	SEXP inVolume,
 	SEXP na_ignore
 )
 // clang-format on

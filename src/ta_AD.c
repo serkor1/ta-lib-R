@@ -29,8 +29,7 @@ SEXP impl_ta_AD(
 	SEXP inHigh,
 	SEXP inLow,
 	SEXP inClose,
-	SEXP inVolume
-,
+	SEXP inVolume,
 	SEXP na_ignore
 )
 // clang-format on

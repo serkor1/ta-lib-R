@@ -27,8 +27,7 @@
 SEXP impl_ta_AROONOSC(
 	SEXP inHigh,
 	SEXP inLow,
-	SEXP optInTimePeriod
-,
+	SEXP optInTimePeriod,
 	SEXP na_ignore
 )
 // clang-format on

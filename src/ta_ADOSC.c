@@ -33,8 +33,7 @@ SEXP impl_ta_ADOSC(
 	SEXP inClose,
 	SEXP inVolume,
 	SEXP optInFastPeriod,
-	SEXP optInSlowPeriod
-,
+	SEXP optInSlowPeriod,
 	SEXP na_ignore
 )
 // clang-format on

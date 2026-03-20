@@ -27,8 +27,7 @@
 SEXP impl_ta_BETA(
 	SEXP inReal0,
 	SEXP inReal1,
-	SEXP optInTimePeriod
-,
+	SEXP optInTimePeriod,
 	SEXP na_ignore
 )
 // clang-format on

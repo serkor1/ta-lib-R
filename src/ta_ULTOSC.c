@@ -33,8 +33,7 @@ SEXP impl_ta_ULTOSC(
 	SEXP inClose,
 	SEXP optInTimePeriod1,
 	SEXP optInTimePeriod2,
-	SEXP optInTimePeriod3
-,
+	SEXP optInTimePeriod3,
 	SEXP na_ignore
 )
 // clang-format on

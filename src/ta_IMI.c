@@ -27,8 +27,7 @@
 SEXP impl_ta_IMI(
 	SEXP inOpen,
 	SEXP inClose,
-	SEXP optInTimePeriod
-,
+	SEXP optInTimePeriod,
 	SEXP na_ignore
 )
 // clang-format on

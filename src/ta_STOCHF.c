@@ -33,8 +33,7 @@ SEXP impl_ta_STOCHF(
 	SEXP inClose,
 	SEXP optInFastK_Period,
 	SEXP optInFastD_Period,
-	SEXP optInFastD_MAType
-,
+	SEXP optInFastD_MAType,
 	SEXP na_ignore
 )
 // clang-format on

@@ -29,8 +29,7 @@ SEXP impl_ta_SAR(
 	SEXP inHigh,
 	SEXP inLow,
 	SEXP optInAcceleration,
-	SEXP optInMaximum
-,
+	SEXP optInMaximum,
 	SEXP na_ignore
 )
 // clang-format on

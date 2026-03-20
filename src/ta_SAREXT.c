@@ -41,8 +41,7 @@ SEXP impl_ta_SAREXT(
 	SEXP optInAccelerationMaxLong,
 	SEXP optInAccelerationInitShort,
 	SEXP optInAccelerationShort,
-	SEXP optInAccelerationMaxShort
-,
+	SEXP optInAccelerationMaxShort,
 	SEXP na_ignore
 )
 // clang-format on

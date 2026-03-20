@@ -25,8 +25,7 @@
 // clang-format off
 SEXP impl_ta_TRIX(
 	SEXP inReal,
-	SEXP optInTimePeriod
-,
+	SEXP optInTimePeriod,
 	SEXP na_ignore
 )
 // clang-format on

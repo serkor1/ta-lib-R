@@ -23,8 +23,7 @@
 
 // clang-format off
 SEXP impl_ta_HT_DCPERIOD(
-	SEXP inReal
-,
+	SEXP inReal,
 	SEXP na_ignore
 )
 // clang-format on

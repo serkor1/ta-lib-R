@@ -29,8 +29,7 @@ SEXP impl_ta_MACD(
 	SEXP inReal,
 	SEXP optInFastPeriod,
 	SEXP optInSlowPeriod,
-	SEXP optInSignalPeriod
-,
+	SEXP optInSignalPeriod,
 	SEXP na_ignore
 )
 // clang-format on

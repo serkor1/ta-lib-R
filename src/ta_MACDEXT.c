@@ -35,8 +35,7 @@ SEXP impl_ta_MACDEXT(
 	SEXP optInSlowPeriod,
 	SEXP optInSlowMAType,
 	SEXP optInSignalPeriod,
-	SEXP optInSignalMAType
-,
+	SEXP optInSignalMAType,
 	SEXP na_ignore
 )
 // clang-format on

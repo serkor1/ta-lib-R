@@ -31,8 +31,7 @@ SEXP impl_ta_BBANDS(
 	SEXP optInTimePeriod,
 	SEXP optInNbDevUp,
 	SEXP optInNbDevDn,
-	SEXP optInMAType
-,
+	SEXP optInMAType,
 	SEXP na_ignore
 )
 // clang-format on

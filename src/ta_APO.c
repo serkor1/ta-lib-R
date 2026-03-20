@@ -29,8 +29,7 @@ SEXP impl_ta_APO(
 	SEXP inReal,
 	SEXP optInFastPeriod,
 	SEXP optInSlowPeriod,
-	SEXP optInMAType
-,
+	SEXP optInMAType,
 	SEXP na_ignore
 )
 // clang-format on
