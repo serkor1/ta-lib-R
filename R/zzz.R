@@ -47,6 +47,9 @@
 ## gridcolor
 .chart_variables$gridcolor <- "#232A30"
 
+## threshold line color
+.chart_variables$threshold_color <- "#5A6270"
+
 ## actions on attach
 ## and load
 .onAttach <- function(

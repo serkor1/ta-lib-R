@@ -198,7 +198,7 @@ parabolic_stop_and_reverse.plotly <- function(
 	colors <- ifelse(
 		bull,
 		plotly::toRGB(.chart_variables$bullish_body, alpha = 0.8),
-		plotly::toRGB(.chart_variables$bearish_body <- "#A9A9A9", alpha = 0.8)
+		plotly::toRGB(.chart_variables$bearish_body, alpha = 0.8)
 	)
 
 	## constuct chart

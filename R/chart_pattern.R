@@ -6,9 +6,6 @@ pattern <- function(
 	pattern_name = "Doji",
 	agnostic = FALSE
 ) {
-	## chart theme controls
-	chart_theme <- .chart_theme()
-
 	## locate bull and
 	## bear indices
 	idx_bull <- which(x[[1]] > 0L)
@@ -34,12 +31,12 @@ pattern <- function(
 			mode = "markers+text",
 			marker = list(
 				symbol = "triangle-down",
-				color = chart_theme$bear_color,
+				color = .chart_variables$bearish_body,
 				size = 10
 			),
 			text = bear_text,
 			textposition = "top center",
-			textfont = list(color = chart_theme$bear_color, size = 10),
+			textfont = list(color = .chart_variables$bearish_body, size = 10),
 			hoverinfo = "skip",
 			name = "Bearish",
 			inherit = FALSE,
@@ -65,9 +62,9 @@ pattern <- function(
 					"triangle-up"
 				},
 				color = if (agnostic) {
-					chart_theme$font_color
+					.chart_variables$foreground_color
 				} else {
-					chart_theme$bull_color
+					.chart_variables$bullish_body
 				},
 				size = 10
 			),
@@ -79,9 +76,9 @@ pattern <- function(
 			},
 			textfont = list(
 				color = if (agnostic) {
-					chart_theme$font_color
+					.chart_variables$foreground_color
 				} else {
-					chart_theme$bull_color
+					.chart_variables$bullish_body
 				},
 				size = 10
 			),

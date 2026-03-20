@@ -5,8 +5,7 @@
 #' @title OHLC Chart
 #'
 #' @description
-#' `chart()` is a generic S3 function for charting OHLC-V series interactively.
-#' The function is a high-level [plotly::plot_ly] wrapper with pre-specified OHLC values based on the input data.
+#' `chart()` is a generic S3 function for charting OHLC-V series.
 #'
 #' Call `chart()` without any arguments to reset the charting
 #' environment. See `vignette(topic = "charting", package = "talib")` for more details.
@@ -15,8 +14,7 @@
 #' The function uses various controlable options:
 #'
 #' \describe{
-#'  \item{talib.deficiency <[logical]>}{`FALSE` by default. If `TRUE` it uses colorblind-friendly colors.}
-#'  \item{talib.chart.dark <[logical]>}{`TRUE` by default. If `FALSE` it charting is done in light mode.}
+#'  \item{talib.chart.backend <[character]>}{`"plotly"` by default. The charting backend to use. Currently only `"plotly"` is supported.}
 #'  \item{talib.chart.slider <[logical]>}{`FALSE` by default. If `TRUE` a `rangeslider` is added to the chart.}
 #'  \item{talib.chart.slider.size <[numeric]>}{0.05 by default. Controls the size of the `rangeslider`.}
 #'  \item{talib.chart.legend <[logical]>}{`TRUE` by default. If `FALSE` the chart comes without legends.}
@@ -27,7 +25,7 @@
 #' @param type A [character] of [length] 1. `candlestick` by default. Can be `ohlc` for OHLC bars.
 #' @param idx A [vector] with the same [length] of `x`. If passed it will replace the x-axis labels. See `vignette("charting")` for more details.
 #' @param title An optional [character] vector of [length] 1.
-#' @param ... Parameters passed into [plotly::plot_ly]
+#' @param ... Additional parameters passed to the backend.
 #'
 #' @example man/examples/charting.R
 #'
@@ -63,21 +61,17 @@ chart.default <- function(
 	title,
 	...
 ) {
-	## default chart function
-	##
 	## The chart function works as an initializer
-	## for the downstream indicator function calls
+	## for the downstream indicator function calls.
 	##
 	## There are three chart lists:
 	##    1. main: The candlestick/bar chart. This is where all
-	##             all indicators that are charted on the candlestick
-	##             lives alongside the pricechart itself.
-	##    2. sub:  A list of indicators. This is where all indicators
-	##             that are charted below the main chart lives. For example
-	##             RSI, MACD etc.
+	##             indicators that are charted on the candlestick
+	##             live alongside the price chart itself.
+	##    2. sub:  A list of indicators charted below the main chart.
+	##             For example RSI, MACD etc.
 	##    3. chart: The user-facing TA chart.
-	##              This is empty and is constructed on the fly
-	##              via plotly::subplot.
+	##              This is empty and is constructed on the fly.
 
 	## extract title
 	if (missing(title)) {
@@ -89,12 +83,9 @@ chart.default <- function(
 	}
 	.chart_environment$sub <- .chart_environment$chart <- list()
 
-	## convert input to data.frame object
-	## and store in the .chart_environment
-	## to avoid having to pass OHLC on every call
-	##
-	## NOTE: it is also a hard requirement on
-	##       {plotly} side
+	## convert input to data.frame and
+	## store in .chart_environment to avoid
+	## having to pass OHLC on every call
 	x <- as.data.frame(x)
 	x$idx <- if (is.null(idx)) {
 		## check if rownames can be
@@ -112,21 +103,45 @@ chart.default <- function(
 	} else {
 		idx
 	}
-	.chart_environment$x <- data_frame <- x
+	.chart_environment$x <- x
 	.chart_environment$idx <- list(
 		label = x$idx,
 		index = seq_along(x$idx)
 	)
 
-	## generate price chart
-	## based on type. can be either
-	## candlestick or barchart.
-	##
-	## TODO: Consider adding the option to use price series
-	##       instead of OHLC.
 	assert(is.character(type) && length(type) == 1)
 	assert(type %in% c("candlestick", "ohlc"))
 
+	## delegate to backend-specific chart builder
+	backend <- getOption("talib.chart.backend", "plotly")
+
+	switch(
+		backend,
+		plotly = chart_plotly(
+			data = x,
+			type = type,
+			title = chart_title,
+			idx = idx,
+			...
+		),
+		stop(
+			"Unknown chart backend: '",
+			backend,
+			"'. ",
+			"Supported backends: 'plotly'.",
+			call. = FALSE
+		)
+	)
+}
+
+## plotly backend for chart()
+chart_plotly <- function(
+	data,
+	type,
+	title,
+	idx,
+	...
+) {
 	candle_style <- function(
 		bull_candle,
 		bear_candle,
@@ -153,7 +168,7 @@ chart.default <- function(
 	}
 
 	base <- plotly::plot_ly(
-		data = data_frame,
+		data = data,
 		x = ~idx,
 		open = ~open,
 		close = ~close,
@@ -190,22 +205,18 @@ chart.default <- function(
 		)
 	)
 
-	## construct chart meta data
-	##
-	## There is no relevant information in the range 1:N
-	## so if the rownames only contrains integers the chart will
-	## skip it
+	## construct chart title
 	if (is.integer(.chart_environment$idx$label)) {
 		title_text <- sprintf(
 			fmt = "%s <span style='font-size:10;'><b>N:</b> %d </span>",
-			chart_title,
-			nrow(x)
+			title,
+			nrow(data)
 		)
 	} else {
 		title_text <- sprintf(
 			fmt = "%s <span style='font-size:10;'><b>N:</b> %d <b>Period:</b> %s</span>",
-			chart_title,
-			nrow(x),
+			title,
+			nrow(data),
 			paste(
 				.chart_environment$idx$label[1],
 				"-",
@@ -216,9 +227,7 @@ chart.default <- function(
 		)
 	}
 
-	## construct price chart
-	##
-	##
+	## apply plotly layout decorators
 	fns <- list(
 		function(p) layout_background(p),
 		function(p) layout_axis(p, idx = idx),
@@ -233,7 +242,7 @@ chart.default <- function(
 		function(p) {
 			add_last_value(
 				p,
-				data = data_frame
+				data = data
 			)
 		},
 		function(p) layout_color(p)

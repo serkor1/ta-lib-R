@@ -22,8 +22,8 @@ indicator <- function(FUN, ...) {
 
 #' @export
 indicator.function <- function(FUN, ...) {
-	## resolve function name of no
-	## title have been passed
+	## resolve function name if no
+	## title has been passed
 	title <- input_name(
 		substitute(
 			FUN
@@ -46,8 +46,6 @@ indicator.function <- function(FUN, ...) {
 	FUN <- match.fun(FUN)
 
 	## locate the main chart
-	## NOTE: if its not there we might need
-	##       to initialize a new
 	plt <- .chart_environment$main
 
 	if (is.null(plt)) {
@@ -61,10 +59,20 @@ indicator.function <- function(FUN, ...) {
 			stop("'data'-argument has to be provided.")
 		}
 
-		## add empty {plotly}
-		## object to trigger .plotly
-		## method downstream
-		plt <- plotly::plot_ly()
+		## create an empty chart object
+		## for the active backend
+		backend <- getOption("talib.chart.backend", "plotly")
+		plt <- switch(
+			backend,
+			plotly = plotly::plot_ly(),
+			stop(
+				"Unknown chart backend: '",
+				backend,
+				"'. ",
+				"Supported backends: 'plotly'.",
+				call. = FALSE
+			)
+		)
 
 		if (has_arg(idx)) {
 			idx <- eval.parent(
@@ -79,19 +87,8 @@ indicator.function <- function(FUN, ...) {
 		.chart_environment$idx$label <- idx
 	}
 
-	## construct {plotly}-object
-	## based on FUN
-	##
-	## Note to future self:
-	##
-	## You could add chart layouting here
-	## to avoid having to do it for each plotly method
-	## but it would require you to add an identifier
-	## of whether its a subplot or not.
-	##
-	## `outcome` by itself is just directly returned
-	## and is not attached to the plotting environment
-	## downstream
+	## dispatch to the appropriate backend method
+	## based on the class of 'plt'
 	outcome <- do.call(
 		what = FUN,
 		args = list(
@@ -100,62 +97,80 @@ indicator.function <- function(FUN, ...) {
 		)
 	)
 
-	## if it doesn't return
-	## a {plotly}-object there is
-	## a bug somewhere
-	if (!inherits(outcome, "plotly")) {
+	## verify return type
+	if (!inherits(outcome, c("plotly", "gg"))) {
 		stop("Unexpected error.")
 	}
 
 	if (chart_called) {
-		panels <- c(list(.chart_environment$main), .chart_environment$sub)
-		n <- length(panels)
-		main_h <- getOption("talib.chart.main", 0.7)
-		heights <- if (n > 1) {
-			c(main_h, rep((1 - main_h) / (n - 1), n - 1))
-		} else {
-			1
-		}
-		fig <- plotly::layout(
-			plotly::subplot(
-				panels,
-				nrows = n,
-				shareX = TRUE,
-				margin = 0.02,
-				heights = heights
-			),
-			showlegend = TRUE,
-			yaxis = list(title = ''),
-			xaxis = list(
-				title = '',
-				tickmode = "auto"
+		## assemble the multi-panel chart
+		## based on the backend
+		if (inherits(.chart_environment$main, "plotly")) {
+			return(
+				assemble_plotly()
 			)
-		)
-		.chart_environment$chart <- fig
+		}
 
-		return(
-			layout_axis(layout_color(layout_settings(fig)))
+		stop(
+			"Chart assembly not implemented for this backend.",
+			call. = FALSE
 		)
 	}
 
 	## reconstruct charting
 	## as if called from chart()
-	fns <- list(
-		function(p) layout_background(p),
-		function(p) layout_axis(p, idx = idx),
-		function(p) {
-			layout_title(
-				p,
-				title = title
-			)
-		},
-		function(p) layout_font(p),
-		function(p) layout_color(p)
-	)
+	if (inherits(outcome, "plotly")) {
+		fns <- list(
+			function(p) layout_background(p),
+			function(p) layout_axis(p, idx = idx),
+			function(p) {
+				layout_title(
+					p,
+					title = title
+				)
+			},
+			function(p) layout_font(p),
+			function(p) layout_color(p)
+		)
 
-	Reduce(
-		f = function(p, f) f(p),
-		x = fns,
-		init = outcome
+		return(
+			Reduce(
+				f = function(p, f) f(p),
+				x = fns,
+				init = outcome
+			)
+		)
+	}
+
+	outcome
+}
+
+## plotly subplot assembly
+assemble_plotly <- function() {
+	panels <- c(list(.chart_environment$main), .chart_environment$sub)
+	n <- length(panels)
+	main_h <- getOption("talib.chart.main", 0.7)
+	heights <- if (n > 1) {
+		c(main_h, rep((1 - main_h) / (n - 1), n - 1))
+	} else {
+		1
+	}
+	fig <- plotly::layout(
+		plotly::subplot(
+			panels,
+			nrows = n,
+			shareX = TRUE,
+			margin = 0.02,
+			heights = heights
+		),
+		showlegend = TRUE,
+		yaxis = list(title = ''),
+		xaxis = list(
+			title = '',
+			tickmode = "auto"
+		)
 	)
+	.chart_environment$chart <- fig
+
+	layout_axis(layout_color(layout_settings(fig)))
 }

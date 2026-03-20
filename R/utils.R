@@ -116,6 +116,10 @@ is.plotly <- function(x) {
 	inherits(x, "plotly")
 }
 
+is.ggplot <- function(x) {
+	inherits(x, "gg")
+}
+
 ## extract input name
 input_name <- function(x) {
 	if (is.call(x) && as.character(x[[1L]]) %in% c("::", ":::")) {

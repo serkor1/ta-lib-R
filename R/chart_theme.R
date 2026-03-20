@@ -26,6 +26,7 @@ NULL
 		background_color = "#FFFFFF",
 		foreground_color = "#333333",
 		text_color = "#333333",
+		threshold_color = "#999999",
 
 		## colorway
 		colorway = c(
@@ -58,6 +59,7 @@ NULL
 		background_color = "#1A1A1A",
 		foreground_color = "#CFCFCF",
 		text_color = "#CFCFCF",
+		threshold_color = "#9499A0",
 
 		## colorway
 		colorway = c(
@@ -90,6 +92,7 @@ NULL
 		background_color = "#ecf0f1",
 		foreground_color = "#2c3e50",
 		text_color = "#2c3e50",
+		threshold_color = "#7f8c8d",
 
 		## colorway
 		colorway = c(
@@ -122,6 +125,7 @@ NULL
 		background_color = "#F5F5F5",
 		foreground_color = "#333333",
 		text_color = "#333333",
+		threshold_color = "#999999",
 
 		## colorway
 		colorway = c(

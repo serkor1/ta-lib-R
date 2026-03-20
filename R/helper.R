@@ -76,7 +76,7 @@ plotly_line <- function(value, length, dash = TRUE) {
 		mode = "lines",
 		type = "scatter",
 		line = list(
-			color = layout_theme()$threshold_color,
+			color = .chart_variables$threshold_color,
 			width = 0.5
 		),
 		inherit = FALSE,
