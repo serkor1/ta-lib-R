@@ -1,8 +1,8 @@
 ---
-title: "Interactive Financial Charts"
+title: "Financial Charts"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Interactive Financial Charts}
+  %\VignetteIndexEntry{Financial Charts}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 author: Serkan Korkmaz
@@ -18,18 +18,31 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Price Charts
+The `{talib}` package ships with a charting system built on two backends: **plotly** (interactive, default) and **ggplot2** (static). Charts are composed in two steps: create a price chart with `chart()`, then layer on indicators with `indicator()`.
 
-### Candlestick Chart
+## Getting started
+
+`chart()` takes any OHLCV object coercible to a `data.frame`. The package includes three built-in datasets---`BTC`, `NVDA`, and `SPY`---used throughout this vignette.
 
 ```{r}
 talib::chart(
-  x = talib::NVDA,
-  type = "candlestick"
+  x = talib::NVDA
 )
 ```
 
-### OHLC Chart
+The chart title defaults to the name of the object passed to `x`. Override it with the `title` argument.
+
+```{r}
+talib::chart(
+  x = talib::BTC,
+  title = "Bitcoin (USDC)"
+)
+```
+
+## Chart types
+
+Two chart types are supported via the `type` argument: `"candlestick"` (default) and `"ohlc"`.
+
 ```{r}
 talib::chart(
   x = talib::BTC,
@@ -37,179 +50,282 @@ talib::chart(
 )
 ```
 
-By default the `chart`-function inherits name of the argument `x` as the title. This can be modified via the `title`-argument.
+## Adding indicators
 
-```{r}
-talib::chart(
-  x = talib::BTC,
-  type = "ohlc",
-  title = "SPDR S&P 500 ETF Trust"
-)
-```
-
-## Charting indicators
-
-The various indicators can be added to the price chart---or charted seperately---with the `indicator`-function. The `indicator`-function will attach itself to the last chart.
-
-```{r}
-talib::indicator(
-    FUN = talib::MACD
-)
-```
-
-If you have already called the `chart`-function, and want to plot the indicator seperately you will have to clear the existing chart---this is done by calling `talib::chart()` without any arguments. The indicator can now be re-charted using the `indicator`-function.
+Use `indicator()` to attach technical indicators to the most recent `chart()`. Indicators that overlay on price (e.g., Bollinger Bands, moving averages) are drawn on the main panel. Indicators with their own scale (e.g., RSI, MACD) are drawn in sub-panels below.
 
 ```{r}
 {
-  ## clear the chart
-  ## by calling talib::chart()
-  ## without any arguments
+  talib::chart(talib::BTC)
+  talib::indicator(talib::SMA, n = 7)
+  talib::indicator(talib::SMA, n = 14)
+  talib::indicator(talib::RSI)
+}
+```
+
+Multiple sub-panel indicators stack vertically. The main chart occupies 70% of the height by default (controlled by `talib.chart.main`).
+
+```{r}
+{
+  talib::chart(talib::BTC)
+  talib::indicator(talib::BBANDS)
+  talib::indicator(talib::MACD)
+  talib::indicator(talib::trading_volume)
+}
+```
+
+### Standalone indicators
+
+If no `chart()` has been called, `indicator()` can plot an indicator on its own---but you must supply the `data` argument explicitly.
+
+```{r}
+{
+  ## clear any existing chart
   talib::chart()
 
-  ## rechart the indicator
-  ## directly
+  ## plot MACD by itself
   talib::indicator(
-    FUN = talib::MACD,
+    FUN  = talib::MACD,
     data = talib::BTC
   )
 }
 ```
 
-Notice here that you have to pass a `data` argument via `...` which gets passed downstream to `MACD`.
+### Clearing the chart state
 
-## Modifying charts
-
-The charts can be globally modified via `options` use `?talib::chart` to see the full range of modifications available for the charting. Below is an example on how to modify the color scheme of the charts.
-
-### chart themes
+Calling `chart()` without arguments resets the internal charting environment. This is useful when you want to start a fresh chart or plot a standalone indicator after a previous `chart()` call.
 
 ```{r}
 {
+  ## first chart
+  talib::chart(talib::NVDA)
+  talib::indicator(talib::RSI)
+}
+```
+
+```{r}
+{
+  ## reset and start fresh
+  talib::chart()
+
   talib::chart(talib::BTC)
-  talib::indicator(talib::SMA, n = 7)
-  talib::indicator(talib::SMA, n = 14)
-  talib::indicator(talib::SMA, n = 21)
-  talib::indicator(talib::SMA, n = 28)
   talib::indicator(talib::MACD)
-  talib::indicator(talib::trading_volume)
 }
 ```
 
-```{r}
-{
-  talib::set_theme$hawks_and_doves()
-  talib::chart(talib::BTC)
-  talib::indicator(talib::SMA, n = 7)
-  talib::indicator(talib::SMA, n = 14)
-  talib::indicator(talib::SMA, n = 21)
-  talib::indicator(talib::SMA, n = 28)
-  talib::indicator(talib::MACD)
-  talib::indicator(talib::trading_volume)
-}
-```
+## X-axis labels
 
+Internally, the charting system uses integer positions (`1:nrow(data)`) on the x-axis for efficient alignment between the main chart and sub-panels. By default, the axis shows these integer positions or the row names of the data.
 
-```{r}
-{
-  talib::set_theme$payout()
-  talib::chart(talib::BTC)
-  talib::indicator(talib::SMA, n = 7)
-  talib::indicator(talib::SMA, n = 14)
-  talib::indicator(talib::SMA, n = 21)
-  talib::indicator(talib::SMA, n = 28)
-  talib::indicator(talib::MACD)
-  talib::indicator(talib::trading_volume)
-}
-```
-
-```{r}
-{
-  talib::set_theme$tp_slapped()
-  talib::chart(talib::BTC)
-  talib::indicator(talib::SMA, n = 7)
-  talib::indicator(talib::SMA, n = 14)
-  talib::indicator(talib::SMA, n = 21)
-  talib::indicator(talib::SMA, n = 28)
-  talib::indicator(talib::MACD)
-  talib::indicator(talib::trading_volume)
-}
-```
-
-```{r}
-{
-  talib::set_theme$trust_the_process()
-  talib::chart(talib::BTC)
-  talib::indicator(talib::SMA, n = 7)
-  talib::indicator(talib::SMA, n = 14)
-  talib::indicator(talib::SMA, n = 21)
-  talib::indicator(talib::SMA, n = 28)
-  talib::indicator(talib::MACD)
-  talib::indicator(talib::trading_volume)
-}
-```
-
-
-```{r}
-## modify options
-## to create charts in
-## light and color-deficiency mode
-options(
-  talib.chart.dark = FALSE,
-  talib.chart.deficieny = TRUE
-)
-
-{
-  ## price chart
-  ## with defaults
-  talib::chart(
-    talib::SPY
-  )
-
-  ## add RSI indicator
-  talib::indicator(
-    FUN = talib::RSI
-  )
-
-  ## add Bollinger Bands
-  talib::indicator(
-    FUN = talib::BBANDS
-  )
-  
-}
-```
-
-### Modifying x-axis labels
-
-Internally `chart()` and `indicator()` are working on the range of the the data---ie. `1:nrow(data)`---to easy the process of subsetting and for the efficiency. The x-axis can be labelled with dates from the data via the `idx`-argument.
+Pass a vector to the `idx` argument to display custom labels (e.g., dates).
 
 ```{r}
 {
   talib::chart(
-    x = talib::BTC,
+    x   = talib::BTC,
     idx = rownames(talib::BTC)
   )
 }
 ```
 
-### Charting Subsets
+## Subsetting indicators
 
-The downstream indicator functions uses `model.frame` as the main function. This is useful in cases where the interest lies in indicators across a specific range without wanting to subset the data itself, or if you want to change indicators over time.
+The `subset` argument lets you apply an indicator to a specific range of the data without subsetting the data itself. This is useful for comparing different indicators across different time windows.
 
 ```{r}
 {
   talib::chart(
-    x = talib::BTC,
+    x   = talib::BTC,
     idx = rownames(talib::BTC)
   )
 
   talib::indicator(
     talib::BBANDS,
-    subset = 1:nrow(talib::BTC) %in% c(50:100)
+    subset = 1:nrow(talib::BTC) %in% 50:100
   )
 
   talib::indicator(
     talib::ACCBANDS,
-    subset = 1:nrow(talib::BTC) %in% c(101:151)
+    subset = 1:nrow(talib::BTC) %in% 101:151
   )
 }
+```
+
+## Themes
+
+The package includes a theme system that controls candle colors, background, text, grid, and the color palette used for indicator traces. Four built-in themes are available.
+
+### Setting a theme
+
+Use the `$` accessor on `set_theme` for tab-completion, or pass the theme name as a string.
+
+```{r, eval = FALSE}
+## equivalent ways to set a theme
+talib::set_theme$payout
+talib::set_theme("payout")
+
+## list available theme names
+talib::set_theme()
+```
+
+Themes persist across charts until changed. Set the theme _before_ calling `chart()`.
+
+### Default theme
+
+The default theme uses a dark background with cyan and blue candles.
+
+```{r}
+{
+  talib::chart(talib::BTC)
+  talib::indicator(talib::SMA, n = 7)
+  talib::indicator(talib::SMA, n = 14)
+  talib::indicator(talib::SMA, n = 21)
+  talib::indicator(talib::SMA, n = 28)
+  talib::indicator(talib::MACD)
+  talib::indicator(talib::trading_volume)
+}
+```
+
+### Hawks and Doves
+
+A light theme with neutral grays.
+
+```{r}
+{
+  talib::set_theme$hawks_and_doves
+  talib::chart(talib::BTC)
+  talib::indicator(talib::SMA, n = 7)
+  talib::indicator(talib::SMA, n = 14)
+  talib::indicator(talib::SMA, n = 21)
+  talib::indicator(talib::SMA, n = 28)
+  talib::indicator(talib::MACD)
+  talib::indicator(talib::trading_volume)
+}
+```
+
+### Payout
+
+A dark theme with teal and orange accents.
+
+```{r}
+{
+  talib::set_theme$payout
+  talib::chart(talib::BTC)
+  talib::indicator(talib::SMA, n = 7)
+  talib::indicator(talib::SMA, n = 14)
+  talib::indicator(talib::SMA, n = 21)
+  talib::indicator(talib::SMA, n = 28)
+  talib::indicator(talib::MACD)
+  talib::indicator(talib::trading_volume)
+}
+```
+
+### TP Slapped
+
+A bright theme with teal and red candles on a light background.
+
+```{r}
+{
+  talib::set_theme$tp_slapped
+  talib::chart(talib::BTC)
+  talib::indicator(talib::SMA, n = 7)
+  talib::indicator(talib::SMA, n = 14)
+  talib::indicator(talib::SMA, n = 21)
+  talib::indicator(talib::SMA, n = 28)
+  talib::indicator(talib::MACD)
+  talib::indicator(talib::trading_volume)
+}
+```
+
+### Trust the Process
+
+A light, muted theme with earthy tones.
+
+```{r}
+{
+  talib::set_theme$trust_the_process
+  talib::chart(talib::BTC)
+  talib::indicator(talib::SMA, n = 7)
+  talib::indicator(talib::SMA, n = 14)
+  talib::indicator(talib::SMA, n = 21)
+  talib::indicator(talib::SMA, n = 28)
+  talib::indicator(talib::MACD)
+  talib::indicator(talib::trading_volume)
+}
+```
+
+### Custom color overrides
+
+Pass named color arguments to `set_theme()` to override individual theme properties on top of a base theme.
+
+```{r}
+{
+  talib::set_theme(
+    "payout",
+    background_color = "#000000",
+    bullish_body     = "#00FF00",
+    bearish_body     = "#FF0000"
+  )
+  talib::chart(talib::BTC)
+  talib::indicator(talib::RSI)
+}
+```
+
+The full set of overridable properties: `bullish_body`, `bullish_wick`, `bullish_border`, `bearish_body`, `bearish_wick`, `bearish_border`, `background_color`, `foreground_color`, `text_color`, `threshold_color`, `gridcolor`, and `colorway` (a vector of up to 10 colors for indicator traces).
+
+## Chart options
+
+Global options control layout and display behavior. Set them with `options()` before calling `chart()`.
+
+| Option | Default | Description |
+|:---|:---|:---|
+| `talib.chart.backend` | `"plotly"` | Charting backend: `"plotly"` or `"ggplot2"` |
+| `talib.chart.slider` | `FALSE` | Add a range slider below the x-axis (plotly only) |
+| `talib.chart.slider.size` | `0.05` | Height proportion of the range slider |
+| `talib.chart.legend` | `TRUE` | Show the legend |
+| `talib.chart.scale` | `1` | Font scale multiplier |
+| `talib.chart.main` | `0.7` | Main chart height as a proportion of the total (when sub-panels are present) |
+| `talib.chart.modebar` | `NULL` | Show the plotly modebar (`TRUE`/`FALSE`/`NULL` for auto) |
+
+```{r}
+{
+  options(
+    talib.chart.slider = TRUE,
+    talib.chart.scale  = 0.8,
+    talib.chart.main   = 0.6
+  )
+
+  talib::chart(talib::SPY)
+  talib::indicator(talib::RSI)
+  talib::indicator(talib::BBANDS)
+}
+```
+
+```{r, include = FALSE}
+## reset options to defaults
+options(
+  talib.chart.slider      = FALSE,
+  talib.chart.scale       = 1,
+  talib.chart.main        = 0.7,
+  talib.chart.backend     = "plotly"
+)
+```
+
+## Static charts with ggplot2
+
+Set `talib.chart.backend` to `"ggplot2"` for static charts. This requires the **ggplot2** package. The API is identical---`chart()` and `indicator()` work the same way.
+
+```{r, fig.width = 8, fig.height = 6}
+{
+  options(talib.chart.backend = "ggplot2")
+  talib::set_theme$hawks_and_doves
+
+  talib::chart(talib::BTC)
+  talib::indicator(talib::SMA, n = 14)
+  talib::indicator(talib::RSI)
+}
+```
+
+```{r, include = FALSE}
+options(talib.chart.backend = "plotly")
 ```
