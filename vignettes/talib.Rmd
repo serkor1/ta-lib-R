@@ -22,133 +22,259 @@ knitr::opts_chunk$set(
 
 [{talib}](https://github.com/serkor1/ta-lib-R/) is an R package for Technical Analysis (TA) and interactive financial charts. The package is a wrapper of [TA-Lib](https://github.com/TA-Lib/ta-lib) and supports over 200 indicators, including candlestick patterns.
 
-## Basic usage
+## Data format
 
-In this section I will show how to calculate and chart different indicators using Bitcoin (BTC). BTC is a built-in `data.frame` using the [{cryptoQuotes}](https://github.com/serkor1/cryptoQuotes)-package and has the following form:
+All functions in [{talib}](https://github.com/serkor1/ta-lib-R/) expect the input `x` to be coercible to `data.frame` with columns named according to OHLC-V conventions. The package ships with several built-in datasets:
 
 ```{r}
+str(talib::BTC)
+```
+
+### Column names are case-sensitive
+
+Column names **must** be lowercase: `open`, `high`, `low`, `close`, and `volume`. Names such as `Close`, `CLOSE`, or `Adj.Close` will not be recognized. If your data uses different names you have two options: rename the columns, or remap them with the `cols` argument (see [Column selection with `cols`](#column-selection-with-cols)).
+
+```{r, error = TRUE}
+## rename columns to uppercase;
+## this will fail
+x <- talib::BTC
+colnames(x) <- c("Open", "High", "Low", "Close", "Volume")
+
+talib::RSI(x)
+```
+
+### Not every column is always required
+
+Different indicators use different subsets of the OHLC-V columns. The table below gives a rough guide:
+
+| Indicator type | Default columns | Example |
+|:---|:---|:---|
+| Univariate (most) | `close` | `RSI()`, `SMA()`, `EMA()` |
+| High-Low based | `high + low` | `SAR()`, `AROON()` |
+| High-Low-Close | `high + low + close` | `STOCH()`, `CCI()`, `ATR()` |
+| Full OHLC | `open + high + low + close` | All candlestick patterns |
+| Volume-based | `volume` (+ price columns) | `OBV()`, `AD()`, `MFI()` |
+
+A `data.frame` that only contains `high`, `low`, and `close` is perfectly valid input for `STOCH()` or `CCI()`---columns that are not needed are simply ignored.
+
+## Computing indicators
+
+### Basic usage
+
+Pass an OHLC-V object directly to any indicator function:
+
+```{r}
+tail(
+	talib::bollinger_bands(talib::BTC)
+)
+```
+
+All indicator functions follow the same S3 dispatch pattern, with methods for `data.frame`, `matrix`, `numeric`, and `plotly`. The return type matches the input type:
+
+```{r}
+## data.frame in -> data.frame out
+class(
+	talib::RSI(talib::BTC)
+)
+```
+
+```{r}
+## matrix in -> matrix out
+class(
+	talib::RSI(talib::SPY)
+)
+```
+
+```{r}
+## numeric vector in -> numeric vector out
+is.double(
+	talib::RSI(talib::BTC$close)
+)
+```
+
+### Function naming
+
+Every indicator has a descriptive snake_case name and an uppercase alias that mirrors the TA-Lib C function name. Both are interchangeable:
+
+```{r}
+## these are equivalent
+identical(
+	talib::relative_strength_index(talib::BTC, n = 14),
+	talib::RSI(talib::BTC, n = 14)
+)
+```
+
+### Lookback and `NA` values
+
+Most indicators require a minimum number of observations before they can produce a value. This is called the **lookback period**. The first `lookback` rows of the result will be `NA`:
+
+```{r}
+## SMA with n = 5 has a lookback of 4
+head(
+	talib::SMA(talib::BTC, n = 5),
+	n = 7
+)
+```
+
+The lookback is stored as an attribute on the result:
+
+```{r}
+x <- talib::SMA(talib::BTC, n = 20)
+attr(x, "lookback")
+```
+
+## Column selection with `cols`
+
+The `cols` argument accepts a one-sided formula (`~`) that selects which columns to use for the calculation. Every indicator has a sensible default, but `cols` lets you override it.
+
+### Univariate indicators
+
+For indicators that operate on a single series (e.g., `RSI`, `SMA`), the default is `~close`. Pass a different column to calculate the indicator on that series instead:
+
+```{r}
+## RSI on 'high' instead of 'close'
+tail(
+	talib::RSI(talib::BTC, cols = ~high)
+)
+```
+
+### Multivariate indicators
+
+For indicators that require multiple columns, `cols` remaps which columns are used. The order in the formula must match the order expected by the indicator:
+
+```{r}
+## Stochastic defaults to ~high + low + close;
+## here we swap 'close' for 'open'
+tail(
+	talib::STOCH(
+		talib::BTC,
+		cols = ~high + low + open
+	)
+)
+```
+
+### Extra arguments via `...`
+
+Additional arguments are forwarded to `model.frame()`. This is useful for computing an indicator on a subset of the data:
+
+```{r}
+## Bollinger Bands on the first 100 rows only
+tail(
+	talib::BBANDS(
+		talib::BTC,
+		subset = 1:nrow(talib::BTC) %in% 1:100
+	)
+)
+```
+
+## Handling missing values with `na.ignore`
+
+Real-world data often contains missing values. By default (`na.ignore = FALSE`), any `NA` in the input propagates through the entire calculation, which can fill the result with `NA`s.
+
+Setting `na.ignore = TRUE` strips `NA` rows before calculation, computes the indicator on the clean data, and then re-inserts `NA`s at their original positions:
+
+```{r}
+## inject some NAs
+x <- talib::BTC
+x$close[c(10, 50, 100)] <- NA
+```
+
+```{r}
+## default: NAs propagate
+sum(is.na(
+	talib::RSI(x)
+))
+```
+
+```{r}
+## na.ignore = TRUE: NAs are skipped
+sum(is.na(
+	talib::RSI(x, na.ignore = TRUE)
+))
+```
+
+The stripped rows are restored in the output, so the result always has the same number of rows as the input:
+
+```{r}
+nrow(talib::RSI(x, na.ignore = TRUE)) == nrow(x)
+```
+
+## Moving Average specifications
+
+Several indicators accept a **Moving Average specification** for their smoothing component. MA functions such as `SMA()`, `EMA()`, `WMA()`, `DEMA()`, `TEMA()`, `TRIMA()`, `KAMA()`, and `T3()` serve a dual purpose:
+
+- **With `x`**: compute the Moving Average on the data.
+- **Without `x`**: return a specification (a named list) that other indicators use internally.
+
+```{r}
+## SMA as a specification
 str(
-	talib::BTC
+	talib::SMA(n = 20)
 )
 ```
 
-The focus of this section will be Bollinger Bands and Harami patterns. All remaining indicators and candlestick patterns behaves in the same manner.
+This specification can be passed to indicators like `bollinger_bands()` or `stochastic()` to control the type of smoothing:
 
-> **NOTE:** All functions expects that a permutation of either `open`, `high`, `low`, `close` and/or `volume` exists (case sensitive). But this depends on the specific functions; for indicators that only uses `high` and `low`, the remaining columns needs not to be present in the data. Column names must follow OHLC-V conventions unless remapped via the `cols`-argument.
-
-### Indicators
-
-All indicator functions in [{talib}](https://github.com/serkor1/ta-lib-R/) assumes that the input argument `x` is an OHLC-V object coercible to `data.frame`; the `BTC` can passed directly into the function:  
-
-```{r Bollinger Bands (default)}
-{
-	cat("Bollinger Bands")
-	tail(
-		talib::bollinger_bands(
-			x = talib::BTC
-		)
+```{r}
+## Bollinger Bands with an EMA(20) middle band
+tail(
+	talib::bollinger_bands(
+		talib::BTC,
+		ma = talib::EMA(n = 20)
 	)
-}
-```
-
-Internally, `bollinger_bands()` calls `model.frame` with a prespecified `formula` corresponding to the default calculation method of the indicator. You can modify this by passing a different variable through the `cols`-argument as follows:
-
-```{r Bollinger Bands (custom)}
-{
-	cat("Bollinger Bands")
-	tail(
-		talib::bollinger_bands(
-			x = talib::BTC,
-			cols = ~high
-		)
-	)
-}
-```
-
-The Harami pattern, and all candlestick patterns in general, returns a `matrix` of \<integers\>: -1 for bearish patterns, 1 for bullish pattern and 0 for no pattern. See below:
-
-```{r Harami}
-{
-	cat("Harami Patterns")
-	tail(
-		talib::harami(
-			talib::BTC
-		)
-	)
-}
-```
-
-The pattern is rare, so let us find occurrences instead:
-
-```{r Harami(assigned)}
-## assign the Harami
-## pattern
-x <- talib::harami(
-	talib::BTC
 )
 ```
 
-```{r Harami(Bullish)}
-## locate bullish Harami
-## patterns
-{
-	cat("Bullish Harami")
-	talib::BTC[
-		which(x == 1),
-	]
-}
+```{r}
+## Stochastic with WMA smoothing
+tail(
+	talib::stochastic(
+		talib::BTC,
+		slowk = talib::WMA(n = 5),
+		slowd = talib::EMA(n = 3)
+	)
+)
 ```
 
-```{r Harami(Bearish)}
-## locate bearish Harami
-## patterns
-{
-	cat("Bearish Harami")
-	talib::BTC[
-		which(x == -1),
-	]
-}
+## Candlestick pattern recognition
+
+Candlestick pattern functions return an integer `matrix`: `1` for bullish, `-1` for bearish, and `0` for no pattern. The encoding can be changed via `options(talib.normalize = FALSE)` to use `100`/`-100` instead.
+
+```{r}
+x <- talib::harami(talib::BTC)
+tail(x)
 ```
 
-### Charting indicators
+```{r}
+## find all bullish occurrences
+talib::BTC[which(x == 1), ]
+```
 
-In this section I will focus on the basics of charting. The charting uses [{plotly}](https://github.com/plotly/plotly.R) internally which also enables manual drawing of support and resistance lines.
+> **Note:** For a detailed treatment of candlestick lookback and sensitivity parameters, see `vignette("candlestick", package = "talib")`.
 
-> **Information:** Please refer to `vignette(topic = "charting", package = "talib")`
-> for a more detailed description of the charting.
+## Charting
 
-The charting functionality mimicks the behaviour of `plot()` and `lines()` where each is called separately. There are two main charting functions in [{talib}](https://github.com/serkor1/ta-lib-R/): `chart()` and `indicator()`. Below I will expand the analysis by adding Moving Average Convergence/Divergence indicators to the chart:
+The package includes interactive charting built on [{plotly}](https://github.com/plotly/plotly.R). The two main functions are `chart()` and `indicator()`, which work like `plot()` and `lines()`:
 
 ```{r chart(basic)}
 {
-	## main candlestick
-	## chart
-	talib::chart(
-		talib::BTC
-	)
+	## main candlestick chart
+	talib::chart(talib::BTC)
 
-	## add bollinger bands
-	## to the chart
-	talib::indicator(
-		talib::bollinger_bands
-	)
+	## add Bollinger Bands
+	talib::indicator(talib::bollinger_bands)
 
-	## add identified harami
-	## patterns
-	talib::indicator(
-		talib::harami
-	)
+	## add identified Harami patterns
+	talib::indicator(talib::harami)
 
-	## add moving average
-	## convergence/divergence
-	## to the chart
-	talib::indicator(
-		talib::moving_average_convergence_divergence
-	)
+	## add MACD as a sub-chart
+	talib::indicator(talib::MACD)
 }
 ```
 
-One thing to note here is that `indicator()` internally calls the [{plotly}](https://github.com/plotly/plotly.R)-methods for each indicator which determines whether the indicator is main-chart indicator or sub-chart indicator.
+`indicator()` automatically determines whether a given indicator belongs on the main price chart (e.g., Bollinger Bands, SAR) or as a sub-chart (e.g., RSI, MACD).
+
+> **Note:** For themes, chart options, and advanced charting, see `vignette("charting", package = "talib")`.
 
 ## Contributing and bug reports
 
