@@ -279,6 +279,59 @@ testthat::test_that(desc = '<plotly>-methods for <matrix>', code = {
 EOF
 fi
 
+## Add ggplot2 methods
+if [[ $PLOTLY -eq 1 ]]; then
+	cat >> ${OUTPUTFILE} <<EOF
+
+## <ggplot>-method checks for <data.frame>
+## and <matrix>
+##
+## <data.frame> checks
+testthat::test_that(desc = '<ggplot>-methods for <data.frame>', code = {
+	testthat::skip_if_not_installed("ggplot2")
+
+	## check that ${FUN} can
+	## use <ggplot> without any issues
+	output <- testthat::expect_no_error(
+		{
+			options(talib.chart.backend = "ggplot2")
+			on.exit(options(talib.chart.backend = "plotly"))
+			chart(BTC)
+			indicator(${FUN})
+		}
+	)
+
+	## check that the output
+	## is a <gg>-object or <talib_chart>
+	testthat::expect_true(
+		inherits(output, "gg") || inherits(output, "talib_chart")
+	)
+})
+
+## <matrix> checks
+testthat::test_that(desc = '<ggplot>-methods for <matrix>', code = {
+	testthat::skip_if_not_installed("ggplot2")
+
+	## check that ${FUN} can
+	## use <ggplot> without any issues
+	output <- testthat::expect_no_error(
+		{
+			options(talib.chart.backend = "ggplot2")
+			on.exit(options(talib.chart.backend = "plotly"))
+			chart(SPY)
+			indicator(${FUN})
+		}
+	)
+
+	## check that the output
+	## is a <gg>-object or <talib_chart>
+	testthat::expect_true(
+		inherits(output, "gg") || inherits(output, "talib_chart")
+	)
+})
+EOF
+fi
+
 ## add <numeric> methods
 if [[ $NUMERIC -eq 1 ]]; then
 	cat >> ${OUTPUTFILE} <<EOF

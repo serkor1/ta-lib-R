@@ -184,6 +184,53 @@ testthat::test_that(desc = '<plotly>-methods for <matrix>', code = {
 	)
 })
 
+## <ggplot>-method checks for <data.frame>
+## and <matrix>
+##
+## <data.frame> checks
+testthat::test_that(desc = '<ggplot>-methods for <data.frame>', code = {
+	testthat::skip_if_not_installed("ggplot2")
+
+	## check that phasor_components can
+	## use <ggplot> without any issues
+	output <- testthat::expect_no_error(
+		{
+			options(talib.chart.backend = "ggplot2")
+			on.exit(options(talib.chart.backend = "plotly"))
+			chart(BTC)
+			indicator(phasor_components)
+		}
+	)
+
+	## check that the output
+	## is a <gg>-object or <talib_chart>
+	testthat::expect_true(
+		inherits(output, "gg") || inherits(output, "talib_chart")
+	)
+})
+
+## <matrix> checks
+testthat::test_that(desc = '<ggplot>-methods for <matrix>', code = {
+	testthat::skip_if_not_installed("ggplot2")
+
+	## check that phasor_components can
+	## use <ggplot> without any issues
+	output <- testthat::expect_no_error(
+		{
+			options(talib.chart.backend = "ggplot2")
+			on.exit(options(talib.chart.backend = "plotly"))
+			chart(SPY)
+			indicator(phasor_components)
+		}
+	)
+
+	## check that the output
+	## is a <gg>-object or <talib_chart>
+	testthat::expect_true(
+		inherits(output, "gg") || inherits(output, "talib_chart")
+	)
+})
+
 ## check that <numeric> methods runs without
 ## issues and returns proper lengths
 testthat::test_that(desc = '<numeric> methods', code = {
