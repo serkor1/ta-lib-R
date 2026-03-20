@@ -111,14 +111,6 @@ SEXP impl_ta_CDLBELTHOLD(
     // with <NA>
     // see shift.h for more details
     shift_array(output_ptr, n, start_idx);
-
-    // ta_CDLBELTHOLD returns values as -100, 100 and 0
-    // if flag is TRUE the output values will be normalized
-    // to -1, 1, 0
-    // see normalize.h for more details
-    if (LOGICAL_VALUE(flag)) {
-      normalize(output_ptr, n, 100, start_idx);
-    }
   }
 
   // set the column names and lookback attribute
@@ -135,6 +127,18 @@ SEXP impl_ta_CDLBELTHOLD(
       output_ptr,
       na_mask,
       n_original,
+      &protection_count);
+  }
+
+  // ta_CDLBELTHOLD returns values in the range [-200, 200]
+  // if flag is TRUE the output is converted from INTSXP
+  // to REALSXP and divided by 100, preserving pattern strength
+  // see normalize.h for more details
+  if (LOGICAL_VALUE(flag)) {
+    output = normalize_int_to_real(
+      output,
+      100.0,
+      (na_mask != NULL),
       &protection_count);
   }
 
