@@ -5,17 +5,15 @@ Technical Analysis (TA) and interactive financial charts. The package is
 a wrapper of [TA-Lib](https://github.com/TA-Lib/ta-lib) and supports
 over 200 indicators, including candlestick patterns.
 
-## Basic usage
+## Data format
 
-In this section I will show how to calculate and chart different
-indicators using Bitcoin (BTC). BTC is a built-in `data.frame` using the
-[{cryptoQuotes}](https://github.com/serkor1/cryptoQuotes)-package and
-has the following form:
+All functions in [{talib}](https://github.com/serkor1/ta-lib-R/) expect
+the input `x` to be coercible to `data.frame` with columns named
+according to OHLC-V conventions. The package ships with several built-in
+datasets:
 
 ``` r
-str(
-    talib::BTC
-)
+str(talib::BTC)
 #> 'data.frame':    366 obs. of  5 variables:
 #>  $ open  : num  42274 44185 44966 42863 44191 ...
 #>  $ high  : num  44200 45918 45521 44799 44392 ...
@@ -24,34 +22,55 @@ str(
 #>  $ volume: num  831 2076 2225 1791 2483 ...
 ```
 
-The focus of this section will be Bollinger Bands and Harami patterns.
-All remaining indicators and candlestick patterns behaves in the same
-manner.
+### Column names are case-sensitive
 
-> **NOTE:** All functions expects that a permutation of either `open`,
-> `high`, `low`, `close` and/or `volume` exists (case sensitive). But
-> this depends on the specific functions; for indicators that only uses
-> `high` and `low`, the remaining columns needs not to be present in the
-> data. Column names must follow OHLC-V conventions unless remapped via
-> the `cols`-argument.
-
-### Indicators
-
-All indicator functions in
-[{talib}](https://github.com/serkor1/ta-lib-R/) assumes that the input
-argument `x` is an OHLC-V object coercible to `data.frame`; the `BTC`
-can passed directly into the function:
+Column names **must** be lowercase: `open`, `high`, `low`, `close`, and
+`volume`. Names such as `Close`, `CLOSE`, or `Adj.Close` will not be
+recognized. If your data uses different names you have two options:
+rename the columns, or remap them with the `cols` argument (see [Column
+selection with `cols`](#column-selection-with-cols)).
 
 ``` r
-{
-    cat("Bollinger Bands")
-    tail(
-        talib::bollinger_bands(
-            x = talib::BTC
-        )
-    )
-}
-#> Bollinger Bands
+## rename columns to uppercase;
+## this will fail
+x <- talib::BTC
+colnames(x) <- c("Open", "High", "Low", "Close", "Volume")
+
+talib::RSI(x)
+#> Error in `relative_strength_index.default()`:
+#> ! Expected to find columns 'close' similar columns found: 'Close'
+```
+
+### Not every column is always required
+
+Different indicators use different subsets of the OHLC-V columns. The
+table below gives a rough guide:
+
+| Indicator type    | Default columns             | Example                                                                                                                                                                                                                                                     |
+|:------------------|:----------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Univariate (most) | `close`                     | [`RSI()`](https://serkor1.github.io/ta-lib-R/reference/relative_strength_index.md), [`SMA()`](https://serkor1.github.io/ta-lib-R/reference/simple_moving_average.md), [`EMA()`](https://serkor1.github.io/ta-lib-R/reference/exponential_moving_average.md) |
+| High-Low based    | `high + low`                | [`SAR()`](https://serkor1.github.io/ta-lib-R/reference/parabolic_stop_and_reverse.md), [`AROON()`](https://serkor1.github.io/ta-lib-R/reference/aroon.md)                                                                                                   |
+| High-Low-Close    | `high + low + close`        | [`STOCH()`](https://serkor1.github.io/ta-lib-R/reference/stochastic.md), [`CCI()`](https://serkor1.github.io/ta-lib-R/reference/commodity_channel_index.md), [`ATR()`](https://serkor1.github.io/ta-lib-R/reference/average_true_range.md)                  |
+| Full OHLC         | `open + high + low + close` | All candlestick patterns                                                                                                                                                                                                                                    |
+| Volume-based      | `volume` (+ price columns)  | [`OBV()`](https://serkor1.github.io/ta-lib-R/reference/on_balance_volume.md), [`AD()`](https://serkor1.github.io/ta-lib-R/reference/chaikin_accumulation_distribution_line.md), [`MFI()`](https://serkor1.github.io/ta-lib-R/reference/money_flow_index.md) |
+
+A `data.frame` that only contains `high`, `low`, and `close` is
+perfectly valid input for
+[`STOCH()`](https://serkor1.github.io/ta-lib-R/reference/stochastic.md)
+or
+[`CCI()`](https://serkor1.github.io/ta-lib-R/reference/commodity_channel_index.md)—columns
+that are not needed are simply ignored.
+
+## Computing indicators
+
+### Basic usage
+
+Pass an OHLC-V object directly to any indicator function:
+
+``` r
+tail(
+    talib::bollinger_bands(talib::BTC)
+)
 #>                     UpperBand MiddleBand LowerBand
 #> 2024-12-26 01:00:00 104478.35   98217.88  91957.42
 #> 2024-12-27 01:00:00 100877.73   97020.16  93162.59
@@ -61,46 +80,271 @@ can passed directly into the function:
 #> 2024-12-31 01:00:00  99373.89   95236.42  91098.95
 ```
 
-Internally,
-[`bollinger_bands()`](https://serkor1.github.io/ta-lib-R/reference/bollinger_bands.md)
-calls `model.frame` with a prespecified `formula` corresponding to the
-default calculation method of the indicator. You can modify this by
-passing a different variable through the `cols`-argument as follows:
+All indicator functions follow the same S3 dispatch pattern, with
+methods for `data.frame`, `matrix`, `numeric`, and `plotly`. The return
+type matches the input type:
 
 ``` r
-{
-    cat("Bollinger Bands")
-    tail(
-        talib::bollinger_bands(
-            x = talib::BTC,
-            cols = ~high
-        )
-    )
-}
-#> Bollinger Bands
-#>                     UpperBand MiddleBand LowerBand
-#> 2024-12-26 01:00:00  108202.2  100799.26  93396.27
-#> 2024-12-27 01:00:00  105337.0   99701.75  94066.50
-#> 2024-12-28 01:00:00  102506.4   98606.20  94705.95
-#> 2024-12-29 01:00:00  101126.9   97847.80  94568.70
-#> 2024-12-30 01:00:00  101232.6   97525.44  93818.30
-#> 2024-12-31 01:00:00  100720.8   97187.48  93654.11
+## data.frame in -> data.frame out
+class(
+    talib::RSI(talib::BTC)
+)
+#> [1] "data.frame"
 ```
 
-The Harami pattern, and all candlestick patterns in general, returns a
-`matrix` of \<integers\>: -1 for bearish patterns, 1 for bullish pattern
-and 0 for no pattern. See below:
+``` r
+## matrix in -> matrix out
+class(
+    talib::RSI(talib::SPY)
+)
+#> [1] "matrix" "array"
+```
 
 ``` r
-{
-    cat("Harami Patterns")
-    tail(
-        talib::harami(
-            talib::BTC
-        )
+## numeric vector in -> numeric vector out
+is.double(
+    talib::RSI(talib::BTC$close)
+)
+#> [1] TRUE
+```
+
+### Function naming
+
+Every indicator has a descriptive snake_case name and an uppercase alias
+that mirrors the TA-Lib C function name. Both are interchangeable:
+
+``` r
+## these are equivalent
+identical(
+    talib::relative_strength_index(talib::BTC, n = 14),
+    talib::RSI(talib::BTC, n = 14)
+)
+#> [1] TRUE
+```
+
+### Lookback and `NA` values
+
+Most indicators require a minimum number of observations before they can
+produce a value. This is called the **lookback period**. The first
+`lookback` rows of the result will be `NA`:
+
+``` r
+## SMA with n = 5 has a lookback of 4
+head(
+    talib::SMA(talib::BTC, n = 5),
+    n = 7
+)
+#>                          SMA
+#> 2024-01-01 01:00:00       NA
+#> 2024-01-02 01:00:00       NA
+#> 2024-01-03 01:00:00       NA
+#> 2024-01-04 01:00:00       NA
+#> 2024-01-05 01:00:00 44076.95
+#> 2024-01-06 01:00:00 44038.77
+#> 2024-01-07 01:00:00 43835.33
+```
+
+The lookback is stored as an attribute on the result:
+
+``` r
+x <- talib::SMA(talib::BTC, n = 20)
+attr(x, "lookback")
+#> [1] 19
+```
+
+## Column selection with `cols`
+
+The `cols` argument accepts a one-sided formula (`~`) that selects which
+columns to use for the calculation. Every indicator has a sensible
+default, but `cols` lets you override it.
+
+### Univariate indicators
+
+For indicators that operate on a single series (e.g., `RSI`, `SMA`), the
+default is `~close`. Pass a different column to calculate the indicator
+on that series instead:
+
+``` r
+## RSI on 'high' instead of 'close'
+tail(
+    talib::RSI(talib::BTC, cols = ~high)
+)
+#>                          RSI
+#> 2024-12-26 01:00:00 48.47864
+#> 2024-12-27 01:00:00 41.75995
+#> 2024-12-28 01:00:00 37.52957
+#> 2024-12-29 01:00:00 36.63920
+#> 2024-12-30 01:00:00 36.02487
+#> 2024-12-31 01:00:00 41.25189
+```
+
+### Multivariate indicators
+
+For indicators that require multiple columns, `cols` remaps which
+columns are used. The order in the formula must match the order expected
+by the indicator:
+
+``` r
+## Stochastic defaults to ~high + low + close;
+## here we swap 'close' for 'open'
+tail(
+    talib::STOCH(
+        talib::BTC,
+        cols = ~high + low + open
     )
-}
-#> Harami Patterns
+)
+#>                        SlowK    SlowD
+#> 2024-12-26 01:00:00 53.15136 55.31111
+#> 2024-12-27 01:00:00 50.02536 53.85337
+#> 2024-12-28 01:00:00 43.95281 51.73485
+#> 2024-12-29 01:00:00 43.59808 49.54381
+#> 2024-12-30 01:00:00 42.99018 47.87554
+#> 2024-12-31 01:00:00 41.67922 46.56459
+```
+
+### Extra arguments via `...`
+
+Additional arguments are forwarded to
+[`model.frame()`](https://rdrr.io/r/stats/model.frame.html). This is
+useful for computing an indicator on a subset of the data:
+
+``` r
+## Bollinger Bands on the first 100 rows only
+tail(
+    talib::BBANDS(
+        talib::BTC,
+        subset = 1:nrow(talib::BTC) %in% 1:100
+    )
+)
+#>                     UpperBand MiddleBand LowerBand
+#> 2024-04-04 02:00:00  72704.62   69067.64  65430.67
+#> 2024-04-05 02:00:00  72502.38   68854.97  65207.56
+#> 2024-04-06 02:00:00  72430.18   68802.22  65174.26
+#> 2024-04-07 02:00:00  72066.18   68658.42  65250.65
+#> 2024-04-08 02:00:00  72626.19   68831.42  65036.64
+#> 2024-04-09 02:00:00  72549.39   68783.24  65017.08
+```
+
+## Handling missing values with `na.ignore`
+
+Real-world data often contains missing values. By default
+(`na.ignore = FALSE`), any `NA` in the input propagates through the
+entire calculation, which can fill the result with `NA`s.
+
+Setting `na.ignore = TRUE` strips `NA` rows before calculation, computes
+the indicator on the clean data, and then re-inserts `NA`s at their
+original positions:
+
+``` r
+## inject some NAs
+x <- talib::BTC
+x$close[c(10, 50, 100)] <- NA
+```
+
+``` r
+## default: NAs propagate
+sum(is.na(
+    talib::RSI(x)
+))
+#> [1] 366
+```
+
+``` r
+## na.ignore = TRUE: NAs are skipped
+sum(is.na(
+    talib::RSI(x, na.ignore = TRUE)
+))
+#> [1] 13
+```
+
+The stripped rows are restored in the output, so the result always has
+the same number of rows as the input:
+
+``` r
+nrow(talib::RSI(x, na.ignore = TRUE)) == nrow(x)
+#> [1] TRUE
+```
+
+## Moving Average specifications
+
+Several indicators accept a **Moving Average specification** for their
+smoothing component. MA functions such as
+[`SMA()`](https://serkor1.github.io/ta-lib-R/reference/simple_moving_average.md),
+[`EMA()`](https://serkor1.github.io/ta-lib-R/reference/exponential_moving_average.md),
+[`WMA()`](https://serkor1.github.io/ta-lib-R/reference/weighted_moving_average.md),
+[`DEMA()`](https://serkor1.github.io/ta-lib-R/reference/double_exponential_moving_average.md),
+[`TEMA()`](https://serkor1.github.io/ta-lib-R/reference/triple_exponential_moving_average.md),
+[`TRIMA()`](https://serkor1.github.io/ta-lib-R/reference/triangular_moving_average.md),
+[`KAMA()`](https://serkor1.github.io/ta-lib-R/reference/kaufman_adaptive_moving_average.md),
+and
+[`T3()`](https://serkor1.github.io/ta-lib-R/reference/t3_exponential_moving_average.md)
+serve a dual purpose:
+
+- **With `x`**: compute the Moving Average on the data.
+- **Without `x`**: return a specification (a named list) that other
+  indicators use internally.
+
+``` r
+## SMA as a specification
+str(
+    talib::SMA(n = 20)
+)
+#> List of 2
+#>  $ n     : int 20
+#>  $ maType: int 0
+```
+
+This specification can be passed to indicators like
+[`bollinger_bands()`](https://serkor1.github.io/ta-lib-R/reference/bollinger_bands.md)
+or
+[`stochastic()`](https://serkor1.github.io/ta-lib-R/reference/stochastic.md)
+to control the type of smoothing:
+
+``` r
+## Bollinger Bands with an EMA(20) middle band
+tail(
+    talib::bollinger_bands(
+        talib::BTC,
+        ma = talib::EMA(n = 20)
+    )
+)
+#>                     UpperBand MiddleBand LowerBand
+#> 2024-12-26 01:00:00  104645.9   98186.94  91727.99
+#> 2024-12-27 01:00:00  104677.9   97804.16  90930.38
+#> 2024-12-28 01:00:00  104597.2   97548.60  90500.04
+#> 2024-12-29 01:00:00  104577.9   97169.11  89760.28
+#> 2024-12-30 01:00:00  104576.0   96736.62  88897.26
+#> 2024-12-31 01:00:00  104478.2   96417.96  88357.68
+```
+
+``` r
+## Stochastic with WMA smoothing
+tail(
+    talib::stochastic(
+        talib::BTC,
+        slowk = talib::WMA(n = 5),
+        slowd = talib::EMA(n = 3)
+    )
+)
+#>                        SlowK    SlowD
+#> 2024-12-26 01:00:00 62.93474 57.17934
+#> 2024-12-27 01:00:00 52.56693 54.87313
+#> 2024-12-28 01:00:00 43.17803 49.02558
+#> 2024-12-29 01:00:00 27.93503 38.48031
+#> 2024-12-30 01:00:00 19.49793 28.98912
+#> 2024-12-31 01:00:00 22.83957 25.91435
+```
+
+## Candlestick pattern recognition
+
+Candlestick pattern functions return an integer `matrix`: `1` for
+bullish, `-1` for bearish, and `0` for no pattern. The encoding can be
+changed via `options(talib.normalize = FALSE)` to use `100`/`-100`
+instead.
+
+``` r
+x <- talib::harami(talib::BTC)
+tail(x)
 #>                     CDLHARAMI
 #> 2024-12-26 01:00:00         0
 #> 2024-12-27 01:00:00         0
@@ -110,26 +354,9 @@ and 0 for no pattern. See below:
 #> 2024-12-31 01:00:00         0
 ```
 
-The pattern is rare, so let us find occurrences instead:
-
 ``` r
-## assign the Harami
-## pattern
-x <- talib::harami(
-    talib::BTC
-)
-```
-
-``` r
-## locate bullish Harami
-## patterns
-{
-    cat("Bullish Harami")
-    talib::BTC[
-        which(x == 1),
-    ]
-}
-#> Bullish Harami
+## find all bullish occurrences
+talib::BTC[which(x == 1), ]
 #>                         open     high      low    close    volume
 #> 2024-01-13 01:00:00 42770.74 43244.75 42417.54 42842.43 1389.8450
 #> 2024-01-19 01:00:00 41286.00 42144.29 40250.00 41622.00 2204.1180
@@ -142,84 +369,43 @@ x <- talib::harami(
 #> 2024-12-20 01:00:00 97385.63 98138.88 92129.00 97767.96 6001.8659
 ```
 
-``` r
-## locate bearish Harami
-## patterns
-{
-    cat("Bearish Harami")
-    talib::BTC[
-        which(x == -1),
-    ]
-}
-#> Bearish Harami
-#>                         open      high      low    close     volume
-#> 2024-02-29 01:00:00 62501.89  63687.68 60288.00 61176.09  1673.0354
-#> 2024-03-18 01:00:00 68343.73  68916.00 66500.00 67607.98   982.5063
-#> 2024-03-21 01:00:00 67843.99  68251.55 64500.00 65485.53  1852.2649
-#> 2024-04-23 02:00:00 66836.51  67215.98 65824.00 66420.00   642.0294
-#> 2024-08-07 02:00:00 56047.14  57757.99 54576.39 55147.74  3693.4807
-#> 2024-08-09 02:00:00 61705.24  61763.99 59562.44 60866.00  3009.3530
-#> 2024-09-14 02:00:00 60541.13  60668.00 59417.53 60011.32  1862.7975
-#> 2024-10-30 01:00:00 72724.97  72950.00 71400.01 72329.01  2844.8865
-#> 2024-11-28 01:00:00 95957.53  96667.16 94658.27 95663.18  2634.8156
-#> 2024-12-05 01:00:00 98740.11 104149.99 91500.00 97050.01 13774.3383
-```
+> **Note:** For a detailed treatment of candlestick lookback and
+> sensitivity parameters, see
+> [`vignette("candlestick", package = "talib")`](https://serkor1.github.io/ta-lib-R/articles/candlestick.md).
 
-### Charting indicators
+## Charting
 
-In this section I will focus on the basics of charting. The charting
-uses [{plotly}](https://github.com/plotly/plotly.R) internally which
-also enables manual drawing of support and resistance lines.
-
-> **Information:** Please refer to
-> [`vignette(topic = "charting", package = "talib")`](https://serkor1.github.io/ta-lib-R/articles/charting.md)
-> for a more detailed description of the charting.
-
-The charting functionality mimicks the behaviour of
-[`plot()`](https://rdrr.io/r/graphics/plot.default.html) and
-[`lines()`](https://rdrr.io/r/graphics/lines.html) where each is called
-separately. There are two main charting functions in
-[{talib}](https://github.com/serkor1/ta-lib-R/):
-[`chart()`](https://serkor1.github.io/ta-lib-R/reference/chart.md) and
-[`indicator()`](https://serkor1.github.io/ta-lib-R/reference/indicator.md).
-Below I will expand the analysis by adding Moving Average
-Convergence/Divergence indicators to the chart:
+The package includes interactive charting built on
+[{plotly}](https://github.com/plotly/plotly.R). The two main functions
+are [`chart()`](https://serkor1.github.io/ta-lib-R/reference/chart.md)
+and
+[`indicator()`](https://serkor1.github.io/ta-lib-R/reference/indicator.md),
+which work like [`plot()`](https://rdrr.io/r/graphics/plot.default.html)
+and [`lines()`](https://rdrr.io/r/graphics/lines.html):
 
 ``` r
 {
-    ## main candlestick
-    ## chart
-    talib::chart(
-        talib::BTC
-    )
+    ## main candlestick chart
+    talib::chart(talib::BTC)
 
-    ## add bollinger bands
-    ## to the chart
-    talib::indicator(
-        talib::bollinger_bands
-    )
+    ## add Bollinger Bands
+    talib::indicator(talib::bollinger_bands)
 
-    ## add identified harami
-    ## patterns
-    talib::indicator(
-        talib::harami
-    )
+    ## add identified Harami patterns
+    talib::indicator(talib::harami)
 
-    ## add moving average
-    ## convergence/divergence
-    ## to the chart
-    talib::indicator(
-        talib::moving_average_convergence_divergence
-    )
+    ## add MACD as a sub-chart
+    talib::indicator(talib::MACD)
 }
 ```
 
-One thing to note here is that
 [`indicator()`](https://serkor1.github.io/ta-lib-R/reference/indicator.md)
-internally calls the
-[{plotly}](https://github.com/plotly/plotly.R)-methods for each
-indicator which determines whether the indicator is main-chart indicator
-or sub-chart indicator.
+automatically determines whether a given indicator belongs on the main
+price chart (e.g., Bollinger Bands, SAR) or as a sub-chart (e.g., RSI,
+MACD).
+
+> **Note:** For themes, chart options, and advanced charting, see
+> [`vignette("charting", package = "talib")`](https://serkor1.github.io/ta-lib-R/articles/charting.md).
 
 ## Contributing and bug reports
 

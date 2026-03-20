@@ -1,212 +1,257 @@
 # Candlestick Pattern Recognition
 
-In this vignette I demonstrate how to identify Japanese candlestick
-patterns on cryptocurrency OHLC data using Bitcoin (BTC) from the
-[{cryptoQuotes}](https://github.com/serkor1/cryptoQuotes)-package.
+[{talib}](https://github.com/serkor1/ta-lib-R/) includes 61 candlestick
+pattern recognition functions ported from
+[TA-Lib](https://github.com/TA-Lib/ta-lib). This vignette covers how
+they work, what they return, and how to tune their sensitivity.
 
-``` r
-str(talib::BTC)
-#> 'data.frame':    366 obs. of  5 variables:
-#>  $ open  : num  42274 44185 44966 42863 44191 ...
-#>  $ high  : num  44200 45918 45521 44799 44392 ...
-#>  $ low   : num  42181 44152 40555 42651 42362 ...
-#>  $ close : num  44185 44966 42863 44191 44179 ...
-#>  $ volume: num  831 2076 2225 1791 2483 ...
-```
-
-I begin with a short primer on candlestick construction. I then define
-two key control parameters for pattern recognition—`lookbacks` (how many
-prior bars a rule may inspect) and `sensitivity` (how strict the rule is
-with respect to body/shadow proportions). I finish with charting the
-patterns, and give short intepretation of it.
-
-## A primer on Candlestick Patterns
+## A primer on candlesticks
 
 A candlestick shows four prices for a chosen time period: Open, High,
 Low, and Close (OHLC).
 
-The real body is the segment between the Open and the Close. If the
-Close is above the Open, the candle is bullish; if the Close is below
-the Open, the candle is bearish. Charting platforms typically color
-bullish candles green or hollow and bearish candles red or filled, but
-the color scheme is platform specific.
+The **real body** is the segment between the Open and the Close. If the
+Close is above the Open the candle is bullish; otherwise it is bearish.
 
-The line from the high down to the top of the real body is the upper
-shadow; the line from the low up to the bottom of the real body is the
-lower shadow. Together they show the price extremes outside the
-Open-Close range.
+The **upper shadow** extends from the top of the real body to the High;
+the **lower shadow** extends from the bottom of the real body to the
+Low. Together the shadows show how far price moved beyond the Open-Close
+range.
 
-Candlestick patterns are built from one or more candles by comparing the
-size and position of bodies and shadows relative to each other and to
-the recent trend.
+Candlestick patterns are defined by comparing the size and position of
+bodies and shadows—within a single candle or across a sequence of
+consecutive candles.
 
-## Candlestick patterns in [{talib}](https://serkor1.github.io/ta-lib-R/)
+## Available patterns
 
-In this section I will focus on three patterns:
-[`doji()`](https://serkor1.github.io/ta-lib-R/reference/doji.md),
-[`harami()`](https://serkor1.github.io/ta-lib-R/reference/harami.md) and
-[`three_outside()`](https://serkor1.github.io/ta-lib-R/reference/three_outside.md).
-I will start identifying them with the default `lookback` and
-`sensitivity`, and then modify the parameters individually to
-demonstrate how it affects the number of identified patterns.
+The 61 pattern functions can be loosely grouped by how many candles they
+inspect:
+
+| Candles       | Examples                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+|:--------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Single-candle | [`doji()`](https://serkor1.github.io/ta-lib-R/reference/doji.md), [`hammer()`](https://serkor1.github.io/ta-lib-R/reference/hammer.md), [`shooting_star()`](https://serkor1.github.io/ta-lib-R/reference/shooting_star.md), [`marubozu()`](https://serkor1.github.io/ta-lib-R/reference/marubozu.md), [`spinning_top()`](https://serkor1.github.io/ta-lib-R/reference/spinning_top.md), [`long_line()`](https://serkor1.github.io/ta-lib-R/reference/long_line.md), [`short_line()`](https://serkor1.github.io/ta-lib-R/reference/short_line.md) |
+| Two-candle    | [`engulfing()`](https://serkor1.github.io/ta-lib-R/reference/engulfing.md), [`harami()`](https://serkor1.github.io/ta-lib-R/reference/harami.md), [`harami_cross()`](https://serkor1.github.io/ta-lib-R/reference/harami_cross.md), [`piercing()`](https://serkor1.github.io/ta-lib-R/reference/piercing.md), [`dark_cloud_cover()`](https://serkor1.github.io/ta-lib-R/reference/dark_cloud_cover.md), [`kicking()`](https://serkor1.github.io/ta-lib-R/reference/kicking.md)                                                                   |
+| Three-candle  | [`morning_star()`](https://serkor1.github.io/ta-lib-R/reference/morning_star.md), [`evening_star()`](https://serkor1.github.io/ta-lib-R/reference/evening_star.md), [`three_inside()`](https://serkor1.github.io/ta-lib-R/reference/three_inside.md), [`three_outside()`](https://serkor1.github.io/ta-lib-R/reference/three_outside.md), [`three_white_soldiers()`](https://serkor1.github.io/ta-lib-R/reference/three_white_soldiers.md), [`three_black_crows()`](https://serkor1.github.io/ta-lib-R/reference/three_black_crows.md)           |
+| Four+ candle  | [`concealing_baby_swallow()`](https://serkor1.github.io/ta-lib-R/reference/concealing_baby_swallow.md), `rising_falling_three_methods()`, [`mat_hold()`](https://serkor1.github.io/ta-lib-R/reference/mat_hold.md), [`break_away()`](https://serkor1.github.io/ta-lib-R/reference/break_away.md)                                                                                                                                                                                                                                                 |
+
+Every function has a descriptive snake_case name and an uppercase alias
+matching the TA-Lib convention (`doji` / `CDLDOJI`, `engulfing` /
+`CDLENGULFING`, etc.).
+
+## Return values
+
+All pattern functions require OHLC columns
+(`~open + high + low + close`) and return an integer matrix of the same
+length as the input:
+
+- **`1`** — bullish pattern (or direction-neutral pattern) identified
+- **`-1`** — bearish pattern identified
+- **`0`** — no pattern
 
 ``` r
-## construct data.frame
-## with default lookback
-## and sensitivity
-x <- cbind(
-    talib::doji(talib::BTC),
-    talib::harami(talib::BTC),
-    talib::three_outside(talib::BTC)
-)
+x <- talib::doji(talib::BTC)
+table(x)
+#> CDLDOJI
+#>   0   1 
+#> 300  56
 ```
 
-Each function returns a matrix of `<integer>`: -1 for an identified
-bearish pattern, 1 for an identified (possibly) bullish pattern and 0
-for no identified pattern. In this vignette we focus on identified
-patterns, and therefore only summarize the absolute values.
+Some patterns are inherently directional (e.g.,
+[`engulfing()`](https://serkor1.github.io/ta-lib-R/reference/engulfing.md)
+returns both `1` and `-1`), while others are direction-neutral (e.g.,
+[`doji()`](https://serkor1.github.io/ta-lib-R/reference/doji.md) always
+returns `1` for identified patterns).
 
-> **NOTE:** Some patterns are neither inherently bullish or bearish, and
-> such patterns will *always* be 1 for identified patterns. A negative
-> value is *always* bearish.
+### Output encoding
 
-The identified patterns can be summarized as follows:
+By default, patterns are normalized to `1`/`-1`/`0`. The original TA-Lib
+encoding (`100`/`-100`/`0`) can be restored with:
+
+``` r
+options(talib.normalize = FALSE)
+table(talib::engulfing(talib::BTC))
+#> CDLENGULFING
+#> -100  -80    0   80  100 
+#>   19   11  297   12   25
+```
+
+### The `eps` parameter
+
+Seven patterns accept an `eps` (penetration) parameter that controls how
+far one candle must intrude into the body of another. These are
+[`morning_star()`](https://serkor1.github.io/ta-lib-R/reference/morning_star.md),
+[`evening_star()`](https://serkor1.github.io/ta-lib-R/reference/evening_star.md),
+[`morning_doji_star()`](https://serkor1.github.io/ta-lib-R/reference/morning_doji_star.md),
+[`evening_doji_star()`](https://serkor1.github.io/ta-lib-R/reference/evening_doji_star.md),
+[`abandoned_baby()`](https://serkor1.github.io/ta-lib-R/reference/abandoned_baby.md),
+[`dark_cloud_cover()`](https://serkor1.github.io/ta-lib-R/reference/dark_cloud_cover.md),
+and
+[`mat_hold()`](https://serkor1.github.io/ta-lib-R/reference/mat_hold.md).
+The default is `eps = 0` for all of them.
+
+``` r
+## Evening Star with 30% penetration
+x <- talib::evening_star(talib::BTC, eps = 0.3)
+sum(abs(x), na.rm = TRUE)
+#> [1] 0
+```
+
+## Lookback and `NA` values
+
+Every pattern has a **lookback period**: the number of initial rows that
+are returned as `NA` because the algorithm needs historical context
+before it can evaluate. The lookback depends on two things: the number
+of candles in the pattern itself, and the `N` parameter that controls
+how many prior candles are used to compute reference values for
+body/shadow classification.
+
+``` r
+x <- talib::doji(talib::BTC)
+attr(x, "lookback")
+#> [1] 10
+```
+
+## Tuning candlestick settings
+
+Pattern recognition in [{talib}](https://github.com/serkor1/ta-lib-R/)
+relies on classifying each candle’s body and shadows as “long”, “short”,
+“doji-like”, etc. These classifications are controlled by two parameters
+per setting:
+
+- **`N`** (lookback): How many prior candles to average when computing
+  the reference value.
+- **`alpha`** (sensitivity): A multiplier applied to the reference
+  value. The current candle is tested against `alpha * reference`.
+
+All settings are modified via
+[`options()`](https://rdrr.io/r/base/options.html) and take effect on
+the next pattern function call.
+
+### Available settings
+
+The complete list of settings, their defaults, and what they control:
+
+**Body settings:**
+
+| Setting      | Option prefix        |   N | alpha | Rule                                                                  |
+|:-------------|:---------------------|----:|------:|:----------------------------------------------------------------------|
+| BodyLong     | `talib.BodyLong`     |  10 |   1.0 | Body is long when longer than the average of the N previous bodies    |
+| BodyVeryLong | `talib.BodyVeryLong` |  10 |   3.0 | Body is very long when longer than 3x the average                     |
+| BodyShort    | `talib.BodyShort`    |  10 |   1.0 | Body is short when shorter than the average                           |
+| BodyDoji     | `talib.BodyDoji`     |  10 |   0.1 | Body is doji-like when shorter than 10% of the average high-low range |
+
+**Shadow settings:**
+
+| Setting         | Option prefix           |   N | alpha | Rule                                                                     |
+|:----------------|:------------------------|----:|------:|:-------------------------------------------------------------------------|
+| ShadowLong      | `talib.ShadowLong`      |   0 |   1.0 | Shadow is long when longer than the real body                            |
+| ShadowVeryLong  | `talib.ShadowVeryLong`  |   0 |   2.0 | Shadow is very long when longer than 2x the real body                    |
+| ShadowShort     | `talib.ShadowShort`     |  10 |   1.0 | Shadow is short when shorter than half the average shadow sum            |
+| ShadowVeryShort | `talib.ShadowVeryShort` |  10 |   0.1 | Shadow is very short when shorter than 10% of the average high-low range |
+
+**Distance settings:**
+
+| Setting | Option prefix |   N | alpha | Rule                                                          |
+|:--------|:--------------|----:|------:|:--------------------------------------------------------------|
+| Near    | `talib.Near`  |   5 |   0.2 | Distance is “near” when \<= 20% of the average high-low range |
+| Far     | `talib.Far`   |   5 |   0.6 | Distance is “far” when \>= 60% of the average high-low range  |
+| Equal   | `talib.Equal` |   5 |  0.05 | Distance is “equal” when \<= 5% of the average high-low range |
+
+### Effect of lookback (`N`)
+
+Changing `N` alters how many prior candles form the reference average. A
+shorter lookback makes the reference more reactive to recent price
+action:
+
+``` r
+## default N = 10
+sum(abs(talib::doji(talib::BTC)), na.rm = TRUE)
+#> [1] 56
+```
+
+``` r
+## shorter lookback
+options(talib.BodyDoji.N = 3)
+sum(abs(talib::doji(talib::BTC)), na.rm = TRUE)
+#> [1] 61
+```
+
+### Effect of sensitivity (`alpha`)
+
+Changing `alpha` makes the classification more or less permissive. A
+higher `alpha` means a wider acceptance threshold:
+
+``` r
+## default alpha = 0.1
+sum(abs(talib::doji(talib::BTC)), na.rm = TRUE)
+#> [1] 56
+```
+
+``` r
+## more permissive: accept bodies up to 20% of the high-low range
+options(talib.BodyDoji.alpha = 0.2)
+sum(abs(talib::doji(talib::BTC)), na.rm = TRUE)
+#> [1] 109
+```
+
+The default `alpha = 0.1` for BodyDoji means: “the real body is
+doji-like when it’s shorter than 10% of the average high-low range over
+the past 10 candles.” Doubling it to `0.2` loosens the criterion and
+identifies more patterns.
+
+### Which settings affect which patterns?
+
+Different patterns depend on different settings. As a general rule:
+
+- **Doji patterns**
+  ([`doji()`](https://serkor1.github.io/ta-lib-R/reference/doji.md),
+  [`doji_star()`](https://serkor1.github.io/ta-lib-R/reference/doji_star.md),
+  [`dragonfly_doji()`](https://serkor1.github.io/ta-lib-R/reference/dragonfly_doji.md),
+  [`gravestone_doji()`](https://serkor1.github.io/ta-lib-R/reference/gravestone_doji.md),
+  [`long_legged_doji()`](https://serkor1.github.io/ta-lib-R/reference/long_legged_doji.md),
+  [`rickshaw_man()`](https://serkor1.github.io/ta-lib-R/reference/rickshaw_man.md))
+  are primarily controlled by `BodyDoji`.
+- **Engulfing-style patterns**
+  ([`engulfing()`](https://serkor1.github.io/ta-lib-R/reference/engulfing.md),
+  [`harami()`](https://serkor1.github.io/ta-lib-R/reference/harami.md),
+  [`dark_cloud_cover()`](https://serkor1.github.io/ta-lib-R/reference/dark_cloud_cover.md),
+  [`piercing()`](https://serkor1.github.io/ta-lib-R/reference/piercing.md))
+  depend on `BodyLong` and `BodyShort`.
+- **Star patterns**
+  ([`morning_star()`](https://serkor1.github.io/ta-lib-R/reference/morning_star.md),
+  [`evening_star()`](https://serkor1.github.io/ta-lib-R/reference/evening_star.md),
+  [`abandoned_baby()`](https://serkor1.github.io/ta-lib-R/reference/abandoned_baby.md))
+  depend on `BodyShort`, `BodyLong`, and the shadow settings.
+- **Hammer/Shooting Star**
+  ([`hammer()`](https://serkor1.github.io/ta-lib-R/reference/hammer.md),
+  [`shooting_star()`](https://serkor1.github.io/ta-lib-R/reference/shooting_star.md),
+  [`inverted_hammer()`](https://serkor1.github.io/ta-lib-R/reference/inverted_hammer.md),
+  [`hanging_man()`](https://serkor1.github.io/ta-lib-R/reference/hanging_man.md))
+  primarily depend on `ShadowLong` and `BodyShort`.
+- **Distance-based comparisons**
+  ([`kicking()`](https://serkor1.github.io/ta-lib-R/reference/kicking.md),
+  [`matching_low()`](https://serkor1.github.io/ta-lib-R/reference/matching_low.md),
+  [`counter_attack()`](https://serkor1.github.io/ta-lib-R/reference/counter_attack.md))
+  use the `Near`, `Far`, and `Equal` settings.
+
+## Charting patterns
+
+Candlestick patterns integrate with the
+[{talib}](https://github.com/serkor1/ta-lib-R/) charting system. Bullish
+patterns are marked below the candle, bearish patterns above, and
+direction-neutral patterns use a neutral style:
 
 ``` r
 {
-    cat("With default options\n")
-    apply(abs(x), 2, sum, na.rm = TRUE)
-}
-#> With default options
-#>     CDLDOJI   CDLHARAMI CDL3OUTSIDE 
-#>          56          19          21
-```
-
-The default settings identified 62, 21 and 21 Doji, Harami and Three
-Outside patterns. There are an important aspect to take note of here:
-`<NA>`-values.
-
-The `<NA>`-values are a byproduct of the underlying algorithms in
-identifying the patterns. The
-[`doji()`](https://serkor1.github.io/ta-lib-R/reference/doji.md), for
-example, uses a default lookback period of 10 candles in identifying the
-pattern—and therefore discards the first 10 values. The same logic
-applies for
-[`harami()`](https://serkor1.github.io/ta-lib-R/reference/harami.md) and
-[`three_outside()`](https://serkor1.github.io/ta-lib-R/reference/three_outside.md).
-
-### Candle inclusion (lookback)
-
-The default number of candles used to identify a specific can be
-modified with [`options()`](https://rdrr.io/r/base/options.html). The
-[`doji()`](https://serkor1.github.io/ta-lib-R/reference/doji.md) and
-[`harami()`](https://serkor1.github.io/ta-lib-R/reference/harami.md)
-depends on the candle bodies which can be modified as follows:
-
-``` r
-## set included number
-## of candles
-options(
-    talib.BodyDoji.N  = 5,
-    talib.BodyLong.N  = 7,
-    talib.BodyShort.N = 7
-)
-```
-
-To determine whether the real body is that of a Doji, it will now use
-the past 5 candles, instead of the default 10 candles. And similarly it
-will use the past 7 candles to determine if the real body is long or
-short. The identified patterns can be summarized as follows:
-
-``` r
-{
-    cat("With modified lookback\n")
-    apply(abs(x), 2, sum, na.rm = TRUE)
-}
-#> With modified lookback
-#>     CDLDOJI   CDLHARAMI CDL3OUTSIDE 
-#>          62          21          21
-```
-
-By modifying the settings 62, 21 and 21 Doji, Harami and Three Outside
-patterns. Notice that the Three Outside pattern did not change; this is
-because the pattern *always* needs three candles to be identified.
-
-### Candle sensitivity
-
-Before proceeding to analyze candle sensitivity, I set the candlestick
-lookbacks to its default values:
-
-``` r
-## default values
-options(
-    talib.BodyDoji.N = 10,
-    talib.BodyLong.N = 10,
-    talib.BodyShort.N = 10
-)
-```
-
-Candle sensitivity in [{talib}](https://serkor1.github.io/ta-lib-R) is a
-sensitivity factor that multiplies the reference value from the previous
-N candles (lookback); the current candle is tested against
-$\alpha \times reference$. A smaller $\alpha$ makes the condition harder
-to satisfy.
-
-The sensitivity can be modified as follows:
-
-``` r
-## set sensitivity
-## of candles
-options(
-    talib.BodyDoji.alpha = 0.2
-)
-```
-
-The identified patterns can be summarized as follows:
-
-``` r
-{
-    cat("With modified sensitivity options\n")
-    apply(abs(x), 2, sum, na.rm = TRUE)
-}
-#> With modified sensitivity options
-#>     CDLDOJI   CDLHARAMI CDL3OUTSIDE 
-#>         109          19          21
-```
-
-The default setting for
-[`doji()`](https://serkor1.github.io/ta-lib-R/reference/doji.md) is 0.1,
-and setting this value higher increases the identified number of
-Doji-patterns to 109. In this case the 0.2 value translates to the
-following:
-
-> Real body is like Doji’s body when it’s shorter than 20% the average
-> of the 10 previous candles’ high-low range.
-
-### Charting
-
-The candlestick patterns can be charted similar to the remaining
-indicators in [{talib}](https://serkor1.github.io/ta-lib-R/).
-
-``` r
-{
-    ## candlestick chart
     talib::chart(talib::BTC)
-
-    ## chart identified 'doji'-patterns
     talib::indicator(talib::doji)
-
-    ## chart identified 'harami'-patterns
-    talib::indicator(talib::harami)
-
-    ## chart identified 'three outside'-patterns
-    talib::indicator(talib::three_outside)
+    talib::indicator(talib::engulfing)
 }
 ```
 
-Identified patterns that are neither bullish or bearish are colored in a
-neutral way, while bullish or bearish patterns follows the typical color
-conventions.
+Multiple patterns can be layered on the same chart. Each call to
+[`indicator()`](https://serkor1.github.io/ta-lib-R/reference/indicator.md)
+adds its markers to the existing price chart.
 
 ## Contributing and bug reports
 
