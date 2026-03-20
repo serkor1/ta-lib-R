@@ -159,40 +159,61 @@ NULL
 	invisible(.chart_variables)
 }
 
-.make_theme_fn <- function(spec) {
-	force(spec)
-	function() .apply_chart_theme(spec)
-}
-
-#' Theme accessor
+#' Set or list chart themes
 #'
-#' Access theme setters via `$`.
+#' Apply a chart color theme or list available themes.
 #'
 #' @details
-#' Example: `set_theme$theme_tp_slapped()` or `set_theme()$theme_tp_slapped()`.
+#' Three usage patterns:
+#' \describe{
+#'  \item{`set_theme()`}{Lists available theme names.}
+#'  \item{`set_theme("payout")`}{Applies a theme by name.}
+#'  \item{`set_theme$payout`}{Applies a theme via `$` (supports tab-completion).}
+#' }
 #'
-#' @return Returns itself (so `set_theme()` is chainable with `$`).
+#' @param name Optional [character] theme name. If omitted, returns
+#'  available theme names.
+#' @param ... Named color overrides applied after the base theme
+#'  (e.g., `background_color = "#000000"`).
+#'
+#' @return When called without arguments, a character vector of theme names.
+#'  Otherwise, invisibly returns `.chart_variables` after modification.
 #' @family Chart Themes
 #' @export
 set_theme <- local({
-	f <- function() f
+	f <- function(name, ...) {
+		if (missing(name) && ...length() == 0L) {
+			return(names(.theme_registry))
+		}
+
+		if (!missing(name)) {
+			name <- match.arg(name, names(.theme_registry))
+			.apply_chart_theme(.theme_registry[[name]])
+		}
+
+		overrides <- list(...)
+		if (length(overrides) > 0L) {
+			.apply_chart_theme(overrides)
+		}
+
+		invisible(.chart_variables)
+	}
 	class(f) <- c("chart_theme", class(f))
 	f
 })
 
 #' @export
 `$.chart_theme` <- function(x, name) {
-	specs <- .theme_registry
-	if (!nzchar(name) || is.null(specs[[name]])) {
+	if (!nzchar(name) || is.null(.theme_registry[[name]])) {
 		stop(
 			"Unknown theme '",
 			name,
 			"'. Available: ",
-			paste(names(specs), collapse = ", "),
+			paste(names(.theme_registry), collapse = ", "),
 			call. = FALSE
 		)
 	}
-	.make_theme_fn(specs[[name]])
+	.apply_chart_theme(.theme_registry[[name]])
 }
 
 #' @importFrom utils .DollarNames
