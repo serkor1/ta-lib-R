@@ -31,7 +31,6 @@ NeedsCompilation: yes
 Suggests:
     ggplot2,
     knitr,
-    patchwork,
     rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

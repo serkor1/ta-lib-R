@@ -46,7 +46,6 @@ merge.plotly <- function(x, y, ...) {
 #' @export
 merge.ggplot <- function(x, y, ...) {
 	assert_ggplot2()
-	assert_patchwork()
 
 	## combine layers from both plots
 	## onto a single ggplot canvas

@@ -19,15 +19,6 @@ assert_ggplot2 <- function() {
 	}
 }
 
-assert_patchwork <- function() {
-	if (!requireNamespace("patchwork", quietly = TRUE)) {
-		stop(
-			"Package 'patchwork' is required for multi-panel ggplot2 charts. ",
-			"Install it with install.packages('patchwork').",
-			call. = FALSE
-		)
-	}
-}
 
 ## ---- chart creation ----
 
@@ -208,54 +199,89 @@ chart_ggplot2 <- function(
 ## ---- chart assembly ----
 
 assemble_ggplot2 <- function() {
-	assert_patchwork()
-
 	panels <- c(
 		list(.chart_environment$main),
 		.chart_environment$sub
 	)
 	n <- length(panels)
 
+	## single panel: return as-is
+	if (n == 1L) {
+		.chart_environment$chart <- panels[[1]]
+		return(panels[[1]])
+	}
+
 	## set panel heights
 	main_h <- getOption("talib.chart.main", 0.7)
-	heights <- if (n > 1) {
-		c(
-			main_h,
-			rep(
-				(1 - main_h) / (n - 1),
-				n - 1
-			)
+	heights <- c(
+		main_h,
+		rep(
+			(1 - main_h) / (n - 1),
+			n - 1
 		)
-	} else {
-		1
-	}
+	)
 
 	## remove x-axis elements from all
 	## panels except the bottom one
-	if (n > 1) {
-		for (i in seq_len(n - 1)) {
-			panels[[i]] <- panels[[i]] +
-				ggplot2::theme(
-					axis.text.x = ggplot2::element_blank(),
-					axis.ticks.x = ggplot2::element_blank()
-				)
-		}
+	for (i in seq_len(n - 1)) {
+		panels[[i]] <- panels[[i]] +
+			ggplot2::theme(
+				axis.text.x = ggplot2::element_blank(),
+				axis.ticks.x = ggplot2::element_blank(),
+				plot.margin = ggplot2::margin(2, 5, 0, 5)
+			)
 	}
 
-	## assemble via patchwork
-	fig <- Reduce(
-		f = function(a, b) a / b,
-		x = panels[-1],
-		init = panels[[1]]
+	## convert to grobs and align column widths
+	## so that y-axes line up across panels
+	grobs <- lapply(panels, ggplot2::ggplotGrob)
+	max_widths <- do.call(
+		grid::unit.pmax,
+		lapply(grobs, function(g) g$widths)
 	)
+	grobs <- lapply(grobs, function(g) {
+		g$widths <- max_widths
+		g
+	})
 
-	fig <- fig +
-		patchwork::plot_layout(
-			heights = heights
-		)
+	## assemble into a talib_chart object
+	fig <- structure(
+		list(
+			grobs = grobs,
+			heights = heights,
+			n = n
+		),
+		class = "talib_chart"
+	)
 
 	.chart_environment$chart <- fig
 	fig
+}
+
+#' @export
+print.talib_chart <- function(x, ...) {
+	grid::grid.newpage()
+
+	layout <- grid::grid.layout(
+		nrow = x$n,
+		ncol = 1,
+		heights = grid::unit(x$heights, "null")
+	)
+
+	grid::pushViewport(
+		grid::viewport(layout = layout)
+	)
+
+	for (i in seq_len(x$n)) {
+		grid::pushViewport(
+			grid::viewport(layout.pos.row = i)
+		)
+		grid::grid.draw(x$grobs[[i]])
+		grid::popViewport()
+	}
+
+	grid::popViewport()
+	invisible(x)
 }
 
 ## ---- build ----
