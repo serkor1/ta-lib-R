@@ -48,114 +48,113 @@ chart_ggplot2 <- function(
 		)
 	)
 
+	## split data by direction so each geom
+	## can use distinct wick, body, and border colors
+	bull <- data[data$direction == "bull", ]
+	bear <- data[data$direction == "bear", ]
+
+	candle_aes <- ggplot2::aes(
+		xmin = .data[[".chart_pos"]] - 0.4,
+		xmax = .data[[".chart_pos"]] + 0.4,
+		ymin = pmin(.data[["open"]], .data[["close"]]),
+		ymax = pmax(.data[["open"]], .data[["close"]])
+	)
+
 	if (type == "candlestick") {
 		## wicks
-		p <- p +
-			ggplot2::geom_segment(
-				ggplot2::aes(
-					xend = .data[[".chart_pos"]],
-					y = .data[["low"]],
-					yend = .data[["high"]],
-					color = .data[["direction"]]
-				),
-				linewidth = 0.4
-			)
+		for (side in list(
+			list(d = bull, col = .chart_variables$bullish_wick),
+			list(d = bear, col = .chart_variables$bearish_wick)
+		)) {
+			if (nrow(side$d) > 0L) {
+				p <- p +
+					ggplot2::geom_segment(
+						data = side$d,
+						ggplot2::aes(
+							xend = .data[[".chart_pos"]],
+							y = .data[["low"]],
+							yend = .data[["high"]]
+						),
+						color = side$col,
+						linewidth = 0.4
+					)
+			}
+		}
 
-		## bodies
-		p <- p +
-			ggplot2::geom_rect(
-				ggplot2::aes(
-					xmin = .data[[".chart_pos"]] - 0.4,
-					xmax = .data[[".chart_pos"]] + 0.4,
-					ymin = pmin(
-						.data[["open"]],
-						.data[["close"]]
-					),
-					ymax = pmax(
-						.data[["open"]],
-						.data[["close"]]
-					),
-					fill = .data[["direction"]]
-				),
-				color = NA
+		## body fill + border
+		for (side in list(
+			list(
+				d = bull,
+				fill = .chart_variables$bullish_body,
+				border = .chart_variables$bullish_border
+			),
+			list(
+				d = bear,
+				fill = .chart_variables$bearish_body,
+				border = .chart_variables$bearish_border
 			)
-
-		## body borders
-		p <- p +
-			ggplot2::geom_rect(
-				ggplot2::aes(
-					xmin = .data[[".chart_pos"]] - 0.4,
-					xmax = .data[[".chart_pos"]] + 0.4,
-					ymin = pmin(
-						.data[["open"]],
-						.data[["close"]]
-					),
-					ymax = pmax(
-						.data[["open"]],
-						.data[["close"]]
-					),
-					color = .data[["direction"]]
-				),
-				fill = NA,
-				linewidth = 0.3
-			)
+		)) {
+			if (nrow(side$d) > 0L) {
+				p <- p +
+					ggplot2::geom_rect(
+						data = side$d,
+						candle_aes,
+						fill = side$fill,
+						color = side$border,
+						linewidth = 0.3
+					)
+			}
+		}
 	} else {
-		## OHLC bars: vertical line for high-low
-		p <- p +
-			ggplot2::geom_segment(
-				ggplot2::aes(
-					xend = .data[[".chart_pos"]],
-					y = .data[["low"]],
-					yend = .data[["high"]],
-					color = .data[["direction"]]
-				),
-				linewidth = 0.5
-			)
+		## OHLC bars
+		for (side in list(
+			list(d = bull, col = .chart_variables$bullish_wick),
+			list(d = bear, col = .chart_variables$bearish_wick)
+		)) {
+			if (nrow(side$d) > 0L) {
+				## high-low
+				p <- p +
+					ggplot2::geom_segment(
+						data = side$d,
+						ggplot2::aes(
+							xend = .data[[".chart_pos"]],
+							y = .data[["low"]],
+							yend = .data[["high"]]
+						),
+						color = side$col,
+						linewidth = 0.5
+					)
 
-		## open tick (left)
-		p <- p +
-			ggplot2::geom_segment(
-				ggplot2::aes(
-					x = .data[[".chart_pos"]] - 0.3,
-					xend = .data[[".chart_pos"]],
-					y = .data[["open"]],
-					yend = .data[["open"]],
-					color = .data[["direction"]]
-				),
-				linewidth = 0.5
-			)
+				## open tick (left)
+				p <- p +
+					ggplot2::geom_segment(
+						data = side$d,
+						ggplot2::aes(
+							x = .data[[".chart_pos"]] - 0.3,
+							xend = .data[[".chart_pos"]],
+							y = .data[["open"]],
+							yend = .data[["open"]]
+						),
+						color = side$col,
+						linewidth = 0.5
+					)
 
-		## close tick (right)
-		p <- p +
-			ggplot2::geom_segment(
-				ggplot2::aes(
-					x = .data[[".chart_pos"]],
-					xend = .data[[".chart_pos"]] + 0.3,
-					y = .data[["close"]],
-					yend = .data[["close"]],
-					color = .data[["direction"]]
-				),
-				linewidth = 0.5
-			)
+				## close tick (right)
+				p <- p +
+					ggplot2::geom_segment(
+						data = side$d,
+						ggplot2::aes(
+							x = .data[[".chart_pos"]],
+							xend = .data[[".chart_pos"]] + 0.3,
+							y = .data[["close"]],
+							yend = .data[["close"]]
+						),
+						color = side$col,
+						linewidth = 0.5
+					)
+			}
+		}
 	}
-
-	## apply bull/bear colors
-	p <- p +
-		ggplot2::scale_fill_manual(
-			values = c(
-				"bull" = .chart_variables$bullish_body,
-				"bear" = .chart_variables$bearish_body
-			),
-			guide = "none"
-		)
-	p <- p +
-		ggplot2::scale_color_manual(
-			values = c(
-				"bull" = .chart_variables$bullish_border,
-				"bear" = .chart_variables$bearish_border
-			),
-			guide = "none"
-		)
 
 	## construct title text
 	if (is.integer(.chart_environment$idx$label)) {
