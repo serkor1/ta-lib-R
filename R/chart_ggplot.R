@@ -294,9 +294,16 @@ build_ggplot <- function(
 	title = NULL,
 	...
 ) {
+	## check if init already has scales
+	## (main chart overlays do, fresh subcharts don't)
+	needs_scales <- length(init$scales$scales) == 0L
+
 	## strip lookback NAs
-	lookback <- attr(data, "lookback", TRUE) %nn% 0L
-	if (!is.null(lookback) && lookback > 0L) {
+	lookback <- attr(data, "lookback", TRUE)
+	if (is.null(lookback) || is.na(lookback)) {
+		lookback <- 0L
+	}
+	if (lookback > 0L) {
 		data <- data[-(1:lookback), , drop = FALSE]
 	}
 
@@ -460,14 +467,17 @@ build_ggplot <- function(
 		}
 	}
 
-	## apply common theme and axes
-	p <- p +
-		ggplot_x_scale() +
-		ggplot2::scale_y_continuous(
-			position = "right",
-			name = NULL
-		) +
-		ggplot_chart_theme()
+	## apply common theme; only add scales
+	## for fresh subcharts (not main chart overlays)
+	if (needs_scales) {
+		p <- p +
+			ggplot_x_scale() +
+			ggplot2::scale_y_continuous(
+				position = "right",
+				name = NULL
+			)
+	}
+	p <- p + ggplot_chart_theme()
 
 	p
 }
@@ -503,7 +513,7 @@ ggplot_x_scale <- function() {
 			name = NULL,
 			labels = function(breaks) {
 				breaks <- as.integer(round(breaks))
-				valid <- breaks >= 1L & breaks <= n
+				valid <- !is.na(breaks) & breaks >= 1L & breaks <= n
 				out <- rep("", length(breaks))
 				out[valid] <- as.character(
 					idx_labels[breaks[valid]]
