@@ -548,7 +548,11 @@ ggplot_chart_theme <- function() {
 		),
 		plot.title = ggplot2::element_text(
 			size = 14 * font_scale,
-			hjust = 0
+			hjust = 0,
+			margin = ggplot2::margin(0, 0, 0, 0)
+		),
+		plot.subtitle = ggplot2::element_text(
+			margin = ggplot2::margin(0, 0, 2, 0)
 		),
 
 		## axes
@@ -616,15 +620,13 @@ add_last_value_gg <- function(
 	)
 
 	p +
-		ggplot2::annotate(
-			"text",
-			x = Inf,
-			y = Inf,
-			label = value_text,
-			hjust = 1,
-			vjust = 1,
-			size = 3 * getOption("talib.chart.scale", 1),
-			color = .chart_variables$text_color
+		ggplot2::labs(subtitle = value_text) +
+		ggplot2::theme(
+			plot.subtitle = ggplot2::element_text(
+				hjust = 1,
+				size = 10 * getOption("talib.chart.scale", 1),
+				color = .chart_variables$text_color
+			)
 		)
 }
 
