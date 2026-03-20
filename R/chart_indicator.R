@@ -140,11 +140,22 @@ indicator.function <- function(FUN, ...) {
 
 	## reconstruct charting
 	## as if called from chart()
-	# outcome <- .chart_layout(
-	# 	x = outcome,
-	# 	title_text = title,
-	# 	idx = if (is.null(idx)) 1:nrow(data) else idx
-	# )
+	fns <- list(
+		function(p) layout_background(p),
+		function(p) layout_axis(p, idx = idx),
+		function(p) {
+			layout_title(
+				p,
+				title = title
+			)
+		},
+		function(p) layout_font(p),
+		function(p) layout_color(p)
+	)
 
-	layout_axis(layout_color(layout_settings(outcome)))
+	Reduce(
+		f = function(p, f) f(p),
+		x = fns,
+		init = outcome
+	)
 }

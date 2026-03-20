@@ -119,7 +119,7 @@ build_plotly.plotly <- function(
 	)
 
 	# decorate
-	if (!is.null(title)) {
+	if (!is.null(title) && !is.null(.chart_environment$main)) {
 		plotly_object <- add_title(
 			plotly_object,
 			text = title
@@ -138,7 +138,8 @@ build_plotly.plotly <- function(
 	## common decorators
 	fns <- list(
 		function(p) layout_background(p),
-		function(p) layout_axis(p, data$idx)
+		function(p) layout_axis(p, data$idx),
+		function(p) layout_legend(p)
 	)
 
 	Reduce(
