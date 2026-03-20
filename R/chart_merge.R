@@ -41,3 +41,19 @@ merge.plotly <- function(x, y, ...) {
 
 	z_build
 }
+
+#' @rdname merge.plotly
+#' @export
+merge.ggplot <- function(x, y, ...) {
+	assert_ggplot2()
+	assert_patchwork()
+
+	## combine layers from both plots
+	## onto a single ggplot canvas
+	z <- x
+	for (layer in y$layers) {
+		z <- z + layer
+	}
+
+	z + ggplot_chart_theme()
+}

@@ -65,11 +65,15 @@ indicator.function <- function(FUN, ...) {
 		plt <- switch(
 			backend,
 			plotly = plotly::plot_ly(),
+			ggplot2 = {
+				assert_ggplot2()
+				ggplot2::ggplot()
+			},
 			stop(
 				"Unknown chart backend: '",
 				backend,
 				"'. ",
-				"Supported backends: 'plotly'.",
+				"Supported backends: 'plotly', 'ggplot2'.",
 				call. = FALSE
 			)
 		)
@@ -111,6 +115,12 @@ indicator.function <- function(FUN, ...) {
 			)
 		}
 
+		if (inherits(.chart_environment$main, "gg")) {
+			return(
+				assemble_ggplot2()
+			)
+		}
+
 		stop(
 			"Chart assembly not implemented for this backend.",
 			call. = FALSE
@@ -139,6 +149,14 @@ indicator.function <- function(FUN, ...) {
 				x = fns,
 				init = outcome
 			)
+		)
+	}
+
+	if (inherits(outcome, "gg")) {
+		return(
+			outcome +
+				ggplot2::ggtitle(title) +
+				ggplot_chart_theme()
 		)
 	}
 

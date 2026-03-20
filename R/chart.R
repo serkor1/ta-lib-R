@@ -14,7 +14,7 @@
 #' The function uses various controlable options:
 #'
 #' \describe{
-#'  \item{talib.chart.backend <[character]>}{`"plotly"` by default. The charting backend to use. Currently only `"plotly"` is supported.}
+#'  \item{talib.chart.backend <[character]>}{`"plotly"` by default. The charting backend. Use `"ggplot2"` for static charts (requires \pkg{ggplot2} and \pkg{patchwork}).}
 #'  \item{talib.chart.slider <[logical]>}{`FALSE` by default. If `TRUE` a `rangeslider` is added to the chart.}
 #'  \item{talib.chart.slider.size <[numeric]>}{0.05 by default. Controls the size of the `rangeslider`.}
 #'  \item{talib.chart.legend <[logical]>}{`TRUE` by default. If `FALSE` the chart comes without legends.}
@@ -124,11 +124,18 @@ chart.default <- function(
 			idx = idx,
 			...
 		),
+		ggplot2 = chart_ggplot2(
+			data = x,
+			type = type,
+			title = chart_title,
+			idx = idx,
+			...
+		),
 		stop(
 			"Unknown chart backend: '",
 			backend,
 			"'. ",
-			"Supported backends: 'plotly'.",
+			"Supported backends: 'plotly', 'ggplot2'.",
 			call. = FALSE
 		)
 	)
