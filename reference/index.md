@@ -267,18 +267,13 @@ The collection of Volatility Indicators.
 Charting functions
 
 - [`chart()`](https://serkor1.github.io/ta-lib-R/reference/chart.md) :
-  OHLC Chart
-- [`indicator()`](https://serkor1.github.io/ta-lib-R/reference/indicator.md)
-  : Indicator Chart
-
-## Chart Themes
-
-Charting Themes
-
+  Create an OHLC Chart
 - [`chart_themes`](https://serkor1.github.io/ta-lib-R/reference/chart_themes.md)
-  : Chart themes
+  : Chart Themes
+- [`indicator()`](https://serkor1.github.io/ta-lib-R/reference/indicator.md)
+  : Add Technical Indicators to a Chart
 - [`set_theme()`](https://serkor1.github.io/ta-lib-R/reference/set_theme.md)
-  : Theme accessor
+  : Set or List Chart Themes
 
 ## Rolling Statistics
 
