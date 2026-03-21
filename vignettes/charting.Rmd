@@ -74,6 +74,50 @@ Multiple sub-panel indicators stack vertically. The main chart occupies 70% of t
 }
 ```
 
+### Combining indicators on one panel
+
+By default, each sub-panel indicator (RSI, MACD, etc.) gets its own panel. To merge multiple indicators onto the same panel, pass them as **calls** to `indicator()`:
+
+```{r}
+{
+  talib::chart(talib::BTC)
+  talib::indicator(
+    talib::RSI(n = 10),
+    talib::RSI(n = 14),
+    talib::RSI(n = 21)
+  )
+}
+```
+
+Each indicator keeps its own arguments and receives a distinct color from the active theme's color palette. This works with any number of indicators---and they don't have to be the same type:
+
+```{r}
+{
+  talib::chart(talib::BTC)
+  talib::indicator(
+    talib::RSI(n = 14),
+    talib::MACD()
+  )
+}
+```
+
+Combined panels and regular panels can be freely mixed in the same chart:
+
+```{r}
+{
+  talib::chart(talib::BTC)
+  talib::indicator(talib::BBANDS)
+  talib::indicator(
+    talib::RSI(n = 10),
+    talib::RSI(n = 14),
+    talib::RSI(n = 21)
+  )
+  talib::indicator(talib::MACD)
+}
+```
+
+> **Note:** the syntax matters. `indicator(RSI, n = 14)` passes a function and arguments separately (single indicator). `indicator(RSI(n = 14), RSI(n = 21))` passes _calls_ (combined panel). A single call like `indicator(RSI(n = 14))` also works and is equivalent to the single-indicator form.
+
 ### Standalone indicators
 
 If no `chart()` has been called, `indicator()` can plot an indicator on its own---but you must supply the `data` argument explicitly.
