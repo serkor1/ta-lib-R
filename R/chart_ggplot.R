@@ -191,8 +191,9 @@ chart_ggplot2 <- function(
 	## add last value annotation
 	p <- add_last_value_gg(p, data)
 
-	## reset colorway counter for indicators
+	## reset colorway counter and color map for indicators
 	.chart_environment$color_idx <- 0L
+	.chart_environment$color_map <- character(0)
 
 	.chart_environment$main <- p
 	p
@@ -329,6 +330,11 @@ build_ggplot <- function(
 	p <- init
 	colorway <- .chart_variables$colorway
 	color_idx <- .chart_environment$color_idx %nn% 0L
+	color_map <- if (needs_scales) {
+		character(0)
+	} else {
+		.chart_environment$color_map %nn% character(0)
+	}
 
 	## track whether fill/color scales have been used
 	## to avoid duplicate scale errors
@@ -353,74 +359,8 @@ build_ggplot <- function(
 				y_col <- all.vars(y_col)
 			}
 
-			color_idx <- color_idx + 1L
-			line_color <- layer$color %nn%
-				colorway[
-					((color_idx - 1L) %% length(colorway)) + 1L
-				]
-
-			layer_name <- layer$name %nn% y_col
-
-			if (geom == "line") {
-				p <- p +
-					ggplot2::geom_line(
-						data = data,
-						ggplot2::aes(
-							x = .data[[".chart_pos"]],
-							y = .data[[y_col]]
-						),
-						color = line_color,
-						linewidth = 0.5,
-						na.rm = TRUE
-					)
-			} else if (geom == "bar") {
-				if (!is.null(layer$direction)) {
-					p <- p +
-						ggplot2::geom_col(
-							data = data,
-							ggplot2::aes(
-								x = .data[[".chart_pos"]],
-								y = .data[[y_col]],
-								fill = .data[[layer$direction]]
-							),
-							width = 0.8,
-							na.rm = TRUE
-						)
-					if (!has_fill_scale) {
-						bull_col <- if (!is.null(layer$colors)) {
-							layer$colors[1]
-						} else {
-							.chart_variables$bullish_body
-						}
-						bear_col <- if (!is.null(layer$colors)) {
-							layer$colors[2]
-						} else {
-							.chart_variables$bearish_body
-						}
-						p <- p +
-							ggplot2::scale_fill_manual(
-								values = c(
-									"FALSE" = bull_col,
-									"TRUE" = bear_col
-								),
-								guide = "none"
-							)
-						has_fill_scale <- TRUE
-					}
-				} else {
-					p <- p +
-						ggplot2::geom_col(
-							data = data,
-							ggplot2::aes(
-								x = .data[[".chart_pos"]],
-								y = .data[[y_col]]
-							),
-							fill = line_color,
-							width = 0.8,
-							na.rm = TRUE
-						)
-				}
-			} else if (geom == "ribbon") {
+			if (geom == "ribbon") {
+				## ribbon: no legend entry, no color cycling
 				y_upper <- layer$y_upper
 				y_lower <- layer$y_lower
 				ribbon_color <- layer$color %nn% "steelblue"
@@ -445,20 +385,100 @@ build_ggplot <- function(
 						alpha = ribbon_alpha,
 						na.rm = TRUE
 					)
-				## don't count ribbon as a color slot
-				color_idx <- color_idx - 1L
-			} else if (geom == "point") {
-				p <- p +
-					ggplot2::geom_point(
-						data = data,
-						ggplot2::aes(
-							x = .data[[".chart_pos"]],
-							y = .data[[y_col]]
-						),
-						color = line_color,
-						size = 1.5,
-						na.rm = TRUE
-					)
+			} else {
+				## legend name: prefer layer-level, then
+				## per-call name, then column name
+				layer_name <- layer$name %nn% name %nn% y_col
+
+				## reuse color for repeated legend names
+				## (combined indicators like Bollinger Bands)
+				if (layer_name %in% names(color_map)) {
+					line_color <- color_map[[layer_name]]
+				} else {
+					color_idx <- color_idx + 1L
+					line_color <- layer$color %nn%
+						colorway[
+							((color_idx - 1L) %% length(colorway)) + 1L
+						]
+					color_map[layer_name] <- line_color
+				}
+
+				## layer-local data with legend label
+				layer_data <- data
+				layer_data[[".legend"]] <- layer_name
+
+				if (geom == "line") {
+					p <- p +
+						ggplot2::geom_line(
+							data = layer_data,
+							ggplot2::aes(
+								x = .data[[".chart_pos"]],
+								y = .data[[y_col]],
+								colour = .data[[".legend"]]
+							),
+							linewidth = 0.5,
+							na.rm = TRUE
+						)
+				} else if (geom == "bar") {
+					if (!is.null(layer$direction)) {
+						p <- p +
+							ggplot2::geom_col(
+								data = data,
+								ggplot2::aes(
+									x = .data[[".chart_pos"]],
+									y = .data[[y_col]],
+									fill = .data[[layer$direction]]
+								),
+								width = 0.8,
+								na.rm = TRUE
+							)
+						if (!has_fill_scale) {
+							bull_col <- if (!is.null(layer$colors)) {
+								layer$colors[1]
+							} else {
+								.chart_variables$bullish_body
+							}
+							bear_col <- if (!is.null(layer$colors)) {
+								layer$colors[2]
+							} else {
+								.chart_variables$bearish_body
+							}
+							p <- p +
+								ggplot2::scale_fill_manual(
+									values = c(
+										"FALSE" = bull_col,
+										"TRUE" = bear_col
+									),
+									guide = "none"
+								)
+							has_fill_scale <- TRUE
+						}
+					} else {
+						p <- p +
+							ggplot2::geom_col(
+								data = data,
+								ggplot2::aes(
+									x = .data[[".chart_pos"]],
+									y = .data[[y_col]]
+								),
+								fill = line_color,
+								width = 0.8,
+								na.rm = TRUE
+							)
+					}
+				} else if (geom == "point") {
+					p <- p +
+						ggplot2::geom_point(
+							data = layer_data,
+							ggplot2::aes(
+								x = .data[[".chart_pos"]],
+								y = .data[[y_col]],
+								colour = .data[[".legend"]]
+							),
+							size = 1.5,
+							na.rm = TRUE
+						)
+				}
 			}
 		}
 	}
@@ -466,6 +486,26 @@ build_ggplot <- function(
 	## persist colorway counter so subsequent
 	## indicator calls continue cycling
 	.chart_environment$color_idx <- color_idx
+
+	## add colour scale for legend entries
+	if (length(color_map) > 0L) {
+		## remove existing colour scale to
+		## avoid ggplot2 replacement warning
+		p$scales$scales <- Filter(
+			function(s) !("colour" %in% s$aesthetics),
+			p$scales$scales
+		)
+		p <- p + ggplot2::scale_colour_manual(
+			name = NULL,
+			values = color_map,
+			breaks = names(color_map)
+		)
+	}
+
+	## persist color map for main chart overlays
+	if (!needs_scales) {
+		.chart_environment$color_map <- color_map
+	}
 
 	## add title for subcharts
 	if (!is.null(title) && !is.null(.chart_environment$main)) {
