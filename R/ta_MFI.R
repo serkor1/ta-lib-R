@@ -282,9 +282,10 @@ money_flow_index.ggplot <- function(
 
 	## construct {ggplot2}-object
 	## splice:ggplot-assembly:start
-	layers <- lapply(
-		setdiff(colnames(constructed_indicator), "idx"),
-		function(col) list(y = col)
+	layers <- list(
+		ggplot_line(20),
+		ggplot_line(80),
+		list(y = "MFI")
 	)
 	name <- sprintf("MFI(%d)", n)
 	## splice:ggplot-assembly:end

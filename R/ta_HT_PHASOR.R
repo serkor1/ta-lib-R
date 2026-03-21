@@ -322,9 +322,9 @@ phasor_components.ggplot <- function(
 
 	## construct {ggplot2}-object
 	## splice:ggplot-assembly:start
-	layers <- lapply(
-		setdiff(colnames(constructed_indicator), "idx"),
-		function(col) list(y = col)
+	layers <- list(
+		list(y = "InPhase", name = "InPhase"),
+		list(y = "Quadrature", name = "Quadrature")
 	)
 	name <- "Phasor Components"
 	## splice:ggplot-assembly:end

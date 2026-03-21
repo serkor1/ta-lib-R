@@ -287,9 +287,8 @@ parabolic_stop_and_reverse.ggplot <- function(
 
 	## construct {ggplot2}-object
 	## splice:ggplot-assembly:start
-	layers <- lapply(
-		setdiff(colnames(constructed_indicator), "idx"),
-		function(col) list(y = col)
+	layers <- list(
+		list(y = "SAR", geom = "point")
 	)
 	name <- "SAR"
 	## splice:ggplot-assembly:end

@@ -359,9 +359,8 @@ extended_parabolic_stop_and_reverse.ggplot <- function(
 
 	## construct {ggplot2}-object
 	## splice:ggplot-assembly:start
-	layers <- lapply(
-		setdiff(colnames(constructed_indicator), "idx"),
-		function(col) list(y = col)
+	layers <- list(
+		list(y = "SAREXT", geom = "point")
 	)
 	name <- "SAR (Extended)"
 	## splice:ggplot-assembly:end

@@ -275,9 +275,11 @@ balance_of_power.ggplot <- function(
 
 	## construct {ggplot2}-object
 	## splice:ggplot-assembly:start
-	layers <- lapply(
-		setdiff(colnames(constructed_indicator), "idx"),
-		function(col) list(y = col)
+	decorators <- list(
+		function(p) add_limit_gg(p, c(-1, 1))
+	)
+	layers <- list(
+		list(y = "BOP")
 	)
 	name <- "BOP"
 	## splice:ggplot-assembly:end

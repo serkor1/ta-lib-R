@@ -313,9 +313,14 @@ stochastic.ggplot <- function(
 
 	## construct {ggplot2}-object
 	## splice:ggplot-assembly:start
-	layers <- lapply(
-		setdiff(colnames(constructed_indicator), "idx"),
-		function(col) list(y = col)
+	decorators <- list(
+		function(p) add_limit_gg(p, c(0, 100))
+	)
+	layers <- list(
+		ggplot_line(20),
+		ggplot_line(80),
+		list(y = "SlowK"),
+		list(y = "SlowD")
 	)
 	name <- sprintf("Stochastic(%d)", fastk)
 	## splice:ggplot-assembly:end

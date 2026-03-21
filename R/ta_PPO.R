@@ -351,9 +351,9 @@ percentage_price_oscillator.ggplot <- function(
 
 	## construct {ggplot2}-object
 	## splice:ggplot-assembly:start
-	layers <- lapply(
-		setdiff(colnames(constructed_indicator), "idx"),
-		function(col) list(y = col)
+	layers <- list(
+		ggplot_line(0),
+		list(y = "PPO")
 	)
 	name <- sprintf("PPO(%d, %d)", fast, slow)
 	## splice:ggplot-assembly:end

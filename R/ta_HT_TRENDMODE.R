@@ -313,9 +313,8 @@ trend_cycle_mode.ggplot <- function(
 
 	## construct {ggplot2}-object
 	## splice:ggplot-assembly:start
-	layers <- lapply(
-		setdiff(colnames(constructed_indicator), "idx"),
-		function(col) list(y = col)
+	layers <- list(
+		list(y = "HT_TRENDMODE")
 	)
 	name <- "Trendmode"
 	## splice:ggplot-assembly:end

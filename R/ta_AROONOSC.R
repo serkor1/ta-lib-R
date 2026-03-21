@@ -278,9 +278,12 @@ aroon_oscillator.ggplot <- function(
 
 	## construct {ggplot2}-object
 	## splice:ggplot-assembly:start
-	layers <- lapply(
-		setdiff(colnames(constructed_indicator), "idx"),
-		function(col) list(y = col)
+	decorators <- list(
+		function(p) add_limit_gg(p, c(-100, 100))
+	)
+	layers <- list(
+		ggplot_line(0),
+		list(y = "AROONOSC")
 	)
 	name <- sprintf("AroonOsc(%d)", n)
 	## splice:ggplot-assembly:end

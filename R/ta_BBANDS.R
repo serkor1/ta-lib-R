@@ -376,9 +376,16 @@ bollinger_bands.ggplot <- function(
 
 	## construct {ggplot2}-object
 	## splice:ggplot-assembly:start
-	layers <- lapply(
-		setdiff(colnames(constructed_indicator), "idx"),
-		function(col) list(y = col)
+	layers <- list(
+		list(y = "UpperBand"),
+		list(y = "MiddleBand"),
+		list(y = "LowerBand"),
+		list(
+			geom = "ribbon",
+			y = "MiddleBand",
+			y_upper = "UpperBand",
+			y_lower = "LowerBand"
+		)
 	)
 	name <- label("Bollinger Bands", ma$n, sd)
 	## splice:ggplot-assembly:end

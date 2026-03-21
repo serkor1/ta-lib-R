@@ -385,9 +385,20 @@ moving_average_convergence_divergence.ggplot <- function(
 
 	## construct {ggplot2}-object
 	## splice:ggplot-assembly:start
-	layers <- lapply(
-		setdiff(colnames(constructed_indicator), "idx"),
-		function(col) list(y = col)
+	constructed_indicator$direction <- constructed_indicator$MACDSignal >=
+		constructed_indicator$MACD
+	layers <- list(
+		list(
+			y = "MACDHist",
+			geom = "bar",
+			direction = "direction",
+			colors = c(
+				.chart_variables$bullish_body,
+				.chart_variables$bearish_body
+			)
+		),
+		list(y = "MACDSignal", name = sprintf("Signal(%d)", signal)),
+		list(y = "MACD", name = sprintf("MACD(%d, %d)", fast, slow))
 	)
 	name <- sprintf("MACD(%d, %d, %d)", fast, slow, signal)
 	## splice:ggplot-assembly:end

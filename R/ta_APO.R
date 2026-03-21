@@ -354,9 +354,9 @@ absolute_price_oscillator.ggplot <- function(
 
 	## construct {ggplot2}-object
 	## splice:ggplot-assembly:start
-	layers <- lapply(
-		setdiff(colnames(constructed_indicator), "idx"),
-		function(col) list(y = col)
+	layers <- list(
+		ggplot_line(0),
+		list(y = "APO")
 	)
 	name <- sprintf("APO(%d, %d)", slow, fast)
 	## splice:ggplot-assembly:end

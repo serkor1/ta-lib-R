@@ -184,7 +184,8 @@ chart_ggplot2 <- function(
 		ggplot_x_scale() +
 		ggplot2::scale_y_continuous(
 			position = "right",
-			name = NULL
+			name = NULL,
+			labels = format_axis_number
 		) +
 		ggplot_chart_theme()
 
@@ -363,8 +364,13 @@ build_ggplot <- function(
 				## ribbon: no legend entry, no color cycling
 				y_upper <- layer$y_upper
 				y_lower <- layer$y_lower
-				ribbon_color <- layer$color %nn% "steelblue"
-				ribbon_alpha <- layer$alpha %nn% 0.2
+				ribbon_color <- layer[["color"]] %nn%
+					if (length(color_map) > 0L) {
+						unname(tail(color_map, 1L))
+					} else {
+						colorway[1L]
+					}
+				ribbon_alpha <- layer$alpha %nn% 0.15
 
 				if (is.language(y_upper)) {
 					y_upper <- all.vars(y_upper)
@@ -396,7 +402,7 @@ build_ggplot <- function(
 					line_color <- color_map[[layer_name]]
 				} else {
 					color_idx <- color_idx + 1L
-					line_color <- layer$color %nn%
+					line_color <- layer[["color"]] %nn%
 						colorway[
 							((color_idx - 1L) %% length(colorway)) + 1L
 						]
@@ -527,7 +533,8 @@ build_ggplot <- function(
 			ggplot_x_scale() +
 			ggplot2::scale_y_continuous(
 				position = "right",
-				name = NULL
+				name = NULL,
+				labels = format_axis_number
 			)
 	}
 	p <- p + ggplot_chart_theme()
@@ -551,19 +558,49 @@ ggplot_line <- function(value, length, dash = TRUE) {
 	x
 }
 
+## human-readable y-axis labels (1K, 1M, 1B)
+format_axis_number <- function(x) {
+	ifelse(
+		is.na(x),
+		"",
+		ifelse(
+			abs(x) >= 1e9,
+			paste0(round(x / 1e9, 1), "B"),
+			ifelse(
+				abs(x) >= 1e6,
+				paste0(round(x / 1e6, 1), "M"),
+				ifelse(
+					abs(x) >= 1e3,
+					paste0(round(x / 1e3, 1), "K"),
+					format(
+						round(x, 2),
+						big.mark = "",
+						scientific = FALSE
+					)
+				)
+			)
+		)
+	)
+}
+
 ## ---- x-axis scale ----
 
 ggplot_x_scale <- function() {
 	idx_labels <- .chart_environment$idx$label
+	n <- length(idx_labels)
+	xlim <- c(0.5, n + 0.5)
 
 	if (is.null(idx_labels) || is.integer(idx_labels)) {
 		ggplot2::scale_x_continuous(
-			name = NULL
+			name = NULL,
+			limits = xlim,
+			expand = c(0, 0)
 		)
 	} else {
-		n <- length(idx_labels)
 		ggplot2::scale_x_continuous(
 			name = NULL,
+			limits = xlim,
+			expand = c(0, 0),
 			labels = function(breaks) {
 				breaks <- as.integer(round(breaks))
 				valid <- !is.na(breaks) & breaks >= 1L & breaks <= n

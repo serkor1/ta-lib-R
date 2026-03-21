@@ -249,9 +249,10 @@ commodity_channel_index.ggplot <- function(
 
 	## construct {ggplot2}-object
 	## splice:ggplot-assembly:start
-	layers <- lapply(
-		setdiff(colnames(constructed_indicator), "idx"),
-		function(col) list(y = col)
+	layers <- list(
+		ggplot_line(-100),
+		ggplot_line(100),
+		list(y = "CCI")
 	)
 	name <- sprintf("CCI(%d)", n)
 	## splice:ggplot-assembly:end

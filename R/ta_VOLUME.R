@@ -370,10 +370,35 @@ trading_volume.ggplot <- function(
 
 	## construct {ggplot2}-object
 	## splice:ggplot-assembly:start
-	layers <- lapply(
-		setdiff(colnames(constructed_indicator), "idx"),
-		function(col) list(y = col)
+	constructed_indicator$direction <- constructed_series$open >=
+		constructed_series$close
+	trace_cols <- setdiff(
+		colnames(constructed_indicator),
+		c("idx", "direction")
 	)
+	layers <- list(
+		list(
+			y = trace_cols[1],
+			geom = "bar",
+			direction = "direction"
+		)
+	)
+	if (length(trace_cols) > 1L) {
+		for (col in trace_cols[-1]) {
+			layers <- c(
+				layers,
+				list(list(
+					y = col,
+					name = sub(
+						"^([A-Za-z]+)([0-9]+)$",
+						"\\1(\\2)",
+						col,
+						perl = TRUE
+					)
+				))
+			)
+		}
+	}
 	name <- "Volume"
 	## splice:ggplot-assembly:end
 
