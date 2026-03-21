@@ -83,7 +83,7 @@
 #' When called without arguments, returns `NULL` invisibly.
 #'
 #' @seealso [indicator()] to attach technical indicators, [set_theme()] to
-#'   customize chart colors, [merge.plotly()] to combine chart objects.
+#'   customize chart colors.
 #'
 #' @example man/examples/charting.R
 #'
@@ -139,6 +139,7 @@ chart.default <- function(
 	} else {
 		chart_title <- title
 	}
+	## reset subchart and user-facing chart lists
 	.chart_environment$sub <- .chart_environment$chart <- list()
 
 	## convert input to data.frame and
@@ -167,6 +168,7 @@ chart.default <- function(
 		index = seq_along(x$idx)
 	)
 
+	## validate chart type
 	assert(is.character(type) && length(type) == 1)
 	assert(type %in% c("candlestick", "ohlc"))
 
@@ -199,7 +201,10 @@ chart.default <- function(
 	)
 }
 
-## plotly backend for chart()
+## ---- plotly backend ----
+
+## build a candlestick or OHLC chart
+## using plotly as the rendering backend
 chart_plotly <- function(
 	data,
 	type,
@@ -207,6 +212,8 @@ chart_plotly <- function(
 	idx,
 	...
 ) {
+	## helper to construct increasing and
+	## decreasing candle style lists
 	candle_style <- function(
 		bull_candle,
 		bear_candle,
@@ -232,6 +239,8 @@ chart_plotly <- function(
 		)
 	}
 
+	## initialize the plotly object
+	## with OHLC data
 	base <- plotly::plot_ly(
 		data = data,
 		x = ~idx,
@@ -243,6 +252,8 @@ chart_plotly <- function(
 		...
 	)
 
+	## add border trace with thick lines
+	## for candle outlines
 	border_chart <- do.call(
 		plotly::add_trace,
 		c(
@@ -255,6 +266,8 @@ chart_plotly <- function(
 		)
 	)
 
+	## add body trace with thin lines
+	## for candle fill colors
 	price_chart <- do.call(
 		plotly::add_trace,
 		c(

@@ -315,16 +315,131 @@ indicator_multi <- function(exprs, envir) {
 	)
 }
 
-## plotly subplot assembly
+## ---- internal subchart merge ----
+
+## merge multiple subchart panels into one
+## for the plotly backend - used by indicator_multi
+## to overlay indicators on a single panel
+merge_subchart_plotly <- function(from, to) {
+	## build the base panel
+	base <- plotly::plotly_build(.chart_environment$sub[[from]])
+
+	## merge traces and annotations
+	## from subsequent panels
+	for (i in seq(from + 1L, to)) {
+		other <- plotly::plotly_build(.chart_environment$sub[[i]])
+		base$x$data <- c(base$x$data, other$x$data)
+
+		## merge annotations like subchart
+		## titles and last-value labels
+		if (length(other$x$layout$annotations) > 0L) {
+			base$x$layout$annotations <- c(
+				base$x$layout$annotations,
+				other$x$layout$annotations
+			)
+		}
+	}
+
+	## remove explicit y-range so plotly
+	## auto-scales for the combined data
+	base$x$layout$yaxis$range <- NULL
+	base$x$layout$yaxis$autorange <- TRUE
+
+	## reassign colors to legend-bearing traces
+	## so merged indicators are visually distinct
+	colorway <- .chart_variables$colorway
+	color_i <- 0L
+	for (j in seq_along(base$x$data)) {
+		tr <- base$x$data[[j]]
+		if (isTRUE(tr$showlegend)) {
+			color_i <- color_i + 1L
+			color <- colorway[((color_i - 1L) %% length(colorway)) + 1L]
+			base$x$data[[j]]$line$color <- color
+		}
+	}
+
+	## replace first panel with merged
+	## and drop the rest
+	.chart_environment$sub[[from]] <- base
+	length(.chart_environment$sub) <- from
+}
+
+## merge multiple subchart panels into one
+## for the ggplot2 backend - used by indicator_multi
+## to overlay indicators on a single panel
+merge_subchart_ggplot <- function(from, to) {
+	base <- .chart_environment$sub[[from]]
+
+	## collect layers from subsequent panels
+	for (i in seq(from + 1L, to)) {
+		other <- .chart_environment$sub[[i]]
+		for (layer in other$layers) {
+			base <- base + layer
+		}
+	}
+
+	## remove coord constraints so the merged
+	## panel auto-scales for combined data
+	suppressMessages(
+		base <- base + ggplot2::coord_cartesian()
+	)
+
+	## rebuild color scale for all legend entries
+	## so each indicator gets a distinct color
+	colorway <- .chart_variables$colorway
+	legend_names <- character(0)
+	for (layer in base$layers) {
+		if (!is.null(layer$data) && ".legend" %in% names(layer$data)) {
+			legend_names <- c(
+				legend_names,
+				unique(layer$data[[".legend"]])
+			)
+		}
+	}
+	legend_names <- unique(legend_names)
+
+	if (length(legend_names) > 0L) {
+		color_map <- setNames(
+			colorway[seq_along(legend_names)],
+			legend_names
+		)
+
+		## remove existing colour scale
+		base$scales$scales <- Filter(
+			function(s) !("colour" %in% s$aesthetics),
+			base$scales$scales
+		)
+		base <- base +
+			ggplot2::scale_colour_manual(
+				name = NULL,
+				values = color_map,
+				breaks = legend_names
+			)
+	}
+
+	## replace first panel with merged
+	## and drop the rest
+	.chart_environment$sub[[from]] <- base
+	length(.chart_environment$sub) <- from
+}
+
+## ---- plotly assembly ----
+
+## combine main chart and subcharts
+## into a multi-panel plotly subplot
 assemble_plotly <- function() {
 	panels <- c(list(.chart_environment$main), .chart_environment$sub)
 	n <- length(panels)
+
+	## main panel gets most of the height
+	## subcharts split the remainder equally
 	main_h <- getOption("talib.chart.main", 0.7)
 	heights <- if (n > 1) {
 		c(main_h, rep((1 - main_h) / (n - 1), n - 1))
 	} else {
 		1
 	}
+
 	fig <- plotly::layout(
 		plotly::subplot(
 			panels,
@@ -343,4 +458,101 @@ assemble_plotly <- function() {
 	.chart_environment$chart <- fig
 
 	layout_axis(layout_color(layout_settings(fig)))
+}
+
+## ---- ggplot2 assembly ----
+
+## combine main chart and subcharts
+## into a multi-panel ggplot2 layout
+assemble_ggplot2 <- function() {
+	panels <- c(
+		list(.chart_environment$main),
+		.chart_environment$sub
+	)
+	n <- length(panels)
+
+	## single panel - return as-is
+	if (n == 1L) {
+		.chart_environment$chart <- panels[[1]]
+		return(panels[[1]])
+	}
+
+	## main panel gets most of the height
+	## subcharts split the remainder equally
+	main_h <- getOption("talib.chart.main", 0.7)
+	heights <- c(
+		main_h,
+		rep(
+			(1 - main_h) / (n - 1),
+			n - 1
+		)
+	)
+
+	## remove x-axis elements from all
+	## panels except the bottom one
+	for (i in seq_len(n - 1)) {
+		panels[[i]] <- panels[[i]] +
+			ggplot2::theme(
+				axis.text.x = ggplot2::element_blank(),
+				axis.ticks.x = ggplot2::element_blank(),
+				plot.margin = ggplot2::margin(2, 5, 0, 5)
+			)
+	}
+
+	## convert to grobs and align column widths
+	## so that y-axes line up across panels
+	## use a null device to prevent Rplots.pdf
+	grDevices::pdf(nullfile())
+	dev_null <- grDevices::dev.cur()
+	on.exit(grDevices::dev.off(dev_null), add = TRUE)
+	grobs <- lapply(panels, ggplot2::ggplotGrob)
+	max_widths <- do.call(
+		grid::unit.pmax,
+		lapply(grobs, function(g) g$widths)
+	)
+	grobs <- lapply(grobs, function(g) {
+		g$widths <- max_widths
+		g
+	})
+
+	## assemble into a talib_chart object
+	fig <- structure(
+		list(
+			grobs = grobs,
+			heights = heights,
+			n = n
+		),
+		class = "talib_chart"
+	)
+
+	.chart_environment$chart <- fig
+	fig
+}
+
+## print method for multi-panel ggplot2 charts
+## uses grid viewports for proportional panel heights
+#' @export
+print.talib_chart <- function(x, ...) {
+	grid::grid.newpage()
+
+	layout <- grid::grid.layout(
+		nrow = x$n,
+		ncol = 1,
+		heights = grid::unit(x$heights, "null")
+	)
+
+	grid::pushViewport(
+		grid::viewport(layout = layout)
+	)
+
+	for (i in seq_len(x$n)) {
+		grid::pushViewport(
+			grid::viewport(layout.pos.row = i)
+		)
+		grid::grid.draw(x$grobs[[i]])
+		grid::popViewport()
+	}
+
+	grid::popViewport()
+	invisible(x)
 }

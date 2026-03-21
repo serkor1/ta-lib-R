@@ -41,13 +41,7 @@ reference:
 - title: Financial Charts
   desc: |
     Charting functions
-  contents:
-  - chart
-  - indicator
-- title: Chart Themes
-  desc: |
-    Charting Themes
-  contents: has_concept('Chart Themes')
+  contents: has_concept('Charting')
 - title: Rolling Statistics
   desc: |
     The collection of Rolling Statistics. 

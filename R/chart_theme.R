@@ -58,7 +58,10 @@
 #' @name chart_themes
 NULL
 
-## available themes
+## ---- theme registry ----
+
+## available themes - each theme defines
+## candle colors - background - text and colorway
 .theme_registry <- list(
 	default = list(
 		## candle-colors
@@ -228,6 +231,10 @@ NULL
 	)
 )
 
+## ---- theme application ----
+
+## apply a theme specification to the
+## chart variables environment
 .apply_chart_theme <- function(spec) {
 	if (is.environment(.chart_variables)) {
 		for (nm in names(spec)) {
