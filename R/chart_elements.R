@@ -29,7 +29,7 @@ add_title <- function(
 
 ## set fixed y-axis limits on a plotly subchart
 ## used for bounded indicators - eg RSI 0 to 100
-add_limit <- function(
+add_limit_ly <- function(
 	p,
 	y_range
 ) {
@@ -43,7 +43,7 @@ add_limit <- function(
 
 ## add OHLC last-value annotation
 ## displayed at the top-right corner of the main chart
-add_last_value <- function(
+add_last_value_ly <- function(
 	p,
 	data,
 	values_to_extract = c("open", "high", "low", "close")

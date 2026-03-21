@@ -176,7 +176,7 @@ hikakke.plotly <- function(
 	)
 
 	## construct {plotly}-object
-	plotly_object <- .chart_environment[["main"]] <- pattern(
+	plotly_object <- .chart_environment[["main"]] <- pattern_ly(
 		p = .chart_environment[["main"]],
 		x = constructed_indicator,
 		high = constructed_series[[2]],

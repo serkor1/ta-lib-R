@@ -229,7 +229,7 @@ dominant_cycle_period.plotly <- function(
 	)
 	## splice:plotly-assembly:end
 
-	plotly_object <- add_last_value(
+	plotly_object <- add_last_value_ly(
 		build_plotly(
 			init = plotly_init(),
 			traces = traces,

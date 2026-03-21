@@ -318,7 +318,7 @@ chart_plotly <- function(
 		function(p) layout_font(p),
 		function(p) layout_legend(p),
 		function(p) {
-			add_last_value(
+			add_last_value_ly(
 				p,
 				data = data
 			)

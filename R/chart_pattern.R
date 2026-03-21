@@ -7,7 +7,7 @@
 ## add pattern markers to a plotly chart
 ## bearish patterns get down-triangles above the candle
 ## bullish patterns get up-triangles below the candle
-pattern <- function(
+pattern_ly <- function(
 	p,
 	x,
 	high,
