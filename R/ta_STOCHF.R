@@ -302,7 +302,7 @@ fast_stochastic.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- "Fast Stochastic"
+	name <- sprintf("StochF(%d)", fastk)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

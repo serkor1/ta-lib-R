@@ -355,7 +355,7 @@ percentage_price_oscillator.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- "Percentage Price Oscillator"
+	name <- sprintf("PPO(%d, %d)", fast, slow)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

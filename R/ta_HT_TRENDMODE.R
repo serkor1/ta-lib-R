@@ -317,7 +317,7 @@ trend_cycle_mode.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- "Hilbert Transform - Trend vs Cycle Mode"
+	name <- "Trendmode"
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

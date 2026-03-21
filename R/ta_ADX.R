@@ -291,7 +291,7 @@ average_directional_movement_index.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- "Average Directional Movement Index"
+	name <- sprintf("ADX(%d)", n)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

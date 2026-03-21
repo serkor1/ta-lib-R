@@ -292,7 +292,7 @@ chaikin_accumulation_distribution_oscillator.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- "Chaikin A/D Oscillator"
+	name <- sprintf("ADOSC(%d, %d)", fast, slow)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

@@ -359,7 +359,7 @@ fixed_moving_average_convergence_divergence.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- "Moving Average Convergence Divergence (Fixed)"
+	name <- sprintf("MACD(%d)", if (is.list(signal)) signal$n else signal)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

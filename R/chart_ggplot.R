@@ -495,11 +495,12 @@ build_ggplot <- function(
 			function(s) !("colour" %in% s$aesthetics),
 			p$scales$scales
 		)
-		p <- p + ggplot2::scale_colour_manual(
-			name = NULL,
-			values = color_map,
-			breaks = names(color_map)
-		)
+		p <- p +
+			ggplot2::scale_colour_manual(
+				name = NULL,
+				values = color_map,
+				breaks = names(color_map)
+			)
 	}
 
 	## persist color map for main chart overlays

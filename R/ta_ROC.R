@@ -327,7 +327,7 @@ rate_of_change.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- "Rate of Change"
+	name <- sprintf("ROC(%d)", n)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

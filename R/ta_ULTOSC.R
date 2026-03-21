@@ -293,7 +293,7 @@ ultimate_oscillator.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- "Ultimate Oscillator"
+	name <- sprintf("UltOsc(%d, %d, %d)", n[1], n[2], n[3])
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

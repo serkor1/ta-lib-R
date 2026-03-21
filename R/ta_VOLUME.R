@@ -374,7 +374,7 @@ trading_volume.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- "Trading Volume"
+	name <- "Volume"
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

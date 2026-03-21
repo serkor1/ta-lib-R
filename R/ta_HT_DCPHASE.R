@@ -318,7 +318,7 @@ dominant_cycle_phase.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- "Hilbert Transform - Dominant Cycle Phase"
+	name <- "DCPhase"
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

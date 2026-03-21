@@ -330,7 +330,7 @@ stochastic_relative_strength_index.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- "Stochastic Relative Strength Index"
+	name <- "StochRSI"
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

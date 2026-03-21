@@ -286,7 +286,7 @@ williams_oscillator.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- "Williams %R"
+	name <- sprintf("Will %%R(%d)", n)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

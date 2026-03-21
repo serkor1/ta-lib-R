@@ -253,7 +253,7 @@ commodity_channel_index.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- "Commodity Channel Index"
+	name <- sprintf("CCI(%d)", n)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- .chart_environment[["main"]] <- build_ggplot(

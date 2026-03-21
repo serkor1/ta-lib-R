@@ -277,7 +277,7 @@ normalized_average_true_range.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- "Normalized Average True Range"
+	name <- sprintf("NATR(%d)", n)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

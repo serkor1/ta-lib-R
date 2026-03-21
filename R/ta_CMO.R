@@ -338,7 +338,7 @@ chande_momentum_oscillator.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- "Chande Momentum Oscillator"
+	name <- sprintf("CMO(%d)", n)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

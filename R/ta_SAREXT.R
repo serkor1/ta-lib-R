@@ -363,7 +363,7 @@ extended_parabolic_stop_and_reverse.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- "Parabolic Stop and Reverse (SAR) - Extended"
+	name <- "SAR (Extended)"
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- .chart_environment[["main"]] <- build_ggplot(

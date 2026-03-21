@@ -277,7 +277,7 @@ trendline.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- "Hilbert Transform - Instantaneous Trendline"
+	name <- "Trendline"
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- .chart_environment[["main"]] <- build_ggplot(

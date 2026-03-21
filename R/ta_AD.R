@@ -268,7 +268,7 @@ chaikin_accumulation_distribution_line.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- "Chaikin A/D Line"
+	name <- "AD"
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

@@ -358,7 +358,7 @@ absolute_price_oscillator.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- "Absolute Price Oscillator"
+	name <- sprintf("APO(%d, %d)", slow, fast)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

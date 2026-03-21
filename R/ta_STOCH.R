@@ -317,7 +317,7 @@ stochastic.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- "Stochastic"
+	name <- sprintf("Stochastic(%d)", fastk)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

@@ -322,7 +322,7 @@ triple_exponential_average.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- "Triple Exponential Average"
+	name <- sprintf("TRIX(%d)", n)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

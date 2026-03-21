@@ -279,7 +279,7 @@ acceleration_bands.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- "Acceleration Bands"
+	name <- label("ACCBANDS", n)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- .chart_environment[["main"]] <- build_ggplot(

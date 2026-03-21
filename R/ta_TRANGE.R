@@ -267,7 +267,7 @@ true_range.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- "True Range"
+	name <- "TRANGE"
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(
