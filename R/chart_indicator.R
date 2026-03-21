@@ -9,14 +9,49 @@
 #'
 #' If no [chart()] have been called prior to [indicator()] the indicator will be charted by itself if `data` is provided. See `vignette(topic = "charting", package = "talib")` for more details.
 #'
-#' @param FUN An indicator function.
-#' @param ... Arguments passed into FUN.
+#' ## Multiple indicators on one panel
+#'
+#' When `FUN` is passed as a call (with parentheses), multiple indicators
+#' can be merged onto the same subchart panel:
+#'
+#' ```
+#' chart(SPY)
+#' indicator(RSI(n = 10), RSI(n = 14), RSI(n = 21))
+#' ```
+#'
+#' Each indicator keeps its own arguments. Different indicator types can
+#' be freely combined:
+#'
+#' ```
+#' indicator(RSI(n = 14), MACD())
+#' ```
+#'
+#' @param FUN An indicator function, or an indicator call (e.g. `RSI(n = 14)`).
+#' When passed as a call, multiple indicators in `...` are merged onto
+#' one subchart panel.
+#' @param ... Arguments passed into FUN (single indicator mode), or
+#' additional indicator calls (multi-indicator mode).
 #'
 #' @example man/examples/indicator.R
 #'
 #' @author Serkan Korkmaz
 #' @export
 indicator <- function(FUN, ...) {
+	## detect multi-indicator mode:
+	## indicator(RSI(n = 10), MACD()) passes calls
+	## indicator(RSI, n = 14) passes a bare function
+	fun_expr <- substitute(FUN)
+
+	is_ns_call <- is.call(fun_expr) &&
+		(identical(fun_expr[[1]], quote(`::`)) ||
+			identical(fun_expr[[1]], quote(`:::`)))
+
+	if (is.call(fun_expr) && !is_ns_call) {
+		mc <- match.call(expand.dots = FALSE)
+		exprs <- c(list(fun_expr), mc$`...`)
+		return(indicator_multi(exprs, parent.frame()))
+	}
+
 	UseMethod("indicator")
 }
 
@@ -161,6 +196,68 @@ indicator.function <- function(FUN, ...) {
 	}
 
 	outcome
+}
+
+## multi-indicator mode: evaluate each indicator
+## call on the same subchart panel, then merge
+indicator_multi <- function(exprs, envir) {
+	## require an existing chart
+	plt <- .chart_environment$main
+	if (is.null(plt)) {
+		stop(
+			"chart() must be called before using indicator() ",
+			"with multiple indicators.",
+			call. = FALSE
+		)
+	}
+
+	## record current subchart count
+	n_before <- length(.chart_environment$sub)
+
+	## evaluate each indicator expression
+	## with x = <chart> injected as first argument
+	for (expr in exprs) {
+		## resolve the indicator function
+		fn <- eval(expr[[1]], envir = envir)
+
+		## build argument list: inject chart object,
+		## then evaluate any user arguments that are
+		## expressions (e.g. variables, arithmetic)
+		user_args <- as.list(expr[-1])
+		if (length(user_args) > 0L) {
+			user_args <- lapply(user_args, function(a) {
+				if (is.language(a)) eval(a, envir = envir) else a
+			})
+		}
+		args <- c(list(x = plt), user_args)
+
+		do.call(fn, args)
+	}
+
+	n_after <- length(.chart_environment$sub)
+	n_new <- n_after - n_before
+
+	## merge if multiple subchart panels were added
+	if (n_new > 1L) {
+		if (inherits(plt, "plotly")) {
+			merge_subchart_plotly(n_before + 1L, n_after)
+		} else if (inherits(plt, "gg")) {
+			merge_subchart_ggplot(n_before + 1L, n_after)
+		}
+	}
+
+	## assemble the final chart
+	if (inherits(plt, "plotly")) {
+		return(assemble_plotly())
+	}
+	if (inherits(plt, "gg")) {
+		return(assemble_ggplot2())
+	}
+
+	stop(
+		"Chart assembly not implemented for this backend.",
+		call. = FALSE
+	)
 }
 
 ## plotly subplot assembly
