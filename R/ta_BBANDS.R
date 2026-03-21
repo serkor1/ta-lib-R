@@ -320,3 +320,86 @@ bollinger_bands.plotly <- function(
 
 	plotly_object
 }
+
+#' @usage NULL
+#' @aliases bollinger_bands
+#'
+#' @export
+bollinger_bands.ggplot <- function(
+	x,
+	cols,
+	ma = SMA(n = 10),
+	sd = 2,
+	sd_down,
+	sd_up,
+	na.ignore = FALSE,
+	## splice:optional-ggplot:start
+	## splice:optional-ggplot:end
+	...
+) {
+	## check ggplot2 availability
+	assert_ggplot2()
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {ggplot}-object
+	constructed_series <- series(
+		x = x,
+		formula = cols,
+		default = ~close,
+		...
+	)
+
+	## construct indicator
+	## from the series
+	constructed_indicator <- bollinger_bands(
+		x = constructed_series,
+		cols = rebuild_formula(
+			names(constructed_series)
+		),
+		ma = ma,
+		sd = sd,
+		sd_down = sd_down,
+		sd_up = sd_up,
+		na.ignore = TRUE
+	)
+
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
+	)
+
+	## construct {ggplot2}-object
+	## splice:ggplot-assembly:start
+	layers <- list(
+		list(y = "UpperBand"),
+		list(y = "MiddleBand"),
+		list(y = "LowerBand"),
+		list(
+			geom = "ribbon",
+			y = "MiddleBand",
+			y_upper = "UpperBand",
+			y_lower = "LowerBand"
+		)
+	)
+	name <- label("Bollinger Bands", ma$n, sd)
+	## splice:ggplot-assembly:end
+
+	ggplot_object <- .chart_environment[["main"]] <- build_ggplot(
+		init = .chart_environment[["main"]],
+		layers = layers,
+		decorators = list(),
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
+		data = constructed_indicator
+	)
+
+	ggplot_object
+}

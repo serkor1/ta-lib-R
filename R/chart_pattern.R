@@ -1,14 +1,20 @@
-pattern <- function(
+## script - candlestick pattern markers
+## adds triangle markers and labels to charts
+## for detected candlestick patterns
+
+## ---- plotly patterns ----
+
+## add pattern markers to a plotly chart
+## bearish patterns get down-triangles above the candle
+## bullish patterns get up-triangles below the candle
+pattern_ly <- function(
 	p,
-	x, # pattern
+	x,
 	high,
 	low,
 	pattern_name = "Doji",
 	agnostic = FALSE
 ) {
-	## chart theme controls
-	chart_theme <- .chart_theme()
-
 	## locate bull and
 	## bear indices
 	idx_bull <- which(x[[1]] > 0L)
@@ -23,8 +29,8 @@ pattern <- function(
 	## to place the markers
 	offset <- 0.15 * (high - low)
 
-	## add patterns
-	## to the chart
+	## add bearish markers
+	## above the candle
 	if (length(idx_bear)) {
 		p <- plotly::add_trace(
 			p = p,
@@ -34,12 +40,12 @@ pattern <- function(
 			mode = "markers+text",
 			marker = list(
 				symbol = "triangle-down",
-				color = chart_theme$bear_color,
+				color = .chart_variables$bearish_body,
 				size = 10
 			),
 			text = bear_text,
 			textposition = "top center",
-			textfont = list(color = chart_theme$bear_color, size = 10),
+			textfont = list(color = .chart_variables$bearish_body, size = 10),
 			hoverinfo = "skip",
 			name = "Bearish",
 			inherit = FALSE,
@@ -47,6 +53,8 @@ pattern <- function(
 		)
 	}
 
+	## add bullish markers below the candle
+	## agnostic mode uses inverted triangle above
 	if (length(idx_bull)) {
 		p <- plotly::add_trace(
 			p = p,
@@ -65,9 +73,9 @@ pattern <- function(
 					"triangle-up"
 				},
 				color = if (agnostic) {
-					chart_theme$font_color
+					.chart_variables$foreground_color
 				} else {
-					chart_theme$bull_color
+					.chart_variables$bullish_body
 				},
 				size = 10
 			),
@@ -79,9 +87,9 @@ pattern <- function(
 			},
 			textfont = list(
 				color = if (agnostic) {
-					chart_theme$font_color
+					.chart_variables$foreground_color
 				} else {
-					chart_theme$bull_color
+					.chart_variables$bullish_body
 				},
 				size = 10
 			),
@@ -92,11 +100,10 @@ pattern <- function(
 		)
 	}
 
+	## realign x-axis to prevent
+	## mismatch between main chart and subcharts
 	p <- plotly::layout(
 		p,
-		## if this part is not added
-		## there is mismatch between the
-		## main chart and the subscharts
 		xaxis = list(
 			tickvals = seq_along(x$idx),
 			ticktext = x$idx,
@@ -105,4 +112,108 @@ pattern <- function(
 	)
 
 	return(p)
+}
+
+## ---- ggplot2 patterns ----
+
+## add pattern markers to a ggplot2 chart
+## uses triangle point shapes - 24 up and 25 down
+pattern_gg <- function(
+	p,
+	x,
+	high,
+	low,
+	pattern_name = "Doji",
+	agnostic = FALSE
+) {
+	## locate bull and bear indices
+	idx_bull <- which(x[[1]] > 0L)
+	idx_bear <- which(x[[1]] < 0L)
+
+	## offset markers from candle body
+	## so they do not overlap with wicks
+	offset <- 0.15 * (high - low)
+
+	## add bearish markers above the candle
+	if (length(idx_bear) > 0) {
+		bear_data <- data.frame(
+			.chart_pos = x$idx[idx_bear],
+			y = high[idx_bear] + offset[idx_bear],
+			label = pattern_name
+		)
+
+		p <- p +
+			ggplot2::geom_point(
+				data = bear_data,
+				ggplot2::aes(
+					x = .data[[".chart_pos"]],
+					y = .data[["y"]]
+				),
+				shape = 25,
+				fill = .chart_variables$bearish_body,
+				color = .chart_variables$bearish_body,
+				size = 2.5
+			)
+
+		p <- p +
+			ggplot2::geom_text(
+				data = bear_data,
+				ggplot2::aes(
+					x = .data[[".chart_pos"]],
+					y = .data[["y"]],
+					label = .data[["label"]]
+				),
+				vjust = -1,
+				color = .chart_variables$bearish_body,
+				size = 2.5
+			)
+	}
+
+	## add bullish markers below the candle
+	## agnostic mode uses inverted triangle above
+	if (length(idx_bull) > 0) {
+		bull_data <- data.frame(
+			.chart_pos = x$idx[idx_bull],
+			y = if (agnostic) {
+				high[idx_bull] - offset[idx_bull]
+			} else {
+				low[idx_bull] - offset[idx_bull]
+			},
+			label = pattern_name
+		)
+
+		marker_color <- if (agnostic) {
+			.chart_variables$foreground_color
+		} else {
+			.chart_variables$bullish_body
+		}
+
+		p <- p +
+			ggplot2::geom_point(
+				data = bull_data,
+				ggplot2::aes(
+					x = .data[[".chart_pos"]],
+					y = .data[["y"]]
+				),
+				shape = if (agnostic) 25 else 24,
+				fill = marker_color,
+				color = marker_color,
+				size = 2.5
+			)
+
+		p <- p +
+			ggplot2::geom_text(
+				data = bull_data,
+				ggplot2::aes(
+					x = .data[[".chart_pos"]],
+					y = .data[["y"]],
+					label = .data[["label"]]
+				),
+				vjust = if (agnostic) -1 else 2,
+				color = marker_color,
+				size = 2.5
+			)
+	}
+
+	p
 }

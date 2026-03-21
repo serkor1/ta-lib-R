@@ -2,32 +2,88 @@
 #' @family Charting
 #' @author Serkan Korkmaz
 #'
-#' @title OHLC Chart
+#' @title Create an OHLC Chart
 #'
 #' @description
-#' `chart()` is a generic S3 function for charting OHLC-V series interactively.
-#' The function is a high-level [plotly::plot_ly] wrapper with pre-specified OHLC values based on the input data.
+#' `chart()` creates interactive candlestick or OHLC bar charts from financial
+#' price data. It initializes the charting environment so that subsequent calls
+#' to [indicator()] can attach technical indicators as subcharts.
 #'
-#' Call `chart()` without any arguments to reset the charting
-#' environment. See `vignette(topic = "charting", package = "talib")` for more details.
+#' Calling `chart()` without any arguments resets the charting environment,
+#' clearing all stored chart state (main chart, subcharts, and data).
+#'
+#' See `vignette(topic = "charting", package = "talib")` for a comprehensive
+#' guide on building multi-panel technical analysis charts.
 #'
 #' @details
-#' The function uses various controlable options:
+#' `chart()` acts as the entry point for the package's charting system. It
+#' stores the OHLC data and the main price chart internally so that subsequent
+#' [indicator()] calls can attach panels below the price chart without
+#' requiring the data to be passed again.
 #'
+#' The chart title is automatically inferred from the name of the object passed
+#' to `x` (e.g., `chart(BTC)` produces the title "BTC"). The title also
+#' displays the number of observations and, when available, the date range.
+#'
+#' Two rendering backends are supported:
 #' \describe{
-#'  \item{talib.deficiency <[logical]>}{`FALSE` by default. If `TRUE` it uses colorblind-friendly colors.}
-#'  \item{talib.chart.dark <[logical]>}{`TRUE` by default. If `FALSE` it charting is done in light mode.}
-#'  \item{talib.chart.slider <[logical]>}{`FALSE` by default. If `TRUE` a `rangeslider` is added to the chart.}
-#'  \item{talib.chart.slider.size <[numeric]>}{0.05 by default. Controls the size of the `rangeslider`.}
-#'  \item{talib.chart.legend <[logical]>}{`TRUE` by default. If `FALSE` the chart comes without legends.}
-#'  \item{talib.chart.scale <[numeric]>}{1 by default. Controls the scale of fonts.}
+#'   \item{`"plotly"` (default)}{Produces interactive HTML charts with hover
+#'     tooltips, pan/zoom, and built-in drawing tools (lines, rectangles).
+#'     Requires the \pkg{plotly} package.}
+#'   \item{`"ggplot2"`}{Produces static charts suitable for reports and
+#'     publications. Requires the \pkg{ggplot2} package.}
 #' }
 #'
-#' @param x An OHLC-V object coercible to [data.frame].
-#' @param type A [character] of [length] 1. `candlestick` by default. Can be `ohlc` for OHLC bars.
-#' @param idx A [vector] with the same [length] of `x`. If passed it will replace the x-axis labels. See `vignette("charting")` for more details.
-#' @param title An optional [character] vector of [length] 1.
-#' @param ... Parameters passed into [plotly::plot_ly]
+#' ## Options
+#'
+#' The following [options()] control chart appearance and behavior:
+#'
+#' \describe{
+#'  \item{`talib.chart.backend` \[character\]}{`"plotly"` by default. Set to
+#'    `"ggplot2"` for static charts.}
+#'  \item{`talib.chart.slider` \[logical\]}{`FALSE` by default. If `TRUE`, a
+#'    range slider is added below the x-axis for interactive zooming (plotly
+#'    backend only).}
+#'  \item{`talib.chart.slider.size` \[numeric\]}{`0.05` by default. Controls
+#'    the height of the range slider as a fraction of the total chart height.}
+#'  \item{`talib.chart.legend` \[logical\]}{`TRUE` by default. If `FALSE`,
+#'    legends are hidden on all panels.}
+#'  \item{`talib.chart.scale` \[numeric\]}{`1` by default. A scaling factor
+#'    applied to all font sizes. Values greater than 1 increase font size.}
+#'  \item{`talib.chart.main` \[numeric\]}{`0.7` by default. The fraction of
+#'    total chart height allocated to the main price panel when subcharts
+#'    are present.}
+#' }
+#'
+#' Colors are controlled via [set_theme()]. See [set_theme()] for available
+#' themes and color customization.
+#'
+#' @param x An OHLC-V [data.frame] (or object coercible to one) with columns
+#'   named `open`, `high`, `low`, `close`, and optionally `volume`. Column
+#'   names are case-sensitive.
+#' @param type A [character] string, either `"candlestick"` (default) or
+#'   `"ohlc"`. Candlestick charts use filled/hollow bodies with wicks; OHLC
+#'   charts use vertical bars with horizontal open/close ticks.
+#' @param idx An optional [vector] with the same [length] as the number of
+#'   rows in `x`. Replaces the default x-axis labels (row names or integer
+#'   index). Useful for custom date formatting or non-standard index types.
+#' @param title An optional [character] string for the chart title. If
+#'   omitted, the title is inferred from the variable name passed to `x`.
+#' @param ... Additional parameters passed to the backend chart constructor
+#'   (e.g., [plotly::plot_ly()]).
+#'
+#' @returns
+#' A chart object whose class depends on the active backend:
+#' \itemize{
+#'   \item \code{"plotly"} backend: a \code{plotly} object (interactive HTML
+#'     widget).
+#'   \item \code{"ggplot2"} backend: a \code{gg} object (static plot).
+#' }
+#'
+#' When called without arguments, returns `NULL` invisibly.
+#'
+#' @seealso [indicator()] to attach technical indicators, [set_theme()] to
+#'   customize chart colors.
 #'
 #' @example man/examples/charting.R
 #'
@@ -63,21 +119,17 @@ chart.default <- function(
 	title,
 	...
 ) {
-	## default chart function
-	##
 	## The chart function works as an initializer
-	## for the downstream indicator function calls
+	## for the downstream indicator function calls.
 	##
 	## There are three chart lists:
 	##    1. main: The candlestick/bar chart. This is where all
-	##             all indicators that are charted on the candlestick
-	##             lives alongside the pricechart itself.
-	##    2. sub:  A list of indicators. This is where all indicators
-	##             that are charted below the main chart lives. For example
-	##             RSI, MACD etc.
+	##             indicators that are charted on the candlestick
+	##             live alongside the price chart itself.
+	##    2. sub:  A list of indicators charted below the main chart.
+	##             For example RSI, MACD etc.
 	##    3. chart: The user-facing TA chart.
-	##              This is empty and is constructed on the fly
-	##              via plotly::subplot.
+	##              This is empty and is constructed on the fly.
 
 	## extract title
 	if (missing(title)) {
@@ -87,14 +139,12 @@ chart.default <- function(
 	} else {
 		chart_title <- title
 	}
+	## reset subchart and user-facing chart lists
 	.chart_environment$sub <- .chart_environment$chart <- list()
 
-	## convert input to data.frame object
-	## and store in the .chart_environment
-	## to avoid having to pass OHLC on every call
-	##
-	## NOTE: it is also a hard requirement on
-	##       {plotly} side
+	## convert input to data.frame and
+	## store in .chart_environment to avoid
+	## having to pass OHLC on every call
 	x <- as.data.frame(x)
 	x$idx <- if (is.null(idx)) {
 		## check if rownames can be
@@ -112,21 +162,58 @@ chart.default <- function(
 	} else {
 		idx
 	}
-	.chart_environment$x <- data_frame <- x
+	.chart_environment$x <- x
 	.chart_environment$idx <- list(
 		label = x$idx,
 		index = seq_along(x$idx)
 	)
 
-	## generate price chart
-	## based on type. can be either
-	## candlestick or barchart.
-	##
-	## TODO: Consider adding the option to use price series
-	##       instead of OHLC.
+	## validate chart type
 	assert(is.character(type) && length(type) == 1)
 	assert(type %in% c("candlestick", "ohlc"))
 
+	## delegate to backend-specific chart builder
+	backend <- getOption("talib.chart.backend", "plotly")
+
+	switch(
+		backend,
+		plotly = chart_plotly(
+			data = x,
+			type = type,
+			title = chart_title,
+			idx = idx,
+			...
+		),
+		ggplot2 = chart_ggplot2(
+			data = x,
+			type = type,
+			title = chart_title,
+			idx = idx,
+			...
+		),
+		stop(
+			"Unknown chart backend: '",
+			backend,
+			"'. ",
+			"Supported backends: 'plotly', 'ggplot2'.",
+			call. = FALSE
+		)
+	)
+}
+
+## ---- plotly backend ----
+
+## build a candlestick or OHLC chart
+## using plotly as the rendering backend
+chart_plotly <- function(
+	data,
+	type,
+	title,
+	idx,
+	...
+) {
+	## helper to construct increasing and
+	## decreasing candle style lists
 	candle_style <- function(
 		bull_candle,
 		bear_candle,
@@ -152,8 +239,10 @@ chart.default <- function(
 		)
 	}
 
+	## initialize the plotly object
+	## with OHLC data
 	base <- plotly::plot_ly(
-		data = data_frame,
+		data = data,
 		x = ~idx,
 		open = ~open,
 		close = ~close,
@@ -163,6 +252,8 @@ chart.default <- function(
 		...
 	)
 
+	## add border trace with thick lines
+	## for candle outlines
 	border_chart <- do.call(
 		plotly::add_trace,
 		c(
@@ -175,6 +266,8 @@ chart.default <- function(
 		)
 	)
 
+	## add body trace with thin lines
+	## for candle fill colors
 	price_chart <- do.call(
 		plotly::add_trace,
 		c(
@@ -190,22 +283,18 @@ chart.default <- function(
 		)
 	)
 
-	## construct chart meta data
-	##
-	## There is no relevant information in the range 1:N
-	## so if the rownames only contrains integers the chart will
-	## skip it
+	## construct chart title
 	if (is.integer(.chart_environment$idx$label)) {
 		title_text <- sprintf(
 			fmt = "%s <span style='font-size:10;'><b>N:</b> %d </span>",
-			chart_title,
-			nrow(x)
+			title,
+			nrow(data)
 		)
 	} else {
 		title_text <- sprintf(
 			fmt = "%s <span style='font-size:10;'><b>N:</b> %d <b>Period:</b> %s</span>",
-			chart_title,
-			nrow(x),
+			title,
+			nrow(data),
 			paste(
 				.chart_environment$idx$label[1],
 				"-",
@@ -216,9 +305,7 @@ chart.default <- function(
 		)
 	}
 
-	## construct price chart
-	##
-	##
+	## apply plotly layout decorators
 	fns <- list(
 		function(p) layout_background(p),
 		function(p) layout_axis(p, idx = idx),
@@ -231,9 +318,9 @@ chart.default <- function(
 		function(p) layout_font(p),
 		function(p) layout_legend(p),
 		function(p) {
-			add_last_value(
+			add_last_value_ly(
 				p,
-				data = data_frame
+				data = data
 			)
 		},
 		function(p) layout_color(p)

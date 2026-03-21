@@ -186,3 +186,50 @@ testthat::test_that(desc = '<plotly>-methods for <matrix>', code = {
 		inherits(output, "plotly")
 	)
 })
+
+## <ggplot>-method checks for <data.frame>
+## and <matrix>
+##
+## <data.frame> checks
+testthat::test_that(desc = '<ggplot>-methods for <data.frame>', code = {
+	testthat::skip_if_not_installed("ggplot2")
+
+	## check that chaikin_accumulation_distribution_oscillator can
+	## use <ggplot> without any issues
+	output <- testthat::expect_no_error(
+		{
+			options(talib.chart.backend = "ggplot2")
+			on.exit(options(talib.chart.backend = "plotly"))
+			chart(BTC)
+			indicator(chaikin_accumulation_distribution_oscillator)
+		}
+	)
+
+	## check that the output
+	## is a <gg>-object or <talib_chart>
+	testthat::expect_true(
+		inherits(output, "gg") || inherits(output, "talib_chart")
+	)
+})
+
+## <matrix> checks
+testthat::test_that(desc = '<ggplot>-methods for <matrix>', code = {
+	testthat::skip_if_not_installed("ggplot2")
+
+	## check that chaikin_accumulation_distribution_oscillator can
+	## use <ggplot> without any issues
+	output <- testthat::expect_no_error(
+		{
+			options(talib.chart.backend = "ggplot2")
+			on.exit(options(talib.chart.backend = "plotly"))
+			chart(SPY)
+			indicator(chaikin_accumulation_distribution_oscillator)
+		}
+	)
+
+	## check that the output
+	## is a <gg>-object or <talib_chart>
+	testthat::expect_true(
+		inherits(output, "gg") || inherits(output, "talib_chart")
+	)
+})

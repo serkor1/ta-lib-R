@@ -1,13 +1,14 @@
-## script: Chart Layout
-## objective:
-##
-## construct various helpers
-## for <plotly> objects
-##
+## script - chart layout functions
+## plotly layout decorators for background
+## axes - fonts - legends and settings
+
+## ---- background ----
+
+## apply theme colors to the plot
+## and panel background
 layout_background <- function(
 	p
 ) {
-	## apply colors
 	plotly::layout(
 		p = p,
 		paper_bgcolor = .chart_variables$background_color,
@@ -21,6 +22,10 @@ layout_background <- function(
 	)
 }
 
+## ---- axes ----
+
+## configure x and y axes with
+## labels - gridlines and styling
 layout_axis <- function(
 	p,
 	idx
@@ -31,7 +36,6 @@ layout_axis <- function(
 		idx <- NULL
 	}
 
-	## apply layout
 	plotly::layout(
 		p = p,
 		yaxis = list(
@@ -59,12 +63,15 @@ layout_axis <- function(
 	)
 }
 
+## ---- title ----
+
+## add chart title as an annotation
+## positioned at the top-left corner
 layout_title <- function(
 	p,
 	title,
 	...
 ) {
-	## apply layout
 	plotly::add_annotations(
 		p = p,
 		text = title,
@@ -85,17 +92,18 @@ layout_title <- function(
 	)
 }
 
+## ---- font ----
 
+## set font sizes scaled by the
+## talib.chart.scale option
 layout_font <- function(
 	p
 ) {
-	## font scale
 	font_scale <- getOption(
 		"talib.chart.scale",
 		default = 1
 	)
 
-	## apply layout
 	plotly::layout(
 		p = p,
 		title = list(
@@ -117,11 +125,13 @@ layout_font <- function(
 	)
 }
 
+## ---- legend ----
 
+## configure legend visibility
+## and position
 layout_legend <- function(
 	p
 ) {
-	## legend controls
 	showlegend <- getOption(
 		"talib.chart.legend",
 		default = TRUE
@@ -146,8 +156,12 @@ layout_legend <- function(
 	)
 }
 
+## ---- settings ----
+
+## apply range slider - drawing tools
+## and remove plotly logo
 layout_settings <- function(p) {
-	## range sliders
+	## range slider controls
 	range_slider <- getOption(
 		"talib.chart.slider",
 		default = FALSE
@@ -157,7 +171,6 @@ layout_settings <- function(p) {
 		default = 0.05
 	)
 
-	## apply range sliders
 	p <- plotly::layout(
 		p = p,
 		xaxis = list(
@@ -166,41 +179,26 @@ layout_settings <- function(p) {
 				thickness = range_slider_size
 			)
 		)
-		## TODO: Understand how this
-		## actually works. Its still a
-		## black box.
-		# margin = list(
-		# 	r = 5,
-		# 	t = 5,
-		# 	l = 5,
-		# 	b = 0,
-		# 	pad = 0
-		# )
 	)
 
-	## configurations
+	## add drawing tools and
+	## remove plotly branding
 	plotly::config(
 		p = p,
-		## options for support
-		## and resistance lines
 		modeBarButtonsToAdd = c(
 			"drawline",
 			"drawrect",
 			"eraseshape"
 		),
 		displayModeBar = getOption("talib.chart.modebar", NULL),
-
-		## remove {plotly} logo
-		## to reduce clutter
-		##
-		## NOTE: Some of the other
-		##       buttons is most likely
-		##       redundant too. These will be
-		##       removed later (TM)
 		displaylogo = FALSE
 	)
 }
 
+## ---- colorway ----
+
+## apply the theme colorway to the
+## plotly layout for indicator coloring
 layout_color <- function(p) {
 	plotly::layout(
 		p = p,

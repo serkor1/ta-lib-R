@@ -13,6 +13,46 @@ series <- function(
 }
 
 #' @export
+series.ggplot <- function(
+	x,
+	default,
+	formula,
+	...
+) {
+	if (missing(formula)) {
+		formula <- default
+	}
+
+	dotsQ <- as.list(substitute(list(...)))[-1L]
+	dn <- ...names()
+	if (length(dotsQ)) {
+		if (is.null(dn)) {
+			dn <- rep("", length(dotsQ))
+		}
+		names(dotsQ) <- dn
+	} else {
+		dotsQ <- list()
+		dn <- character()
+	}
+
+	if (!("data" %in% dn)) {
+		dotsQ$data <- quote(.chart_environment$x)
+	}
+
+	out <- as.data.frame(
+		do.call(
+			series.formula,
+			c(list(x = formula, default = default), dotsQ),
+			quote = FALSE
+		)
+	)
+
+	attr(out, "subset") <- eval(dotsQ$subset)
+
+	out
+}
+
+#' @export
 series.plotly <- function(
 	x,
 	default,

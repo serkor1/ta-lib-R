@@ -263,7 +263,7 @@ absolute_price_oscillator.plotly <- function(
 	)
 	## splice:plotly-assembly:end
 
-	plotly_object <- add_last_value(
+	plotly_object <- add_last_value_ly(
 		build_plotly(
 			init = plotly_init(),
 			traces = traces,
@@ -292,4 +292,102 @@ absolute_price_oscillator.plotly <- function(
 	)
 
 	plotly_object
+}
+
+#' @usage NULL
+#' @aliases absolute_price_oscillator
+#'
+#' @export
+absolute_price_oscillator.ggplot <- function(
+	x,
+	cols,
+	fast = 7,
+	slow = 14,
+	ma = SMA(n = 10),
+	na.ignore = FALSE,
+	## splice:optional-ggplot:start
+	## splice:optional-ggplot:end
+	title,
+	...
+) {
+	## check ggplot2 availability
+	assert_ggplot2()
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {ggplot}-object
+	constructed_series <- series(
+		x = x,
+		formula = cols,
+		default = ~close,
+		...
+	)
+
+	## construct indicator
+	## from the series
+	constructed_indicator <- absolute_price_oscillator(
+		x = constructed_series,
+		cols = rebuild_formula(
+			names(constructed_series)
+		),
+		fast = fast,
+		slow = slow,
+		ma = ma,
+		na.ignore = TRUE
+	)
+
+	## the constructed indicator
+	## always returns expected
+	## columns which can be passed
+	## down to add_last_value_gg()
+	values_to_extract <- colnames(constructed_indicator)
+
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
+	)
+
+	## construct {ggplot2}-object
+	## splice:ggplot-assembly:start
+	layers <- list(
+		ggplot_line(0),
+		list(y = "APO")
+	)
+	name <- sprintf("APO(%d, %d)", slow, fast)
+	## splice:ggplot-assembly:end
+
+	ggplot_object <- add_last_value_gg(
+		build_ggplot(
+			init = ggplot_init(),
+			layers = layers,
+			decorators = get0(
+				x = "decorators",
+				ifnotfound = list()
+			),
+			name = get0(
+				x = "name",
+				ifnotfound = NULL
+			),
+			data = constructed_indicator,
+			title = if (missing(title)) {
+				"Absolute Price Oscillator"
+			} else {
+				title
+			}
+		),
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		values_to_extract = values_to_extract
+	)
+
+	.chart_environment$sub <- c(
+		.chart_environment$sub,
+		list(ggplot_object)
+	)
+
+	ggplot_object
 }

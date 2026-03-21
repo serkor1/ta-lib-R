@@ -183,7 +183,7 @@ evening_star.plotly <- function(
 	)
 
 	## construct {plotly}-object
-	plotly_object <- .chart_environment[["main"]] <- pattern(
+	plotly_object <- .chart_environment[["main"]] <- pattern_ly(
 		p = .chart_environment[["main"]],
 		x = constructed_indicator,
 		high = constructed_series[[2]],
@@ -193,4 +193,62 @@ evening_star.plotly <- function(
 	)
 
 	plotly_object
+}
+
+
+#' @usage NULL
+#' @aliases evening_star
+#'
+#' @export
+evening_star.ggplot <- function(
+	x,
+	cols,
+	eps = 0,
+	na.ignore = FALSE,
+	...
+) {
+	## check ggplot2 availability
+	assert_ggplot2()
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {ggplot}-object
+	constructed_series <- series(
+		x = x,
+		formula = cols,
+		default = ~ open + high + low + close,
+		...
+	)
+
+	## construct indicator
+	## from the series
+	constructed_indicator <- evening_star(
+		x = constructed_series,
+		cols = rebuild_formula(
+			names(constructed_series)
+		),
+		eps = eps
+	)
+
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
+	)
+
+	## construct {ggplot2}-object
+	ggplot_object <- .chart_environment[["main"]] <- pattern_gg(
+		p = .chart_environment[["main"]],
+		x = constructed_indicator,
+		high = constructed_series[[2]],
+		low = constructed_series[[3]],
+		pattern_name = "evening_star",
+		agnostic = FALSE
+	)
+
+	ggplot_object
 }

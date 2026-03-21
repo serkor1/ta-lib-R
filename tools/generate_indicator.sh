@@ -97,8 +97,8 @@ export maType;   REPLACE+='${maType}'
 ## 4) construct R files
 ##    in temporary locations
 ##    to avoid breaking existing code
-tmp_render="$(mktemp)"; tmp_plotly="$(mktemp)"; tmp_numeric="$(mktemp)"; tmp_splice="$(mktemp)"
-trap 'rm -f "$tmp_render" "$tmp_plotly" "$tmp_numeric" "$tmp_splice"' EXIT
+tmp_render="$(mktemp)"; tmp_plotly="$(mktemp)"; tmp_numeric="$(mktemp)"; tmp_ggplot="$(mktemp)"; tmp_splice="$(mktemp)"
+trap 'rm -f "$tmp_render" "$tmp_plotly" "$tmp_numeric" "$tmp_ggplot" "$tmp_splice"' EXIT
 
 ## 4.1) main template
 envsubst "$REPLACE" < "$TEMPLATE_MAIN" > "$tmp_render"
@@ -123,6 +123,32 @@ if [[ $PLOTLY -eq 1 ]]; then
   envsubst "$REPLACE" < "$TEMPLATE_PLOTLY" > "$tmp_plotly"
   printf '\n\n' >> "$tmp_render"
   cat "$tmp_plotly" >> "$tmp_render"
+  fi
+fi
+
+## 4.4) ggplot2 templates
+##      for candlestick and moving average templates
+##      the ggplot method is appended separately since
+##      their plotly methods are baked into the main template
+if [[ $CANDLESTICK -eq 1 ]]; then
+  envsubst "$REPLACE" < "tools/templates/candlestick_ggplot_template.R.in" > "$tmp_ggplot"
+  printf '\n\n' >> "$tmp_render"
+  cat "$tmp_ggplot" >> "$tmp_render"
+elif [[ "$maType" != "-1" ]]; then
+  envsubst "$REPLACE" < "tools/templates/moving_average_ggplot_template.R.in" > "$tmp_ggplot"
+  printf '\n\n' >> "$tmp_render"
+  cat "$tmp_ggplot" >> "$tmp_render"
+elif [[ $PLOTLY -eq 1 ]]; then
+  if [[ $SUBCHART -eq 1 ]]; then
+  TEMPLATE_GGPLOT=${TEMPLATE_GGPLOT:-tools/templates/ggplot_subchart_template.R.in}
+  envsubst "$REPLACE" < "$TEMPLATE_GGPLOT" > "$tmp_ggplot"
+  printf '\n\n' >> "$tmp_render"
+  cat "$tmp_ggplot" >> "$tmp_render"
+  else
+  TEMPLATE_GGPLOT=${TEMPLATE_GGPLOT:-tools/templates/ggplot_main_template.R.in}
+  envsubst "$REPLACE" < "$TEMPLATE_GGPLOT" > "$tmp_ggplot"
+  printf '\n\n' >> "$tmp_render"
+  cat "$tmp_ggplot" >> "$tmp_render"
   fi
 fi
 

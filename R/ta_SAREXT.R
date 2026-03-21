@@ -258,7 +258,7 @@ extended_parabolic_stop_and_reverse.plotly <- function(
 	colors <- ifelse(
 		bull,
 		plotly::toRGB(.chart_variables$bullish_body, alpha = 0.8),
-		plotly::toRGB(.chart_variables$bearish_body <- "#A9A9A9", alpha = 0.8)
+		plotly::toRGB(.chart_variables$bearish_body, alpha = 0.8)
 	)
 
 	## constuct chart
@@ -294,4 +294,87 @@ extended_parabolic_stop_and_reverse.plotly <- function(
 	)
 
 	plotly_object
+}
+
+#' @usage NULL
+#' @aliases extended_parabolic_stop_and_reverse
+#'
+#' @export
+extended_parabolic_stop_and_reverse.ggplot <- function(
+	x,
+	cols,
+	init = 0,
+	offset = 0,
+	init_long = 0,
+	long = 0,
+	max_long = 0,
+	init_short = 0,
+	short = 0,
+	max_short = 0,
+	na.ignore = FALSE,
+	## splice:optional-ggplot:start
+	## splice:optional-ggplot:end
+	...
+) {
+	## check ggplot2 availability
+	assert_ggplot2()
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {ggplot}-object
+	constructed_series <- series(
+		x = x,
+		formula = cols,
+		default = ~ high + low,
+		...
+	)
+
+	## construct indicator
+	## from the series
+	constructed_indicator <- extended_parabolic_stop_and_reverse(
+		x = constructed_series,
+		cols = rebuild_formula(
+			names(constructed_series)
+		),
+		init = init,
+		offset = offset,
+		init_long = init_long,
+		long = long,
+		max_long = max_long,
+		init_short = init_short,
+		short = short,
+		max_short = max_short,
+		na.ignore = TRUE
+	)
+
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
+	)
+
+	## construct {ggplot2}-object
+	## splice:ggplot-assembly:start
+	layers <- list(
+		list(y = "SAREXT", geom = "point")
+	)
+	name <- "SAR (Extended)"
+	## splice:ggplot-assembly:end
+
+	ggplot_object <- .chart_environment[["main"]] <- build_ggplot(
+		init = .chart_environment[["main"]],
+		layers = layers,
+		decorators = list(),
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
+		data = constructed_indicator
+	)
+
+	ggplot_object
 }

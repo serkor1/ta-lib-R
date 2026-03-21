@@ -236,3 +236,64 @@ mesa_adaptive_moving_average.plotly <- function(
 
 	plotly_object
 }
+
+
+#' @usage NULL
+#' @aliases mesa_adaptive_moving_average
+#'
+#' @export
+mesa_adaptive_moving_average.ggplot <- function(
+	x,
+	cols,
+	n = 10,
+	na.ignore = FALSE,
+	...
+) {
+	## check ggplot2 availability
+	assert_ggplot2()
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {ggplot}-object
+	constructed_series <- series(
+		x = x,
+		formula = cols,
+		default = ~close,
+		...
+	)
+
+	## construct indicator
+	## from the series
+	constructed_indicator <- mesa_adaptive_moving_average(
+		x = constructed_series,
+		cols = rebuild_formula(
+			names(constructed_series)
+		),
+		n = n
+	)
+
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
+	)
+
+	## construct {ggplot2}-object
+	ggplot_object <- .chart_environment[["main"]] <- build_ggplot(
+		init = .chart_environment[["main"]],
+		layers = list(
+			list(
+				y = "MAMA"
+			)
+		),
+		name = sprintf("MAMA(%d)", n),
+		decorators = list(),
+		data = constructed_indicator
+	)
+
+	ggplot_object
+}

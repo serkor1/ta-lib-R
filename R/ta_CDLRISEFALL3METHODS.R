@@ -176,7 +176,7 @@ rise_fall_3_methods.plotly <- function(
 	)
 
 	## construct {plotly}-object
-	plotly_object <- .chart_environment[["main"]] <- pattern(
+	plotly_object <- .chart_environment[["main"]] <- pattern_ly(
 		p = .chart_environment[["main"]],
 		x = constructed_indicator,
 		high = constructed_series[[2]],
@@ -186,4 +186,60 @@ rise_fall_3_methods.plotly <- function(
 	)
 
 	plotly_object
+}
+
+
+#' @usage NULL
+#' @aliases rise_fall_3_methods
+#'
+#' @export
+rise_fall_3_methods.ggplot <- function(
+	x,
+	cols,
+	na.ignore = FALSE,
+	...
+) {
+	## check ggplot2 availability
+	assert_ggplot2()
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {ggplot}-object
+	constructed_series <- series(
+		x = x,
+		formula = cols,
+		default = ~ open + high + low + close,
+		...
+	)
+
+	## construct indicator
+	## from the series
+	constructed_indicator <- rise_fall_3_methods(
+		x = constructed_series,
+		cols = rebuild_formula(
+			names(constructed_series)
+		)
+	)
+
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
+	)
+
+	## construct {ggplot2}-object
+	ggplot_object <- .chart_environment[["main"]] <- pattern_gg(
+		p = .chart_environment[["main"]],
+		x = constructed_indicator,
+		high = constructed_series[[2]],
+		low = constructed_series[[3]],
+		pattern_name = "rise_fall_3_methods",
+		agnostic = FALSE
+	)
+
+	ggplot_object
 }
