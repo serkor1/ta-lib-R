@@ -1,5 +1,8 @@
-## script: Test charting
-## author: Serkan Korkmaz
+## script - test charting infrastructure
+## author - Serkan Korkmaz
+
+## ---- chart() ----
+
 testthat::test_that(desc = "Charting", code = {
 	## 1) test chart() works
 	##    without issues
@@ -14,7 +17,7 @@ testthat::test_that(desc = "Charting", code = {
 	## 1.2) data.frame
 	testthat::expect_no_error(
 		{
-			chart(SPY)
+			chart(BTC)
 		}
 	)
 
@@ -32,6 +35,21 @@ testthat::test_that(desc = "Charting", code = {
 		}
 	)
 })
+
+## test chart reset
+testthat::test_that(desc = "chart() reset clears environment", code = {
+	## chart then reset
+	chart(BTC)
+	chart()
+
+	## indicator should require data
+	## since chart state was cleared
+	testthat::expect_error(
+		indicator(RSI)
+	)
+})
+
+## ---- set_theme() ----
 
 ## test charting with themes
 testthat::test_that(desc = "Charting with Themes", code = {
@@ -87,6 +105,77 @@ testthat::test_that(desc = "set_theme API", code = {
 		set_theme(background_color = "#111111")
 	)
 })
+
+## ---- indicator() multi-indicator mode ----
+
+## test multi-indicator on same panel - plotly
+testthat::test_that(desc = "Multi-indicator mode plotly", code = {
+	output <- testthat::expect_no_error(
+		{
+			chart(BTC)
+			indicator(RSI(n = 10), RSI(n = 14))
+		}
+	)
+
+	testthat::expect_true(
+		inherits(output, "plotly")
+	)
+})
+
+## test multi-indicator with different types - plotly
+testthat::test_that(desc = "Multi-indicator mixed types plotly", code = {
+	output <- testthat::expect_no_error(
+		{
+			chart(BTC)
+			indicator(RSI(n = 14), CMO())
+		}
+	)
+
+	testthat::expect_true(
+		inherits(output, "plotly")
+	)
+})
+
+## test multi-indicator requires chart()
+testthat::test_that(desc = "Multi-indicator requires chart()", code = {
+	chart()
+	testthat::expect_error(
+		indicator(RSI(n = 10), RSI(n = 14))
+	)
+})
+
+## ---- indicator() standalone mode ----
+
+## test standalone indicator - plotly
+testthat::test_that(desc = "Standalone indicator plotly", code = {
+	chart()
+	output <- testthat::expect_no_error(
+		indicator(RSI, data = BTC, n = 14)
+	)
+
+	testthat::expect_true(
+		inherits(output, "plotly")
+	)
+})
+
+## test standalone indicator - ggplot2
+testthat::test_that(desc = "Standalone indicator ggplot2", code = {
+	testthat::skip_if_not_installed("ggplot2")
+
+	chart()
+	options(talib.chart.backend = "ggplot2")
+	on.exit(options(talib.chart.backend = "plotly"))
+
+	output <- testthat::expect_no_error(
+		indicator(RSI, data = BTC, n = 14)
+	)
+
+	testthat::expect_true(
+		inherits(output, "gg")
+	)
+})
+
+## ---- ggplot2 backend ----
 
 ## test ggplot2 backend charting
 testthat::test_that(desc = "ggplot2 backend charting", code = {
@@ -148,4 +237,52 @@ testthat::test_that(desc = "ggplot2 backend OHLC type", code = {
 		chart(SPY, type = "ohlc")
 	)
 	testthat::expect_true(inherits(output, "gg"))
+})
+
+## ---- ggplot2 multi-indicator mode ----
+
+## test multi-indicator on same panel - ggplot2
+testthat::test_that(desc = "Multi-indicator mode ggplot2", code = {
+	testthat::skip_if_not_installed("ggplot2")
+
+	options(talib.chart.backend = "ggplot2")
+	on.exit(options(talib.chart.backend = "plotly"))
+
+	output <- testthat::expect_no_error(
+		{
+			chart(BTC)
+			indicator(RSI(n = 10), RSI(n = 14))
+		}
+	)
+
+	testthat::expect_true(
+		inherits(output, "gg") || inherits(output, "talib_chart")
+	)
+})
+
+## test multi-indicator with different types - ggplot2
+testthat::test_that(desc = "Multi-indicator mixed types ggplot2", code = {
+	testthat::skip_if_not_installed("ggplot2")
+
+	options(talib.chart.backend = "ggplot2")
+	on.exit(options(talib.chart.backend = "plotly"))
+
+	output <- testthat::expect_no_error(
+		{
+			chart(BTC)
+			indicator(RSI(n = 14), CMO())
+		}
+	)
+
+	testthat::expect_true(
+		inherits(output, "gg") || inherits(output, "talib_chart")
+	)
+})
+
+## ---- reset theme to default ----
+
+## clean up after tests
+testthat::test_that(desc = "Reset theme", code = {
+	set_theme("default")
+	testthat::expect_true(TRUE)
 })
