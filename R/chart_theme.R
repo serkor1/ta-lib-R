@@ -13,6 +13,41 @@ NULL
 
 ## available themes
 .theme_registry <- list(
+	default = list(
+		## candle-colors
+		bearish_body = "#4682B4",
+		bearish_wick = "#4682B4",
+		bearish_border = "#3B6A93",
+		bullish_body = "#E0FFFF",
+		bullish_wick = "#E0FFFF",
+		bullish_border = "#C0D9D9",
+
+		## general-colors
+		background_color = "#141414",
+		foreground_color = "#E0FFFF",
+		text_color = "#E0FFFF",
+
+		## colorway
+		colorway = c(
+			"#E0FFFF",
+			"#B5F3FF",
+			"#7DD3FC",
+			"#5BC0EB",
+			"#4682B4",
+			"#2E86AB",
+			"#00B3B8",
+			"#44D7B6",
+			"#C792EA",
+			"#F6C177"
+		),
+
+		## gridcolor
+		gridcolor = "#232A30",
+
+		## threshold line color
+		threshold_color = "#5A6270"
+	),
+
 	hawks_and_doves = list(
 		## candle-colors
 		bearish_body = "#A9A9A9",
