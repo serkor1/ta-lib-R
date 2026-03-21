@@ -191,6 +191,9 @@ chart_ggplot2 <- function(
 	## add last value annotation
 	p <- add_last_value_gg(p, data)
 
+	## reset colorway counter for indicators
+	.chart_environment$color_idx <- 0L
+
 	.chart_environment$main <- p
 	p
 }
@@ -325,7 +328,7 @@ build_ggplot <- function(
 
 	p <- init
 	colorway <- .chart_variables$colorway
-	color_idx <- 0L
+	color_idx <- .chart_environment$color_idx %nn% 0L
 
 	## track whether fill/color scales have been used
 	## to avoid duplicate scale errors
@@ -459,6 +462,10 @@ build_ggplot <- function(
 			}
 		}
 	}
+
+	## persist colorway counter so subsequent
+	## indicator calls continue cycling
+	.chart_environment$color_idx <- color_idx
 
 	## add title for subcharts
 	if (!is.null(title) && !is.null(.chart_environment$main)) {
