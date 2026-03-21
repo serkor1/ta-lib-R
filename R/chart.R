@@ -2,30 +2,88 @@
 #' @family Charting
 #' @author Serkan Korkmaz
 #'
-#' @title OHLC Chart
+#' @title Create an OHLC Chart
 #'
 #' @description
-#' `chart()` is a generic S3 function for charting OHLC-V series.
+#' `chart()` creates interactive candlestick or OHLC bar charts from financial
+#' price data. It initializes the charting environment so that subsequent calls
+#' to [indicator()] can attach technical indicators as subcharts.
 #'
-#' Call `chart()` without any arguments to reset the charting
-#' environment. See `vignette(topic = "charting", package = "talib")` for more details.
+#' Calling `chart()` without any arguments resets the charting environment,
+#' clearing all stored chart state (main chart, subcharts, and data).
+#'
+#' See `vignette(topic = "charting", package = "talib")` for a comprehensive
+#' guide on building multi-panel technical analysis charts.
 #'
 #' @details
-#' The function uses various controlable options:
+#' `chart()` acts as the entry point for the package's charting system. It
+#' stores the OHLC data and the main price chart internally so that subsequent
+#' [indicator()] calls can attach panels below the price chart without
+#' requiring the data to be passed again.
 #'
+#' The chart title is automatically inferred from the name of the object passed
+#' to `x` (e.g., `chart(BTC)` produces the title "BTC"). The title also
+#' displays the number of observations and, when available, the date range.
+#'
+#' Two rendering backends are supported:
 #' \describe{
-#'  \item{talib.chart.backend <[character]>}{`"plotly"` by default. The charting backend. Use `"ggplot2"` for static charts (requires \pkg{ggplot2} and \pkg{patchwork}).}
-#'  \item{talib.chart.slider <[logical]>}{`FALSE` by default. If `TRUE` a `rangeslider` is added to the chart.}
-#'  \item{talib.chart.slider.size <[numeric]>}{0.05 by default. Controls the size of the `rangeslider`.}
-#'  \item{talib.chart.legend <[logical]>}{`TRUE` by default. If `FALSE` the chart comes without legends.}
-#'  \item{talib.chart.scale <[numeric]>}{1 by default. Controls the scale of fonts.}
+#'   \item{`"plotly"` (default)}{Produces interactive HTML charts with hover
+#'     tooltips, pan/zoom, and built-in drawing tools (lines, rectangles).
+#'     Requires the \pkg{plotly} package.}
+#'   \item{`"ggplot2"`}{Produces static charts suitable for reports and
+#'     publications. Requires the \pkg{ggplot2} package.}
 #' }
 #'
-#' @param x An OHLC-V object coercible to [data.frame].
-#' @param type A [character] of [length] 1. `candlestick` by default. Can be `ohlc` for OHLC bars.
-#' @param idx A [vector] with the same [length] of `x`. If passed it will replace the x-axis labels. See `vignette("charting")` for more details.
-#' @param title An optional [character] vector of [length] 1.
-#' @param ... Additional parameters passed to the backend.
+#' ## Options
+#'
+#' The following [options()] control chart appearance and behavior:
+#'
+#' \describe{
+#'  \item{`talib.chart.backend` \[character\]}{`"plotly"` by default. Set to
+#'    `"ggplot2"` for static charts.}
+#'  \item{`talib.chart.slider` \[logical\]}{`FALSE` by default. If `TRUE`, a
+#'    range slider is added below the x-axis for interactive zooming (plotly
+#'    backend only).}
+#'  \item{`talib.chart.slider.size` \[numeric\]}{`0.05` by default. Controls
+#'    the height of the range slider as a fraction of the total chart height.}
+#'  \item{`talib.chart.legend` \[logical\]}{`TRUE` by default. If `FALSE`,
+#'    legends are hidden on all panels.}
+#'  \item{`talib.chart.scale` \[numeric\]}{`1` by default. A scaling factor
+#'    applied to all font sizes. Values greater than 1 increase font size.}
+#'  \item{`talib.chart.main` \[numeric\]}{`0.7` by default. The fraction of
+#'    total chart height allocated to the main price panel when subcharts
+#'    are present.}
+#' }
+#'
+#' Colors are controlled via [set_theme()]. See [set_theme()] for available
+#' themes and color customization.
+#'
+#' @param x An OHLC-V [data.frame] (or object coercible to one) with columns
+#'   named `open`, `high`, `low`, `close`, and optionally `volume`. Column
+#'   names are case-sensitive.
+#' @param type A [character] string, either `"candlestick"` (default) or
+#'   `"ohlc"`. Candlestick charts use filled/hollow bodies with wicks; OHLC
+#'   charts use vertical bars with horizontal open/close ticks.
+#' @param idx An optional [vector] with the same [length] as the number of
+#'   rows in `x`. Replaces the default x-axis labels (row names or integer
+#'   index). Useful for custom date formatting or non-standard index types.
+#' @param title An optional [character] string for the chart title. If
+#'   omitted, the title is inferred from the variable name passed to `x`.
+#' @param ... Additional parameters passed to the backend chart constructor
+#'   (e.g., [plotly::plot_ly()]).
+#'
+#' @returns
+#' A chart object whose class depends on the active backend:
+#' \itemize{
+#'   \item \code{"plotly"} backend: a \code{plotly} object (interactive HTML
+#'     widget).
+#'   \item \code{"ggplot2"} backend: a \code{gg} object (static plot).
+#' }
+#'
+#' When called without arguments, returns `NULL` invisibly.
+#'
+#' @seealso [indicator()] to attach technical indicators, [set_theme()] to
+#'   customize chart colors, [merge.plotly()] to combine chart objects.
 #'
 #' @example man/examples/charting.R
 #'

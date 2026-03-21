@@ -1,13 +1,60 @@
-#' Chart themes
+#' Chart Themes
 #'
-#' Set the active chart color theme used by the package's chart rendering
-#' functions.
+#' @description
+#' The charting system ships with a set of built-in color themes inspired by
+#' [chartthemes.com](https://chartthemes.com/). Each theme controls candle
+#' colors, background, text, grid lines, and a 10-color palette (colorway)
+#' used to distinguish indicator lines.
+#'
+#' Use [set_theme()] to apply or list themes.
 #'
 #' @details
-#' Themes **mutate** the package-level theme state stored in `.chart_variables`.
 #'
-#' @return Invisibly returns `.chart_variables` after modification.
-#' @family Chart Themes
+#' ## Available Themes
+#'
+#' \describe{
+#'   \item{`default`}{A dark theme with cyan and steel-blue tones. Light
+#'     (`#E0FFFF`) bullish candles on a near-black (`#141414`) background
+#'     with a cool blue (`#4682B4`) bearish candle. The colorway spans
+#'     icy blues through teal and soft purple.}
+#'   \item{`hawks_and_doves`}{A light, grayscale theme with a white background.
+#'     Candles use shades of gray, making it suitable for print or
+#'     presentations where color is secondary. The colorway uses muted,
+#'     accessible tones.}
+#'   \item{`payout`}{A dark teal theme on a near-black (`#1A1A1A`) background.
+#'     Bullish candles are teal (`#008080`), bearish candles are dark slate
+#'     (`#2F4F4F`). The colorway follows the default Plotly palette.}
+#'   \item{`tp_slapped`}{A bright theme on a light gray (`#ECF0F1`)
+#'     background. Red (`#E74C3C`) bearish and teal (`#1ABC9C`) bullish
+#'     candles provide strong visual contrast. The colorway uses vivid,
+#'     saturated colors.}
+#'   \item{`trust_the_process`}{A subtle, earth-toned theme on a light gray
+#'     (`#F5F5F5`) background. Both bull and bear candles use shades of gray,
+#'     keeping the focus on indicator lines. The colorway uses muted natural
+#'     tones.}
+#' }
+#'
+#' ## Theme Properties
+#'
+#' Each theme sets the following color properties:
+#'
+#' \describe{
+#'   \item{Candle colors}{`bearish_body`, `bearish_wick`, `bearish_border`,
+#'     `bullish_body`, `bullish_wick`, `bullish_border`}
+#'   \item{General colors}{`background_color`, `foreground_color` (axes and
+#'     borders), `text_color`}
+#'   \item{Grid and reference}{`gridcolor`, `threshold_color` (horizontal
+#'     reference lines such as overbought/oversold levels)}
+#'   \item{Colorway}{A vector of 10 colors cycled through for indicator
+#'     lines and legends}
+#' }
+#'
+#' Any of these properties can be individually overridden via the `...`
+#' argument to [set_theme()].
+#'
+#' @example man/examples/set_theme.R
+#'
+#' @family Charting
 #' @name chart_themes
 NULL
 
@@ -194,26 +241,67 @@ NULL
 	invisible(.chart_variables)
 }
 
-#' Set or list chart themes
+#' Set or List Chart Themes
 #'
-#' Apply a chart color theme or list available themes.
+#' @description
+#' Apply a named color theme to the charting system, override individual
+#' theme properties, or list all available theme names. The themes are
+#' inspired by [chartthemes.com](https://chartthemes.com/).
+#'
+#' Theme changes take effect immediately and apply to all subsequent
+#' [chart()] and [indicator()] calls.
 #'
 #' @details
-#' Three usage patterns:
+#' `set_theme` supports three usage patterns:
+#'
 #' \describe{
-#'  \item{`set_theme()`}{Lists available theme names.}
-#'  \item{`set_theme("payout")`}{Applies a theme by name.}
-#'  \item{`set_theme$payout`}{Applies a theme via `$` (supports tab-completion).}
+#'  \item{`set_theme()`}{Returns a character vector of available theme names.}
+#'  \item{`set_theme("payout")`}{Applies the named theme.}
+#'  \item{`set_theme$payout`}{Applies the named theme via `$` syntax (supports
+#'    tab-completion in interactive sessions).}
 #' }
 #'
-#' @param name Optional [character] theme name. If omitted, returns
-#'  available theme names.
-#' @param ... Named color overrides applied after the base theme
-#'  (e.g., `background_color = "#000000"`).
+#' Themes can be combined with individual color overrides. When both `name`
+#' and `...` are provided, the base theme is applied first, then the
+#' overrides are applied on top:
 #'
-#' @return When called without arguments, a character vector of theme names.
-#'  Otherwise, invisibly returns `.chart_variables` after modification.
-#' @family Chart Themes
+#' ```r
+#' # Apply "payout" but with a custom background
+#' set_theme("payout", background_color = "#000000")
+#' ```
+#'
+#' It is also possible to override individual properties without selecting a
+#' theme:
+#'
+#' ```r
+#' # Change only the bearish candle color
+#' set_theme(bearish_body = "#FF0000")
+#' ```
+#'
+#' See [chart_themes] for a full description of all available themes and
+#' their color properties.
+#'
+#' @param name An optional [character] string matching one of the available
+#'   theme names. Partial matching is supported. If omitted (and no `...`
+#'   overrides are given), returns the available theme names instead.
+#' @param ... Named color overrides applied after the base theme. Valid names
+#'   include any theme property: `bearish_body`, `bearish_wick`,
+#'   `bearish_border`, `bullish_body`, `bullish_wick`, `bullish_border`,
+#'   `background_color`, `foreground_color`, `text_color`, `gridcolor`,
+#'   `threshold_color`, and `colorway` (a character vector of up to 10
+#'   colors).
+#'
+#' @returns
+#' When called without arguments, a [character] vector of available theme
+#' names. Otherwise, invisibly returns the internal theme environment after
+#' modification.
+#'
+#' @seealso [chart_themes] for descriptions of each theme, [chart()] for
+#'   creating charts.
+#'
+#' @example man/examples/set_theme.R
+#'
+#' @family Charting
 #' @export
 set_theme <- local({
 	f <- function(name, ...) {

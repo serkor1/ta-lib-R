@@ -1,24 +1,14 @@
-## charting in {talib}
-## using {plotly}
+## charting OHLC data with {talib}
 data(BTC, package = "talib")
 
-## candlestick chart
-## (default)
-{
-	talib::chart(
-		BTC,
-		type = "candlestick"
-	)
-}
+## candlestick chart (default)
+talib::chart(BTC)
 
-## OHLC chart
-{
-	talib::chart(
-		BTC,
-		type = "ohlc"
-	)
-}
+## OHLC bar chart
+talib::chart(BTC, type = "ohlc")
 
-## reset the charting
-## environment
+## chart with a custom title
+talib::chart(BTC, title = "Bitcoin / USD")
+
+## reset the charting environment
 talib::chart()

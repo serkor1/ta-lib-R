@@ -2,35 +2,90 @@
 #' @family Charting
 #' @author Serkan Korkmaz
 #'
-#' @title Indicator Chart
+#' @title Add Technical Indicators to a Chart
 #'
 #' @description
-#' `indicator()` will look for an existing [chart()]-object and attach the indicator accordingly. All indicators can be charted indepently of whether [chart()] have been called.
+#' `indicator()` attaches one or more technical indicators to an existing
+#' [chart()], or renders an indicator as a standalone chart. Each indicator
+#' is displayed in its own subchart panel below the main price chart.
 #'
-#' If no [chart()] have been called prior to [indicator()] the indicator will be charted by itself if `data` is provided. See `vignette(topic = "charting", package = "talib")` for more details.
+#' If [chart()] has not been called beforehand, `indicator()` creates a
+#' standalone indicator chart — in this case, `data` must be provided
+#' explicitly.
 #'
-#' ## Multiple indicators on one panel
+#' See `vignette(topic = "charting", package = "talib")` for a comprehensive
+#' guide.
 #'
-#' When `FUN` is passed as a call (with parentheses), multiple indicators
-#' can be merged onto the same subchart panel:
+#' @details
+#' `indicator()` operates in two modes depending on how `FUN` is passed:
 #'
+#' ## Single Indicator Mode
+#'
+#' Pass a bare function name (without parentheses) and its arguments via
+#' `...`:
+#'
+#' ```r
+#' chart(BTC)
+#' indicator(RSI, n = 14)
 #' ```
-#' chart(SPY)
+#'
+#' ## Multi-Indicator Mode
+#'
+#' Pass one or more indicator calls (with parentheses) to merge them onto
+#' a single subchart panel:
+#'
+#' ```r
+#' chart(BTC)
 #' indicator(RSI(n = 10), RSI(n = 14), RSI(n = 21))
 #' ```
 #'
-#' Each indicator keeps its own arguments. Different indicator types can
-#' be freely combined:
+#' Each indicator retains its own arguments. Different indicator types can
+#' be freely combined on the same panel:
 #'
-#' ```
+#' ```r
 #' indicator(RSI(n = 14), MACD())
 #' ```
 #'
-#' @param FUN An indicator function, or an indicator call (e.g. `RSI(n = 14)`).
-#' When passed as a call, multiple indicators in `...` are merged onto
-#' one subchart panel.
-#' @param ... Arguments passed into FUN (single indicator mode), or
-#' additional indicator calls (multi-indicator mode).
+#' Multi-indicator mode requires an existing [chart()] — it cannot be used
+#' standalone.
+#'
+#' ## Standalone Mode
+#'
+#' When no [chart()] has been called, a standalone indicator chart is created.
+#' The `data` argument is required in this case:
+#'
+#' ```r
+#' indicator(RSI, data = BTC, n = 14)
+#' ```
+#'
+#' The chart title is automatically derived from the indicator function name,
+#' converting `snake_case` to Title Case.
+#'
+#' ## Panel Layout
+#'
+#' When subcharts are present, the main price panel occupies 70% of the total
+#' height by default (configurable via `options(talib.chart.main = ...)`), and
+#' the remaining space is divided equally among subchart panels.
+#'
+#' @param FUN An indicator function or an indicator call. In single indicator
+#'   mode, pass the bare function (e.g., `RSI`); arguments for the indicator
+#'   go in `...`. In multi-indicator mode, pass a call with parentheses
+#'   (e.g., `RSI(n = 14)`); additional indicator calls go in `...`.
+#' @param ... In single indicator mode: arguments passed to `FUN` (e.g.,
+#'   `n = 14`, `data = BTC`). In multi-indicator mode: additional indicator
+#'   calls to merge onto the same panel (e.g., `RSI(n = 21)`, `MACD()`).
+#'
+#' @returns
+#' A chart object whose class depends on the active backend:
+#' \itemize{
+#'   \item \code{"plotly"} backend: a \code{plotly} object containing the
+#'     assembled multi-panel chart.
+#'   \item \code{"ggplot2"} backend: a \code{talib_chart} object (when
+#'     combined with [chart()]) or a \code{gg} object (standalone).
+#' }
+#'
+#' @seealso [chart()] to create the main price chart, [set_theme()] to
+#'   customize chart colors.
 #'
 #' @example man/examples/indicator.R
 #'

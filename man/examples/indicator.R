@@ -1,22 +1,24 @@
-## charting in {talib}
-## using {plotly}
+## indicator charts with {talib}
 data(BTC, package = "talib")
 
-## chart Relative Strength Index
-## with default values
-{
-	talib::indicator(
-		talib::RSI,
-		data = BTC
-	)
-}
+## standalone indicator chart
+## (no prior chart() call needed)
+talib::indicator(
+  talib::RSI,
+  data = BTC
+)
 
-## chart Relative Strength Index
-## with different values for 'n'
-{
-	talib::indicator(
-		talib::RSI,
-		data = BTC,
-		n = 20
-	)
-}
+## attach an indicator to a price chart
+talib::chart(BTC)
+talib::indicator(talib::RSI, n = 14)
+
+## multiple indicators on the same panel
+talib::chart(BTC)
+talib::indicator(
+  talib::RSI(n = 10),
+  talib::RSI(n = 14),
+  talib::RSI(n = 21)
+)
+
+## reset chart state
+talib::chart()
