@@ -1,58 +1,85 @@
 url: https://serkor1.github.io/ta-lib-R/
 home:
-  title: R bindings for TA-Lib
-  description: |
-    {talib}: R bindings for TA-Lib. Technical Analysis indicators and Candlestick pattern recognition.
-navbar:
-  inverse: yes
+  title: "{talib}: Technical Analysis for R"
+  description: >
+    R bindings for TA-Lib (Technical Analysis Library). Calculate 150+
+    technical analysis indicators, recognize candlestick patterns, and
+    build interactive financial charts with plotly.
+authors:
+  Serkan Korkmaz:
+    href: https://github.com/serkor1
 template:
   bootstrap: 5
   light-switch: yes
+  opengraph:
+    image:
+      src: man/figures/logo.png
+      alt: "talib R package logo"
   bslib:
     primary: '#0054AD'
     border-radius: 0.5rem
     btn-border-radius: 0.25rem
     danger: '#A6081A'
+navbar:
+  inverse: yes
 reference:
 - title: Candlestick Patterns
-  desc: |
-    The collection of Candlestick Patterns. 
+  desc: >
+    Identify bullish, bearish, and reversal candlestick formations from
+    OHLC price data. Includes classic patterns such as Doji, Hammer,
+    Engulfing, Morning Star, and many more — 61 patterns in total.
 - contents: has_concept('Pattern Recognition')
 - title: Momentum Indicators
-  desc: |
-    The collection of Momentum Indicators.
+  desc: >
+    Measure the speed and strength of price movements. Includes
+    oscillators and rate-of-change indicators such as RSI, MACD,
+    Stochastic, CCI, Williams %R, and ADX.
 - contents: has_concept('Momentum Indicator')
 - title: Overlap Studies
-  desc: |
-    The collection of Overlap Studies.
+  desc: >
+    Indicators plotted directly on the price chart. Moving averages
+    (SMA, EMA, WMA, DEMA, TEMA, KAMA), Bollinger Bands, Parabolic SAR,
+    and other trend-following overlays.
 - contents: has_concept('Overlap Study')
 - title: Cycle Indicators
-  desc: |
-    The collection of Cycle Indicators.
+  desc: >
+    Detect dominant market cycles in price data using Hilbert Transform
+    methods. Estimate cycle period, phase, and the in-phase /
+    quadrature components of the analytic signal.
 - contents: has_concept('Cycle Indicator')
 - title: Volume Indicators
-  desc: |
-    The collection of Volume Indicators.
+  desc: >
+    Analyze trading volume to confirm price trends and spot divergences.
+    Includes On-Balance Volume (OBV), Chaikin A/D Line, and
+    A/D Oscillator.
 - contents: has_concept('Volume Indicator')
 - title: Volatility Indicators
-  desc: |
-    The collection of Volatility Indicators.
+  desc: >
+    Quantify the degree of price variation over a given period.
+    Includes Average True Range (ATR), Normalized ATR (NATR), and
+    True Range (TRANGE).
 - contents: has_concept('Volatility Indicator')
 - title: Financial Charts
-  desc: |
-    Charting functions
+  desc: >
+    Build interactive candlestick and OHLC charts with plotly. Layer
+    technical indicators directly onto charts using the S3 plotly
+    method dispatch.
   contents: has_concept('Charting')
 - title: Rolling Statistics
-  desc: |
-    The collection of Rolling Statistics. 
+  desc: >
+    Compute rolling (moving-window) descriptive statistics over price
+    or return series. Includes rolling variance, standard deviation,
+    linear regression, and time series forecast.
 - contents: has_concept('Rolling Statistic')
 - title: Price Transformations
-  desc: |
-    The collection of Price Transformation. 
+  desc: >
+    Transform raw OHLC prices into derived series. Average Price,
+    Median Price, Typical Price, and Weighted Close Price.
 - contents: has_concept('Price Transform')
 - title: Financial Data
-  desc: |
-    Preloaded financial data
+  desc: >
+    Built-in OHLCV datasets for examples, testing, and exploration.
+    Includes daily price data for BTC, SPY, NVDA, and ATOM.
   contents:
   - BTC
   - SPY
