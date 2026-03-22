@@ -1,13 +1,14 @@
 #' @description
-#' The `<%= tolower(.fun) %>()` is a generic S3 function that builds upon 'type-safe'-esque workflows limited to classes in in base `R`, and the package-wide
-#' dependencies. Ie. [class] in, [class] out. Each method is a soft wrapper of [model.frame] and therefore the OHLC-V series must be coercible to a [data.frame].
+#' `<%= tolower(.fun) %>()` is a generic S3 function that preserves
+#' the input [class]: [data.frame] in, [data.frame] out; [matrix] in,
+#' [matrix] out.
 #'
 #' 
 <% if (any(grepl(pattern = "cols", x = names(formals(.fun))))) { %>
 
 <% n_vars <- length(all.vars(as.formula(.formula))) %>
 <% if (n_vars == 1) { %>
-#' `<%= tolower(.fun) %>()` also accepts a [double] vector in which case the indicator is calculated 'as-is' without passing through [model.frame]. `<%= tolower(.fun) %>()` returns an `n` by `k` [matrix] computed in C by default. When `k = 1`, the result is simplified to a [double] vector; for `k > 1`, the full `n` by `k` [matrix] is returned.
+#' `<%= tolower(.fun) %>()` also accepts a [double] vector, in which case the indicator is calculated directly without column selection. When the result has a single column it is simplified to a [double] vector; otherwise the full `n` by `k` [matrix] is returned.
 #' 
 <% } %>
 #'
@@ -21,13 +22,13 @@
 #' re-insert them at their original positions in the output.
 #'
 #' 
-#' @param x An OHLC-V series that is coercible to [data.frame].
+#' @param x An OHLC-V series coercible to [data.frame].
 <% if (n_vars == 1) { %>
 #' Alternatively, `x` may also be supplied as a [double] vector.
 <% } %>
 #'
-#' @param cols ([formula]). An optional `<%= length(all.vars(as.formula(.formula))) %>` variable [formula] passed into [model.frame]. Internally uses 
-#'  `<%= deparse(as.formula(.formula)) %>` by default.
+#' @param cols ([formula]). An optional `<%= length(all.vars(as.formula(.formula))) %>`-variable [formula] selecting columns from `x` via [model.frame].
+#'  Defaults to `<%= deparse(as.formula(.formula)) %>`.
 #' 
 <% } %>
 #'

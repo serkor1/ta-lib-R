@@ -11,10 +11,21 @@ NULL
 #' are common across all functions. Avoids documenting parameters
 #' that doesn't exist downstream.
 #'
-#' @param x An OHLC-V series that is coercible to [data.frame]. The function assumes that all columns are named in lowercase and order invariant.
-#' @param cols ([formula]). An optional [formula] passed into [model.frame]. If passed into indicators based on univariate series, the function calculates indicators for each element in 'cols'. For indicators based on multivariate series, it will alter the calculation itself. See `vignette("talib")` for more details.
-#' @param n ([integer]). An [integer] of [length] 1.
-#' @param eps ([double]). A [double] of [length] 1. Percentage of penetration of a candle within another candle.
+#' @param x An OHLC-V series coercible to [data.frame]. Columns must be named
+#'   in lowercase (`open`, `high`, `low`, `close`, `volume`); column order
+#'   does not matter.
+#' @param cols ([formula]). An optional [formula] selecting columns from `x`
+#'   via [model.frame] (e.g., `cols = ~close` or `cols = ~high + low`). For
+#'   indicators based on a single column (e.g., Bollinger Bands, moving
+#'   averages) each variable in `cols` is calculated independently; for
+#'   indicators based on multiple columns (e.g., Stochastic) the selected
+#'   columns replace the defaults used in the calculation.
+#'   See `vignette("talib")` for details.
+#' @param n ([integer]). Lookback period (window size). A positive [integer]
+#'   of [length] 1.
+#' @param eps ([double]). Penetration threshold for candlestick pattern
+#'   recognition, expressed as a fraction of the candle body. A [double] of
+#'   [length] 1.
 #' @param na.ignore ([logical]). A [logical] of [length] 1. [FALSE] by default. If [TRUE], `NA`s in the input are stripped before calculation and re-inserted at their original positions in the output.
 #' @param ... Additional parameters passed into [model.frame]
 #'

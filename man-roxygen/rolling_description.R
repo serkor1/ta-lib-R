@@ -1,5 +1,6 @@
-#' @description 
-#' The `<%= tolower(.fun) %>()` is a generic S3 function that builds upon 'type-safe'-esque workflows limited to classes in in base `R`, and the package-wide dependencies. Ie. [class] in, [class] out.
+#' @description
+#' `<%= tolower(.fun) %>()` is a generic S3 function that preserves
+#' the input [class]: [double] vector in, [double] vector out.
 #' 
 #' ## Handling of <NA>-values
 #'
@@ -9,15 +10,13 @@
 #' can cause the **entire** output to be filled with `NA`s. Set
 #' `na.ignore = TRUE` to strip `NA`s before calculation and
 #' re-insert them at their original positions in the output.
-#'
-#'  
 #' 
 <%
 	if (all(c("x","y") %in% names(formals(.fun))))
 { %>
-#' @param x,y (([double]), ([double])). A pair of vectors.
+#' @param x,y (([double]), ([double])). A pair of [double] vectors of equal [length].
 <% } else { %>
-#' @param x ([double]). A vector.
+#' @param x ([double]). A [double] vector.
 #' 
 <% } %>
 #' @inheritParams generic_documentation
