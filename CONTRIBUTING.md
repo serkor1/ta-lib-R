@@ -17,7 +17,7 @@ reading the comment in the first line.
 
 > \[!NOTE\]
 >
-> All documentation is generated via `man-roxygen` and/or `tools/`.
+> All documentation is generated via `man-roxygen` and/or `codegen/`.
 
 ## Bigger changes
 
