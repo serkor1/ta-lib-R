@@ -11,7 +11,7 @@ Authors@R: c(
     )
   )
 Description: Interface to the 'TA-Lib' technical analysis library, providing
-    access to ~200 indicators (e.g., ADX, MACD, RSI, Stochastic, Bollinger
+    access to 150+ indicators (e.g., ADX, MACD, RSI, Stochastic, Bollinger
     Bands), candlestick pattern recognition, and rolling-window utilities.
     Core computations are implemented in C for fast OHLCV time-series
     feature engineering and rule-based signal generation, with optional
