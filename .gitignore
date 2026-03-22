@@ -68,7 +68,6 @@ inst/doc
 
 /.quarto/
 
-codegen/table.csv
 
 
 ## ignore files in benchmark

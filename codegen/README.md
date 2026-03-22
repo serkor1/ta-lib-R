@@ -10,7 +10,6 @@ and work backwards.
 ```
 make gen-code      # regenerate R/, src/ta_*.c, and tests/ from metadata
 make build         # also runs generate_API.sh + generate_FFI.sh
-make unit-tests    # standalone test regeneration (parses generated R files)
 make fmt           # format everything (air for R, clang-format for C)
 ```
 
@@ -65,7 +64,6 @@ codegen/
   generate_unit-tests.sh        Test file generator
   generate_API.sh               Extracts SEXP prototypes → src/api.h
   generate_FFI.sh               Builds R_CallMethodDef table → src/init.c
-  generate_table.R              Parses generated R files → table.csv (for make unit-tests)
   validation/
     validate.R                  Smoke-tests: compares R output vs raw TA-Lib C calls
     validate.c                  Reference C implementations for validation
@@ -203,18 +201,6 @@ These run during `make build`, not `make gen-code`:
 2. **`generate_FFI.sh`** reads `api.h`, counts each function's arguments,
    and writes `src/init.c` with `R_CallMethodDef` entries so R's `.Call()`
    interface can find them.
-
-## The `make unit-tests` target
-
-This is an alternative test-generation path independent of `make gen-code`.
-It works by:
-
-1. Running `generate_table.R`, which parses all generated `R/ta_*.R` files
-   to extract function names, aliases, and default formulas into `table.csv`.
-2. Feeding `table.csv` through awk into `generate_unit-tests.sh`.
-
-This is useful if you want to regenerate tests without re-running the full
-code generation (e.g. after manually editing a generated R file).
 
 ## The splice mechanism
 

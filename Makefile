@@ -41,7 +41,6 @@ clean: ## Remove artifacts
 	@rm -rf src/Makevars
 	@rm -rf $(package_name).Rcheck
 	@rm -rf docs
-	@rm -rf codegen/table.csv
 
 purge: clean ## Remove TA-Lib arifacts
 	@git -C src/ta-lib restore --staged --worktree .
@@ -71,24 +70,6 @@ pkgdown-build: ## Build {pkgdown} documentation
 
 pkgdown-preview: ## Preview {pkgdown} documetation
 	@Rscript -e "pkgdown::preview_site()"
-
-unit-tests: ## Generate, or update, unit-tests
-	@Rscript ./codegen/generate_table.R
-	@GEN=./codegen/generate_unit-tests.sh; \
-	UNIT_CSV=$${UNIT_CSV:-codegen/table.csv}; \
-	awk -F, 'NR==1{next} /^[[:space:]]*$$/{next} { \
-	  for(i=1;i<=4;i++){ \
-	    gsub(/^[ \t]+|[ \t]+$$/,"",$$i); \
-	    sub(/^"/,"",$$i); sub(/"$$/,"",$$i); \
-	  } \
-	  gate=$$4; if(gate=="") gate="FALSE"; \
-	  printf "%s\t%s\t%s\t%s\n", $$1,$$2,$$3,gate \
-	}' "$$UNIT_CSV" | \
-	while IFS=$$'\t' read -r f alias cols gate; do \
-	  "$$GEN" "$$f" "$$alias" "$$cols" "$$gate"; \
-	done
-
-	$(MAKE) fmt
 
 bench: ## Run benchmark(s)
 	@echo -e "Running benchmark..."
