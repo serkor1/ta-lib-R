@@ -77,7 +77,7 @@ testthat::expect_true(
 
 EOF
 
-exit 1;
+exit 0;
 fi
 
 ## 1) populate test file

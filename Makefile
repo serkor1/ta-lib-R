@@ -114,13 +114,5 @@ validate: ## Validate R output against TA-Lib core
 	@rm -f tools/validation/validate.o tools/validation/validate.so
 
 gen-code: ## Generate R wrappers and unit-tests
-	@Rscript --verbose ./tools/gen_code/cycle_indicator.R
-	@Rscript --verbose ./tools/gen_code/candlestick_pattern.R
-	@Rscript --verbose ./tools/gen_code/momentum_indicator.R
-	@Rscript --verbose ./tools/gen_code/moving_average.R
-	@Rscript --verbose ./tools/gen_code/overlapstudy.R
-	@Rscript --verbose ./tools/gen_code/volume_indicator.R
-	@Rscript --verbose ./tools/gen_code/volatility_indicator.R
-	@Rscript --verbose ./tools/gen_code/price_transform.R
-	@Rscript --verbose ./tools/gen_code/rolling_statistics.R
+	@Rscript --verbose ./tools/gen_code/generate.R
 	$(MAKE) fmt
