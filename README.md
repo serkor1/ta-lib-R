@@ -32,9 +32,19 @@ ecosystem.
 
 ``` r
 {
-    talib::chart(talib::BTC)
+    ## create a candlestick chart
+    talib::chart(BTC, title = "Bitcoin (BTC)")
+
+    ## overlay Bollinger Bands on
+    ## the price panel
     talib::indicator(talib::bollinger_bands)
-    talib::indicator(talib::engulfing, data = talib::BTC)
+
+    ## mark Engulfing candlestick
+    ## patterns on the chart
+    talib::indicator(talib::engulfing, data = BTC)
+
+    ## add RSI and volume as
+    ## separate sub-panels
     talib::indicator(talib::RSI)
     talib::indicator(talib::trading_volume)
 }
@@ -49,8 +59,10 @@ or `matrix` and get the same type back. The return type always matches
 the input.
 
 ``` r
+## compute Bollinger Bands
+## on BTC OHLCV data
 tail(
-    talib::bollinger_bands(talib::BTC)
+    talib::bollinger_bands(BTC)
 )
 #>                     UpperBand MiddleBand LowerBand
 #> 2024-12-26 01:00:00 104478.35   98217.88  91957.42
@@ -69,8 +81,10 @@ Three White Soldiers. Each pattern returns a normalized score: `1`
 (bullish), `-1` (bearish), or `0` (no pattern).
 
 ``` r
+## detect Engulfing patterns:
+## 1 = bullish, -1 = bearish, 0 = none
 tail(
-    talib::engulfing(talib::BTC)
+    talib::engulfing(BTC)
 )
 #>                     CDLENGULFING
 #> 2024-12-26 01:00:00           -1
@@ -90,7 +104,9 @@ MACD) get their own sub-panels.
 
 ``` r
 {
-    talib::chart(talib::BTC)
+    ## price chart with two moving
+    ## averages and MACD below
+    talib::chart(BTC)
     talib::indicator(talib::SMA, n = 7)
     talib::indicator(talib::SMA, n = 14)
     talib::indicator(talib::MACD)
@@ -103,8 +119,11 @@ Multiple indicators can share a sub-panel by passing them as calls:
 
 ``` r
 {
-    talib::chart(talib::BTC)
+    talib::chart(BTC)
     talib::indicator(talib::BBANDS)
+
+    ## pass multiple calls to combine
+    ## them on a single sub-panel
     talib::indicator(
         talib::RSI(n = 10),
         talib::RSI(n = 14),
@@ -121,7 +140,21 @@ The charting system ships with 5 built-in themes inspired by
 Switch themes with `set_theme()`. Both
 [{plotly}](https://github.com/plotly/plotly.R) (interactive, default)
 and [{ggplot2}](https://ggplot2.tidyverse.org/) (static) backends are
-supported.
+supported:
+
+``` r
+{
+    ## switch to ggplot2 backend with
+    ## the "Hawks and Doves" theme
+    talib::set_theme("hawks_and_doves")
+    talib::chart(BTC, title = "Bitcoin (BTC)")
+    talib::indicator(talib::BBANDS)
+    talib::indicator(talib::RSI)
+    talib::indicator(talib::trading_volume)
+}
+```
+
+<img src="man/figures/README-ggplot2-1.png" alt="" style="display: block; margin: auto;" />
 
 ## Column selection
 
@@ -129,7 +162,10 @@ Indicators use the columns they need automatically. When your data has
 non-standard column names, remap them with formula syntax:
 
 ``` r
+## remap 'price' to the close column
 talib::RSI(x, cols = ~price)
+
+## remap hi, lo, last to high, low, close
 talib::stochastic(x, cols = ~ hi + lo + last)
 ```
 
@@ -154,9 +190,11 @@ ecosystem:
 </div>
 
 ``` r
+## snake_case and TA-Lib aliases
+## are identical
 all.equal(
-    target = talib::bollinger_bands(talib::BTC),
-    current = talib::BBANDS(talib::BTC)
+    target = talib::bollinger_bands(BTC),
+    current = talib::BBANDS(BTC)
 )
 #> [1] TRUE
 ```

@@ -22,6 +22,15 @@ knitr::opts_chunk$set(
 	warning = FALSE,
 	echo = FALSE
 )
+
+# indicator counts from codegen metadata
+source(file.path(knitr::opts_knit$get("base.dir"), "codegen", "gen_code", "indicators.R"))
+families <- vapply(indicators, function(x) x$family, character(1))
+n_patterns <- sum(families == "Pattern Recognition")
+n_indicators <- sum(families != "Pattern Recognition")
+
+# subset BTC to last 150 rows for cleaner charts
+BTC <- tail(talib::BTC, 150)
 ```
 
 # {talib}: A Technical Analysis and Candlestick Pattern Library in R <img src="man/figures/logo.png" align="right" height="170" alt="" />
@@ -34,15 +43,25 @@ knitr::opts_chunk$set(
 [![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/last-month/talib?color=blue)](https://r-pkg.org/pkg/talib)
 <!-- badges: end -->
 
-[{talib}](https://serkor1.github.io/ta-lib-R/) is an R package for technical analysis, candlestick pattern recognition, and interactive financial charting---built on the [TA-Lib](https://github.com/TA-Lib/ta-lib) C library. It provides 67 technical indicators, 61 candlestick patterns, and a composable charting system powered by [{plotly}](https://github.com/plotly/plotly.R) and [{ggplot2}](https://ggplot2.tidyverse.org/). All indicator computations are implemented in C via `.Call()` for minimal overhead.
+[{talib}](https://serkor1.github.io/ta-lib-R/) is an R package for technical analysis, candlestick pattern recognition, and interactive financial charting---built on the [TA-Lib](https://github.com/TA-Lib/ta-lib) C library. It provides `r n_indicators` technical indicators, `r n_patterns` candlestick patterns, and a composable charting system powered by [{plotly}](https://github.com/plotly/plotly.R) and [{ggplot2}](https://ggplot2.tidyverse.org/). All indicator computations are implemented in C via `.Call()` for minimal overhead.
 
 Alongside [{TTR}](https://github.com/joshuaulrich/TTR), [{talib}](https://serkor1.github.io/ta-lib-R/) adds candlestick pattern recognition and interactive charts to the R technical analysis ecosystem.
 
 ```{r hero, fig.align = 'center', echo = TRUE}
 {
-	talib::chart(talib::BTC)
+	## create a candlestick chart
+	talib::chart(BTC, title = "Bitcoin (BTC)")
+
+	## overlay Bollinger Bands on
+	## the price panel
 	talib::indicator(talib::bollinger_bands)
-	talib::indicator(talib::engulfing, data = talib::BTC)
+
+	## mark Engulfing candlestick
+	## patterns on the chart
+	talib::indicator(talib::engulfing, data = BTC)
+
+	## add RSI and volume as
+	## separate sub-panels
 	talib::indicator(talib::RSI)
 	talib::indicator(talib::trading_volume)
 }
@@ -53,18 +72,22 @@ Alongside [{TTR}](https://github.com/joshuaulrich/TTR), [{talib}](https://serkor
 Every indicator follows the same interface: pass an OHLCV `data.frame` or `matrix` and get the same type back. The return type always matches the input.
 
 ```{r indicators, echo = TRUE}
+## compute Bollinger Bands
+## on BTC OHLCV data
 tail(
-	talib::bollinger_bands(talib::BTC)
+	talib::bollinger_bands(BTC)
 )
 ```
 
 ## Candlestick Patterns
 
-{talib} recognizes 61 candlestick patterns---from single-candle formations like Doji and Hammer to multi-candle patterns like Morning Star and Three White Soldiers. Each pattern returns a normalized score: `1` (bullish), `-1` (bearish), or `0` (no pattern).
+{talib} recognizes `r n_patterns` candlestick patterns---from single-candle formations like Doji and Hammer to multi-candle patterns like Morning Star and Three White Soldiers. Each pattern returns a normalized score: `1` (bullish), `-1` (bearish), or `0` (no pattern).
 
 ```{r patterns, echo = TRUE}
+## detect Engulfing patterns:
+## 1 = bullish, -1 = bearish, 0 = none
 tail(
-	talib::engulfing(talib::BTC)
+	talib::engulfing(BTC)
 )
 ```
 
@@ -74,7 +97,9 @@ Charts are built in two steps: `chart()` creates the price chart, then `indicato
 
 ```{r charting, fig.align = 'center', echo = TRUE}
 {
-	talib::chart(talib::BTC)
+	## price chart with two moving
+	## averages and MACD below
+	talib::chart(BTC)
 	talib::indicator(talib::SMA, n = 7)
 	talib::indicator(talib::SMA, n = 14)
 	talib::indicator(talib::MACD)
@@ -85,8 +110,11 @@ Multiple indicators can share a sub-panel by passing them as calls:
 
 ```{r combined, fig.align = 'center', echo = TRUE}
 {
-	talib::chart(talib::BTC)
+	talib::chart(BTC)
 	talib::indicator(talib::BBANDS)
+
+	## pass multiple calls to combine
+	## them on a single sub-panel
 	talib::indicator(
 		talib::RSI(n = 10),
 		talib::RSI(n = 14),
@@ -95,14 +123,39 @@ Multiple indicators can share a sub-panel by passing them as calls:
 }
 ```
 
-The charting system ships with 5 built-in themes inspired by [chartthemes.com](https://chartthemes.com/): `default`, `hawks_and_doves`, `payout`, `tp_slapped`, and `trust_the_process`. Switch themes with `set_theme()`. Both [{plotly}](https://github.com/plotly/plotly.R) (interactive, default) and [{ggplot2}](https://ggplot2.tidyverse.org/) (static) backends are supported.
+The charting system ships with 5 built-in themes inspired by [chartthemes.com](https://chartthemes.com/): `default`, `hawks_and_doves`, `payout`, `tp_slapped`, and `trust_the_process`. Switch themes with `set_theme()`. Both [{plotly}](https://github.com/plotly/plotly.R) (interactive, default) and [{ggplot2}](https://ggplot2.tidyverse.org/) (static) backends are supported:
+
+```{r ggplot2-setup, include = FALSE}
+options(talib.chart.backend = "ggplot2")
+talib::set_theme("hawks_and_doves")
+```
+
+```{r ggplot2, fig.align = 'center', echo = TRUE}
+{
+	## switch to ggplot2 backend with
+	## the "Hawks and Doves" theme
+	talib::set_theme("hawks_and_doves")
+	talib::chart(BTC, title = "Bitcoin (BTC)")
+	talib::indicator(talib::BBANDS)
+	talib::indicator(talib::RSI)
+	talib::indicator(talib::trading_volume)
+}
+```
+
+```{r ggplot2-teardown, include = FALSE}
+options(talib.chart.backend = "plotly")
+talib::set_theme("default")
+```
 
 ## Column selection
 
 Indicators use the columns they need automatically. When your data has non-standard column names, remap them with formula syntax:
 
 ```{r cols, echo = TRUE, eval = FALSE}
+## remap 'price' to the close column
 talib::RSI(x, cols = ~price)
+
+## remap hi, lo, last to high, low, close
 talib::stochastic(x, cols = ~ hi + lo + last)
 ```
 
@@ -125,9 +178,11 @@ Functions use descriptive snake_case names, but every function is aliased to its
 </div>
 
 ```{r alias, echo = TRUE}
+## snake_case and TA-Lib aliases
+## are identical
 all.equal(
-	target = talib::bollinger_bands(talib::BTC),
-	current = talib::BBANDS(talib::BTC)
+	target = talib::bollinger_bands(BTC),
+	current = talib::BBANDS(BTC)
 )
 ```
 
