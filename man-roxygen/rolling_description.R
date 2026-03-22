@@ -2,8 +2,14 @@
 #' The `<%= tolower(.fun) %>()` is a generic S3 function that builds upon 'type-safe'-esque workflows limited to classes in in base `R`, and the package-wide dependencies. Ie. [class] in, [class] out.
 #' 
 #' ## Handling of <NA>-values
-#' 
-#' `<%= tolower(.fun) %>()` iterates over valid values, and returns `NA` for the remaing part of series. 
+#'
+#' Leading `NA`s are always produced for the initial lookback period
+#' where insufficient data is available. If the input itself contains
+#' `NA`s they are passed through to the underlying C routine, which
+#' can cause the **entire** output to be filled with `NA`s. Set
+#' `na.ignore = TRUE` to strip `NA`s before calculation and
+#' re-insert them at their original positions in the output.
+#'
 #'  
 #' 
 <%
