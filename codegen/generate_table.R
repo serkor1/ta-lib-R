@@ -90,7 +90,7 @@ container$MA <- container$V1 %in%
 
 write.table(
 	x = container,
-	file = "tools/table.csv",
+	file = "codegen/table.csv",
 	sep = ",",
 	row.names = FALSE
 )

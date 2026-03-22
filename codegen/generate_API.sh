@@ -20,7 +20,7 @@ OUT_FILE="${2:-api.h}"
 
 print_header() {
   cat <<'EOF'
-// Generated from tools/generate_API.sh
+// Generated from codegen/generate_API.sh
 #ifndef _API_H_
 #define _API_H_
 

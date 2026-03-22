@@ -18,28 +18,28 @@ OUTPUTFILE=${OUTPUTFILE:-"R/ta_${TA_FUN}.R"}
 
 ## 1.1) conditional templates
 ##      passed downstream
-TEMPLATE_MAIN=${TEMPLATE_MAIN:-tools/templates/indicator_template.R.in}
-TEMPLATE_NUMERIC=${NUMERIC_TEMPLATE:-tools/templates/numeric_template.R.in}
+TEMPLATE_MAIN=${TEMPLATE_MAIN:-codegen/templates/indicator_template.R.in}
+TEMPLATE_NUMERIC=${NUMERIC_TEMPLATE:-codegen/templates/numeric_template.R.in}
 
 ## 1.2) candlestick specific variables
 ##      passed downstream
 AGNOSTIC=${AGNOSTIC:-"TRUE"}
 CANDLESTICK=${CANDLESTICK:-0}
 if [[ $CANDLESTICK -eq 1 ]]; then
-  TEMPLATE_MAIN="tools/templates/candlestick_template.R.in"
+  TEMPLATE_MAIN="codegen/templates/candlestick_template.R.in"
 fi
 
 ## 1.3) moving average specific
 ##      variables
 maType=${maType:--1} # NOTE: -1 is NO MA
 if [[ "$maType" != "-1" ]]; then
-  TEMPLATE_MAIN="tools/templates/moving_average_template.R.in"
+  TEMPLATE_MAIN="codegen/templates/moving_average_template.R.in"
 fi
 
 ## 1.4) rolling statistics
 ROLLING=${ROLLING:-0}
 if [[ "$ROLLING" != "0" ]]; then
-  TEMPLATE_MAIN="tools/templates/rolling_template.R.in"
+  TEMPLATE_MAIN="codegen/templates/rolling_template.R.in"
 fi
 
 ## 2) arguments passed into
@@ -114,12 +114,12 @@ fi
 
 if [[ $PLOTLY -eq 1 ]]; then
   if [[ $SUBCHART -eq 1 ]]; then
-  TEMPLATE_PLOTLY=${TEMPLATE_PLOTLY:-tools/templates/plotly_subchart_template.R.in}
+  TEMPLATE_PLOTLY=${TEMPLATE_PLOTLY:-codegen/templates/plotly_subchart_template.R.in}
   envsubst "$REPLACE" < "$TEMPLATE_PLOTLY" > "$tmp_plotly"
   printf '\n\n' >> "$tmp_render"
   cat "$tmp_plotly" >> "$tmp_render"
   else
-  TEMPLATE_PLOTLY=${TEMPLATE_PLOTLY:-tools/templates/plotly_main_template.R.in}
+  TEMPLATE_PLOTLY=${TEMPLATE_PLOTLY:-codegen/templates/plotly_main_template.R.in}
   envsubst "$REPLACE" < "$TEMPLATE_PLOTLY" > "$tmp_plotly"
   printf '\n\n' >> "$tmp_render"
   cat "$tmp_plotly" >> "$tmp_render"
@@ -131,21 +131,21 @@ fi
 ##      the ggplot method is appended separately since
 ##      their plotly methods are baked into the main template
 if [[ $CANDLESTICK -eq 1 ]]; then
-  envsubst "$REPLACE" < "tools/templates/candlestick_ggplot_template.R.in" > "$tmp_ggplot"
+  envsubst "$REPLACE" < "codegen/templates/candlestick_ggplot_template.R.in" > "$tmp_ggplot"
   printf '\n\n' >> "$tmp_render"
   cat "$tmp_ggplot" >> "$tmp_render"
 elif [[ "$maType" != "-1" ]]; then
-  envsubst "$REPLACE" < "tools/templates/moving_average_ggplot_template.R.in" > "$tmp_ggplot"
+  envsubst "$REPLACE" < "codegen/templates/moving_average_ggplot_template.R.in" > "$tmp_ggplot"
   printf '\n\n' >> "$tmp_render"
   cat "$tmp_ggplot" >> "$tmp_render"
 elif [[ $PLOTLY -eq 1 ]]; then
   if [[ $SUBCHART -eq 1 ]]; then
-  TEMPLATE_GGPLOT=${TEMPLATE_GGPLOT:-tools/templates/ggplot_subchart_template.R.in}
+  TEMPLATE_GGPLOT=${TEMPLATE_GGPLOT:-codegen/templates/ggplot_subchart_template.R.in}
   envsubst "$REPLACE" < "$TEMPLATE_GGPLOT" > "$tmp_ggplot"
   printf '\n\n' >> "$tmp_render"
   cat "$tmp_ggplot" >> "$tmp_render"
   else
-  TEMPLATE_GGPLOT=${TEMPLATE_GGPLOT:-tools/templates/ggplot_main_template.R.in}
+  TEMPLATE_GGPLOT=${TEMPLATE_GGPLOT:-codegen/templates/ggplot_main_template.R.in}
   envsubst "$REPLACE" < "$TEMPLATE_GGPLOT" > "$tmp_ggplot"
   printf '\n\n' >> "$tmp_render"
   cat "$tmp_ggplot" >> "$tmp_render"

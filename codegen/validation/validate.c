@@ -1,4 +1,4 @@
-// tools/validation/validate.c
+// codegen/validation/validate.c
 //
 // Bare TA-Lib C calls for validating the R package wrappers.
 // NOT part of the CRAN package — compiled separately via R CMD SHLIB.
@@ -6,7 +6,7 @@
 // Compile (from repo root):
 //   PKG_CFLAGS="-Isrc/ta-lib/local/include -Isrc/ta-lib/local/include/ta-lib" \
 //   PKG_LIBS="src/ta-lib/local/lib/libta-lib.a -lm" \
-//   R CMD SHLIB tools/validation/validate.c
+//   R CMD SHLIB codegen/validation/validate.c
 //
 // R and TA-Lib both define Int32 (unsigned vs signed).
 // Use the same workaround as src/lib.h: guard R_ext/Random.h,

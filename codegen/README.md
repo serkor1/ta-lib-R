@@ -1,4 +1,4 @@
-# tools/ — Code Generation System
+# codegen/ — Code Generation System
 
 This directory contains the meta-programming infrastructure that generates
 most of the R wrappers, C wrappers, and unit tests in the package. If you are
@@ -40,7 +40,7 @@ normalize style.
 ## Directory layout
 
 ```
-tools/
+codegen/
   gen_code/
     indicators.R        <- THE metadata: every indicator in one place
     generate.R          <- driver script (make gen-code calls this)

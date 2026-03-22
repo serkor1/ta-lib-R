@@ -5,11 +5,11 @@
 ## for every indicator.
 ##
 ## usage:
-##   Rscript ./tools/gen_code/generate.R
+##   Rscript ./codegen/gen_code/generate.R
 
 ## 1) load helpers and metadata
-source("tools/gen_code/utils.R")
-source("tools/gen_code/indicators.R")
+source("codegen/gen_code/utils.R")
+source("codegen/gen_code/indicators.R")
 
 ## 2) field accessor with defaults
 `%||%` <- function(a, b) if (is.null(a)) b else a
@@ -48,7 +48,7 @@ generate_C <- function(x) {
 		system2(
 			command = "bash",
 			args = c(
-				"tools/generate_core_candlestick.sh",
+				"codegen/generate_core_candlestick.sh",
 				shQuote(x$alias),
 				shQuote(x$signature %||% "")
 			)
@@ -63,7 +63,7 @@ generate_C <- function(x) {
 		system2(
 			command = "bash",
 			args = c(
-				"tools/generate_indicator_core.sh",
+				"codegen/generate_indicator_core.sh",
 				"MA > src/ta_MA.c"
 			)
 		)
@@ -75,7 +75,7 @@ generate_C <- function(x) {
 	system2(
 		command = "bash",
 		args = c(
-			"tools/generate_indicator_core.sh",
+			"codegen/generate_indicator_core.sh",
 			paste0(x$alias, " > src/ta_", x$alias, ".c")
 		)
 	)

@@ -415,5 +415,5 @@ export OUTPUT_TYPE
 export NA_MASK_BUILD
 export NA_COMPACT
 
-TEMPLATE_FILE=${TEMPLATE:-tools/templates/indicator_template.c.in}
+TEMPLATE_FILE=${TEMPLATE:-codegen/templates/indicator_template.c.in}
 envsubst < "$TEMPLATE_FILE"

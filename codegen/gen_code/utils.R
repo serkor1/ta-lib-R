@@ -34,7 +34,7 @@ impl_generate_indicator <- function(
 	args <- gsub("\\s+", "", args, perl = TRUE)
 	system2(
 		command = "bash",
-		args = c("./tools/generate_indicator.sh", args),
+		args = c("./codegen/generate_indicator.sh", args),
 		env = c(
 			sprintf("TITLE='%s'", title),
 			sprintf("FUN='%s'", fun),
@@ -68,7 +68,7 @@ impl_generate_test <- function(
 
 	system2(
 		command = "bash",
-		args = c("./tools/generate_unit-tests.sh", args),
+		args = c("./codegen/generate_unit-tests.sh", args),
 		env = c(
 			sprintf("FUN='%s'", fun),
 			sprintf("TA_FUN='%s'", ta_fun),
