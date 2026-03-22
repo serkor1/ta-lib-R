@@ -1,4 +1,4 @@
-// Generated from tools/generate_API.sh
+// Generated from codegen/generate_API.sh
 #ifndef _API_H_
 #define _API_H_
 
