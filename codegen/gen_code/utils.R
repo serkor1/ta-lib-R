@@ -10,7 +10,7 @@ impl_generate_indicator <- function(
 	fun,
 	family,
 	ta_fun,
-	formula,
+	formula = "~close",
 	plotly = 1L,
 	subchart = 1L,
 	args,
@@ -20,6 +20,7 @@ impl_generate_indicator <- function(
 	rolling = 0,
 	univariate = NULL
 ) {
+	if (is.null(formula)) formula <- "~close"
 	if (missing(univariate) | is.null(univariate)) {
 		has_numeric <- as.integer(
 			as.logical(
@@ -58,11 +59,12 @@ impl_generate_indicator <- function(
 impl_generate_test <- function(
 	fun,
 	ta_fun,
-	formula,
+	formula = "~close",
 	plotly = 1,
 	rolling = 0,
 	args = NULL
 ) {
+	if (is.null(formula)) formula <- "~close"
 	args <- gsub("([()])", "\\\\\\1", args, perl = TRUE)
 	args <- gsub("\\s+", "", args, perl = TRUE)
 

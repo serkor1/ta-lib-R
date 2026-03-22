@@ -67,7 +67,6 @@ codegen/
   validation/
     validate.R                  Smoke-tests: compares R output vs raw TA-Lib C calls
     validate.c                  Reference C implementations for validation
-  hexSticker.R                  Package logo
 ```
 
 ## Adding a new indicator

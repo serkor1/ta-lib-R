@@ -23,7 +23,7 @@ build: clean fmt ## Build the R package
 	@$(MAKE) document
 	@R CMD build . --no-build-vignettes && R CMD INSTALL $(tarball_location)
 	@rm -rf README.md
-	@Rscript -e "rmarkdown::render('README.Rmd', output_format = rmarkdown::github_document(html_preview = FALSE), clean = TRUE)"
+	@Rscript -e "rmarkdown::render('dev/README.Rmd', output_dir = '.', output_format = rmarkdown::github_document(html_preview = FALSE), clean = TRUE)"
 
 check: fmt document ## Check the R package
 	@R CMD build . && R CMD check --as-cran $(tarball_location)
