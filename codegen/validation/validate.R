@@ -1,23 +1,23 @@
 #!/usr/bin/env Rscript
-# tools/validation/validate.R
+# codegen/validation/validate.R
 #
 # Validate R package output against bare TA-Lib C calls.
 # Run from the repository root:
 #
-#   Rscript tools/validation/validate.R
+#   Rscript codegen/validation/validate.R
 #
 # Prerequisites:
 #   1. Package installed:  R CMD INSTALL .
 #   2. Shared library compiled (from repo root):
 #      PKG_CFLAGS="-Isrc/ta-lib/local/include -Isrc/ta-lib/local/include/ta-lib" \
 #      PKG_LIBS="src/ta-lib/local/lib/libta-lib.a -lm" \
-#      R CMD SHLIB tools/validation/validate.c
+#      R CMD SHLIB codegen/validation/validate.c
 
 library(talib)
 
 ## load validation shared library
 so_path <- file.path(
-	"tools",
+	"codegen",
 	"validation",
 	paste0("validate", .Platform$dynlib.ext)
 )

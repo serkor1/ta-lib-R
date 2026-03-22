@@ -11,7 +11,7 @@ You can find the `.R` file that generates the `.Rd` by reading the comment in th
 
 > [!NOTE]
 >
-> All documentation is generated via `man-roxygen` and/or `tools/`.
+> All documentation is generated via `man-roxygen` and/or `codegen/`.
 
 ## Bigger changes
 

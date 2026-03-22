@@ -3,7 +3,7 @@ set -euo pipefail
 
 NAME=$1
 SIGNATURE=$2
-TEMPLATE=tools/templates/candlestick_template.c.in
+TEMPLATE=codegen/templates/candlestick_template.c.in
 
 if [[ -n "$SIGNATURE" ]]; then
   PEN_ARG=$',\n\tSEXP optInPenetration'

@@ -1,6 +1,6 @@
 ^curly-giggle\.Rproj$
 ^\.Rproj\.user$
-^README\.Rmd$
+^dev$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
@@ -72,4 +72,4 @@ src/ta-lib/m4/lt~obsolete.m4
 src/ta-lib/Makefile
 src/ta-lib/Makefile.in
 ^\.github$
-^tools/validation$
+^codegen$

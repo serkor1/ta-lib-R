@@ -19,11 +19,11 @@ document: ## Build R documentation
 	@Rscript --verbose -e "devtools::document()"
 
 build: clean fmt ## Build the R package
-	@tools/generate_API.sh src/ src/api.h && tools/generate_FFI.sh src/api.h src/init.c && $(MAKE) fmt
+	@codegen/generate_API.sh src/ src/api.h && codegen/generate_FFI.sh src/api.h src/init.c && $(MAKE) fmt
 	@$(MAKE) document
 	@R CMD build . --no-build-vignettes && R CMD INSTALL $(tarball_location)
 	@rm -rf README.md
-	@Rscript -e "rmarkdown::render('README.Rmd', output_format = rmarkdown::github_document(html_preview = FALSE), clean = TRUE)"
+	@Rscript -e "rmarkdown::render('dev/README.Rmd', output_dir = '.', output_format = rmarkdown::github_document(html_preview = FALSE), clean = TRUE)"
 
 check: fmt document ## Check the R package
 	@R CMD build . && R CMD check --as-cran $(tarball_location)
@@ -41,7 +41,6 @@ clean: ## Remove artifacts
 	@rm -rf src/Makevars
 	@rm -rf $(package_name).Rcheck
 	@rm -rf docs
-	@rm -rf tools/table.csv
 
 purge: clean ## Remove TA-Lib arifacts
 	@git -C src/ta-lib restore --staged --worktree .
@@ -72,24 +71,6 @@ pkgdown-build: ## Build {pkgdown} documentation
 pkgdown-preview: ## Preview {pkgdown} documetation
 	@Rscript -e "pkgdown::preview_site()"
 
-unit-tests: ## Generate, or update, unit-tests
-	@Rscript ./tools/generate_table.R
-	@GEN=./tools/generate_unit-tests.sh; \
-	UNIT_CSV=$${UNIT_CSV:-tools/table.csv}; \
-	awk -F, 'NR==1{next} /^[[:space:]]*$$/{next} { \
-	  for(i=1;i<=4;i++){ \
-	    gsub(/^[ \t]+|[ \t]+$$/,"",$$i); \
-	    sub(/^"/,"",$$i); sub(/"$$/,"",$$i); \
-	  } \
-	  gate=$$4; if(gate=="") gate="FALSE"; \
-	  printf "%s\t%s\t%s\t%s\n", $$1,$$2,$$3,gate \
-	}' "$$UNIT_CSV" | \
-	while IFS=$$'\t' read -r f alias cols gate; do \
-	  "$$GEN" "$$f" "$$alias" "$$cols" "$$gate"; \
-	done
-
-	$(MAKE) fmt
-
 bench: ## Run benchmark(s)
 	@echo -e "Running benchmark..."
 	@echo -e ""
@@ -109,18 +90,10 @@ bench-data: ## Generate data for benchmark(s)
 validate: ## Validate R output against TA-Lib core
 	@PKG_CFLAGS="-Isrc/ta-lib/local/include -Isrc/ta-lib/local/include/ta-lib" \
 	PKG_LIBS="src/ta-lib/local/lib/libta-lib.a -lm" \
-	R CMD SHLIB tools/validation/validate.c
-	@Rscript tools/validation/validate.R
-	@rm -f tools/validation/validate.o tools/validation/validate.so
+	R CMD SHLIB codegen/validation/validate.c
+	@Rscript codegen/validation/validate.R
+	@rm -f codegen/validation/validate.o codegen/validation/validate.so
 
 gen-code: ## Generate R wrappers and unit-tests
-	@Rscript --verbose ./tools/gen_code/cycle_indicator.R
-	@Rscript --verbose ./tools/gen_code/candlestick_pattern.R
-	@Rscript --verbose ./tools/gen_code/momentum_indicator.R
-	@Rscript --verbose ./tools/gen_code/moving_average.R
-	@Rscript --verbose ./tools/gen_code/overlapstudy.R
-	@Rscript --verbose ./tools/gen_code/volume_indicator.R
-	@Rscript --verbose ./tools/gen_code/volatility_indicator.R
-	@Rscript --verbose ./tools/gen_code/price_transform.R
-	@Rscript --verbose ./tools/gen_code/rolling_statistics.R
+	@Rscript --verbose ./codegen/gen_code/generate.R
 	$(MAKE) fmt
