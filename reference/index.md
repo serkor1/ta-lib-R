@@ -2,7 +2,9 @@
 
 ## Candlestick Patterns
 
-The collection of Candlestick Patterns.
+Identify bullish, bearish, and reversal candlestick formations from OHLC
+price data. Includes classic patterns such as Doji, Hammer, Engulfing,
+Morning Star, and many more — 61 patterns in total.
 
 - [`abandoned_baby()`](https://serkor1.github.io/ta-lib-R/reference/abandoned_baby.md)
   : Abandoned Baby
@@ -129,7 +131,9 @@ The collection of Candlestick Patterns.
 
 ## Momentum Indicators
 
-The collection of Momentum Indicators.
+Measure the speed and strength of price movements. Includes oscillators
+and rate-of-change indicators such as RSI, MACD, Stochastic, CCI,
+Williams %R, and ADX.
 
 - [`absolute_price_oscillator()`](https://serkor1.github.io/ta-lib-R/reference/absolute_price_oscillator.md)
   : Absolute Price Oscillator
@@ -192,7 +196,9 @@ The collection of Momentum Indicators.
 
 ## Overlap Studies
 
-The collection of Overlap Studies.
+Indicators plotted directly on the price chart. Moving averages (SMA,
+EMA, WMA, DEMA, TEMA, KAMA), Bollinger Bands, Parabolic SAR, and other
+trend-following overlays.
 
 - [`acceleration_bands()`](https://serkor1.github.io/ta-lib-R/reference/acceleration_bands.md)
   : Acceleration Bands
@@ -225,7 +231,9 @@ The collection of Overlap Studies.
 
 ## Cycle Indicators
 
-The collection of Cycle Indicators.
+Detect dominant market cycles in price data using Hilbert Transform
+methods. Estimate cycle period, phase, and the in-phase / quadrature
+components of the analytic signal.
 
 - [`dominant_cycle_period()`](https://serkor1.github.io/ta-lib-R/reference/dominant_cycle_period.md)
   : Hilbert Transform - Dominant Cycle Period
@@ -240,7 +248,8 @@ The collection of Cycle Indicators.
 
 ## Volume Indicators
 
-The collection of Volume Indicators.
+Analyze trading volume to confirm price trends and spot divergences.
+Includes On-Balance Volume (OBV), Chaikin A/D Line, and A/D Oscillator.
 
 - [`chaikin_accumulation_distribution_line()`](https://serkor1.github.io/ta-lib-R/reference/chaikin_accumulation_distribution_line.md)
   : Chaikin A/D Line
@@ -253,7 +262,9 @@ The collection of Volume Indicators.
 
 ## Volatility Indicators
 
-The collection of Volatility Indicators.
+Quantify the degree of price variation over a given period. Includes
+Average True Range (ATR), Normalized ATR (NATR), and True Range
+(TRANGE).
 
 - [`average_true_range()`](https://serkor1.github.io/ta-lib-R/reference/average_true_range.md)
   : Average True Range
@@ -264,7 +275,9 @@ The collection of Volatility Indicators.
 
 ## Financial Charts
 
-Charting functions
+Build interactive candlestick and OHLC charts with plotly. Layer
+technical indicators directly onto charts using the S3 plotly method
+dispatch.
 
 - [`chart()`](https://serkor1.github.io/ta-lib-R/reference/chart.md) :
   Create an OHLC Chart
@@ -277,7 +290,9 @@ Charting functions
 
 ## Rolling Statistics
 
-The collection of Rolling Statistics.
+Compute rolling (moving-window) descriptive statistics over price or
+return series. Includes rolling variance, standard deviation, linear
+regression, and time series forecast.
 
 - [`rolling_beta()`](https://serkor1.github.io/ta-lib-R/reference/rolling_beta.md)
   : Rolling Beta
@@ -296,7 +311,8 @@ The collection of Rolling Statistics.
 
 ## Price Transformations
 
-The collection of Price Transformation.
+Transform raw OHLC prices into derived series. Average Price, Median
+Price, Typical Price, and Weighted Close Price.
 
 - [`average_price()`](https://serkor1.github.io/ta-lib-R/reference/average_price.md)
   : Average Price
@@ -311,7 +327,8 @@ The collection of Price Transformation.
 
 ## Financial Data
 
-Preloaded financial data
+Built-in OHLCV datasets for examples, testing, and exploration. Includes
+daily price data for BTC, SPY, NVDA, and ATOM.
 
 - [`BTC`](https://serkor1.github.io/ta-lib-R/reference/BTC.md) : Bitcoin
   (BTC)

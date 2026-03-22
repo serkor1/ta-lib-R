@@ -3,7 +3,7 @@
 are common across all functions. Avoids documenting parameters
 that doesn't exist downstream."><meta property="og:description" content="A generic documentation block for documenting parameters that
 are common across all functions. Avoids documenting parameters
-that doesn't exist downstream."><meta property="og:image" content="https://serkor1.github.io/ta-lib-R/logo.png"></head><body>
+that doesn't exist downstream."><meta property="og:image" content="https://serkor1.github.io/ta-lib-R/reference/figures/logo.png"><meta property="og:image:alt" content="talib R package logo"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -59,23 +59,34 @@ that doesn't exist downstream.</p>
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>An OHLC-V series that is coercible to <a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a>. The function assumes that all columns are named in lowercase and order invariant.</p></dd>
+<dd><p>An OHLC-V series coercible to <a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a>. Columns must be named
+in lowercase (<code>open</code>, <code>high</code>, <code>low</code>, <code>close</code>, <code>volume</code>); column order
+does not matter.</p></dd>
 
 
 <dt id="arg-cols">cols<a class="anchor" aria-label="anchor" href="#arg-cols"></a></dt>
-<dd><p>(<a href="https://rdrr.io/r/stats/formula.html" class="external-link">formula</a>). An optional <a href="https://rdrr.io/r/stats/formula.html" class="external-link">formula</a> passed into <a href="https://rdrr.io/r/stats/model.frame.html" class="external-link">model.frame</a>. If passed into indicators based on univariate series, the function calculates indicators for each element in 'cols'. For indicators based on multivariate series, it will alter the calculation itself. See <code><a href="../articles/talib.html">vignette("talib")</a></code> for more details.</p></dd>
+<dd><p>(<a href="https://rdrr.io/r/stats/formula.html" class="external-link">formula</a>). An optional <a href="https://rdrr.io/r/stats/formula.html" class="external-link">formula</a> selecting columns from <code>x</code>
+via <a href="https://rdrr.io/r/stats/model.frame.html" class="external-link">model.frame</a> (e.g., <code>cols = ~close</code> or <code>cols = ~high + low</code>). For
+indicators based on a single column (e.g., Bollinger Bands, moving
+averages) each variable in <code>cols</code> is calculated independently; for
+indicators based on multiple columns (e.g., Stochastic) the selected
+columns replace the defaults used in the calculation.
+See <code><a href="../articles/talib.html">vignette("talib")</a></code> for details.</p></dd>
 
 
 <dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
-<dd><p>(<a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a>). An <a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a> of <a href="https://rdrr.io/r/base/length.html" class="external-link">length</a> 1.</p></dd>
+<dd><p>(<a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a>). Lookback period (window size). A positive <a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a>
+of <a href="https://rdrr.io/r/base/length.html" class="external-link">length</a> 1.</p></dd>
 
 
 <dt id="arg-eps">eps<a class="anchor" aria-label="anchor" href="#arg-eps"></a></dt>
-<dd><p>(<a href="https://rdrr.io/r/base/double.html" class="external-link">double</a>). A <a href="https://rdrr.io/r/base/double.html" class="external-link">double</a> of <a href="https://rdrr.io/r/base/length.html" class="external-link">length</a> 1. Percentage of penetration of a candle within another candle.</p></dd>
+<dd><p>(<a href="https://rdrr.io/r/base/double.html" class="external-link">double</a>). Penetration threshold for candlestick pattern
+recognition, expressed as a fraction of the candle body. A <a href="https://rdrr.io/r/base/double.html" class="external-link">double</a> of
+<a href="https://rdrr.io/r/base/length.html" class="external-link">length</a> 1.</p></dd>
 
 
 <dt id="arg-na-ignore">na.ignore<a class="anchor" aria-label="anchor" href="#arg-na-ignore"></a></dt>
-<dd><p>(<a href="https://rdrr.io/r/base/logical.html" class="external-link">logical</a>). A <a href="https://rdrr.io/r/base/logical.html" class="external-link">logical</a> of <a href="https://rdrr.io/r/base/length.html" class="external-link">length</a> 1. <a href="https://rdrr.io/r/base/logical.html" class="external-link">FALSE</a> by default. If <a href="https://rdrr.io/r/base/logical.html" class="external-link">TRUE</a> <na>'s are ignored during calculation to avoid returning <code>x</code> filled with <na>'s.</na></na></p></dd>
+<dd><p>(<a href="https://rdrr.io/r/base/logical.html" class="external-link">logical</a>). A <a href="https://rdrr.io/r/base/logical.html" class="external-link">logical</a> of <a href="https://rdrr.io/r/base/length.html" class="external-link">length</a> 1. <a href="https://rdrr.io/r/base/logical.html" class="external-link">FALSE</a> by default. If <a href="https://rdrr.io/r/base/logical.html" class="external-link">TRUE</a>, <code>NA</code>s in the input are stripped before calculation and re-inserted at their original positions in the output.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -87,7 +98,7 @@ that doesn't exist downstream.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Serkan Korkmaz.</p>
+  <p>Developed by <a href="https://github.com/serkor1" class="external-link">Serkan Korkmaz</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

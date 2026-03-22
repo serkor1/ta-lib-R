@@ -1,15 +1,18 @@
 # Rolling Beta
 
-The `rolling_beta()` is a generic S3 function that builds upon
-'type-safe'-esque workflows limited to classes in in base `R`, and the
-package-wide dependencies. Ie.
-[class](https://rdrr.io/r/base/class.html) in,
-[class](https://rdrr.io/r/base/class.html) out.
+`rolling_beta()` is a generic S3 function that preserves the input
+[class](https://rdrr.io/r/base/class.html):
+[double](https://rdrr.io/r/base/double.html) vector in,
+[double](https://rdrr.io/r/base/double.html) vector out.
 
 ### Handling of -values
 
-`rolling_beta()` iterates over valid values, and returns `NA` for the
-remaing part of series.
+Leading `NA`s are always produced for the initial lookback period where
+insufficient data is available. If the input itself contains `NA`s they
+are passed through to the underlying C routine, which can cause the
+**entire** output to be filled with `NA`s. Set `na.ignore = TRUE` to
+strip `NA`s before calculation and re-insert them at their original
+positions in the output.
 
 ## Usage
 
@@ -22,11 +25,14 @@ rolling_beta(x, y, n = 10, na.ignore = FALSE)
 - x, y:
 
   (([double](https://rdrr.io/r/base/double.html)),
-  ([double](https://rdrr.io/r/base/double.html))). A pair of vectors.
+  ([double](https://rdrr.io/r/base/double.html))). A pair of
+  [double](https://rdrr.io/r/base/double.html) vectors of equal
+  [length](https://rdrr.io/r/base/length.html).
 
 - n:
 
-  ([integer](https://rdrr.io/r/base/integer.html)). An
+  ([integer](https://rdrr.io/r/base/integer.html)). Lookback period
+  (window size). A positive
   [integer](https://rdrr.io/r/base/integer.html) of
   [length](https://rdrr.io/r/base/length.html) 1.
 
@@ -36,8 +42,9 @@ rolling_beta(x, y, n = 10, na.ignore = FALSE)
   [logical](https://rdrr.io/r/base/logical.html) of
   [length](https://rdrr.io/r/base/length.html) 1.
   [FALSE](https://rdrr.io/r/base/logical.html) by default. If
-  [TRUE](https://rdrr.io/r/base/logical.html) 's are ignored during
-  calculation to avoid returning `x` filled with 's.
+  [TRUE](https://rdrr.io/r/base/logical.html), `NA`s in the input are
+  stripped before calculation and re-inserted at their original
+  positions in the output.
 
 ## Value
 
