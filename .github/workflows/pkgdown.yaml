@@ -46,6 +46,15 @@ jobs:
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = TRUE, clean = TRUE)
         shell: Rscript {0}
 
+      - name: Clean search index
+        run: python3 -c "
+          import json;
+          data = json.load(open('docs/search.json'));
+          clean = [e for e in data if e.get('path') and e['path'] != []];
+          json.dump(clean, open('docs/search.json', 'w'), separators=(',', ':'));
+          print(f'Search index: {len(data)} -> {len(clean)} entries ({len(data)-len(clean)} empty entries removed)')
+          "
+
       - name: Deploy to GitHub pages 🚀
         if: github.event_name != 'pull_request'
         uses: JamesIves/github-pages-deploy-action@v4.5.0
