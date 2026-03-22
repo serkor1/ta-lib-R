@@ -279,6 +279,49 @@ testthat::test_that(desc = "Multi-indicator mixed types ggplot2", code = {
 	)
 })
 
+## ---- mixed indicator types (pattern + overlay + subchart) ----
+
+## test that candlestick patterns can be mixed with
+## overlay and subchart indicators on the plotly backend
+testthat::test_that(desc = "Mixed patterns and indicators plotly", code = {
+	output <- testthat::expect_no_error(
+		{
+			set_theme$hawks_and_doves
+			chart(BTC)
+			indicator(harami)
+			indicator(bollinger_bands)
+			indicator(MACD)
+		}
+	)
+
+	testthat::expect_true(
+		inherits(output, "plotly")
+	)
+})
+
+## test that candlestick patterns can be mixed with
+## overlay and subchart indicators on the ggplot2 backend
+testthat::test_that(desc = "Mixed patterns and indicators ggplot2", code = {
+	testthat::skip_if_not_installed("ggplot2")
+
+	options(talib.chart.backend = "ggplot2")
+	on.exit(options(talib.chart.backend = "plotly"))
+
+	output <- testthat::expect_no_error(
+		{
+			set_theme$hawks_and_doves
+			chart(BTC)
+			indicator(harami)
+			indicator(bollinger_bands)
+			indicator(MACD)
+		}
+	)
+
+	testthat::expect_true(
+		inherits(output, "gg") || inherits(output, "talib_chart")
+	)
+})
+
 ## ---- reset theme to default ----
 
 ## clean up after tests

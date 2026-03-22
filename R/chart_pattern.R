@@ -130,6 +130,10 @@ pattern_gg <- function(
 	idx_bull <- which(x[[1]] > 0L)
 	idx_bear <- which(x[[1]] < 0L)
 
+	## convert idx labels to integer chart positions
+	## the ggplot2 backend uses integer positions on x-axis
+	chart_pos <- match(x$idx, .chart_environment$idx$label)
+
 	## offset markers from candle body
 	## so they do not overlap with wicks
 	offset <- 0.15 * (high - low)
@@ -137,7 +141,7 @@ pattern_gg <- function(
 	## add bearish markers above the candle
 	if (length(idx_bear) > 0) {
 		bear_data <- data.frame(
-			.chart_pos = x$idx[idx_bear],
+			.chart_pos = chart_pos[idx_bear],
 			y = high[idx_bear] + offset[idx_bear],
 			label = pattern_name
 		)
@@ -173,7 +177,7 @@ pattern_gg <- function(
 	## agnostic mode uses inverted triangle above
 	if (length(idx_bull) > 0) {
 		bull_data <- data.frame(
-			.chart_pos = x$idx[idx_bull],
+			.chart_pos = chart_pos[idx_bull],
 			y = if (agnostic) {
 				high[idx_bull] - offset[idx_bull]
 			} else {
