@@ -417,10 +417,61 @@ merge_subchart_ggplot <- function(from, to) {
 			)
 	}
 
-	## clear last-value subtitle from the
-	## merged panel - overlapping annotations
-	## from multiple indicators are unreadable
-	base$labels$subtitle <- NULL
+	## build combined last-value subtitle
+	## from all merged panels using spec names
+	## opt-out via options(talib.chart.merged_last_value = FALSE)
+	if (getOption("talib.chart.merged_last_value", TRUE)) {
+		last_values <- list()
+		for (i in seq(from, to)) {
+			lv <- attr(.chart_environment$sub[[i]], "talib_last_value")
+			if (!is.null(lv)) {
+				last_values <- c(last_values, list(lv))
+			}
+		}
+
+		if (length(last_values) > 0L) {
+			## build subtitle parts using spec names
+			## single output: RSI(10): 45.32
+			## multi output: MACD(12,26,9): 0.50 / 0.30 / 0.20
+			parts <- lapply(last_values, function(lv) {
+				label <- lv$name
+				if (length(lv$values) == 1L) {
+					val_str <- sprintf("%.2f", lv$values[[1L]])
+				} else {
+					val_str <- paste(
+						sprintf("%.2f", lv$values),
+						collapse = " / "
+					)
+				}
+				bquote(
+					bold(.(paste0(label, ":"))) ~ .(val_str)
+				)
+			})
+
+			value_expr <- as.expression(
+				if (length(parts) == 1L) {
+					parts[[1L]]
+				} else {
+					Reduce(
+						function(a, b) bquote(.(a) ~ ~ .(b)),
+						parts
+					)
+				}
+			)
+
+			base <- base +
+				ggplot2::labs(subtitle = value_expr) +
+				ggplot2::theme(
+					plot.subtitle = ggplot2::element_text(
+						hjust = 1,
+						size = 10 * getOption("talib.chart.scale", 1),
+						color = .chart_variables$text_color
+					)
+				)
+		}
+	} else {
+		base$labels$subtitle <- NULL
+	}
 
 	## replace first panel with merged
 	## and drop the rest

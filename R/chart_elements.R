@@ -101,10 +101,15 @@ add_last_value_ly <- function(
 ## add last-value annotation as subtitle
 ## for the ggplot2 backend - shown at top-right
 ## uses plotmath expressions for bold labels
+##
+## when name is provided it is stored as metadata
+## on the plot so merge_subchart_ggplot() can build
+## a combined subtitle for multi-indicator panels
 add_last_value_gg <- function(
 	p,
 	data,
-	values_to_extract = c("open", "high", "low", "close")
+	values_to_extract = c("open", "high", "low", "close"),
+	name = NULL
 ) {
 	## extract the last row for the
 	## relevant columns
@@ -126,6 +131,15 @@ add_last_value_gg <- function(
 		function(col) col[[1]],
 		numeric(1)
 	)
+
+	## store metadata for merge_subchart_ggplot()
+	## to reconstruct a combined subtitle
+	if (!is.null(name)) {
+		attr(p, "talib_last_value") <- list(
+			name = name,
+			values = values
+		)
+	}
 
 	## build plotmath expression with bold labels
 	## renders as: open: 42312.50  high: 43000.00
