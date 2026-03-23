@@ -37,7 +37,7 @@ jobs:
         with:
           extra-packages: any::pkgdown any::devtools any::roxygen2
           needs: website
-        
+
       - name: Render documentation and NAMESPACE
         run: devtools::document()
         shell: Rscript {0}
@@ -47,12 +47,12 @@ jobs:
         shell: Rscript {0}
 
       - name: Clean search index
-        run: python3 -c "
-          import json;
-          data = json.load(open('docs/search.json'));
-          clean = [e for e in data if e.get('path') and e['path'] != []];
-          json.dump(clean, open('docs/search.json', 'w'), separators=(',', ':'));
-          print(f'Search index: {len(data)} -> {len(clean)} entries ({len(data)-len(clean)} empty entries removed)')
+        run: |
+          python3 -c "
+          import json
+          data = json.load(open('docs/search.json'))
+          clean = [e for e in data if e.get('path') and e['path'] != []]
+          json.dump(clean, open('docs/search.json', 'w'), separators=(',', ':'))
           "
 
       - name: Deploy to GitHub pages 🚀
