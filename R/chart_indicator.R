@@ -417,6 +417,11 @@ merge_subchart_ggplot <- function(from, to) {
 			)
 	}
 
+	## clear last-value subtitle from the
+	## merged panel - overlapping annotations
+	## from multiple indicators are unreadable
+	base$labels$subtitle <- NULL
+
 	## replace first panel with merged
 	## and drop the rest
 	.chart_environment$sub[[from]] <- base

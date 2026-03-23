@@ -100,6 +100,7 @@ add_last_value_ly <- function(
 
 ## add last-value annotation as subtitle
 ## for the ggplot2 backend - shown at top-right
+## uses plotmath expressions for bold labels
 add_last_value_gg <- function(
 	p,
 	data,
@@ -126,13 +127,27 @@ add_last_value_gg <- function(
 		numeric(1)
 	)
 
-	value_text <- paste(
-		sprintf("%s: %.2f", names(values), values),
-		collapse = "  "
+	## build plotmath expression with bold labels
+	## renders as: open: 42312.50  high: 43000.00
+	## with column names in bold
+	parts <- Map(
+		function(nm, val) {
+			bquote(bold(.(paste0(nm, ":"))) ~ .(sprintf("%.2f", val)))
+		},
+		names(values),
+		unname(values)
+	)
+
+	value_expr <- as.expression(
+		if (length(parts) == 1L) {
+			parts[[1L]]
+		} else {
+			Reduce(function(a, b) bquote(.(a) ~ ~ .(b)), parts)
+		}
 	)
 
 	p +
-		ggplot2::labs(subtitle = value_text) +
+		ggplot2::labs(subtitle = value_expr) +
 		ggplot2::theme(
 			plot.subtitle = ggplot2::element_text(
 				hjust = 1,
