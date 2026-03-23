@@ -402,7 +402,8 @@ fixed_moving_average_convergence_divergence.ggplot <- function(
 			}
 		),
 		data = constructed_indicator[, values_to_extract, drop = FALSE],
-		values_to_extract = values_to_extract
+		values_to_extract = values_to_extract,
+		name = get0(x = "name", ifnotfound = NULL)
 	)
 
 	.chart_environment$sub <- c(
