@@ -355,7 +355,7 @@ build_ggplot <- function(
 								y = .data[[y_col]],
 								colour = .data[[".legend"]]
 							),
-							size = 1.5,
+							size = 6 * 25.4 / 96,
 							na.rm = TRUE
 						)
 				}

@@ -165,7 +165,7 @@ add_last_value_gg <- function(
 		ggplot2::theme(
 			plot.subtitle = ggplot2::element_text(
 				hjust = 1,
-				size = 10 * getOption("talib.chart.scale", 1),
+				size = 10 * (72 / 96) * getOption("talib.chart.scale", 1),
 				color = .chart_variables$text_color
 			)
 		)
