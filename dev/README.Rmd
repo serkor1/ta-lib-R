@@ -95,7 +95,7 @@ tail(
 
 Charts are built in two steps: `chart()` creates the price chart, then `indicator()` layers on technical indicators. Overlap indicators (moving averages, Bollinger Bands) draw on the price panel; oscillators (RSI, MACD) get their own sub-panels.
 
-```{r charting, fig.align = 'center', echo = TRUE}
+```{r charting, fig.align = 'center', fig.height = 7, echo = TRUE}
 {
 	## price chart with two moving
 	## averages and MACD below
@@ -108,7 +108,7 @@ Charts are built in two steps: `chart()` creates the price chart, then `indicato
 
 Multiple indicators can share a sub-panel by passing them as calls:
 
-```{r combined, fig.align = 'center', echo = TRUE}
+```{r combined, fig.align = 'center', fig.height = 7, echo = TRUE}
 {
 	talib::chart(BTC)
 	talib::indicator(talib::BBANDS)
@@ -130,7 +130,7 @@ options(talib.chart.backend = "ggplot2")
 talib::set_theme("hawks_and_doves")
 ```
 
-```{r ggplot2, fig.align = 'center', echo = TRUE}
+```{r ggplot2, fig.align = 'center', fig.height = 7, echo = TRUE}
 {
 	## switch to ggplot2 backend with
 	## the "Hawks and Doves" theme
