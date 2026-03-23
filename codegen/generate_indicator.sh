@@ -106,7 +106,7 @@ envsubst "$REPLACE" < "$TEMPLATE_MAIN" > "$tmp_render"
 ## 4.2) optional templates
 ##      pre-appended with double linebreak
 ##      to avoid broken code
-if [[ $NUMERIC -eq 1 ]]; then
+if [[ $NUMERIC -eq 1 && $ROLLING -ne 1 ]]; then
   envsubst "$REPLACE" < "$TEMPLATE_NUMERIC" > "$tmp_numeric"
   printf '\n\n' >> "$tmp_render"
   cat "$tmp_numeric" >> "$tmp_render"
