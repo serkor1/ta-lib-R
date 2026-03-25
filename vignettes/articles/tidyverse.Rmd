@@ -1,0 +1,184 @@
+---
+title: "Tidyverse Workflows"
+author: Serkan Korkmaz
+---
+
+```{r, include = FALSE}
+options(talib.chart.dark = FALSE)
+
+knitr::opts_chunk$set(
+	collapse = TRUE,
+	comment = "#>",
+	out.width = "100%",
+	fig.align = "center"
+)
+```
+
+`{talib}` indicators accept a `data.frame` and return a `data.frame`---but the returned data frame contains **only the indicator columns**, not the original data. This is by design: it keeps the core API minimal and composable. In a tidyverse pipeline, however, you usually want the indicator columns attached to your existing data so you can keep piping.
+
+This article builds a thin wrapper called `tidy_ta()` that bridges that gap, then puts it to work in increasingly realistic scenarios.
+
+```{r}
+library(talib)
+library(dplyr)
+library(tidyr)
+```
+
+## The gap
+
+Piping into a `{talib}` indicator works---`x` is the first argument:
+
+```{r}
+BTC %>%
+	RSI(n = 14) %>%
+	tail()
+```
+
+The result is a one-column data frame with just the RSI values. The original price data is gone. To keep both, you need to bind the indicator output back to the input.
+
+## Building `tidy_ta()`
+
+The simplest version takes a data frame, passes it to an indicator, and column-binds the result:
+
+```{r}
+tidy_ta <- function(.data, .f, ...) {
+	dplyr::bind_cols(.data, .f(.data, ...))
+}
+```
+
+Three lines, and every indicator in `{talib}` is now pipe-friendly:
+
+```{r}
+BTC %>%
+	tidy_ta(RSI, n = 14) %>%
+	tail()
+```
+
+Multi-column indicators work the same way---Bollinger Bands returns three columns, and all three get bound:
+
+```{r}
+BTC %>%
+	tidy_ta(bollinger_bands) %>%
+	tail()
+```
+
+Chaining multiple indicators composes naturally:
+
+```{r}
+BTC %>%
+	tidy_ta(RSI, n = 14) %>%
+	tidy_ta(bollinger_bands) %>%
+	tidy_ta(MACD) %>%
+	tail()
+```
+
+### Handling column-name collisions
+
+If you add two SMAs with different periods, both return a column named `SMA` and `bind_cols()` disambiguates with ugly suffixes like `SMA...6`. A `.suffix` parameter fixes this:
+
+```{r}
+tidy_ta <- function(.data, .f, ..., .suffix = NULL) {
+	result <- .f(.data, ...)
+
+	if (!is.null(.suffix)) {
+		colnames(result) <- paste(colnames(result), .suffix, sep = "_")
+	}
+
+	dplyr::bind_cols(.data, result)
+}
+```
+
+Now each indicator gets a clear name:
+
+```{r}
+BTC %>%
+	tidy_ta(SMA, n = 10, .suffix = "10") %>%
+	tidy_ta(SMA, n = 20, .suffix = "20") %>%
+	tail()
+```
+
+The `cols` argument is forwarded through `...`, so column remapping still works:
+
+```{r}
+BTC %>%
+	tidy_ta(RSI, cols = ~high, n = 14) %>%
+	tail()
+```
+
+This is the complete wrapper. The rest of the article uses it as-is.
+
+## Grouped operations across assets
+
+A common task is computing the same indicator across multiple tickers. Stack the data, `nest()` by ticker, apply `tidy_ta()` inside each group, and `unnest()`:
+
+```{r}
+assets <- bind_rows(
+	BTC  %>% as_tibble(rownames = "date") %>% mutate(ticker = "BTC"),
+	SPY  %>% as_tibble(rownames = "date") %>% mutate(ticker = "SPY"),
+	NVDA %>% as_tibble(rownames = "date") %>% mutate(ticker = "NVDA")
+)
+
+assets %>%
+	nest(.by = ticker) %>%
+	mutate(data = lapply(data, tidy_ta, RSI, n = 14)) %>%
+	unnest(data) %>%
+	select(ticker, date, close, RSI) %>%
+	filter(!is.na(RSI)) %>%
+	slice_tail(n = 3, by = ticker)
+```
+
+Because `tidy_ta()` returns the full enriched data frame, `unnest()` restores everything in one step. This scales to multiple indicators by chaining inside the `lapply()`:
+
+```{r}
+assets %>%
+	nest(.by = ticker) %>%
+	mutate(data = lapply(data, function(d) {
+		d %>%
+			tidy_ta(RSI, n = 14) %>%
+			tidy_ta(bollinger_bands)
+	})) %>%
+	unnest(data) %>%
+	select(ticker, date, close, RSI, UpperBand, MiddleBand, LowerBand) %>%
+	filter(!is.na(RSI)) %>%
+	slice_tail(n = 3, by = ticker)
+```
+
+## Putting it all together
+
+A complete pipeline: enrich a multi-asset dataset, flag RSI signals, and find the most recent event per asset.
+
+```{r}
+assets %>%
+	nest(.by = ticker) %>%
+	mutate(data = lapply(data, tidy_ta, RSI, n = 14)) %>%
+	unnest(data) %>%
+	filter(!is.na(RSI)) %>%
+	mutate(
+		signal = case_when(
+			RSI > 70 ~ "overbought",
+			RSI < 30 ~ "oversold"
+		)
+	) %>%
+	filter(!is.na(signal)) %>%
+	slice_tail(n = 1, by = c(ticker, signal)) %>%
+	select(ticker, date, close, RSI, signal) %>%
+	arrange(ticker, signal)
+```
+
+## Summary
+
+The entire wrapper is six lines:
+
+```r
+tidy_ta <- function(.data, .f, ..., .suffix = NULL) {
+	result <- .f(.data, ...)
+	if (!is.null(.suffix)) {
+		colnames(result) <- paste(colnames(result), .suffix, sep = "_")
+	}
+	dplyr::bind_cols(.data, result)
+}
+```
+
+It works because `{talib}` indicators already follow the key convention: data frame in, data frame out, with row counts and row names preserved. `tidy_ta()` just bridges the last mile---binding the result back to the input so the pipeline keeps flowing.
+
+The pattern is not specific to `{talib}`. Any function that takes a data frame and returns a same-length data frame can be wrapped the same way.
