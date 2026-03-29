@@ -272,6 +272,10 @@ ggplot_chart_theme <- function() {
 		default = 1
 	)
 
+	## plotly sizes are CSS px (1px = 1/96in)
+	## ggplot2 element_text sizes are pt (1pt = 1/72in)
+	px_to_pt <- 72 / 96
+
 	ggplot2::theme(
 		## background
 		plot.background = ggplot2::element_rect(
@@ -294,21 +298,22 @@ ggplot_chart_theme <- function() {
 		## text
 		text = ggplot2::element_text(
 			color = .chart_variables$text_color,
-			size = 10 * font_scale
+			size = 10 * px_to_pt * font_scale
 		),
 		plot.title = ggplot2::element_text(
-			size = 14 * font_scale,
+			size = 14 * px_to_pt * font_scale,
 			hjust = 0,
 			margin = ggplot2::margin(0, 0, 0, 0)
 		),
 		plot.subtitle = ggplot2::element_text(
+			size = 10 * px_to_pt * font_scale,
 			margin = ggplot2::margin(0, 0, 2, 0)
 		),
 
 		## axes
 		axis.text = ggplot2::element_text(
 			color = .chart_variables$text_color,
-			size = 8 * font_scale
+			size = 8 * px_to_pt * font_scale
 		),
 		axis.ticks = ggplot2::element_line(
 			color = .chart_variables$foreground_color,
@@ -324,7 +329,7 @@ ggplot_chart_theme <- function() {
 			fill = "transparent"
 		),
 		legend.text = ggplot2::element_text(
-			size = 8 * font_scale
+			size = 8 * px_to_pt * font_scale
 		),
 		legend.position = if (getOption("talib.chart.legend", TRUE)) {
 			"inside"

@@ -156,7 +156,7 @@ pattern_gg <- function(
 				shape = 25,
 				fill = .chart_variables$bearish_body,
 				color = .chart_variables$bearish_body,
-				size = 2.5
+				size = 10 * 25.4 / 96
 			)
 
 		p <- p +
@@ -169,7 +169,7 @@ pattern_gg <- function(
 				),
 				vjust = -1,
 				color = .chart_variables$bearish_body,
-				size = 2.5
+				size = 10 * 25.4 / 96
 			)
 	}
 
@@ -202,7 +202,7 @@ pattern_gg <- function(
 				shape = if (agnostic) 25 else 24,
 				fill = marker_color,
 				color = marker_color,
-				size = 2.5
+				size = 10 * 25.4 / 96
 			)
 
 		p <- p +
@@ -215,7 +215,7 @@ pattern_gg <- function(
 				),
 				vjust = if (agnostic) -1 else 2,
 				color = marker_color,
-				size = 2.5
+				size = 10 * 25.4 / 96
 			)
 	}
 
