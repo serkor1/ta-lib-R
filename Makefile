@@ -26,10 +26,12 @@ build: clean fmt ## Build the R package
 	@Rscript -e "rmarkdown::render('dev/README.Rmd', output_dir = '.', output_format = rmarkdown::github_document(html_preview = FALSE), clean = TRUE)"
 
 check: fmt document ## Check the R package
-	@R CMD build . && R CMD check --as-cran $(tarball_location)
+	@R CMD build .
+	@TALIB_STRICT_WARNINGS=1 R CMD check --as-cran $(tarball_location)
 
 check-full: fmt document ## Check the R package with valgrind
-	@R CMD build .  && R CMD check --as-cran --use-valgrind $(tarball_location)
+	@R CMD build .
+	@TALIB_STRICT_WARNINGS=1 R CMD check --as-cran --use-valgrind $(tarball_location)
 
 test: fmt ## Run tests
 	@Rscript --verbose -e "library(talib); testthat::test_dir('tests/testthat')"

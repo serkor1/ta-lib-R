@@ -359,7 +359,19 @@ else
     PKG_LIBS="${PKG_LIBS##*src/} -lm"
 fi
 
-CFLAGS="$CFLAGS $OPTFLAGS"
+## Opt-in strict warnings for the R wrapper compile step.
+## Triggered by 'make check' via TALIB_STRICT_WARNINGS=1.
+## Flags are appended to PKG_CFLAGS only, NOT to the CMake
+## build of vendored ta-lib (which keeps -w) — this prevents
+## ta-lib's own code from drowning the log.
+if [ "${TALIB_STRICT_WARNINGS:-0}" = "1" ]; then
+    WARN_FLAGS="-Wall -Wpedantic -Wextra -Wno-unused-parameter -Wno-cast-function-type"
+    printf '%s Strict warnings enabled: %s\n' "$(info)" "$WARN_FLAGS"
+else
+    WARN_FLAGS=""
+fi
+
+CFLAGS="$CFLAGS $OPTFLAGS $WARN_FLAGS"
 printf ' %s\n' "$(success)"
 
 printf '%s Constructing %s' "$(info)" "$(var Makevars)"
