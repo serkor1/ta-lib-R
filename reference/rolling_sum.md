@@ -5,7 +5,7 @@
 [double](https://rdrr.io/r/base/double.html) vector in,
 [double](https://rdrr.io/r/base/double.html) vector out.
 
-### Handling of -values
+### Handling of `NA` values
 
 Leading `NA`s are always produced for the initial lookback period where
 insufficient data is available. If the input itself contains `NA`s, the
@@ -57,8 +57,8 @@ rolling_sum(x, n = 30, na.bridge = FALSE)
   [TRUE](https://rdrr.io/r/base/logical.html), input `NA` rows are
   stripped before computation and re-inserted at the original positions
   in the output, causing the statistic to treat non-consecutive non-`NA`
-  observations as if they were adjacent - see the **Handling of
-  \\NA\\-values** section above for the consequences.
+  observations as if they were adjacent - see the **Handling of `NA`
+  values** section above for the consequences.
 
 ## Value
 

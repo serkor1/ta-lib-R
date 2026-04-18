@@ -7,7 +7,7 @@
 [matrix](https://rdrr.io/r/base/matrix.html) in,
 [matrix](https://rdrr.io/r/base/matrix.html) out.
 
-### Handling of -values
+### Handling of `NA` values
 
 Every indicator always emits **leading `NA`s** for the initial lookback
 period - positions where there is not yet enough data to produce a
@@ -84,7 +84,7 @@ midpoint_price(x, cols, n = 14, na.bridge = FALSE, ...)
   input `NA` rows are stripped before computation and re-inserted at the
   original positions in the output, causing the indicator to treat
   non-consecutive non-`NA` observations as if they were adjacent — see
-  the **Handling of \\NA\\-values** section above for the consequences.
+  the **Handling of `NA` values** section above for the consequences.
 
 - ...:
 
