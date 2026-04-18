@@ -139,7 +139,7 @@ SEXP impl_ta_CDLMORNINGSTAR(
   // if flag is TRUE the output is converted from INTSXP
   // to REALSXP and divided by 100, preserving pattern strength
   // see normalize.h for more details
-  if (LOGICAL_VALUE(flag)) {
+  if (LOGICAL_ELT(flag, 0)) {
     output = normalize_int_to_real(
       output,
       100.0,

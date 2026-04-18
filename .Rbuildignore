@@ -8,8 +8,6 @@ Makefile
 air.toml
 data-raw
 man-roxygen
-NOTES.md
-sandbox
 src/README.md
 man/README.md
 benchmark/
@@ -17,13 +15,6 @@ benchmark/
 ## Files that must never reach CRAN
 ^\.claude$
 ^CLAUDE\.md$
-^Rplots\.pdf$
-^code_review\.md$
-^code_review_v2\.md$
-^current_pr\.md$
-^cran-comments\.md$
-^talib_[0-9.-]+\.tar\.gz$
-^figure$
 
 ## TA-Lib
 
@@ -98,7 +89,7 @@ src/ta-lib/Makefile.in
 ^src/ta-lib/lib/
 ^src/ta-lib/m4/
 
-### Unused upstream files (READMD.md and LICENSE referenced by CMakeLists CPack)
+### Unused upstream files (README.md and LICENSE referenced by CMakeLists CPack)
 ^src/ta-lib/CHANGELOG\.md$
 ^src/ta-lib/README-DEVS\.md$
 ^src/ta-lib/CNAME$
