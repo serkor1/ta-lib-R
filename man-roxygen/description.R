@@ -29,10 +29,27 @@
 #'
 #' @param cols ([formula]). An optional `<%= length(all.vars(as.formula(.formula))) %>`-variable [formula] selecting columns from `x` via [model.frame].
 #'  Defaults to `<%= deparse(as.formula(.formula)) %>`.
-#' 
+#'
 <% } %>
 #'
-#' @inheritParams generic_documentation
+<% fun_args <- names(formals(.fun)) %>
+<% if ("n" %in% fun_args) { %>
+#' @param n ([integer]). Lookback period (window size). A positive [integer]
+#'   of [length] 1.
+<% } %>
+<% if ("eps" %in% fun_args) { %>
+#' @param eps ([double]). Penetration threshold for candlestick pattern
+#'   recognition, expressed as a fraction of the candle body. A [double] of
+#'   [length] 1.
+<% } %>
+<% if ("na.ignore" %in% fun_args) { %>
+#' @param na.ignore ([logical]). A [logical] of [length] 1. [FALSE] by default.
+#'   If [TRUE], `NA`s in the input are stripped before calculation and
+#'   re-inserted at their original positions in the output.
+<% } %>
+<% if ("..." %in% fun_args) { %>
+#' @param ... Additional parameters passed into [model.frame].
+<% } %>
 #'
 #' @author <%= .author %>
 #'

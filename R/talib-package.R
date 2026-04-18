@@ -3,36 +3,12 @@
 ## usethis namespace: end
 NULL
 
-#' @title Generic function documentation
-#' @name generic_documentation
-#'
-#' @description
-#' A generic documentation block for documenting parameters that
-#' are common across all functions. Avoids documenting parameters
-#' that doesn't exist downstream.
-#'
-#' @param x An OHLC-V series coercible to [data.frame]. Columns must be named
-#'   in lowercase (`open`, `high`, `low`, `close`, `volume`); column order
-#'   does not matter.
-#' @param cols ([formula]). An optional [formula] selecting columns from `x`
-#'   via [model.frame] (e.g., `cols = ~close` or `cols = ~high + low`). For
-#'   indicators based on a single column (e.g., Bollinger Bands, moving
-#'   averages) each variable in `cols` is calculated independently; for
-#'   indicators based on multiple columns (e.g., Stochastic) the selected
-#'   columns replace the defaults used in the calculation.
-#'   See `vignette("talib")` for details.
-#' @param n ([integer]). Lookback period (window size). A positive [integer]
-#'   of [length] 1.
-#' @param eps ([double]). Penetration threshold for candlestick pattern
-#'   recognition, expressed as a fraction of the candle body. A [double] of
-#'   [length] 1.
-#' @param na.ignore ([logical]). A [logical] of [length] 1. [FALSE] by default. If [TRUE], `NA`s in the input are stripped before calculation and re-inserted at their original positions in the output.
-#' @param ... Additional parameters passed into [model.frame]
-#'
-#' @returns NULL
-#' @keywords internal
-#' @usage NULL
-NULL
+## generic_documentation was previously an internal Rd page used as the
+## target of `@inheritParams generic_documentation` in the indicator
+## templates. It has been inlined: the shared parameters (n, eps,
+## na.ignore, ...) are now declared directly in
+## man-roxygen/description.R and man-roxygen/rolling_description.R,
+## removing the need for an internal cross-reference target.
 
 ## roxygen documentation
 ## functions

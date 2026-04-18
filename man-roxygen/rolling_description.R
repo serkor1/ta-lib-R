@@ -17,9 +17,21 @@
 #' @param x,y (([double]), ([double])). A pair of [double] vectors of equal [length].
 <% } else { %>
 #' @param x ([double]). A [double] vector.
-#' 
+#'
 <% } %>
-#' @inheritParams generic_documentation
+<% fun_args <- names(formals(.fun)) %>
+<% if ("n" %in% fun_args) { %>
+#' @param n ([integer]). Lookback period (window size). A positive [integer]
+#'   of [length] 1.
+<% } %>
+<% if ("na.ignore" %in% fun_args) { %>
+#' @param na.ignore ([logical]). A [logical] of [length] 1. [FALSE] by default.
+#'   If [TRUE], `NA`s in the input are stripped before calculation and
+#'   re-inserted at their original positions in the output.
+<% } %>
+<% if ("..." %in% fun_args) { %>
+#' @param ... Additional parameters.
+<% } %>
 #'
 #' @author <%= .author %>
 #'

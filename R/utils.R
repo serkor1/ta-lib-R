@@ -48,7 +48,10 @@ assert_formula <- function(x) {
 	)
 }
 
-assert_plotly <- function(x) {
+## assert_plotly_object(x): assert that `x` is a <plotly> OBJECT.
+## Renamed from assert_plotly() for symmetry with assert_plotly_pkg()
+## (which checks that the plotly PACKAGE is installed).
+assert_plotly_object <- function(x) {
 	assert(
 		x = is.plotly(x),
 		call = sys.call(sys.parent()),
@@ -102,6 +105,34 @@ assert_column_names <- function(formula, available_variables) {
 					paste0("'", similar_variables, "'", collapse = ", ")
 				)
 			}
+		)
+	}
+
+	## Non-syntactic names (containing spaces, hyphens, starting with a
+	## digit, etc.) survive as.name() but break downstream in ggplot2's
+	## aes() via the !!as.name() rewrite used by the .ggplot methods.
+	## Fail fast here with a clear message so the user isn't hunting
+	## through tidyeval stack traces.
+	syntactic <- make.names(passed_variables)
+	non_syntactic <- passed_variables[syntactic != passed_variables]
+	if (length(non_syntactic) > 0L) {
+		assert(
+			x = FALSE,
+			call = sys.call(sys.parent(n = 2)),
+			"Column names must be syntactically valid R names.",
+			paste0(
+				"Non-syntactic names detected: ",
+				paste0("'", non_syntactic, "'", collapse = ", "),
+				"."
+			),
+			paste0(
+				"Rename the offending columns (e.g. ",
+				"names(x)[names(x) == '",
+				non_syntactic[1L],
+				"'] <- '",
+				make.names(non_syntactic[1L]),
+				"') before calling this function."
+			)
 		)
 	}
 }
