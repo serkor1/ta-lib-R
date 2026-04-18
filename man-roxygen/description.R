@@ -12,7 +12,7 @@
 #' 
 <% } %>
 #'
-#' ## Handling of <NA>-values
+#' ## Handling of `NA` values
 #'
 #' Every indicator always emits **leading `NA`s** for the initial
 #' lookback period - positions where there is not yet enough data to
@@ -79,7 +79,7 @@
 #'   computation and re-inserted at the original positions in the
 #'   output, causing the indicator to treat non-consecutive non-`NA`
 #'   observations as if they were adjacent — see the **Handling of
-#'   \<NA\>-values** section above for the consequences.
+#'   `NA` values** section above for the consequences.
 <% } %>
 <% if ("..." %in% fun_args) { %>
 #' @param ... Additional parameters passed into [model.frame].

@@ -2,7 +2,7 @@
 #' `<%= tolower(.fun) %>()` is a generic S3 function that preserves
 #' the input [class]: [double] vector in, [double] vector out.
 #' 
-#' ## Handling of <NA>-values
+#' ## Handling of `NA` values
 #'
 #' Leading `NA`s are always produced for the initial lookback period
 #' where insufficient data is available. If the input itself contains
@@ -42,7 +42,7 @@
 #'   before computation and re-inserted at the original positions in
 #'   the output, causing the statistic to treat non-consecutive
 #'   non-`NA` observations as if they were adjacent - see the
-#'   **Handling of \<NA\>-values** section above for the consequences.
+#'   **Handling of `NA` values** section above for the consequences.
 <% } %>
 <% if ("..." %in% fun_args) { %>
 #' @param ... Additional parameters.

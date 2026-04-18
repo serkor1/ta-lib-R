@@ -32,8 +32,10 @@ EOF
 
 extract_signatures() {
   awk '
-    # start of an SEXP function
-    /^[[:space:]]*(static[[:space:]]+)?SEXP[[:space:]]+/ {
+    # start of an SEXP function (skip static — those are TU-local helpers,
+    # not entry points, and declaring them in a shared header triggers
+    # -Wunused-function for every TU that does not define them)
+    /^[[:space:]]*SEXP[[:space:]]+/ {
       sig = $0
 
       # keep reading until we hit "{" or ";"
