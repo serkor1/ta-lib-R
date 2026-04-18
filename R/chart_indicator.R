@@ -303,11 +303,11 @@ indicator.function <- function(FUN, ...) {
 	}
 
 	if (inherits(outcome, "gg")) {
-		return(
+		return(wrap_gg(
 			outcome +
 				ggplot2::ggtitle(title) +
 				ggplot_chart_theme()
-		)
+		))
 	}
 
 	outcome
@@ -594,10 +594,10 @@ assemble_ggplot2 <- function() {
 	)
 	n <- length(panels)
 
-	## single panel - return as-is
+	## single panel - return as-is (wrapped for safe auto-printing)
 	if (n == 1L) {
 		state$chart <- panels[[1]]
-		return(panels[[1]])
+		return(wrap_gg(panels[[1]]))
 	}
 
 	## main panel gets most of the height
@@ -650,6 +650,31 @@ assemble_ggplot2 <- function() {
 
 	state$chart <- fig
 	fig
+}
+
+## Wrap a ggplot2 return with a class whose print method opens a null
+## device when none is active. Prevents Rplots.pdf from appearing in
+## non-interactive contexts (R CMD check, Rscript) while leaving
+## interactive use untouched - in the REPL dev.cur() is not 1, so the
+## null-device branch is skipped and the user's device is used as-is.
+wrap_gg <- function(x) {
+	if (inherits(x, "gg") && !inherits(x, "talib_gg_chart")) {
+		class(x) <- c("talib_gg_chart", class(x))
+	}
+	x
+}
+
+## print method for single-panel ggplot charts returned by chart() /
+## indicator() on the ggplot2 backend. Guards against Rplots.pdf
+## creation in non-interactive contexts and delegates rendering to
+## ggplot2 via NextMethod.
+#' @export
+print.talib_gg_chart <- function(x, ...) {
+	if (grDevices::dev.cur() == 1L) {
+		grDevices::pdf(nullfile())
+		on.exit(grDevices::dev.off(), add = TRUE)
+	}
+	NextMethod()
 }
 
 ## print method for multi-panel ggplot2 charts

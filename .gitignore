@@ -57,6 +57,12 @@ rsconnect/
 # Makevars
 src/Makevars
 
+# Leftover graphics-device artifact
+Rplots.pdf
+
+# Empty scratch dir from earlier builds
+figure/
+
 # Building notes
 NOTES.md
 

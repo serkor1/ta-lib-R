@@ -211,7 +211,7 @@ chart_ggplot2 <- function(
 	state$color_map <- character(0)
 
 	state$main <- p
-	p
+	wrap_gg(p)
 }
 
 ## ---- axis formatting ----
