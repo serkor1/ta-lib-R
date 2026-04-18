@@ -1,5 +1,5 @@
 ## usethis namespace: start
-#' @useDynLib talib, .registration = TRUE
+#' @useDynLib talib, .registration = TRUE, .fixes = "C_"
 ## usethis namespace: end
 NULL
 

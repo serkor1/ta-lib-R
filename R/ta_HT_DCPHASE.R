@@ -61,7 +61,7 @@ dominant_cycle_phase.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_HT_DCPHASE",
+		C_impl_ta_HT_DCPHASE,
 		## splice:call:start
 		constructed_series[[1]],
 		## splice:call:end
@@ -135,7 +135,7 @@ dominant_cycle_phase.numeric <- function(
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
-		"impl_ta_HT_DCPHASE",
+		C_impl_ta_HT_DCPHASE,
 		## splice:numeric:start
 		as.double(x),
 		## splice:numeric:end

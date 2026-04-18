@@ -84,7 +84,7 @@ closing_marubozu.default <- function(
 	## return as data.frame
 	x <- as.matrix(
 		.Call(
-			"impl_ta_CDLCLOSINGMARUBOZU",
+			C_impl_ta_CDLCLOSINGMARUBOZU,
 			constructed_series[[1]],
 			constructed_series[[2]],
 			constructed_series[[3]],

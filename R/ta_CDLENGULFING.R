@@ -84,7 +84,7 @@ engulfing.default <- function(
 	## return as data.frame
 	x <- as.matrix(
 		.Call(
-			"impl_ta_CDLENGULFING",
+			C_impl_ta_CDLENGULFING,
 			constructed_series[[1]],
 			constructed_series[[2]],
 			constructed_series[[3]],

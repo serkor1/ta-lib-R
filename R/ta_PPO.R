@@ -70,7 +70,7 @@ percentage_price_oscillator.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_PPO",
+		C_impl_ta_PPO,
 		## splice:call:start
 		constructed_series[[1]],
 		as.integer(fast),
@@ -162,7 +162,7 @@ percentage_price_oscillator.numeric <- function(
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
-		"impl_ta_PPO",
+		C_impl_ta_PPO,
 		## splice:numeric:start
 		as.double(x),
 		as.integer(fast),

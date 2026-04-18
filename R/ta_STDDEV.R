@@ -41,7 +41,7 @@ rolling_standard_deviation.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_STDDEV",
+		C_impl_ta_STDDEV,
 		## splice:call:start
 		as.double(x),
 		as.integer(n),

@@ -85,7 +85,7 @@ extended_parabolic_stop_and_reverse.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_SAREXT",
+		C_impl_ta_SAREXT,
 		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],

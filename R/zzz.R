@@ -59,10 +59,7 @@
 ) {
 	## initialize TA-Lib
 	## on attach
-	.Call(
-		"initialize_ta_lib",
-		PACKAGE = pkgname
-	)
+	.Call(C_initialize_ta_lib)
 
 	## startup message when
 	## library(talib)
@@ -83,10 +80,7 @@
 ) {
 	## initialize TA-Lib
 	## on load
-	.Call(
-		"initialize_ta_lib",
-		PACKAGE = pkgname
-	)
+	.Call(C_initialize_ta_lib)
 }
 
 ## actions on attach
@@ -97,16 +91,11 @@
 ) {
 	## reset candles on
 	## detach
-	.Call(
-		"reset_candle_setting"
-	)
+	.Call(C_reset_candle_setting)
 
 	## shutdown TA-Lib
 	## on detach
-	.Call(
-		"shutdown_ta_lib",
-		PACKAGE = "talib"
-	)
+	.Call(C_shutdown_ta_lib)
 }
 
 .onUnload <- function(
@@ -115,16 +104,11 @@
 ) {
 	## reset candles on
 	## unload
-	.Call(
-		"reset_candle_setting"
-	)
+	.Call(C_reset_candle_setting)
 
 	## shutdown TA-Lib
 	## on unload
-	.Call(
-		"shutdown_ta_lib",
-		PACKAGE = "talib"
-	)
+	.Call(C_shutdown_ta_lib)
 }
 
 ## script end;

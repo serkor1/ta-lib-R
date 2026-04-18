@@ -86,7 +86,7 @@ abandoned_baby.default <- function(
 	## return as data.frame
 	x <- as.matrix(
 		.Call(
-			"impl_ta_CDLABANDONEDBABY",
+			C_impl_ta_CDLABANDONEDBABY,
 			constructed_series[[1]],
 			constructed_series[[2]],
 			constructed_series[[3]],

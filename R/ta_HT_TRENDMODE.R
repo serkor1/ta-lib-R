@@ -61,7 +61,7 @@ trend_cycle_mode.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_HT_TRENDMODE",
+		C_impl_ta_HT_TRENDMODE,
 		## splice:call:start
 		constructed_series[[1]],
 		## splice:call:end
@@ -135,7 +135,7 @@ trend_cycle_mode.numeric <- function(
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
-		"impl_ta_HT_TRENDMODE",
+		C_impl_ta_HT_TRENDMODE,
 		## splice:numeric:start
 		as.double(x),
 		## splice:numeric:end

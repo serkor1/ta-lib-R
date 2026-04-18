@@ -63,7 +63,7 @@ normalized_average_true_range.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_NATR",
+		C_impl_ta_NATR,
 		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],

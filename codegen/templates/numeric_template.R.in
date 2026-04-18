@@ -19,7 +19,7 @@ ${FUN}.numeric <- function(
 		## pass the argument directly
 		## to 'C'
 		x <- .Call(
-			"impl_ta_${TA_FUN}",
+			C_impl_ta_${TA_FUN},
 			## splice:numeric:start
 			${CARGS}
 			## splice:numeric:end

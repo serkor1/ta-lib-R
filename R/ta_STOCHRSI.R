@@ -72,7 +72,7 @@ stochastic_relative_strength_index.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_STOCHRSI",
+		C_impl_ta_STOCHRSI,
 		## splice:call:start
 		relative_strength_index(
 			constructed_series,

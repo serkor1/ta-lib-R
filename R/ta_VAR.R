@@ -41,7 +41,7 @@ rolling_variance.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_VAR",
+		C_impl_ta_VAR,
 		## splice:call:start
 		as.double(x),
 		as.integer(n),

@@ -61,7 +61,7 @@ dominant_cycle_period.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_HT_DCPERIOD",
+		C_impl_ta_HT_DCPERIOD,
 		## splice:call:start
 		constructed_series[[1]],
 		## splice:call:end
@@ -135,7 +135,7 @@ dominant_cycle_period.numeric <- function(
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
-		"impl_ta_HT_DCPERIOD",
+		C_impl_ta_HT_DCPERIOD,
 		## splice:numeric:start
 		as.double(x),
 		## splice:numeric:end

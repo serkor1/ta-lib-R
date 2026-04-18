@@ -63,7 +63,7 @@ plus_directional_indicator.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_PLUS_DI",
+		C_impl_ta_PLUS_DI,
 		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],

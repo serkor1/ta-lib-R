@@ -63,7 +63,7 @@ aroon_oscillator.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_AROONOSC",
+		C_impl_ta_AROONOSC,
 		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],

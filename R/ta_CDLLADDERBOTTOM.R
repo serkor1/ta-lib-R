@@ -84,7 +84,7 @@ ladder_bottom.default <- function(
 	## return as data.frame
 	x <- as.matrix(
 		.Call(
-			"impl_ta_CDLLADDERBOTTOM",
+			C_impl_ta_CDLLADDERBOTTOM,
 			constructed_series[[1]],
 			constructed_series[[2]],
 			constructed_series[[3]],

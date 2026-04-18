@@ -19,6 +19,7 @@ benchmark/
 ^CLAUDE\.md$
 ^Rplots\.pdf$
 ^code_review\.md$
+^code_review_v2\.md$
 ^current_pr\.md$
 ^cran-comments\.md$
 ^talib_[0-9.-]+\.tar\.gz$

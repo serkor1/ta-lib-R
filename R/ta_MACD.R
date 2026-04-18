@@ -70,7 +70,7 @@ moving_average_convergence_divergence.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_MACD",
+		C_impl_ta_MACD,
 		## splice:call:start
 		constructed_series[[1]],
 		as.integer(fast),
@@ -162,7 +162,7 @@ moving_average_convergence_divergence.numeric <- function(
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
-		"impl_ta_MACD",
+		C_impl_ta_MACD,
 		## splice:numeric:start
 		as.double(x),
 		as.integer(fast),

@@ -38,7 +38,7 @@ rolling_min.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_MIN",
+		C_impl_ta_MIN,
 		## splice:call:start
 		as.double(x),
 		as.integer(n),

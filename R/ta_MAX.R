@@ -38,7 +38,7 @@ rolling_max.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_MAX",
+		C_impl_ta_MAX,
 		## splice:call:start
 		as.double(x),
 		as.integer(n),

@@ -40,7 +40,7 @@ rolling_beta.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_BETA",
+		C_impl_ta_BETA,
 		## splice:call:start
 		as.double(x),
 		as.double(y),

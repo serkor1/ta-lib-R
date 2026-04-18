@@ -63,7 +63,7 @@ momentum.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_MOM",
+		C_impl_ta_MOM,
 		## splice:call:start
 		constructed_series[[1]],
 		as.integer(n),
@@ -143,7 +143,7 @@ momentum.numeric <- function(
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
-		"impl_ta_MOM",
+		C_impl_ta_MOM,
 		## splice:numeric:start
 		as.double(x),
 		as.integer(n),

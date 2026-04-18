@@ -84,7 +84,7 @@ three_identical_crows.default <- function(
 	## return as data.frame
 	x <- as.matrix(
 		.Call(
-			"impl_ta_CDLIDENTICAL3CROWS",
+			C_impl_ta_CDLIDENTICAL3CROWS,
 			constructed_series[[1]],
 			constructed_series[[2]],
 			constructed_series[[3]],

@@ -63,7 +63,7 @@ money_flow_index.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_MFI",
+		C_impl_ta_MFI,
 		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],

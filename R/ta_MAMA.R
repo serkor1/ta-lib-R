@@ -82,7 +82,7 @@ mesa_adaptive_moving_average.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_MA",
+		C_impl_ta_MA,
 		as.double(constructed_series[[1]]),
 		as.integer(n),
 		7L,
@@ -157,7 +157,7 @@ mesa_adaptive_moving_average.numeric <- function(
 	## pass to 'C' directly
 	## with the input vector
 	x <- .Call(
-		"impl_ta_MA",
+		C_impl_ta_MA,
 		as.double(x),
 		as.integer(n),
 		7L,

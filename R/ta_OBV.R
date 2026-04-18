@@ -61,7 +61,7 @@ on_balance_volume.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_OBV",
+		C_impl_ta_OBV,
 		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],

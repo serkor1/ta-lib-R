@@ -40,7 +40,7 @@ rolling_correlation.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_CORREL",
+		C_impl_ta_CORREL,
 		## splice:call:start
 		as.double(x),
 		as.double(y),

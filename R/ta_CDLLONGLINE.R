@@ -84,7 +84,7 @@ long_line.default <- function(
 	## return as data.frame
 	x <- as.matrix(
 		.Call(
-			"impl_ta_CDLLONGLINE",
+			C_impl_ta_CDLLONGLINE,
 			constructed_series[[1]],
 			constructed_series[[2]],
 			constructed_series[[3]],

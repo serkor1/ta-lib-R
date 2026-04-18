@@ -61,7 +61,7 @@ chaikin_accumulation_distribution_line.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_AD",
+		C_impl_ta_AD,
 		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],

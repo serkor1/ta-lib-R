@@ -67,7 +67,7 @@ fast_stochastic.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_STOCHF",
+		C_impl_ta_STOCHF,
 		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],

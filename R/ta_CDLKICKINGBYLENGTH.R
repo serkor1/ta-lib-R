@@ -84,7 +84,7 @@ kicking_baby_length.default <- function(
 	## return as data.frame
 	x <- as.matrix(
 		.Call(
-			"impl_ta_CDLKICKINGBYLENGTH",
+			C_impl_ta_CDLKICKINGBYLENGTH,
 			constructed_series[[1]],
 			constructed_series[[2]],
 			constructed_series[[3]],

@@ -63,7 +63,7 @@ acceleration_bands.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_ACCBANDS",
+		C_impl_ta_ACCBANDS,
 		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],

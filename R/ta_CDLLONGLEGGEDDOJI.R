@@ -84,7 +84,7 @@ long_legged_doji.default <- function(
 	## return as data.frame
 	x <- as.matrix(
 		.Call(
-			"impl_ta_CDLLONGLEGGEDDOJI",
+			C_impl_ta_CDLLONGLEGGEDDOJI,
 			constructed_series[[1]],
 			constructed_series[[2]],
 			constructed_series[[3]],

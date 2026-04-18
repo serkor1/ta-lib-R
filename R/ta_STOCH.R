@@ -70,7 +70,7 @@ stochastic.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_STOCH",
+		C_impl_ta_STOCH,
 		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],

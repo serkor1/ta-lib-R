@@ -84,7 +84,7 @@ three_inside.default <- function(
 	## return as data.frame
 	x <- as.matrix(
 		.Call(
-			"impl_ta_CDL3INSIDE",
+			C_impl_ta_CDL3INSIDE,
 			constructed_series[[1]],
 			constructed_series[[2]],
 			constructed_series[[3]],

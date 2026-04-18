@@ -84,7 +84,7 @@ high_wave.default <- function(
 	## return as data.frame
 	x <- as.matrix(
 		.Call(
-			"impl_ta_CDLHIGHWAVE",
+			C_impl_ta_CDLHIGHWAVE,
 			constructed_series[[1]],
 			constructed_series[[2]],
 			constructed_series[[3]],

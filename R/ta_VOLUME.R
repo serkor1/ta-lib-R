@@ -64,7 +64,7 @@ trading_volume.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_VOLUME",
+		C_impl_ta_VOLUME,
 		## splice:call:start
 		as.double(constructed_series[[1]]),
 		lapply(
@@ -151,7 +151,7 @@ trading_volume.numeric <- function(
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
-		"impl_ta_VOLUME",
+		C_impl_ta_VOLUME,
 		## splice:numeric:start
 		as.double(x),
 		ma,

@@ -61,7 +61,7 @@ sine_wave.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_HT_SINE",
+		C_impl_ta_HT_SINE,
 		## splice:call:start
 		constructed_series[[1]],
 		## splice:call:end
@@ -135,7 +135,7 @@ sine_wave.numeric <- function(
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
-		"impl_ta_HT_SINE",
+		C_impl_ta_HT_SINE,
 		## splice:numeric:start
 		as.double(x),
 		## splice:numeric:end

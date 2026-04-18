@@ -84,7 +84,7 @@ harami.default <- function(
 	## return as data.frame
 	x <- as.matrix(
 		.Call(
-			"impl_ta_CDLHARAMI",
+			C_impl_ta_CDLHARAMI,
 			constructed_series[[1]],
 			constructed_series[[2]],
 			constructed_series[[3]],

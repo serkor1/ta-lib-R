@@ -63,7 +63,7 @@ triple_exponential_average.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_TRIX",
+		C_impl_ta_TRIX,
 		## splice:call:start
 		constructed_series[[1]],
 		as.integer(n),
@@ -143,7 +143,7 @@ triple_exponential_average.numeric <- function(
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
-		"impl_ta_TRIX",
+		C_impl_ta_TRIX,
 		## splice:numeric:start
 		as.double(x),
 		as.integer(n),

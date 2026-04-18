@@ -61,7 +61,7 @@ average_price.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_AVGPRICE",
+		C_impl_ta_AVGPRICE,
 		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],

@@ -61,7 +61,7 @@ phasor_components.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_HT_PHASOR",
+		C_impl_ta_HT_PHASOR,
 		## splice:call:start
 		constructed_series[[1]],
 		## splice:call:end
@@ -135,7 +135,7 @@ phasor_components.numeric <- function(
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
-		"impl_ta_HT_PHASOR",
+		C_impl_ta_HT_PHASOR,
 		## splice:numeric:start
 		as.double(x),
 		## splice:numeric:end

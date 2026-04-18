@@ -84,7 +84,7 @@ kicking.default <- function(
 	## return as data.frame
 	x <- as.matrix(
 		.Call(
-			"impl_ta_CDLKICKING",
+			C_impl_ta_CDLKICKING,
 			constructed_series[[1]],
 			constructed_series[[2]],
 			constructed_series[[3]],

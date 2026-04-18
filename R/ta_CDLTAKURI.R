@@ -84,7 +84,7 @@ takuri.default <- function(
 	## return as data.frame
 	x <- as.matrix(
 		.Call(
-			"impl_ta_CDLTAKURI",
+			C_impl_ta_CDLTAKURI,
 			constructed_series[[1]],
 			constructed_series[[2]],
 			constructed_series[[3]],

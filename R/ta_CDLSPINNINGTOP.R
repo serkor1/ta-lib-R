@@ -84,7 +84,7 @@ spinning_top.default <- function(
 	## return as data.frame
 	x <- as.matrix(
 		.Call(
-			"impl_ta_CDLSPINNINGTOP",
+			C_impl_ta_CDLSPINNINGTOP,
 			constructed_series[[1]],
 			constructed_series[[2]],
 			constructed_series[[3]],

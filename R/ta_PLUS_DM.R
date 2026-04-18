@@ -63,7 +63,7 @@ plus_directional_movement.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_PLUS_DM",
+		C_impl_ta_PLUS_DM,
 		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],

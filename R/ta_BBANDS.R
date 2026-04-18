@@ -73,7 +73,7 @@ bollinger_bands.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_BBANDS",
+		C_impl_ta_BBANDS,
 		## splice:call:start
 		constructed_series[[1]],
 		ma$n,
@@ -171,7 +171,7 @@ bollinger_bands.numeric <- function(
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
-		"impl_ta_BBANDS",
+		C_impl_ta_BBANDS,
 		## splice:numeric:start
 		as.double(x),
 		ma$n,

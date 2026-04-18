@@ -84,7 +84,7 @@ counter_attack.default <- function(
 	## return as data.frame
 	x <- as.matrix(
 		.Call(
-			"impl_ta_CDLCOUNTERATTACK",
+			C_impl_ta_CDLCOUNTERATTACK,
 			constructed_series[[1]],
 			constructed_series[[2]],
 			constructed_series[[3]],

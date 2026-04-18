@@ -84,7 +84,7 @@ homing_pigeon.default <- function(
 	## return as data.frame
 	x <- as.matrix(
 		.Call(
-			"impl_ta_CDLHOMINGPIGEON",
+			C_impl_ta_CDLHOMINGPIGEON,
 			constructed_series[[1]],
 			constructed_series[[2]],
 			constructed_series[[3]],

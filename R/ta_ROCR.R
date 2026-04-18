@@ -63,7 +63,7 @@ ratio_of_change.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_ROCR",
+		C_impl_ta_ROCR,
 		## splice:call:start
 		constructed_series[[1]],
 		as.integer(n),
@@ -143,7 +143,7 @@ ratio_of_change.numeric <- function(
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
-		"impl_ta_ROCR",
+		C_impl_ta_ROCR,
 		## splice:numeric:start
 		as.double(x),
 		as.integer(n),

@@ -63,7 +63,7 @@ chande_momentum_oscillator.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_CMO",
+		C_impl_ta_CMO,
 		## splice:call:start
 		constructed_series[[1]],
 		as.integer(n),
@@ -143,7 +143,7 @@ chande_momentum_oscillator.numeric <- function(
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
-		"impl_ta_CMO",
+		C_impl_ta_CMO,
 		## splice:numeric:start
 		as.double(x),
 		as.integer(n),

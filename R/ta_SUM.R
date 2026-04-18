@@ -38,7 +38,7 @@ rolling_sum.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_SUM",
+		C_impl_ta_SUM,
 		## splice:call:start
 		as.double(x),
 		as.integer(n),

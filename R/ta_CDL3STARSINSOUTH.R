@@ -84,7 +84,7 @@ three_stars_in_the_south.default <- function(
 	## return as data.frame
 	x <- as.matrix(
 		.Call(
-			"impl_ta_CDL3STARSINSOUTH",
+			C_impl_ta_CDL3STARSINSOUTH,
 			constructed_series[[1]],
 			constructed_series[[2]],
 			constructed_series[[3]],

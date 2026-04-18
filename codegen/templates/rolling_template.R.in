@@ -39,7 +39,7 @@ ${FUN}.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_${TA_FUN}",
+		C_impl_ta_${TA_FUN},
         ## splice:call:start
 		## splice:call:end
 		as.logical(na.ignore)

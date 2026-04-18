@@ -84,7 +84,7 @@ upside_gap_2_crows.default <- function(
 	## return as data.frame
 	x <- as.matrix(
 		.Call(
-			"impl_ta_CDLUPSIDEGAP2CROWS",
+			C_impl_ta_CDLUPSIDEGAP2CROWS,
 			constructed_series[[1]],
 			constructed_series[[2]],
 			constructed_series[[3]],
