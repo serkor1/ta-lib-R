@@ -20,7 +20,7 @@ $FUN <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...) {
 
 		## if 'x' is missing $FUN functions
@@ -57,7 +57,7 @@ $FUN.default <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...) {
 
 	## validate 'cols'-argument
@@ -82,11 +82,11 @@ $FUN.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_MA",
+		C_impl_ta_MA,
 		as.double(constructed_series[[1]]),
 		as.integer(n),
 		${maType},
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -104,7 +104,7 @@ $FUN.data.frame <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...) {
 
 	map_dfr(
@@ -120,7 +120,7 @@ $FUN.matrix <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...) {
 
 		## pass directly to
@@ -130,7 +130,7 @@ $FUN.matrix <- function(
 				x = x,
 				cols = cols,
 				n = n,
-				na.ignore = na.ignore,
+				na.bridge = na.bridge,
 				...
 		)
 }
@@ -143,7 +143,7 @@ $FUN.numeric <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...) {
 
 		## warn if 'cols' have been
@@ -157,11 +157,11 @@ $FUN.numeric <- function(
 		## pass to 'C' directly
 		## with the input vector
 		x <- .Call(
-			"impl_ta_MA",
+			C_impl_ta_MA,
 			as.double(x),
 			as.integer(n),
 			${maType},
-			as.logical(na.ignore)
+			as.logical(na.bridge)
 		)
 
 		## 'C' returns a named matrix
@@ -180,12 +180,12 @@ $FUN.plotly <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...) {
 
 	## check that input value
 	## 'x' is <plotly>-object
-	assert_plotly(x)
+	assert_plotly_object(x)
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -218,8 +218,9 @@ $FUN.plotly <- function(
 	)
 
 	## construct {plotly}-object
-	plotly_object <- .chart_environment[["main"]] <- build_plotly(
-		init = .chart_environment[["main"]],
+	state <- .chart_state()
+	plotly_object <- build_plotly(
+		init = state[["main"]],
 		traces = list(
 			list(y = ~constructed_indicator[["$ALIAS"]][-(1:attr(constructed_indicator, "lookback", TRUE))],
 		legendgroup = "MovingAverage",
@@ -231,6 +232,7 @@ $FUN.plotly <- function(
 		name = sprintf("$ALIAS(%d)", n),
 		decorators = list()
 	)
+	state[["main"]] <- plotly_object
 
 	plotly_object
  }

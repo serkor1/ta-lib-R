@@ -14,6 +14,17 @@ src/README.md
 man/README.md
 benchmark/
 
+## Files that must never reach CRAN
+^\.claude$
+^CLAUDE\.md$
+^Rplots\.pdf$
+^code_review\.md$
+^code_review_v2\.md$
+^current_pr\.md$
+^cran-comments\.md$
+^talib_[0-9.-]+\.tar\.gz$
+^figure$
+
 ## TA-Lib
 
 ### Executable files
@@ -71,5 +82,33 @@ src/ta-lib/m4/lt~obsolete.m4
 ### Makefiles
 src/ta-lib/Makefile
 src/ta-lib/Makefile.in
+
+### Unused upstream subtrees (we only need CMakeLists.txt + src/ + include/ + cmake/ + VERSION + LICENSE)
+^src/ta-lib/rust/
+^src/ta-lib/java/
+^src/ta-lib/dotnet/
+^src/ta-lib/swig/
+^src/ta-lib/ide/
+^src/ta-lib/docs/
+^src/ta-lib/dist/
+^src/ta-lib/scripts/
+^src/ta-lib/bin/
+^src/ta-lib/install/
+^src/ta-lib/uninstall/
+^src/ta-lib/lib/
+^src/ta-lib/m4/
+
+### Unused upstream files (READMD.md and LICENSE referenced by CMakeLists CPack)
+^src/ta-lib/CHANGELOG\.md$
+^src/ta-lib/README-DEVS\.md$
+^src/ta-lib/CNAME$
+^src/ta-lib/mkdocs\.yml$
+^src/ta-lib/configure\.ac$
+^src/ta-lib/Makefile\.am$
+^src/ta-lib/autogen\.sh$
+^src/ta-lib/ta-lib\.dpkg\.in$
+^src/ta-lib/ta-lib\.pc\.in$
+^src/ta-lib/ta-lib\.spec\.in$
+
 ^\.github$
 ^codegen$

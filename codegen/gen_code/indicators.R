@@ -209,35 +209,35 @@ indicators <- list(
 	## ========================
 	## Momentum Indicators
 	## ========================
-	momentum("Aroon", "aroon", "AROON", "~ high + low", c("n=10")),
-	momentum("Aroon Oscillator", "aroon_oscillator", "AROONOSC", "~ high + low", c("n=10")),
-	momentum("Chande Momentum Oscillator", "chande_momentum_oscillator", "CMO", "~ close", c("n=10")),
-	momentum("Commodity Channel Index", "commodity_channel_index", "CCI", "~ high + low + close", c("n=10"), subchart = 0L),
-	momentum("Fast Stochastic", "fast_stochastic", "STOCHF", "~ high + low + close", c("fastk=5", "fastd=SMA(n=10)")),
-	momentum("Money Flow Index", "money_flow_index", "MFI", "~ high + low + close + volume", c("n = 10")),
+	momentum("Aroon", "aroon", "AROON", "~ high + low", c("n=14")),
+	momentum("Aroon Oscillator", "aroon_oscillator", "AROONOSC", "~ high + low", c("n=14")),
+	momentum("Chande Momentum Oscillator", "chande_momentum_oscillator", "CMO", "~ close", c("n=14")),
+	momentum("Commodity Channel Index", "commodity_channel_index", "CCI", "~ high + low + close", c("n=14"), subchart = 0L),
+	momentum("Fast Stochastic", "fast_stochastic", "STOCHF", "~ high + low + close", c("fastk=5", "fastd=SMA(n=3)")),
+	momentum("Money Flow Index", "money_flow_index", "MFI", "~ high + low + close + volume", c("n = 14")),
 	momentum("Moving Average Convergence Divergence", "moving_average_convergence_divergence", "MACD", "~close", c("fast = 12", "slow = 26", "signal = 9")),
 	momentum("Moving Average Convergence Divergence (Extended)", "extended_moving_average_convergence_divergence", "MACDEXT", "~close", c("fast = EMA(n = 12)", "slow = EMA(n = 26)", "signal = EMA(n = 9)")),
 	momentum("Moving Average Convergence Divergence (Fixed)", "fixed_moving_average_convergence_divergence", "MACDFIX", "~close", c("signal=9")),
-	momentum("Relative Strength Index", "relative_strength_index", "RSI", "~close", c("n=10")),
-	momentum("Stochastic", "stochastic", "STOCH", "~ high + low + close", c("fastk = 5", "slowk = SMA(n = 10)", "slowd = SMA(n = 8)")),
-	momentum("Stochastic Relative Strength Index", "stochastic_relative_strength_index", "STOCHRSI", "~ high + low + close", c("n=10", "n_rsi=10", "fastk=5", "fastd=SMA(n=10)"), c_generator = "skip"),
+	momentum("Relative Strength Index", "relative_strength_index", "RSI", "~close", c("n=14")),
+	momentum("Stochastic", "stochastic", "STOCH", "~ high + low + close", c("fastk = 5", "slowk = SMA(n = 3)", "slowd = SMA(n = 3)")),
+	momentum("Stochastic Relative Strength Index", "stochastic_relative_strength_index", "STOCHRSI", "~ high + low + close", c("n=14", "n_rsi=14", "fastk=5", "fastd=SMA(n=3)"), c_generator = "skip"),
 	momentum("Ultimate Oscillator", "ultimate_oscillator", "ULTOSC", "~ high + low + close", c("n=c(7, 14, 28)")),
-	momentum("Average Directional Movement Index", "average_directional_movement_index", "ADX", "~ high + low + close", c("n=10")),
-	momentum("Average Directional Movement Index Rating", "average_directional_movement_index_rating", "ADXR", "~ high + low + close", c("n=10")),
+	momentum("Average Directional Movement Index", "average_directional_movement_index", "ADX", "~ high + low + close", c("n=14")),
+	momentum("Average Directional Movement Index Rating", "average_directional_movement_index_rating", "ADXR", "~ high + low + close", c("n=14")),
 	momentum("Balance of Power", "balance_of_power", "BOP", "~ open + high + low + close", c(character(0))),
 	momentum("Momentum", "momentum", "MOM", "~ close", c("n=10")),
-	momentum("Williams %R", "williams_oscillator", "WILLR", "~ high + low + close", c("n=10")),
-	momentum("Percentage Price Oscillator", "percentage_price_oscillator", "PPO", "~close", c("fast=7", "slow=14", "ma=SMA(n=10)")),
-	momentum("Triple Exponential Average", "triple_exponential_average", "TRIX", "~close", c("n=10")),
-	momentum("Directional Movement Index", "directional_movement_index", "DX", "~high + low + close", c("n=10")),
-	momentum("Intraday Movement Index", "intraday_movement_index", "IMI", "~open + close", c("n=10")),
-	momentum("Minus Directional Indicator", "minus_directional_indicator", "MINUS_DI", "~high + low + close", c("n=10")),
-	momentum("Minus Directional Movement", "minus_directional_movement", "MINUS_DM", "~high + low", c("n=10")),
-	momentum("Plus Directional Indicator", "plus_directional_indicator", "PLUS_DI", "~high + low + close", c("n=10")),
-	momentum("Plus Directional Movement", "plus_directional_movement", "PLUS_DM", "~high + low", c("n=10")),
+	momentum("Williams %R", "williams_oscillator", "WILLR", "~ high + low + close", c("n=14")),
+	momentum("Percentage Price Oscillator", "percentage_price_oscillator", "PPO", "~close", c("fast=12", "slow=26", "ma=SMA(n=9)")),
+	momentum("Triple Exponential Average", "triple_exponential_average", "TRIX", "~close", c("n=30")),
+	momentum("Directional Movement Index", "directional_movement_index", "DX", "~high + low + close", c("n=14")),
+	momentum("Intraday Movement Index", "intraday_movement_index", "IMI", "~open + close", c("n=14")),
+	momentum("Minus Directional Indicator", "minus_directional_indicator", "MINUS_DI", "~high + low + close", c("n=14")),
+	momentum("Minus Directional Movement", "minus_directional_movement", "MINUS_DM", "~high + low", c("n=14")),
+	momentum("Plus Directional Indicator", "plus_directional_indicator", "PLUS_DI", "~high + low + close", c("n=14")),
+	momentum("Plus Directional Movement", "plus_directional_movement", "PLUS_DM", "~high + low", c("n=14")),
 	momentum("Rate of Change", "rate_of_change", "ROC", "~close", c("n=10")),
 	momentum("Ratio of Change", "ratio_of_change", "ROCR", "~close", c("n=10")),
-	momentum("Absolute Price Oscillator", "absolute_price_oscillator", "APO", "~close", c("fast=7", "slow=14", "ma=SMA(n=10)")),
+	momentum("Absolute Price Oscillator", "absolute_price_oscillator", "APO", "~close", c("fast=12", "slow=26", "ma=SMA(n=9)")),
 
 	## ========================
 	## Moving Averages
@@ -255,11 +255,11 @@ indicators <- list(
 	## ========================
 	## Overlap Studies
 	## ========================
-	overlap("Bollinger Bands", "bollinger_bands", "BBANDS", "~close", c("ma=SMA(n=10)", "sd=2", "sd_down", "sd_up")),
+	overlap("Bollinger Bands", "bollinger_bands", "BBANDS", "~close", c("ma=SMA(n=5)", "sd=2", "sd_down", "sd_up")),
 	overlap("Hilbert Transform - Instantaneous Trendline", "trendline", "HT_TRENDLINE", "~close", ""),
-	overlap("Parabolic Stop and Reverse (SAR)", "parabolic_stop_and_reverse", "SAR", "~high+low", c("acceleration=0.5", "maximum=0.75")),
-	overlap("Parabolic Stop and Reverse (SAR) - Extended", "extended_parabolic_stop_and_reverse", "SAREXT", "~high+low", c("init=0", "offset=0", "init_long=0", "long=0", "max_long=0", "init_short=0", "short=0", "max_short=0")),
-	overlap("Acceleration Bands", "acceleration_bands", "ACCBANDS", "~ high + low + close", c("n=10")),
+	overlap("Parabolic Stop and Reverse (SAR)", "parabolic_stop_and_reverse", "SAR", "~high+low", c("acceleration=0.02", "maximum=0.2")),
+	overlap("Parabolic Stop and Reverse (SAR) - Extended", "extended_parabolic_stop_and_reverse", "SAREXT", "~high+low", c("init=0", "offset=0", "init_long=0.02", "long=0.02", "max_long=0.2", "init_short=0.02", "short=0.02", "max_short=0.2")),
+	overlap("Acceleration Bands", "acceleration_bands", "ACCBANDS", "~ high + low + close", c("n=20")),
 
 	## ========================
 	## Volume Indicators
@@ -273,8 +273,8 @@ indicators <- list(
 	## Volatility Indicators
 	## ========================
 	volatility("True Range", "true_range", "TRANGE", "~high + low + close"),
-	volatility("Average True Range", "average_true_range", "ATR", "~high + low + close", signature = "n=10"),
-	volatility("Normalized Average True Range", "normalized_average_true_range", "NATR", "~high + low + close", signature = "n=10"),
+	volatility("Average True Range", "average_true_range", "ATR", "~high + low + close", signature = "n=14"),
+	volatility("Normalized Average True Range", "normalized_average_true_range", "NATR", "~high + low + close", signature = "n=14"),
 
 	## ========================
 	## Price Transforms
@@ -283,16 +283,16 @@ indicators <- list(
 	price_xform("Median Price", "median_price", "MEDPRICE", "~high + low"),
 	price_xform("Typical Price", "typical_price", "TYPPRICE", "~high + low + close"),
 	price_xform("Weighted Close Price", "weighted_close_price", "WCLPRICE", "~high + low + close"),
-	price_xform("Midpoint Price", "midpoint_price", "MIDPRICE", "~high + low", signature = c("n=10")),
+	price_xform("Midpoint Price", "midpoint_price", "MIDPRICE", "~high + low", signature = c("n=14")),
 
 	## ========================
 	## Rolling Statistics
 	## ========================
-	rolling("Rolling Sum", "rolling_sum", "SUM", "n = 10"),
-	rolling("Rolling Standard Deviation", "rolling_standard_deviation", "STDDEV", c("n=10", "k = 1")),
-	rolling("Rolling Standard Deviation", "rolling_variance", "VAR", c("n=10", "k = 1")),
-	rolling("Rolling Beta", "rolling_beta", "BETA", c("y", "n=10")),
-	rolling("Rolling Correlation", "rolling_correlation", "CORREL", c("y", "n=10")),
-	rolling("Rolling Max", "rolling_max", "MAX", c("n=10")),
-	rolling("Rolling Min", "rolling_min", "MIN", c("n=10"))
+	rolling("Rolling Sum", "rolling_sum", "SUM", "n = 30"),
+	rolling("Rolling Standard Deviation", "rolling_standard_deviation", "STDDEV", c("n=5", "k = 1")),
+	rolling("Rolling Standard Deviation", "rolling_variance", "VAR", c("n=5", "k = 1")),
+	rolling("Rolling Beta", "rolling_beta", "BETA", c("y", "n=5")),
+	rolling("Rolling Correlation", "rolling_correlation", "CORREL", c("y", "n=30")),
+	rolling("Rolling Max", "rolling_max", "MAX", c("n=30")),
+	rolling("Rolling Min", "rolling_min", "MIN", c("n=30"))
 )

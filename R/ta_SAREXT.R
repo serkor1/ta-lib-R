@@ -26,13 +26,13 @@ extended_parabolic_stop_and_reverse <- function(
 	cols,
 	init = 0,
 	offset = 0,
-	init_long = 0,
-	long = 0,
-	max_long = 0,
-	init_short = 0,
-	short = 0,
-	max_short = 0,
-	na.ignore = FALSE,
+	init_long = 0.02,
+	long = 0.02,
+	max_long = 0.2,
+	init_short = 0.02,
+	short = 0.02,
+	max_short = 0.2,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("extended_parabolic_stop_and_reverse")
@@ -54,13 +54,13 @@ extended_parabolic_stop_and_reverse.default <- function(
 	cols,
 	init = 0,
 	offset = 0,
-	init_long = 0,
-	long = 0,
-	max_long = 0,
-	init_short = 0,
-	short = 0,
-	max_short = 0,
-	na.ignore = FALSE,
+	init_long = 0.02,
+	long = 0.02,
+	max_long = 0.2,
+	init_short = 0.02,
+	short = 0.02,
+	max_short = 0.2,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -85,7 +85,7 @@ extended_parabolic_stop_and_reverse.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_SAREXT",
+		C_impl_ta_SAREXT,
 		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
@@ -98,7 +98,7 @@ extended_parabolic_stop_and_reverse.default <- function(
 		short,
 		max_short,
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -117,13 +117,13 @@ extended_parabolic_stop_and_reverse.data.frame <- function(
 	cols,
 	init = 0,
 	offset = 0,
-	init_long = 0,
-	long = 0,
-	max_long = 0,
-	init_short = 0,
-	short = 0,
-	max_short = 0,
-	na.ignore = FALSE,
+	init_long = 0.02,
+	long = 0.02,
+	max_long = 0.2,
+	init_short = 0.02,
+	short = 0.02,
+	max_short = 0.2,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -138,7 +138,7 @@ extended_parabolic_stop_and_reverse.data.frame <- function(
 			init_short = init_short,
 			short = short,
 			max_short = max_short,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -153,13 +153,13 @@ extended_parabolic_stop_and_reverse.matrix <- function(
 	cols,
 	init = 0,
 	offset = 0,
-	init_long = 0,
-	long = 0,
-	max_long = 0,
-	init_short = 0,
-	short = 0,
-	max_short = 0,
-	na.ignore = FALSE,
+	init_long = 0.02,
+	long = 0.02,
+	max_long = 0.2,
+	init_short = 0.02,
+	short = 0.02,
+	max_short = 0.2,
+	na.bridge = FALSE,
 	...
 ) {
 	extended_parabolic_stop_and_reverse.default(
@@ -173,7 +173,7 @@ extended_parabolic_stop_and_reverse.matrix <- function(
 		init_short = init_short,
 		short = short,
 		max_short = max_short,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -188,20 +188,20 @@ extended_parabolic_stop_and_reverse.plotly <- function(
 	cols,
 	init = 0,
 	offset = 0,
-	init_long = 0,
-	long = 0,
-	max_long = 0,
-	init_short = 0,
-	short = 0,
-	max_short = 0,
-	na.ignore = FALSE,
+	init_long = 0.02,
+	long = 0.02,
+	max_long = 0.2,
+	init_short = 0.02,
+	short = 0.02,
+	max_short = 0.2,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	...
 ) {
 	## check that input value
 	## 'x' is <plotly>-object
-	assert_plotly(x)
+	assert_plotly_object(x)
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -233,7 +233,7 @@ extended_parabolic_stop_and_reverse.plotly <- function(
 		init_short = init_short,
 		short = short,
 		max_short = max_short,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## add conditional idx
@@ -282,8 +282,9 @@ extended_parabolic_stop_and_reverse.plotly <- function(
 	)
 	## splice:plotly-assembly:end
 
-	plotly_object <- .chart_environment[["main"]] <- build_plotly(
-		init = .chart_environment[["main"]],
+	state <- .chart_state()
+	plotly_object <- build_plotly(
+		init = state[["main"]],
 		traces = traces,
 		decorators = list(),
 		name = get0(
@@ -292,6 +293,7 @@ extended_parabolic_stop_and_reverse.plotly <- function(
 		),
 		data = constructed_indicator
 	)
+	state[["main"]] <- plotly_object
 
 	plotly_object
 }
@@ -305,13 +307,13 @@ extended_parabolic_stop_and_reverse.ggplot <- function(
 	cols,
 	init = 0,
 	offset = 0,
-	init_long = 0,
-	long = 0,
-	max_long = 0,
-	init_short = 0,
-	short = 0,
-	max_short = 0,
-	na.ignore = FALSE,
+	init_long = 0.02,
+	long = 0.02,
+	max_long = 0.2,
+	init_short = 0.02,
+	short = 0.02,
+	max_short = 0.2,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	...
@@ -349,7 +351,7 @@ extended_parabolic_stop_and_reverse.ggplot <- function(
 		init_short = init_short,
 		short = short,
 		max_short = max_short,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## add conditional idx
@@ -365,8 +367,9 @@ extended_parabolic_stop_and_reverse.ggplot <- function(
 	name <- "SAR (Extended)"
 	## splice:ggplot-assembly:end
 
-	ggplot_object <- .chart_environment[["main"]] <- build_ggplot(
-		init = .chart_environment[["main"]],
+	state <- .chart_state()
+	ggplot_object <- build_ggplot(
+		init = state[["main"]],
 		layers = layers,
 		decorators = list(),
 		name = get0(
@@ -375,6 +378,7 @@ extended_parabolic_stop_and_reverse.ggplot <- function(
 		),
 		data = constructed_indicator
 	)
+	state[["main"]] <- ggplot_object
 
 	ggplot_object
 }

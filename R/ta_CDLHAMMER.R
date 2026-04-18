@@ -26,7 +26,7 @@
 hammer <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("hammer")
@@ -46,7 +46,7 @@ CDLHAMMER <- hammer
 hammer.default <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## get candlestick pattern
@@ -84,13 +84,13 @@ hammer.default <- function(
 	## return as data.frame
 	x <- as.matrix(
 		.Call(
-			"impl_ta_CDLHAMMER",
+			C_impl_ta_CDLHAMMER,
 			constructed_series[[1]],
 			constructed_series[[2]],
 			constructed_series[[3]],
 			constructed_series[[4]],
 			normalize,
-			as.logical(na.ignore)
+			as.logical(na.bridge)
 		)
 	)
 
@@ -111,7 +111,7 @@ hammer.default <- function(
 hammer.data.frame <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -126,7 +126,7 @@ hammer.data.frame <- function(
 hammer.matrix <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	NextMethod()
@@ -139,12 +139,12 @@ hammer.matrix <- function(
 hammer.plotly <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## check that input value
 	## 'x' is <plotly>-object
-	assert_plotly(x)
+	assert_plotly_object(x)
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -176,14 +176,16 @@ hammer.plotly <- function(
 	)
 
 	## construct {plotly}-object
-	plotly_object <- .chart_environment[["main"]] <- pattern_ly(
-		p = .chart_environment[["main"]],
+	state <- .chart_state()
+	plotly_object <- pattern_ly(
+		p = state[["main"]],
 		x = constructed_indicator,
 		high = constructed_series[[2]],
 		low = constructed_series[[3]],
 		pattern_name = "hammer",
 		agnostic = FALSE
 	)
+	state[["main"]] <- plotly_object
 
 	plotly_object
 }
@@ -196,7 +198,7 @@ hammer.plotly <- function(
 hammer.ggplot <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## check ggplot2 availability
@@ -232,14 +234,16 @@ hammer.ggplot <- function(
 	)
 
 	## construct {ggplot2}-object
-	ggplot_object <- .chart_environment[["main"]] <- pattern_gg(
-		p = .chart_environment[["main"]],
+	state <- .chart_state()
+	ggplot_object <- pattern_gg(
+		p = state[["main"]],
 		x = constructed_indicator,
 		high = constructed_series[[2]],
 		low = constructed_series[[3]],
 		pattern_name = "hammer",
 		agnostic = FALSE
 	)
+	state[["main"]] <- ggplot_object
 
 	ggplot_object
 }

@@ -14,9 +14,9 @@
 #' @template rolling_returns
 rolling_variance <- function(
 	x,
-	n = 10,
+	n = 5,
 	k = 1,
-	na.ignore = FALSE
+	na.bridge = FALSE
 ) {
 	UseMethod("rolling_variance")
 }
@@ -34,20 +34,20 @@ VAR <- rolling_variance
 #' @export
 rolling_variance.default <- function(
 	x,
-	n = 10,
+	n = 5,
 	k = 1,
-	na.ignore = FALSE
+	na.bridge = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_VAR",
+		C_impl_ta_VAR,
 		## splice:call:start
 		as.double(x),
 		as.integer(n),
 		as.double(k),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## return indicator
@@ -60,9 +60,9 @@ rolling_variance.default <- function(
 #' @export
 rolling_variance.numeric <- function(
 	x,
-	n = 10,
+	n = 5,
 	k = 1,
-	na.ignore = FALSE
+	na.bridge = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
@@ -70,7 +70,7 @@ rolling_variance.numeric <- function(
 		x = x,
 		n = n,
 		k = k,
-		na.ignore = na.ignore
+		na.bridge = na.bridge
 	)
 
 	## return indicator

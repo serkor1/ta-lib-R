@@ -16,7 +16,7 @@
 phasor_components <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("phasor_components")
@@ -36,7 +36,7 @@ HT_PHASOR <- phasor_components
 phasor_components.default <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -61,11 +61,11 @@ phasor_components.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_HT_PHASOR",
+		C_impl_ta_HT_PHASOR,
 		## splice:call:start
 		constructed_series[[1]],
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -82,14 +82,14 @@ phasor_components.default <- function(
 phasor_components.data.frame <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
 		phasor_components.default(
 			x = x,
 			cols = cols,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -102,13 +102,13 @@ phasor_components.data.frame <- function(
 phasor_components.matrix <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	phasor_components.default(
 		x = x,
 		cols = cols,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -121,7 +121,7 @@ phasor_components.matrix <- function(
 phasor_components.numeric <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -135,11 +135,11 @@ phasor_components.numeric <- function(
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
-		"impl_ta_HT_PHASOR",
+		C_impl_ta_HT_PHASOR,
 		## splice:numeric:start
 		as.double(x),
 		## splice:numeric:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## check if it has 'dims'
@@ -165,7 +165,7 @@ phasor_components.numeric <- function(
 phasor_components.plotly <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -173,7 +173,7 @@ phasor_components.plotly <- function(
 ) {
 	## check that input value
 	## 'x' is <plotly>-object
-	assert_plotly(x)
+	assert_plotly_object(x)
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -197,7 +197,7 @@ phasor_components.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -260,10 +260,8 @@ phasor_components.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(plotly_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(plotly_object))
 
 	plotly_object
 }
@@ -275,7 +273,7 @@ phasor_components.plotly <- function(
 phasor_components.ggplot <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -306,7 +304,7 @@ phasor_components.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -353,10 +351,8 @@ phasor_components.ggplot <- function(
 		name = get0(x = "name", ifnotfound = NULL)
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(ggplot_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(ggplot_object))
 
 	ggplot_object
 }

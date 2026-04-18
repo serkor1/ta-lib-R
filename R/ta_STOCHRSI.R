@@ -19,11 +19,11 @@
 stochastic_relative_strength_index <- function(
 	x,
 	cols,
-	n = 10,
-	n_rsi = 10,
+	n = 14,
+	n_rsi = 14,
 	fastk = 5,
-	fastd = SMA(n = 10),
-	na.ignore = FALSE,
+	fastd = SMA(n = 3),
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("stochastic_relative_strength_index")
@@ -43,11 +43,11 @@ STOCHRSI <- stochastic_relative_strength_index
 stochastic_relative_strength_index.default <- function(
 	x,
 	cols,
-	n = 10,
-	n_rsi = 10,
+	n = 14,
+	n_rsi = 14,
 	fastk = 5,
-	fastd = SMA(n = 10),
-	na.ignore = FALSE,
+	fastd = SMA(n = 3),
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -72,12 +72,12 @@ stochastic_relative_strength_index.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_STOCHRSI",
+		C_impl_ta_STOCHRSI,
 		## splice:call:start
 		relative_strength_index(
 			constructed_series,
 			n = n_rsi,
-			na.ignore = na.ignore
+			na.bridge = na.bridge
 		)[[
 			1
 		]][
@@ -89,7 +89,7 @@ stochastic_relative_strength_index.default <- function(
 		fastd$maType,
 		as.integer(n_rsi),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -106,11 +106,11 @@ stochastic_relative_strength_index.default <- function(
 stochastic_relative_strength_index.data.frame <- function(
 	x,
 	cols,
-	n = 10,
-	n_rsi = 10,
+	n = 14,
+	n_rsi = 14,
 	fastk = 5,
-	fastd = SMA(n = 10),
-	na.ignore = FALSE,
+	fastd = SMA(n = 3),
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -121,7 +121,7 @@ stochastic_relative_strength_index.data.frame <- function(
 			n_rsi = n_rsi,
 			fastk = fastk,
 			fastd = fastd,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -134,11 +134,11 @@ stochastic_relative_strength_index.data.frame <- function(
 stochastic_relative_strength_index.matrix <- function(
 	x,
 	cols,
-	n = 10,
-	n_rsi = 10,
+	n = 14,
+	n_rsi = 14,
 	fastk = 5,
-	fastd = SMA(n = 10),
-	na.ignore = FALSE,
+	fastd = SMA(n = 3),
+	na.bridge = FALSE,
 	...
 ) {
 	stochastic_relative_strength_index.default(
@@ -148,7 +148,7 @@ stochastic_relative_strength_index.matrix <- function(
 		n_rsi = n_rsi,
 		fastk = fastk,
 		fastd = fastd,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -161,11 +161,11 @@ stochastic_relative_strength_index.matrix <- function(
 stochastic_relative_strength_index.plotly <- function(
 	x,
 	cols,
-	n = 10,
-	n_rsi = 10,
+	n = 14,
+	n_rsi = 14,
 	fastk = 5,
-	fastd = SMA(n = 10),
-	na.ignore = FALSE,
+	fastd = SMA(n = 3),
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 20,
 	upper_bound = 80,
@@ -175,7 +175,7 @@ stochastic_relative_strength_index.plotly <- function(
 ) {
 	## check that input value
 	## 'x' is <plotly>-object
-	assert_plotly(x)
+	assert_plotly_object(x)
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -203,7 +203,7 @@ stochastic_relative_strength_index.plotly <- function(
 		n_rsi = n_rsi,
 		fastk = fastk,
 		fastd = fastd,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -256,10 +256,8 @@ stochastic_relative_strength_index.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(plotly_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(plotly_object))
 
 	plotly_object
 }
@@ -271,11 +269,11 @@ stochastic_relative_strength_index.plotly <- function(
 stochastic_relative_strength_index.ggplot <- function(
 	x,
 	cols,
-	n = 10,
-	n_rsi = 10,
+	n = 14,
+	n_rsi = 14,
 	fastk = 5,
-	fastd = SMA(n = 10),
-	na.ignore = FALSE,
+	fastd = SMA(n = 3),
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -310,7 +308,7 @@ stochastic_relative_strength_index.ggplot <- function(
 		n_rsi = n_rsi,
 		fastk = fastk,
 		fastd = fastd,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -362,10 +360,8 @@ stochastic_relative_strength_index.ggplot <- function(
 		name = get0(x = "name", ifnotfound = NULL)
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(ggplot_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(ggplot_object))
 
 	ggplot_object
 }

@@ -16,7 +16,7 @@
 ${FUN} <- function(
 	x,
 	cols,${ARGS}
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...) {
   UseMethod("${FUN}")
 }
@@ -35,7 +35,7 @@ ${ALIAS} <- ${FUN}
 ${FUN}.default <- function(
 	x,
 	cols,${ARGS}
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...) {
 
 	## validate 'cols'-argument
@@ -60,10 +60,10 @@ ${FUN}.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_${TA_FUN}",
+		C_impl_ta_${TA_FUN},
 		## splice:call:start
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -80,13 +80,13 @@ ${FUN}.default <- function(
 ${FUN}.data.frame <- function(
 	x,
 	cols,${ARGS}
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...) {
 	map_dfr(
 		${FUN}.default(
 			x = x,
 			cols = cols ${PARGS}
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -100,13 +100,13 @@ ${FUN}.data.frame <- function(
 ${FUN}.matrix <- function(
 	x,
 	cols,${ARGS}
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...) {
 
 	${FUN}.default(
 			x = x,
 			cols = cols ${PARGS}
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 }

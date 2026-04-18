@@ -17,7 +17,7 @@ rate_of_change <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("rate_of_change")
@@ -38,7 +38,7 @@ rate_of_change.default <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -63,12 +63,12 @@ rate_of_change.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_ROC",
+		C_impl_ta_ROC,
 		## splice:call:start
 		constructed_series[[1]],
 		as.integer(n),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -86,7 +86,7 @@ rate_of_change.data.frame <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -94,7 +94,7 @@ rate_of_change.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -108,14 +108,14 @@ rate_of_change.matrix <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	rate_of_change.default(
 		x = x,
 		cols = cols,
 		n = n,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -129,7 +129,7 @@ rate_of_change.numeric <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -143,12 +143,12 @@ rate_of_change.numeric <- function(
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
-		"impl_ta_ROC",
+		C_impl_ta_ROC,
 		## splice:numeric:start
 		as.double(x),
 		as.integer(n),
 		## splice:numeric:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## check if it has 'dims'
@@ -175,7 +175,7 @@ rate_of_change.plotly <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -183,7 +183,7 @@ rate_of_change.plotly <- function(
 ) {
 	## check that input value
 	## 'x' is <plotly>-object
-	assert_plotly(x)
+	assert_plotly_object(x)
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -208,7 +208,7 @@ rate_of_change.plotly <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -259,10 +259,8 @@ rate_of_change.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(plotly_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(plotly_object))
 
 	plotly_object
 }
@@ -275,7 +273,7 @@ rate_of_change.ggplot <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -307,7 +305,7 @@ rate_of_change.ggplot <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -354,10 +352,8 @@ rate_of_change.ggplot <- function(
 		name = get0(x = "name", ifnotfound = NULL)
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(ggplot_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(ggplot_object))
 
 	ggplot_object
 }

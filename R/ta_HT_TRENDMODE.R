@@ -16,7 +16,7 @@
 trend_cycle_mode <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("trend_cycle_mode")
@@ -36,7 +36,7 @@ HT_TRENDMODE <- trend_cycle_mode
 trend_cycle_mode.default <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -61,11 +61,11 @@ trend_cycle_mode.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_HT_TRENDMODE",
+		C_impl_ta_HT_TRENDMODE,
 		## splice:call:start
 		constructed_series[[1]],
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -82,14 +82,14 @@ trend_cycle_mode.default <- function(
 trend_cycle_mode.data.frame <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
 		trend_cycle_mode.default(
 			x = x,
 			cols = cols,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -102,13 +102,13 @@ trend_cycle_mode.data.frame <- function(
 trend_cycle_mode.matrix <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	trend_cycle_mode.default(
 		x = x,
 		cols = cols,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -121,7 +121,7 @@ trend_cycle_mode.matrix <- function(
 trend_cycle_mode.numeric <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -135,11 +135,11 @@ trend_cycle_mode.numeric <- function(
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
-		"impl_ta_HT_TRENDMODE",
+		C_impl_ta_HT_TRENDMODE,
 		## splice:numeric:start
 		as.double(x),
 		## splice:numeric:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## check if it has 'dims'
@@ -165,7 +165,7 @@ trend_cycle_mode.numeric <- function(
 trend_cycle_mode.plotly <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -173,7 +173,7 @@ trend_cycle_mode.plotly <- function(
 ) {
 	## check that input value
 	## 'x' is <plotly>-object
-	assert_plotly(x)
+	assert_plotly_object(x)
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -197,7 +197,7 @@ trend_cycle_mode.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -251,10 +251,8 @@ trend_cycle_mode.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(plotly_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(plotly_object))
 
 	plotly_object
 }
@@ -266,7 +264,7 @@ trend_cycle_mode.plotly <- function(
 trend_cycle_mode.ggplot <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -297,7 +295,7 @@ trend_cycle_mode.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -343,10 +341,8 @@ trend_cycle_mode.ggplot <- function(
 		name = get0(x = "name", ifnotfound = NULL)
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(ggplot_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(ggplot_object))
 
 	ggplot_object
 }

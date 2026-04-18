@@ -16,8 +16,8 @@
 average_directional_movement_index_rating <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 14,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("average_directional_movement_index_rating")
@@ -37,8 +37,8 @@ ADXR <- average_directional_movement_index_rating
 average_directional_movement_index_rating.default <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 14,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -63,14 +63,14 @@ average_directional_movement_index_rating.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_ADXR",
+		C_impl_ta_ADXR,
 		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
 		as.integer(n),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -87,8 +87,8 @@ average_directional_movement_index_rating.default <- function(
 average_directional_movement_index_rating.data.frame <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 14,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -96,7 +96,7 @@ average_directional_movement_index_rating.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -109,15 +109,15 @@ average_directional_movement_index_rating.data.frame <- function(
 average_directional_movement_index_rating.matrix <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 14,
+	na.bridge = FALSE,
 	...
 ) {
 	average_directional_movement_index_rating.default(
 		x = x,
 		cols = cols,
 		n = n,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -130,8 +130,8 @@ average_directional_movement_index_rating.matrix <- function(
 average_directional_movement_index_rating.plotly <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 14,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 25,
 	middle_bound = 50,
@@ -142,7 +142,7 @@ average_directional_movement_index_rating.plotly <- function(
 ) {
 	## check that input value
 	## 'x' is <plotly>-object
-	assert_plotly(x)
+	assert_plotly_object(x)
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -167,7 +167,7 @@ average_directional_movement_index_rating.plotly <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -223,10 +223,8 @@ average_directional_movement_index_rating.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(plotly_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(plotly_object))
 
 	plotly_object
 }
@@ -238,8 +236,8 @@ average_directional_movement_index_rating.plotly <- function(
 average_directional_movement_index_rating.ggplot <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 14,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -271,7 +269,7 @@ average_directional_movement_index_rating.ggplot <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -323,10 +321,8 @@ average_directional_movement_index_rating.ggplot <- function(
 		name = get0(x = "name", ifnotfound = NULL)
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(ggplot_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(ggplot_object))
 
 	ggplot_object
 }

@@ -26,7 +26,7 @@
 ladder_bottom <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("ladder_bottom")
@@ -46,7 +46,7 @@ CDLLADDERBOTTOM <- ladder_bottom
 ladder_bottom.default <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## get candlestick pattern
@@ -84,13 +84,13 @@ ladder_bottom.default <- function(
 	## return as data.frame
 	x <- as.matrix(
 		.Call(
-			"impl_ta_CDLLADDERBOTTOM",
+			C_impl_ta_CDLLADDERBOTTOM,
 			constructed_series[[1]],
 			constructed_series[[2]],
 			constructed_series[[3]],
 			constructed_series[[4]],
 			normalize,
-			as.logical(na.ignore)
+			as.logical(na.bridge)
 		)
 	)
 
@@ -111,7 +111,7 @@ ladder_bottom.default <- function(
 ladder_bottom.data.frame <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -126,7 +126,7 @@ ladder_bottom.data.frame <- function(
 ladder_bottom.matrix <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	NextMethod()
@@ -139,12 +139,12 @@ ladder_bottom.matrix <- function(
 ladder_bottom.plotly <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## check that input value
 	## 'x' is <plotly>-object
-	assert_plotly(x)
+	assert_plotly_object(x)
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -176,14 +176,16 @@ ladder_bottom.plotly <- function(
 	)
 
 	## construct {plotly}-object
-	plotly_object <- .chart_environment[["main"]] <- pattern_ly(
-		p = .chart_environment[["main"]],
+	state <- .chart_state()
+	plotly_object <- pattern_ly(
+		p = state[["main"]],
 		x = constructed_indicator,
 		high = constructed_series[[2]],
 		low = constructed_series[[3]],
 		pattern_name = "ladder_bottom",
 		agnostic = FALSE
 	)
+	state[["main"]] <- plotly_object
 
 	plotly_object
 }
@@ -196,7 +198,7 @@ ladder_bottom.plotly <- function(
 ladder_bottom.ggplot <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## check ggplot2 availability
@@ -232,14 +234,16 @@ ladder_bottom.ggplot <- function(
 	)
 
 	## construct {ggplot2}-object
-	ggplot_object <- .chart_environment[["main"]] <- pattern_gg(
-		p = .chart_environment[["main"]],
+	state <- .chart_state()
+	ggplot_object <- pattern_gg(
+		p = state[["main"]],
 		x = constructed_indicator,
 		high = constructed_series[[2]],
 		low = constructed_series[[3]],
 		pattern_name = "ladder_bottom",
 		agnostic = FALSE
 	)
+	state[["main"]] <- ggplot_object
 
 	ggplot_object
 }

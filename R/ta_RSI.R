@@ -16,8 +16,8 @@
 relative_strength_index <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 14,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("relative_strength_index")
@@ -37,8 +37,8 @@ RSI <- relative_strength_index
 relative_strength_index.default <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 14,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -63,12 +63,12 @@ relative_strength_index.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_RSI",
+		C_impl_ta_RSI,
 		## splice:call:start
 		constructed_series[[1]],
 		as.integer(n),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -85,8 +85,8 @@ relative_strength_index.default <- function(
 relative_strength_index.data.frame <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 14,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -94,7 +94,7 @@ relative_strength_index.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -107,15 +107,15 @@ relative_strength_index.data.frame <- function(
 relative_strength_index.matrix <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 14,
+	na.bridge = FALSE,
 	...
 ) {
 	relative_strength_index.default(
 		x = x,
 		cols = cols,
 		n = n,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -128,8 +128,8 @@ relative_strength_index.matrix <- function(
 relative_strength_index.numeric <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 14,
+	na.bridge = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -143,12 +143,12 @@ relative_strength_index.numeric <- function(
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
-		"impl_ta_RSI",
+		C_impl_ta_RSI,
 		## splice:numeric:start
 		as.double(x),
 		as.integer(n),
 		## splice:numeric:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## check if it has 'dims'
@@ -174,8 +174,8 @@ relative_strength_index.numeric <- function(
 relative_strength_index.plotly <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 14,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 20,
 	upper_bound = 80,
@@ -185,7 +185,7 @@ relative_strength_index.plotly <- function(
 ) {
 	## check that input value
 	## 'x' is <plotly>-object
-	assert_plotly(x)
+	assert_plotly_object(x)
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -210,7 +210,7 @@ relative_strength_index.plotly <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -265,10 +265,8 @@ relative_strength_index.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(plotly_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(plotly_object))
 
 	plotly_object
 }
@@ -280,8 +278,8 @@ relative_strength_index.plotly <- function(
 relative_strength_index.ggplot <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 14,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -313,7 +311,7 @@ relative_strength_index.ggplot <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -364,10 +362,8 @@ relative_strength_index.ggplot <- function(
 		name = get0(x = "name", ifnotfound = NULL)
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(ggplot_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(ggplot_object))
 
 	ggplot_object
 }

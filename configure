@@ -239,10 +239,9 @@ if [ "$(( PREINSTALLED + FORCE_VENDOR ))" -ne 0 ]; then
             -DCMAKE_INSTALL_PREFIX="$TARGET" \
             -DBUILD_SHARED_LIBS=OFF \
             -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-            -DCMAKE_C_FLAGS="-O3 -w -march=native -fPIC  -DNDEBUG" \
-            -DCMAKE_CXX_FLAGS="-O3 -w -march=native -fPIC  -DNDEBUG" \
-            -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-            -DCMAKE_C_FLAGS_RELEASE="-O3 -march=native -fPIC  -DNDEBUG" \
+            -DCMAKE_C_FLAGS="-w -fPIC" \
+            -DCMAKE_CXX_FLAGS="-w -fPIC" \
+            -DCMAKE_C_FLAGS_RELEASE="-fPIC" \
             -DBUILD_DEV_TOOLS=OFF
 
         printf '%s\n' "$(success)"

@@ -16,7 +16,7 @@
 chaikin_accumulation_distribution_line <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("chaikin_accumulation_distribution_line")
@@ -36,7 +36,7 @@ AD <- chaikin_accumulation_distribution_line
 chaikin_accumulation_distribution_line.default <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -61,14 +61,14 @@ chaikin_accumulation_distribution_line.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_AD",
+		C_impl_ta_AD,
 		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
 		constructed_series[[4]],
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -85,14 +85,14 @@ chaikin_accumulation_distribution_line.default <- function(
 chaikin_accumulation_distribution_line.data.frame <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
 		chaikin_accumulation_distribution_line.default(
 			x = x,
 			cols = cols,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -105,13 +105,13 @@ chaikin_accumulation_distribution_line.data.frame <- function(
 chaikin_accumulation_distribution_line.matrix <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	chaikin_accumulation_distribution_line.default(
 		x = x,
 		cols = cols,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -124,7 +124,7 @@ chaikin_accumulation_distribution_line.matrix <- function(
 chaikin_accumulation_distribution_line.plotly <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -132,7 +132,7 @@ chaikin_accumulation_distribution_line.plotly <- function(
 ) {
 	## check that input value
 	## 'x' is <plotly>-object
-	assert_plotly(x)
+	assert_plotly_object(x)
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -156,7 +156,7 @@ chaikin_accumulation_distribution_line.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -202,10 +202,8 @@ chaikin_accumulation_distribution_line.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(plotly_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(plotly_object))
 
 	plotly_object
 }
@@ -217,7 +215,7 @@ chaikin_accumulation_distribution_line.plotly <- function(
 chaikin_accumulation_distribution_line.ggplot <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -248,7 +246,7 @@ chaikin_accumulation_distribution_line.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -295,10 +293,8 @@ chaikin_accumulation_distribution_line.ggplot <- function(
 		name = get0(x = "name", ifnotfound = NULL)
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(ggplot_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(ggplot_object))
 
 	ggplot_object
 }

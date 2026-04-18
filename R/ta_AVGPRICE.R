@@ -16,7 +16,7 @@
 average_price <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("average_price")
@@ -36,7 +36,7 @@ AVGPRICE <- average_price
 average_price.default <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -61,14 +61,14 @@ average_price.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_AVGPRICE",
+		C_impl_ta_AVGPRICE,
 		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
 		constructed_series[[4]],
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -85,14 +85,14 @@ average_price.default <- function(
 average_price.data.frame <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
 		average_price.default(
 			x = x,
 			cols = cols,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -105,13 +105,13 @@ average_price.data.frame <- function(
 average_price.matrix <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	average_price.default(
 		x = x,
 		cols = cols,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }

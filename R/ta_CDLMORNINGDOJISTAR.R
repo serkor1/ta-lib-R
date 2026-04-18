@@ -27,7 +27,7 @@ morning_doji_star <- function(
 	x,
 	cols,
 	eps = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("morning_doji_star")
@@ -48,7 +48,7 @@ morning_doji_star.default <- function(
 	x,
 	cols,
 	eps = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## get candlestick pattern
@@ -86,14 +86,14 @@ morning_doji_star.default <- function(
 	## return as data.frame
 	x <- as.matrix(
 		.Call(
-			"impl_ta_CDLMORNINGDOJISTAR",
+			C_impl_ta_CDLMORNINGDOJISTAR,
 			constructed_series[[1]],
 			constructed_series[[2]],
 			constructed_series[[3]],
 			constructed_series[[4]],
 			eps,
 			normalize,
-			as.logical(na.ignore)
+			as.logical(na.bridge)
 		)
 	)
 
@@ -115,7 +115,7 @@ morning_doji_star.data.frame <- function(
 	x,
 	cols,
 	eps = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -131,7 +131,7 @@ morning_doji_star.matrix <- function(
 	x,
 	cols,
 	eps = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	NextMethod()
@@ -145,12 +145,12 @@ morning_doji_star.plotly <- function(
 	x,
 	cols,
 	eps = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## check that input value
 	## 'x' is <plotly>-object
-	assert_plotly(x)
+	assert_plotly_object(x)
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -183,14 +183,16 @@ morning_doji_star.plotly <- function(
 	)
 
 	## construct {plotly}-object
-	plotly_object <- .chart_environment[["main"]] <- pattern_ly(
-		p = .chart_environment[["main"]],
+	state <- .chart_state()
+	plotly_object <- pattern_ly(
+		p = state[["main"]],
 		x = constructed_indicator,
 		high = constructed_series[[2]],
 		low = constructed_series[[3]],
 		pattern_name = "morning_doji_star",
 		agnostic = FALSE
 	)
+	state[["main"]] <- plotly_object
 
 	plotly_object
 }
@@ -204,7 +206,7 @@ morning_doji_star.ggplot <- function(
 	x,
 	cols,
 	eps = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## check ggplot2 availability
@@ -241,14 +243,16 @@ morning_doji_star.ggplot <- function(
 	)
 
 	## construct {ggplot2}-object
-	ggplot_object <- .chart_environment[["main"]] <- pattern_gg(
-		p = .chart_environment[["main"]],
+	state <- .chart_state()
+	ggplot_object <- pattern_gg(
+		p = state[["main"]],
 		x = constructed_indicator,
 		high = constructed_series[[2]],
 		low = constructed_series[[3]],
 		pattern_name = "morning_doji_star",
 		agnostic = FALSE
 	)
+	state[["main"]] <- ggplot_object
 
 	ggplot_object
 }

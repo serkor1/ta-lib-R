@@ -16,8 +16,8 @@
 acceleration_bands <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 20,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("acceleration_bands")
@@ -37,8 +37,8 @@ ACCBANDS <- acceleration_bands
 acceleration_bands.default <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 20,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -63,14 +63,14 @@ acceleration_bands.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_ACCBANDS",
+		C_impl_ta_ACCBANDS,
 		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
 		as.integer(n),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -87,8 +87,8 @@ acceleration_bands.default <- function(
 acceleration_bands.data.frame <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 20,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -96,7 +96,7 @@ acceleration_bands.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -109,15 +109,15 @@ acceleration_bands.data.frame <- function(
 acceleration_bands.matrix <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 20,
+	na.bridge = FALSE,
 	...
 ) {
 	acceleration_bands.default(
 		x = x,
 		cols = cols,
 		n = n,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -130,8 +130,8 @@ acceleration_bands.matrix <- function(
 acceleration_bands.plotly <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 20,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	color = "steelblue",
 	alpha = 0.2,
@@ -140,7 +140,7 @@ acceleration_bands.plotly <- function(
 ) {
 	## check that input value
 	## 'x' is <plotly>-object
-	assert_plotly(x)
+	assert_plotly_object(x)
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -165,7 +165,7 @@ acceleration_bands.plotly <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## add conditional idx
@@ -212,8 +212,9 @@ acceleration_bands.plotly <- function(
 	)
 	## splice:plotly-assembly:end
 
-	plotly_object <- .chart_environment[["main"]] <- build_plotly(
-		init = .chart_environment[["main"]],
+	state <- .chart_state()
+	plotly_object <- build_plotly(
+		init = state[["main"]],
 		traces = traces,
 		decorators = list(),
 		name = get0(
@@ -222,6 +223,7 @@ acceleration_bands.plotly <- function(
 		),
 		data = constructed_indicator
 	)
+	state[["main"]] <- plotly_object
 
 	plotly_object
 }
@@ -233,8 +235,8 @@ acceleration_bands.plotly <- function(
 acceleration_bands.ggplot <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 20,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	...
@@ -265,7 +267,7 @@ acceleration_bands.ggplot <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## add conditional idx
@@ -289,8 +291,9 @@ acceleration_bands.ggplot <- function(
 	name <- label("ACCBANDS", n)
 	## splice:ggplot-assembly:end
 
-	ggplot_object <- .chart_environment[["main"]] <- build_ggplot(
-		init = .chart_environment[["main"]],
+	state <- .chart_state()
+	ggplot_object <- build_ggplot(
+		init = state[["main"]],
 		layers = layers,
 		decorators = list(),
 		name = get0(
@@ -299,6 +302,7 @@ acceleration_bands.ggplot <- function(
 		),
 		data = constructed_indicator
 	)
+	state[["main"]] <- ggplot_object
 
 	ggplot_object
 }

@@ -18,7 +18,7 @@ trading_volume <- function(
 	x,
 	cols,
 	ma = list(SMA(n = 7), SMA(n = 15)),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("trading_volume")
@@ -39,7 +39,7 @@ trading_volume.default <- function(
 	x,
 	cols,
 	ma = list(SMA(n = 7), SMA(n = 15)),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -64,7 +64,7 @@ trading_volume.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_VOLUME",
+		C_impl_ta_VOLUME,
 		## splice:call:start
 		as.double(constructed_series[[1]]),
 		lapply(
@@ -76,7 +76,7 @@ trading_volume.default <- function(
 			}
 		),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -94,7 +94,7 @@ trading_volume.data.frame <- function(
 	x,
 	cols,
 	ma = list(SMA(n = 7), SMA(n = 15)),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -102,7 +102,7 @@ trading_volume.data.frame <- function(
 			x = x,
 			cols = cols,
 			ma = ma,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -116,14 +116,14 @@ trading_volume.matrix <- function(
 	x,
 	cols,
 	ma = list(SMA(n = 7), SMA(n = 15)),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	trading_volume.default(
 		x = x,
 		cols = cols,
 		ma = ma,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -137,7 +137,7 @@ trading_volume.numeric <- function(
 	x,
 	cols,
 	ma = list(SMA(n = 7), SMA(n = 15)),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -151,12 +151,12 @@ trading_volume.numeric <- function(
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
-		"impl_ta_VOLUME",
+		C_impl_ta_VOLUME,
 		## splice:numeric:start
 		as.double(x),
 		ma,
 		## splice:numeric:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## check if it has 'dims'
@@ -183,7 +183,7 @@ trading_volume.plotly <- function(
 	x,
 	cols,
 	ma = list(SMA(n = 7), SMA(n = 15)),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -191,7 +191,7 @@ trading_volume.plotly <- function(
 ) {
 	## check that input value
 	## 'x' is <plotly>-object
-	assert_plotly(x)
+	assert_plotly_object(x)
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -216,7 +216,7 @@ trading_volume.plotly <- function(
 			names(constructed_series)
 		),
 		ma = ma,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -306,10 +306,8 @@ trading_volume.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(plotly_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(plotly_object))
 
 	plotly_object
 }
@@ -322,7 +320,7 @@ trading_volume.ggplot <- function(
 	x,
 	cols,
 	ma = list(SMA(n = 7), SMA(n = 15)),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -354,7 +352,7 @@ trading_volume.ggplot <- function(
 			names(constructed_series)
 		),
 		ma = ma,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -426,10 +424,8 @@ trading_volume.ggplot <- function(
 		name = get0(x = "name", ifnotfound = NULL)
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(ggplot_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(ggplot_object))
 
 	ggplot_object
 }

@@ -132,7 +132,7 @@ pattern_gg <- function(
 
 	## convert idx labels to integer chart positions
 	## the ggplot2 backend uses integer positions on x-axis
-	chart_pos <- match(x$idx, .chart_environment$idx$label)
+	chart_pos <- match(x$idx, .chart_state()$idx$label)
 
 	## offset markers from candle body
 	## so they do not overlap with wicks
@@ -150,8 +150,8 @@ pattern_gg <- function(
 			ggplot2::geom_point(
 				data = bear_data,
 				ggplot2::aes(
-					x = .data[[".chart_pos"]],
-					y = .data[["y"]]
+					x = !!as.name(".chart_pos"),
+					y = !!as.name("y")
 				),
 				shape = 25,
 				fill = .chart_variables$bearish_body,
@@ -163,9 +163,9 @@ pattern_gg <- function(
 			ggplot2::geom_text(
 				data = bear_data,
 				ggplot2::aes(
-					x = .data[[".chart_pos"]],
-					y = .data[["y"]],
-					label = .data[["label"]]
+					x = !!as.name(".chart_pos"),
+					y = !!as.name("y"),
+					label = !!as.name("label")
 				),
 				vjust = -1,
 				color = .chart_variables$bearish_body,
@@ -196,8 +196,8 @@ pattern_gg <- function(
 			ggplot2::geom_point(
 				data = bull_data,
 				ggplot2::aes(
-					x = .data[[".chart_pos"]],
-					y = .data[["y"]]
+					x = !!as.name(".chart_pos"),
+					y = !!as.name("y")
 				),
 				shape = if (agnostic) 25 else 24,
 				fill = marker_color,
@@ -209,9 +209,9 @@ pattern_gg <- function(
 			ggplot2::geom_text(
 				data = bull_data,
 				ggplot2::aes(
-					x = .data[[".chart_pos"]],
-					y = .data[["y"]],
-					label = .data[["label"]]
+					x = !!as.name(".chart_pos"),
+					y = !!as.name("y"),
+					label = !!as.name("label")
 				),
 				vjust = if (agnostic) -1 else 2,
 				color = marker_color,

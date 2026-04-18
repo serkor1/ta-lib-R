@@ -16,8 +16,8 @@
 plus_directional_movement <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 14,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("plus_directional_movement")
@@ -37,8 +37,8 @@ PLUS_DM <- plus_directional_movement
 plus_directional_movement.default <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 14,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -63,13 +63,13 @@ plus_directional_movement.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_PLUS_DM",
+		C_impl_ta_PLUS_DM,
 		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		as.integer(n),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -86,8 +86,8 @@ plus_directional_movement.default <- function(
 plus_directional_movement.data.frame <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 14,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -95,7 +95,7 @@ plus_directional_movement.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -108,15 +108,15 @@ plus_directional_movement.data.frame <- function(
 plus_directional_movement.matrix <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 14,
+	na.bridge = FALSE,
 	...
 ) {
 	plus_directional_movement.default(
 		x = x,
 		cols = cols,
 		n = n,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -129,8 +129,8 @@ plus_directional_movement.matrix <- function(
 plus_directional_movement.plotly <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 14,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -138,7 +138,7 @@ plus_directional_movement.plotly <- function(
 ) {
 	## check that input value
 	## 'x' is <plotly>-object
-	assert_plotly(x)
+	assert_plotly_object(x)
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -163,7 +163,7 @@ plus_directional_movement.plotly <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -209,10 +209,8 @@ plus_directional_movement.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(plotly_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(plotly_object))
 
 	plotly_object
 }
@@ -224,8 +222,8 @@ plus_directional_movement.plotly <- function(
 plus_directional_movement.ggplot <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 14,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -257,7 +255,7 @@ plus_directional_movement.ggplot <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -304,10 +302,8 @@ plus_directional_movement.ggplot <- function(
 		name = get0(x = "name", ifnotfound = NULL)
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(ggplot_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(ggplot_object))
 
 	ggplot_object
 }

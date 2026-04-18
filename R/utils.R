@@ -48,7 +48,10 @@ assert_formula <- function(x) {
 	)
 }
 
-assert_plotly <- function(x) {
+## assert_plotly_object(x): assert that `x` is a <plotly> OBJECT.
+## Renamed from assert_plotly() for symmetry with assert_plotly_pkg()
+## (which checks that the plotly PACKAGE is installed).
+assert_plotly_object <- function(x) {
 	assert(
 		x = is.plotly(x),
 		call = sys.call(sys.parent()),
@@ -104,6 +107,49 @@ assert_column_names <- function(formula, available_variables) {
 			}
 		)
 	}
+
+	## Non-syntactic names (containing spaces, hyphens, starting with a
+	## digit, etc.) survive as.name() but break downstream in ggplot2's
+	## aes() via the !!as.name() rewrite used by the .ggplot methods.
+	## Fail fast here with a clear message so the user isn't hunting
+	## through tidyeval stack traces.
+	syntactic <- make.names(passed_variables)
+	non_syntactic <- passed_variables[syntactic != passed_variables]
+	if (length(non_syntactic) > 0L) {
+		assert(
+			x = FALSE,
+			call = sys.call(sys.parent(n = 2)),
+			"Column names must be syntactically valid R names.",
+			paste0(
+				"Non-syntactic names detected: ",
+				paste0("'", non_syntactic, "'", collapse = ", "),
+				"."
+			),
+			paste0(
+				"Rename the offending columns (e.g. ",
+				"names(x)[names(x) == '",
+				non_syntactic[1L],
+				"'] <- '",
+				make.names(non_syntactic[1L]),
+				"') before calling this function."
+			)
+		)
+	}
+}
+
+## small base-R replacements - kept internal
+## to avoid Imports on utils/stats just for these
+.tail <- function(x, n = 1L) {
+	len <- length(x)
+	if (len == 0L) {
+		return(x)
+	}
+	x[seq.int(max(1L, len - n + 1L), len)]
+}
+
+.set_names <- function(x, nm) {
+	names(x) <- nm
+	x
 }
 
 ## class related utility
@@ -161,7 +207,7 @@ impl_candle_setting <- function(
 	alpha
 ) {
 	.Call(
-		"set_candle_setting",
+		C_set_candle_setting,
 		as.integer(setting),
 		as.integer(range_type),
 		as.integer(N),
@@ -262,10 +308,9 @@ set_rownames <- function(x, x_names) {
 set_rownames.data.frame <- function(x, x_names) {
 	## set the rownames
 	.Call(
-		"rownames_data_frame",
+		C_rownames_data_frame,
 		x,
-		x_names,
-		PACKAGE = "talib"
+		x_names
 	)
 
 	return(invisible(NULL))
@@ -275,11 +320,10 @@ set_rownames.data.frame <- function(x, x_names) {
 set_rownames.matrix <- function(x, x_names) {
 	## set the rownames
 	.Call(
-		"rownames_matrix",
+		C_rownames_matrix,
 		x,
 		x_names,
-		colnames(x),
-		PACKAGE = "talib"
+		colnames(x)
 	)
 
 	return(invisible(NULL))
@@ -298,10 +342,7 @@ map_dfr.double <- function(x) {
 
 	lookback_attribute <- attr(x, "lookback", TRUE)
 
-	x <- .Call(
-		"map_dfr_double",
-		x
-	)
+	x <- .Call(C_map_dfr_double, x)
 
 	attr(x, "lookback") <- lookback_attribute
 
@@ -316,10 +357,7 @@ map_dfr.integer <- function(x) {
 
 	lookback_attribute <- attr(x, "lookback", TRUE)
 
-	x <- .Call(
-		"map_dfr_integer",
-		x
-	)
+	x <- .Call(C_map_dfr_integer, x)
 	attr(x, "lookback") <- lookback_attribute
 
 	x

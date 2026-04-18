@@ -16,8 +16,8 @@
 triple_exponential_average <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 30,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("triple_exponential_average")
@@ -37,8 +37,8 @@ TRIX <- triple_exponential_average
 triple_exponential_average.default <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 30,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -63,12 +63,12 @@ triple_exponential_average.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_TRIX",
+		C_impl_ta_TRIX,
 		## splice:call:start
 		constructed_series[[1]],
 		as.integer(n),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -85,8 +85,8 @@ triple_exponential_average.default <- function(
 triple_exponential_average.data.frame <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 30,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -94,7 +94,7 @@ triple_exponential_average.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -107,15 +107,15 @@ triple_exponential_average.data.frame <- function(
 triple_exponential_average.matrix <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 30,
+	na.bridge = FALSE,
 	...
 ) {
 	triple_exponential_average.default(
 		x = x,
 		cols = cols,
 		n = n,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -128,8 +128,8 @@ triple_exponential_average.matrix <- function(
 triple_exponential_average.numeric <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 30,
+	na.bridge = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -143,12 +143,12 @@ triple_exponential_average.numeric <- function(
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
-		"impl_ta_TRIX",
+		C_impl_ta_TRIX,
 		## splice:numeric:start
 		as.double(x),
 		as.integer(n),
 		## splice:numeric:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## check if it has 'dims'
@@ -174,8 +174,8 @@ triple_exponential_average.numeric <- function(
 triple_exponential_average.plotly <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 30,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -183,7 +183,7 @@ triple_exponential_average.plotly <- function(
 ) {
 	## check that input value
 	## 'x' is <plotly>-object
-	assert_plotly(x)
+	assert_plotly_object(x)
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -208,7 +208,7 @@ triple_exponential_average.plotly <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -254,10 +254,8 @@ triple_exponential_average.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(plotly_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(plotly_object))
 
 	plotly_object
 }
@@ -269,8 +267,8 @@ triple_exponential_average.plotly <- function(
 triple_exponential_average.ggplot <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 30,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -302,7 +300,7 @@ triple_exponential_average.ggplot <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -349,10 +347,8 @@ triple_exponential_average.ggplot <- function(
 		name = get0(x = "name", ifnotfound = NULL)
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(ggplot_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(ggplot_object))
 
 	ggplot_object
 }

@@ -20,11 +20,11 @@
 bollinger_bands <- function(
 	x,
 	cols,
-	ma = SMA(n = 10),
+	ma = SMA(n = 5),
 	sd = 2,
 	sd_down,
 	sd_up,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("bollinger_bands")
@@ -44,11 +44,11 @@ BBANDS <- bollinger_bands
 bollinger_bands.default <- function(
 	x,
 	cols,
-	ma = SMA(n = 10),
+	ma = SMA(n = 5),
 	sd = 2,
 	sd_down,
 	sd_up,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -73,7 +73,7 @@ bollinger_bands.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_BBANDS",
+		C_impl_ta_BBANDS,
 		## splice:call:start
 		constructed_series[[1]],
 		ma$n,
@@ -81,7 +81,7 @@ bollinger_bands.default <- function(
 		as.double(sd_down %or% sd),
 		ma$maType,
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -98,11 +98,11 @@ bollinger_bands.default <- function(
 bollinger_bands.data.frame <- function(
 	x,
 	cols,
-	ma = SMA(n = 10),
+	ma = SMA(n = 5),
 	sd = 2,
 	sd_down,
 	sd_up,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -113,7 +113,7 @@ bollinger_bands.data.frame <- function(
 			sd = sd,
 			sd_down = sd_down,
 			sd_up = sd_up,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -126,11 +126,11 @@ bollinger_bands.data.frame <- function(
 bollinger_bands.matrix <- function(
 	x,
 	cols,
-	ma = SMA(n = 10),
+	ma = SMA(n = 5),
 	sd = 2,
 	sd_down,
 	sd_up,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	bollinger_bands.default(
@@ -140,7 +140,7 @@ bollinger_bands.matrix <- function(
 		sd = sd,
 		sd_down = sd_down,
 		sd_up = sd_up,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -153,11 +153,11 @@ bollinger_bands.matrix <- function(
 bollinger_bands.numeric <- function(
 	x,
 	cols,
-	ma = SMA(n = 10),
+	ma = SMA(n = 5),
 	sd = 2,
 	sd_down,
 	sd_up,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -171,7 +171,7 @@ bollinger_bands.numeric <- function(
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
-		"impl_ta_BBANDS",
+		C_impl_ta_BBANDS,
 		## splice:numeric:start
 		as.double(x),
 		ma$n,
@@ -179,7 +179,7 @@ bollinger_bands.numeric <- function(
 		as.double(sd_down %or% sd),
 		ma$maType,
 		## splice:numeric:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## check if it has 'dims'
@@ -205,11 +205,11 @@ bollinger_bands.numeric <- function(
 bollinger_bands.plotly <- function(
 	x,
 	cols,
-	ma = SMA(n = 10),
+	ma = SMA(n = 5),
 	sd = 2,
 	sd_down,
 	sd_up,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	color = "steelblue",
 	alpha = 0.2,
@@ -218,7 +218,7 @@ bollinger_bands.plotly <- function(
 ) {
 	## check that input value
 	## 'x' is <plotly>-object
-	assert_plotly(x)
+	assert_plotly_object(x)
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -246,7 +246,7 @@ bollinger_bands.plotly <- function(
 		sd = sd,
 		sd_down = sd_down,
 		sd_up = sd_up,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## add conditional idx
@@ -307,8 +307,9 @@ bollinger_bands.plotly <- function(
 	)
 	## splice:plotly-assembly:end
 
-	plotly_object <- .chart_environment[["main"]] <- build_plotly(
-		init = .chart_environment[["main"]],
+	state <- .chart_state()
+	plotly_object <- build_plotly(
+		init = state[["main"]],
 		traces = traces,
 		decorators = list(),
 		name = get0(
@@ -317,6 +318,7 @@ bollinger_bands.plotly <- function(
 		),
 		data = constructed_indicator
 	)
+	state[["main"]] <- plotly_object
 
 	plotly_object
 }
@@ -328,11 +330,11 @@ bollinger_bands.plotly <- function(
 bollinger_bands.ggplot <- function(
 	x,
 	cols,
-	ma = SMA(n = 10),
+	ma = SMA(n = 5),
 	sd = 2,
 	sd_down,
 	sd_up,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	...
@@ -366,7 +368,7 @@ bollinger_bands.ggplot <- function(
 		sd = sd,
 		sd_down = sd_down,
 		sd_up = sd_up,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## add conditional idx
@@ -390,8 +392,9 @@ bollinger_bands.ggplot <- function(
 	name <- label("Bollinger Bands", ma$n, sd)
 	## splice:ggplot-assembly:end
 
-	ggplot_object <- .chart_environment[["main"]] <- build_ggplot(
-		init = .chart_environment[["main"]],
+	state <- .chart_state()
+	ggplot_object <- build_ggplot(
+		init = state[["main"]],
 		layers = layers,
 		decorators = list(),
 		name = get0(
@@ -400,6 +403,7 @@ bollinger_bands.ggplot <- function(
 		),
 		data = constructed_indicator
 	)
+	state[["main"]] <- ggplot_object
 
 	ggplot_object
 }

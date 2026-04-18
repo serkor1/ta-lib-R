@@ -16,7 +16,7 @@
 on_balance_volume <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("on_balance_volume")
@@ -36,7 +36,7 @@ OBV <- on_balance_volume
 on_balance_volume.default <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -61,12 +61,12 @@ on_balance_volume.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_OBV",
+		C_impl_ta_OBV,
 		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -83,14 +83,14 @@ on_balance_volume.default <- function(
 on_balance_volume.data.frame <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
 		on_balance_volume.default(
 			x = x,
 			cols = cols,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -103,13 +103,13 @@ on_balance_volume.data.frame <- function(
 on_balance_volume.matrix <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	on_balance_volume.default(
 		x = x,
 		cols = cols,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -122,7 +122,7 @@ on_balance_volume.matrix <- function(
 on_balance_volume.plotly <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -130,7 +130,7 @@ on_balance_volume.plotly <- function(
 ) {
 	## check that input value
 	## 'x' is <plotly>-object
-	assert_plotly(x)
+	assert_plotly_object(x)
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -154,7 +154,7 @@ on_balance_volume.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -197,10 +197,8 @@ on_balance_volume.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(plotly_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(plotly_object))
 
 	plotly_object
 }
@@ -212,7 +210,7 @@ on_balance_volume.plotly <- function(
 on_balance_volume.ggplot <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -243,7 +241,7 @@ on_balance_volume.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -290,10 +288,8 @@ on_balance_volume.ggplot <- function(
 		name = get0(x = "name", ifnotfound = NULL)
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(ggplot_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(ggplot_object))
 
 	ggplot_object
 }

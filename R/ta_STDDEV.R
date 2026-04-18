@@ -14,9 +14,9 @@
 #' @template rolling_returns
 rolling_standard_deviation <- function(
 	x,
-	n = 10,
+	n = 5,
 	k = 1,
-	na.ignore = FALSE
+	na.bridge = FALSE
 ) {
 	UseMethod("rolling_standard_deviation")
 }
@@ -34,20 +34,20 @@ STDDEV <- rolling_standard_deviation
 #' @export
 rolling_standard_deviation.default <- function(
 	x,
-	n = 10,
+	n = 5,
 	k = 1,
-	na.ignore = FALSE
+	na.bridge = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_STDDEV",
+		C_impl_ta_STDDEV,
 		## splice:call:start
 		as.double(x),
 		as.integer(n),
 		as.double(k),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## return indicator
@@ -60,9 +60,9 @@ rolling_standard_deviation.default <- function(
 #' @export
 rolling_standard_deviation.numeric <- function(
 	x,
-	n = 10,
+	n = 5,
 	k = 1,
-	na.ignore = FALSE
+	na.bridge = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
@@ -70,7 +70,7 @@ rolling_standard_deviation.numeric <- function(
 		x = x,
 		n = n,
 		k = k,
-		na.ignore = na.ignore
+		na.bridge = na.bridge
 	)
 
 	## return indicator

@@ -20,9 +20,9 @@ stochastic <- function(
 	x,
 	cols,
 	fastk = 5,
-	slowk = SMA(n = 10),
-	slowd = SMA(n = 8),
-	na.ignore = FALSE,
+	slowk = SMA(n = 3),
+	slowd = SMA(n = 3),
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("stochastic")
@@ -43,9 +43,9 @@ stochastic.default <- function(
 	x,
 	cols,
 	fastk = 5,
-	slowk = SMA(n = 10),
-	slowd = SMA(n = 8),
-	na.ignore = FALSE,
+	slowk = SMA(n = 3),
+	slowd = SMA(n = 3),
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -70,7 +70,7 @@ stochastic.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_STOCH",
+		C_impl_ta_STOCH,
 		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
@@ -81,7 +81,7 @@ stochastic.default <- function(
 		as.integer(slowd$n),
 		as.integer(slowd$maType),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -99,9 +99,9 @@ stochastic.data.frame <- function(
 	x,
 	cols,
 	fastk = 5,
-	slowk = SMA(n = 10),
-	slowd = SMA(n = 8),
-	na.ignore = FALSE,
+	slowk = SMA(n = 3),
+	slowd = SMA(n = 3),
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -111,7 +111,7 @@ stochastic.data.frame <- function(
 			fastk = fastk,
 			slowk = slowk,
 			slowd = slowd,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -125,9 +125,9 @@ stochastic.matrix <- function(
 	x,
 	cols,
 	fastk = 5,
-	slowk = SMA(n = 10),
-	slowd = SMA(n = 8),
-	na.ignore = FALSE,
+	slowk = SMA(n = 3),
+	slowd = SMA(n = 3),
+	na.bridge = FALSE,
 	...
 ) {
 	stochastic.default(
@@ -136,7 +136,7 @@ stochastic.matrix <- function(
 		fastk = fastk,
 		slowk = slowk,
 		slowd = slowd,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -150,9 +150,9 @@ stochastic.plotly <- function(
 	x,
 	cols,
 	fastk = 5,
-	slowk = SMA(n = 10),
-	slowd = SMA(n = 8),
-	na.ignore = FALSE,
+	slowk = SMA(n = 3),
+	slowd = SMA(n = 3),
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 20,
 	upper_bound = 80,
@@ -162,7 +162,7 @@ stochastic.plotly <- function(
 ) {
 	## check that input value
 	## 'x' is <plotly>-object
-	assert_plotly(x)
+	assert_plotly_object(x)
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -189,7 +189,7 @@ stochastic.plotly <- function(
 		fastk = fastk,
 		slowk = slowk,
 		slowd = slowd,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -245,10 +245,8 @@ stochastic.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(plotly_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(plotly_object))
 
 	plotly_object
 }
@@ -261,9 +259,9 @@ stochastic.ggplot <- function(
 	x,
 	cols,
 	fastk = 5,
-	slowk = SMA(n = 10),
-	slowd = SMA(n = 8),
-	na.ignore = FALSE,
+	slowk = SMA(n = 3),
+	slowd = SMA(n = 3),
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -297,7 +295,7 @@ stochastic.ggplot <- function(
 		fastk = fastk,
 		slowk = slowk,
 		slowd = slowd,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -349,10 +347,8 @@ stochastic.ggplot <- function(
 		name = get0(x = "name", ifnotfound = NULL)
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(ggplot_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(ggplot_object))
 
 	ggplot_object
 }

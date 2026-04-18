@@ -6,10 +6,20 @@
 #'
 #' Leading `NA`s are always produced for the initial lookback period
 #' where insufficient data is available. If the input itself contains
-#' `NA`s they are passed through to the underlying C routine, which
-#' can cause the **entire** output to be filled with `NA`s. Set
-#' `na.ignore = TRUE` to strip `NA`s before calculation and
-#' re-insert them at their original positions in the output.
+#' `NA`s, the behaviour depends on `na.bridge`:
+#'
+#' \describe{
+#'  \item{`na.bridge = FALSE` (default)}{`NA`s propagate through the
+#'    TA-Lib C routine. Because rolling statistics smooth across time,
+#'    a single `NA` in the input typically poisons every subsequent
+#'    value.}
+#'  \item{`na.bridge = TRUE`}{Input `NA`s are stripped, the statistic
+#'    is computed on the dense series, and `NA`s are re-inserted at
+#'    the original positions. Output length matches input length, but
+#'    the computation treats non-consecutive observations as if they
+#'    were adjacent - fine for sparse missing values, misleading
+#'    across clustered gaps.}
+#' }
 #' 
 <%
 	if (all(c("x","y") %in% names(formals(.fun))))
@@ -17,9 +27,26 @@
 #' @param x,y (([double]), ([double])). A pair of [double] vectors of equal [length].
 <% } else { %>
 #' @param x ([double]). A [double] vector.
-#' 
+#'
 <% } %>
-#' @inheritParams generic_documentation
+<% fun_args <- names(formals(.fun)) %>
+<% if ("n" %in% fun_args) { %>
+#' @param n ([integer]). Lookback period (window size). A positive [integer]
+#'   of [length] 1.
+<% } %>
+<% if ("na.bridge" %in% fun_args) { %>
+#' @param na.bridge ([logical]). A [logical] of [length] 1. [FALSE] by
+#'   default. When [FALSE], input `NA`s propagate through the TA-Lib C
+#'   routine (the rolling computation typically fills the remaining
+#'   output with `NA`). When [TRUE], input `NA` rows are stripped
+#'   before computation and re-inserted at the original positions in
+#'   the output, causing the statistic to treat non-consecutive
+#'   non-`NA` observations as if they were adjacent - see the
+#'   **Handling of \<NA\>-values** section above for the consequences.
+<% } %>
+<% if ("..." %in% fun_args) { %>
+#' @param ... Additional parameters.
+<% } %>
 #'
 #' @author <%= .author %>
 #'

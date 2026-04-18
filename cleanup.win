@@ -1,3 +1,4 @@
 #!/bin/sh
 
 rm -rf src/Makevars
+rm -f Rplots.pdf

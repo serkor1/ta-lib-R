@@ -5,7 +5,7 @@
 ${FUN}.plotly <- function(
 	x,
 	cols,${ARGS}
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -13,7 +13,7 @@ ${FUN}.plotly <- function(
 
 	## check that input value
 	## 'x' is <plotly>-object
-	assert_plotly(x)
+	assert_plotly_object(x)
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -38,7 +38,7 @@ ${FUN}.plotly <- function(
 			names(constructed_series)
 		)
 		${PPARGS},
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -76,10 +76,8 @@ ${FUN}.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-    .chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(plotly_object)
-	)
+    state <- .chart_state()
+	state$sub <- c(state$sub, list(plotly_object))
 
 	plotly_object
  }

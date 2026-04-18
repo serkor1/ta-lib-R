@@ -19,10 +19,10 @@
 percentage_price_oscillator <- function(
 	x,
 	cols,
-	fast = 7,
-	slow = 14,
-	ma = SMA(n = 10),
-	na.ignore = FALSE,
+	fast = 12,
+	slow = 26,
+	ma = SMA(n = 9),
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("percentage_price_oscillator")
@@ -42,10 +42,10 @@ PPO <- percentage_price_oscillator
 percentage_price_oscillator.default <- function(
 	x,
 	cols,
-	fast = 7,
-	slow = 14,
-	ma = SMA(n = 10),
-	na.ignore = FALSE,
+	fast = 12,
+	slow = 26,
+	ma = SMA(n = 9),
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -70,14 +70,14 @@ percentage_price_oscillator.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_PPO",
+		C_impl_ta_PPO,
 		## splice:call:start
 		constructed_series[[1]],
 		as.integer(fast),
 		as.integer(slow),
 		ma$maType,
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -94,10 +94,10 @@ percentage_price_oscillator.default <- function(
 percentage_price_oscillator.data.frame <- function(
 	x,
 	cols,
-	fast = 7,
-	slow = 14,
-	ma = SMA(n = 10),
-	na.ignore = FALSE,
+	fast = 12,
+	slow = 26,
+	ma = SMA(n = 9),
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -107,7 +107,7 @@ percentage_price_oscillator.data.frame <- function(
 			fast = fast,
 			slow = slow,
 			ma = ma,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -120,10 +120,10 @@ percentage_price_oscillator.data.frame <- function(
 percentage_price_oscillator.matrix <- function(
 	x,
 	cols,
-	fast = 7,
-	slow = 14,
-	ma = SMA(n = 10),
-	na.ignore = FALSE,
+	fast = 12,
+	slow = 26,
+	ma = SMA(n = 9),
+	na.bridge = FALSE,
 	...
 ) {
 	percentage_price_oscillator.default(
@@ -132,7 +132,7 @@ percentage_price_oscillator.matrix <- function(
 		fast = fast,
 		slow = slow,
 		ma = ma,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -145,10 +145,10 @@ percentage_price_oscillator.matrix <- function(
 percentage_price_oscillator.numeric <- function(
 	x,
 	cols,
-	fast = 7,
-	slow = 14,
-	ma = SMA(n = 10),
-	na.ignore = FALSE,
+	fast = 12,
+	slow = 26,
+	ma = SMA(n = 9),
+	na.bridge = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -162,14 +162,14 @@ percentage_price_oscillator.numeric <- function(
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
-		"impl_ta_PPO",
+		C_impl_ta_PPO,
 		## splice:numeric:start
 		as.double(x),
 		as.integer(fast),
 		as.integer(slow),
 		ma$maType,
 		## splice:numeric:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## check if it has 'dims'
@@ -195,10 +195,10 @@ percentage_price_oscillator.numeric <- function(
 percentage_price_oscillator.plotly <- function(
 	x,
 	cols,
-	fast = 7,
-	slow = 14,
-	ma = SMA(n = 10),
-	na.ignore = FALSE,
+	fast = 12,
+	slow = 26,
+	ma = SMA(n = 9),
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -206,7 +206,7 @@ percentage_price_oscillator.plotly <- function(
 ) {
 	## check that input value
 	## 'x' is <plotly>-object
-	assert_plotly(x)
+	assert_plotly_object(x)
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -233,7 +233,7 @@ percentage_price_oscillator.plotly <- function(
 		fast = fast,
 		slow = slow,
 		ma = ma,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -283,10 +283,8 @@ percentage_price_oscillator.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(plotly_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(plotly_object))
 
 	plotly_object
 }
@@ -298,10 +296,10 @@ percentage_price_oscillator.plotly <- function(
 percentage_price_oscillator.ggplot <- function(
 	x,
 	cols,
-	fast = 7,
-	slow = 14,
-	ma = SMA(n = 10),
-	na.ignore = FALSE,
+	fast = 12,
+	slow = 26,
+	ma = SMA(n = 9),
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -335,7 +333,7 @@ percentage_price_oscillator.ggplot <- function(
 		fast = fast,
 		slow = slow,
 		ma = ma,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -382,10 +380,8 @@ percentage_price_oscillator.ggplot <- function(
 		name = get0(x = "name", ifnotfound = NULL)
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(ggplot_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(ggplot_object))
 
 	ggplot_object
 }

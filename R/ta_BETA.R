@@ -14,8 +14,8 @@
 rolling_beta <- function(
 	x,
 	y,
-	n = 10,
-	na.ignore = FALSE
+	n = 5,
+	na.bridge = FALSE
 ) {
 	UseMethod("rolling_beta")
 }
@@ -34,19 +34,19 @@ BETA <- rolling_beta
 rolling_beta.default <- function(
 	x,
 	y,
-	n = 10,
-	na.ignore = FALSE
+	n = 5,
+	na.bridge = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_BETA",
+		C_impl_ta_BETA,
 		## splice:call:start
 		as.double(x),
 		as.double(y),
 		as.integer(n),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## return indicator
@@ -60,8 +60,8 @@ rolling_beta.default <- function(
 rolling_beta.numeric <- function(
 	x,
 	y,
-	n = 10,
-	na.ignore = FALSE
+	n = 5,
+	na.bridge = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
@@ -69,7 +69,7 @@ rolling_beta.numeric <- function(
 		x = x,
 		y = y,
 		n = n,
-		na.ignore = na.ignore
+		na.bridge = na.bridge
 	)
 
 	## return indicator

@@ -16,8 +16,8 @@
 minus_directional_indicator <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 14,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("minus_directional_indicator")
@@ -37,8 +37,8 @@ MINUS_DI <- minus_directional_indicator
 minus_directional_indicator.default <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 14,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -63,14 +63,14 @@ minus_directional_indicator.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_MINUS_DI",
+		C_impl_ta_MINUS_DI,
 		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
 		as.integer(n),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -87,8 +87,8 @@ minus_directional_indicator.default <- function(
 minus_directional_indicator.data.frame <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 14,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -96,7 +96,7 @@ minus_directional_indicator.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -109,15 +109,15 @@ minus_directional_indicator.data.frame <- function(
 minus_directional_indicator.matrix <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 14,
+	na.bridge = FALSE,
 	...
 ) {
 	minus_directional_indicator.default(
 		x = x,
 		cols = cols,
 		n = n,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -130,8 +130,8 @@ minus_directional_indicator.matrix <- function(
 minus_directional_indicator.plotly <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 14,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -139,7 +139,7 @@ minus_directional_indicator.plotly <- function(
 ) {
 	## check that input value
 	## 'x' is <plotly>-object
-	assert_plotly(x)
+	assert_plotly_object(x)
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -164,7 +164,7 @@ minus_directional_indicator.plotly <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -210,10 +210,8 @@ minus_directional_indicator.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(plotly_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(plotly_object))
 
 	plotly_object
 }
@@ -225,8 +223,8 @@ minus_directional_indicator.plotly <- function(
 minus_directional_indicator.ggplot <- function(
 	x,
 	cols,
-	n = 10,
-	na.ignore = FALSE,
+	n = 14,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -258,7 +256,7 @@ minus_directional_indicator.ggplot <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -305,10 +303,8 @@ minus_directional_indicator.ggplot <- function(
 		name = get0(x = "name", ifnotfound = NULL)
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(ggplot_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(ggplot_object))
 
 	ggplot_object
 }

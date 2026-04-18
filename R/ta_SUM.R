@@ -13,8 +13,8 @@
 #' @template rolling_returns
 rolling_sum <- function(
 	x,
-	n = 10,
-	na.ignore = FALSE
+	n = 30,
+	na.bridge = FALSE
 ) {
 	UseMethod("rolling_sum")
 }
@@ -32,18 +32,18 @@ SUM <- rolling_sum
 #' @export
 rolling_sum.default <- function(
 	x,
-	n = 10,
-	na.ignore = FALSE
+	n = 30,
+	na.bridge = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_SUM",
+		C_impl_ta_SUM,
 		## splice:call:start
 		as.double(x),
 		as.integer(n),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## return indicator
@@ -56,15 +56,15 @@ rolling_sum.default <- function(
 #' @export
 rolling_sum.numeric <- function(
 	x,
-	n = 10,
-	na.ignore = FALSE
+	n = 30,
+	na.bridge = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
 	x <- rolling_sum.default(
 		x = x,
 		n = n,
-		na.ignore = na.ignore
+		na.bridge = na.bridge
 	)
 
 	## return indicator

@@ -61,27 +61,27 @@ testthat::test_that(desc = 'Default calls', code = {
 })
 
 ## check that the length of the input
-## matches the output length with na.ignore = TRUE
+## matches the output length with na.bridge = TRUE
 ##
 ## <data.frame> object
-testthat::test_that(desc = 'Equal length of input and output for <data.frame> with na.ignore = TRUE', code = {
+testthat::test_that(desc = 'Equal length of input and output for <data.frame> with na.bridge = TRUE', code = {
 	testthat::expect_equal(
 		object = nrow(tasuki_gap(
 			ATOM,
-			na.ignore = TRUE
+			na.bridge = TRUE
 		)),
 		expected = nrow(ATOM)
 	)
 })
 
 ## check that the rownames are being
-## respected for <data.frame> with na.ignore = TRUE
-testthat::test_that(desc = 'Row names are respected for <data.frame>, na.ignore = TRUE', code = {
+## respected for <data.frame> with na.bridge = TRUE
+testthat::test_that(desc = 'Row names are respected for <data.frame>, na.bridge = TRUE', code = {
 	## extract row names
 	x_names <- row.names(ATOM)
 
 	## calculate indicator
-	indicator <- tasuki_gap(ATOM, na.ignore = TRUE)
+	indicator <- tasuki_gap(ATOM, na.bridge = TRUE)
 
 	testthat::expect_equal(
 		object = x_names,

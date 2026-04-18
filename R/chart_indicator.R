@@ -92,16 +92,59 @@
 #' @author Serkan Korkmaz
 #' @export
 indicator <- function(FUN, ...) {
-	## detect multi-indicator mode:
-	## indicator(RSI(n = 10), MACD()) passes calls
-	## indicator(RSI, n = 14) passes a bare function
+	## Routing between SINGLE-indicator and MULTI-indicator modes.
+	##
+	## SINGLE mode (one indicator, args via ...):
+	##   indicator(RSI, n = 14)
+	##   indicator(talib::RSI, n = 14)
+	##   indicator(get("RSI"), n = 14)         # indirect lookup
+	##   indicator(match.fun(RSI), n = 14)     # also indirect
+	##   indicator(my_fn_holding_RSI, n = 14)  # bound variable
+	##
+	## MULTI mode (merge several indicator panels - each call is re-
+	## evaluated with x = <chart> injected by indicator_multi):
+	##   indicator(RSI(n = 10), RSI(n = 14), RSI(n = 21))
+	##   indicator(RSI(n = 14), MACD())
+	##
+	## The disambiguation rule is:
+	##   - a bare name (`RSI`) or a namespace expression (`talib::RSI`)
+	##     never routes to MULTI (these are cheap to evaluate and
+	##     always denote the indicator function itself)
+	##   - every other call expression is evaluated once in the caller's
+	##     frame; if it resolves to a function the call must be an
+	##     indirect reference (`get()`, `match.fun()`, ...) and we take
+	##     SINGLE mode; otherwise we fall back to MULTI, which will
+	##     re-evaluate the call with x = <chart> injected.
+	##
+	## Previously this code assumed every call-shaped FUN was an
+	## indicator call, which broke `indicator(get("RSI"), n = 14)` and
+	## similar indirect-lookup forms.
 	fun_expr <- substitute(FUN)
 
-	is_ns_call <- is.call(fun_expr) &&
-		(identical(fun_expr[[1]], quote(`::`)) ||
-			identical(fun_expr[[1]], quote(`:::`)))
+	is_simple_ref <- is.name(fun_expr) ||
+		(is.call(fun_expr) &&
+			(identical(fun_expr[[1L]], quote(`::`)) ||
+				identical(fun_expr[[1L]], quote(`:::`))))
 
-	if (is.call(fun_expr) && !is_ns_call) {
+	if (!is_simple_ref && is.call(fun_expr)) {
+		## A call that isn't a bare name or namespace expression - could
+		## be an indicator call (multi mode) or an indirect function
+		## reference (single mode). Try evaluating it; if we get back a
+		## function, single mode wins.
+		resolved <- tryCatch(
+			eval(fun_expr, envir = parent.frame()),
+			error = function(e) NULL
+		)
+
+		if (is.function(resolved)) {
+			## Indirect function reference - reuse resolved to skip a
+			## second evaluation in the downstream dispatch.
+			FUN <- resolved
+			return(UseMethod("indicator"))
+		}
+
+		## Fall through to MULTI mode. indicator_multi will re-evaluate
+		## each expression with x = <chart> injected.
 		mc <- match.call(expand.dots = FALSE)
 		exprs <- c(list(fun_expr), mc$`...`)
 		return(indicator_multi(exprs, parent.frame()))
@@ -127,26 +170,28 @@ indicator.function <- function(FUN, ...) {
 		)
 	}
 
-	## plotting environment
-	## does exist
-	chart_called <- TRUE
-
 	## extract the function
 	## directly
 	FUN <- match.fun(FUN)
 
-	## locate the main chart
-	plt <- .chart_environment$main
+	## locate the active chart state from the caller's frame chain
+	state <- .chart_state()
+	plt <- if (!is.null(state)) state$main else NULL
+	chart_called <- !is.null(plt)
 
-	if (is.null(plt)) {
-		chart_called <- FALSE
-
+	if (!chart_called) {
+		## standalone mode: indicator() called without prior chart()
 		if (has_arg(data)) {
 			data <- eval.parent(
 				match.call()[["data"]]
 			)
 		} else {
-			stop("'data'-argument has to be provided.")
+			stop(
+				"'data' must be supplied when calling indicator() ",
+				"without first calling chart(). ",
+				"Example: indicator(RSI, data = BTC).",
+				call. = FALSE
+			)
 		}
 
 		## create an empty chart object
@@ -154,7 +199,10 @@ indicator.function <- function(FUN, ...) {
 		backend <- getOption("talib.chart.backend", "plotly")
 		plt <- switch(
 			backend,
-			plotly = plotly::plot_ly(),
+			plotly = {
+				assert_plotly_pkg()
+				plotly::plot_ly()
+			},
 			ggplot2 = {
 				assert_ggplot2()
 				ggplot2::ggplot()
@@ -178,7 +226,13 @@ indicator.function <- function(FUN, ...) {
 			)
 		}
 
-		.chart_environment$idx$label <- idx
+		## create transient state in indicator()'s OWN frame so that
+		## helpers called from FUN (series(), add_idx(), ...) can find
+		## what they need via dynGet. The state evaporates when this
+		## function returns - no leakage to the user's frame.
+		state <- .chart_state_create(envir = environment())
+		state$idx <- list(label = idx)
+		state$x <- as.data.frame(data)
 	}
 
 	## dispatch to the appropriate backend method
@@ -193,19 +247,25 @@ indicator.function <- function(FUN, ...) {
 
 	## verify return type
 	if (!inherits(outcome, c("plotly", "gg"))) {
-		stop("Unexpected error.")
+		stop(
+			"indicator() expected FUN to return a 'plotly' or 'gg' object, ",
+			"got ",
+			paste(class(outcome), collapse = "/"),
+			".",
+			call. = FALSE
+		)
 	}
 
 	if (chart_called) {
 		## assemble the multi-panel chart
 		## based on the backend
-		if (inherits(.chart_environment$main, "plotly")) {
+		if (inherits(state$main, "plotly")) {
 			return(
 				assemble_plotly()
 			)
 		}
 
-		if (inherits(.chart_environment$main, "gg")) {
+		if (inherits(state$main, "gg")) {
 			return(
 				assemble_ggplot2()
 			)
@@ -243,11 +303,11 @@ indicator.function <- function(FUN, ...) {
 	}
 
 	if (inherits(outcome, "gg")) {
-		return(
+		return(wrap_gg(
 			outcome +
 				ggplot2::ggtitle(title) +
 				ggplot_chart_theme()
-		)
+		))
 	}
 
 	outcome
@@ -257,7 +317,7 @@ indicator.function <- function(FUN, ...) {
 ## call on the same subchart panel, then merge
 indicator_multi <- function(exprs, envir) {
 	## require an existing chart
-	plt <- .chart_environment$main
+	plt <- .chart_state()$main
 	if (is.null(plt)) {
 		stop(
 			"chart() must be called before using indicator() ",
@@ -267,7 +327,7 @@ indicator_multi <- function(exprs, envir) {
 	}
 
 	## record current subchart count
-	n_before <- length(.chart_environment$sub)
+	n_before <- length(.chart_state()$sub)
 
 	## evaluate each indicator expression
 	## with x = <chart> injected as first argument
@@ -289,7 +349,7 @@ indicator_multi <- function(exprs, envir) {
 		do.call(fn, args)
 	}
 
-	n_after <- length(.chart_environment$sub)
+	n_after <- length(.chart_state()$sub)
 	n_new <- n_after - n_before
 
 	## merge if multiple subchart panels were added
@@ -321,13 +381,15 @@ indicator_multi <- function(exprs, envir) {
 ## for the plotly backend - used by indicator_multi
 ## to overlay indicators on a single panel
 merge_subchart_plotly <- function(from, to) {
+	state <- .chart_state()
+
 	## build the base panel
-	base <- plotly::plotly_build(.chart_environment$sub[[from]])
+	base <- plotly::plotly_build(state$sub[[from]])
 
 	## merge traces and annotations
 	## from subsequent panels
 	for (i in seq(from + 1L, to)) {
-		other <- plotly::plotly_build(.chart_environment$sub[[i]])
+		other <- plotly::plotly_build(state$sub[[i]])
 		base$x$data <- c(base$x$data, other$x$data)
 
 		## merge annotations like subchart
@@ -360,19 +422,20 @@ merge_subchart_plotly <- function(from, to) {
 
 	## replace first panel with merged
 	## and drop the rest
-	.chart_environment$sub[[from]] <- base
-	length(.chart_environment$sub) <- from
+	state$sub[[from]] <- base
+	length(state$sub) <- from
 }
 
 ## merge multiple subchart panels into one
 ## for the ggplot2 backend - used by indicator_multi
 ## to overlay indicators on a single panel
 merge_subchart_ggplot <- function(from, to) {
-	base <- .chart_environment$sub[[from]]
+	state <- .chart_state()
+	base <- state$sub[[from]]
 
 	## collect layers from subsequent panels
 	for (i in seq(from + 1L, to)) {
-		other <- .chart_environment$sub[[i]]
+		other <- state$sub[[i]]
 		for (layer in other$layers) {
 			base <- base + layer
 		}
@@ -399,7 +462,7 @@ merge_subchart_ggplot <- function(from, to) {
 	legend_names <- unique(legend_names)
 
 	if (length(legend_names) > 0L) {
-		color_map <- setNames(
+		color_map <- .set_names(
 			colorway[seq_along(legend_names)],
 			legend_names
 		)
@@ -423,7 +486,7 @@ merge_subchart_ggplot <- function(from, to) {
 	if (getOption("talib.chart.merged_last_value", TRUE)) {
 		last_values <- list()
 		for (i in seq(from, to)) {
-			lv <- attr(.chart_environment$sub[[i]], "talib_last_value")
+			lv <- attr(state$sub[[i]], "talib_last_value")
 			if (!is.null(lv)) {
 				last_values <- c(last_values, list(lv))
 			}
@@ -477,8 +540,8 @@ merge_subchart_ggplot <- function(from, to) {
 
 	## replace first panel with merged
 	## and drop the rest
-	.chart_environment$sub[[from]] <- base
-	length(.chart_environment$sub) <- from
+	state$sub[[from]] <- base
+	length(state$sub) <- from
 }
 
 ## ---- plotly assembly ----
@@ -486,7 +549,8 @@ merge_subchart_ggplot <- function(from, to) {
 ## combine main chart and subcharts
 ## into a multi-panel plotly subplot
 assemble_plotly <- function() {
-	panels <- c(list(.chart_environment$main), .chart_environment$sub)
+	state <- .chart_state()
+	panels <- c(list(state$main), state$sub)
 	n <- length(panels)
 
 	## main panel gets most of the height
@@ -513,7 +577,7 @@ assemble_plotly <- function() {
 			tickmode = "auto"
 		)
 	)
-	.chart_environment$chart <- fig
+	state$chart <- fig
 
 	layout_axis(layout_color(layout_settings(fig)))
 }
@@ -523,16 +587,17 @@ assemble_plotly <- function() {
 ## combine main chart and subcharts
 ## into a multi-panel ggplot2 layout
 assemble_ggplot2 <- function() {
+	state <- .chart_state()
 	panels <- c(
-		list(.chart_environment$main),
-		.chart_environment$sub
+		list(state$main),
+		state$sub
 	)
 	n <- length(panels)
 
-	## single panel - return as-is
+	## single panel - return as-is (wrapped for safe auto-printing)
 	if (n == 1L) {
-		.chart_environment$chart <- panels[[1]]
-		return(panels[[1]])
+		state$chart <- panels[[1]]
+		return(wrap_gg(panels[[1]]))
 	}
 
 	## main panel gets most of the height
@@ -583,14 +648,46 @@ assemble_ggplot2 <- function() {
 		class = "talib_chart"
 	)
 
-	.chart_environment$chart <- fig
+	state$chart <- fig
 	fig
+}
+
+## Wrap a ggplot2 return with a class whose print method opens a null
+## device when none is active. Prevents Rplots.pdf from appearing in
+## non-interactive contexts (R CMD check, Rscript) while leaving
+## interactive use untouched - in the REPL dev.cur() is not 1, so the
+## null-device branch is skipped and the user's device is used as-is.
+wrap_gg <- function(x) {
+	if (inherits(x, "gg") && !inherits(x, "talib_gg_chart")) {
+		class(x) <- c("talib_gg_chart", class(x))
+	}
+	x
+}
+
+## print method for single-panel ggplot charts returned by chart() /
+## indicator() on the ggplot2 backend. Guards against Rplots.pdf
+## creation in non-interactive contexts and delegates rendering to
+## ggplot2 via NextMethod.
+#' @export
+print.talib_gg_chart <- function(x, ...) {
+	if (grDevices::dev.cur() == 1L) {
+		grDevices::pdf(nullfile())
+		on.exit(grDevices::dev.off(), add = TRUE)
+	}
+	NextMethod()
 }
 
 ## print method for multi-panel ggplot2 charts
 ## uses grid viewports for proportional panel heights
 #' @export
 print.talib_chart <- function(x, ...) {
+	## avoid Rplots.pdf when no device is open
+	## (e.g., R CMD check, tests, vignette knit)
+	if (grDevices::dev.cur() == 1L) {
+		grDevices::pdf(nullfile())
+		on.exit(grDevices::dev.off(), add = TRUE)
+	}
+
 	grid::grid.newpage()
 
 	layout <- grid::grid.layout(

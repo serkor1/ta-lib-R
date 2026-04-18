@@ -5,14 +5,14 @@
 ${FUN}.plotly <- function(
 	x,
 	cols,${ARGS}
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	...) {
 
 	## check that input value
 	## 'x' is <plotly>-object
-	assert_plotly(x)
+	assert_plotly_object(x)
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -37,7 +37,7 @@ ${FUN}.plotly <- function(
 			names(constructed_series)
 		)
 		${PPARGS},
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## add conditional idx
@@ -50,16 +50,18 @@ ${FUN}.plotly <- function(
 	## initial scaffold
 	## splice:plotly-assembly:end
 
-	plotly_object <- .chart_environment[["main"]] <- build_plotly(
-		init = .chart_environment[["main"]],
+	state <- .chart_state()
+	plotly_object <- build_plotly(
+		init = state[["main"]],
 		traces = traces,
 		decorators = list(),
 		name = get0(
-					x = "name", 
+					x = "name",
 					ifnotfound = NULL
 				),
 		data = constructed_indicator
 	)
+	state[["main"]] <- plotly_object
 
 	plotly_object
  }

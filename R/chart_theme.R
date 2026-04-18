@@ -32,7 +32,44 @@
 #'     (`#F5F5F5`) background. Both bull and bear candles use shades of gray,
 #'     keeping the focus on indicator lines. The colorway uses muted natural
 #'     tones.}
+#'   \item{`bloomberg_terminal`}{A dark theme on a near-black (`#0E1017`)
+#'     background with orange (`#FF8F40`) bullish and neutral-gray
+#'     (`#BBB9B2`) bearish candles. Inspired by the Bloomberg Terminal
+#'     interface. Colorblind-friendly (see below).}
+#'   \item{`limit_up`}{A dark monochrome theme on a near-black (`#121212`)
+#'     background. Candles use only luminance to encode direction (light-gray
+#'     bullish vs dark-gray bearish). Colorblind-friendly (see below).}
+#'   \item{`bid_n_ask`}{A light theme on an azure (`#F0FFFF`) background
+#'     with steel-blue (`#4682B4`) bullish and tomato-red (`#FF6347`)
+#'     bearish candles. The classic blue-vs-red trading pair.
+#'     Colorblind-friendly (see below).}
 #' }
+#'
+#' ## Colorblind-Friendly Themes
+#'
+#' The following themes encode bull/bear direction in ways that remain
+#' distinguishable under the most common color-vision deficiencies. The
+#' colorways for `bloomberg_terminal`, `limit_up`, and `bid_n_ask` are
+#' derived from the Okabe & Ito (2008) qualitative palette, the de-facto
+#' standard for accessible scientific visualization.
+#'
+#' \describe{
+#'   \item{`limit_up`, `hawks_and_doves`, `trust_the_process`}{Encode
+#'     direction with luminance only. Safe under deuteranopia, protanopia,
+#'     tritanopia, and full achromatopsia.}
+#'   \item{`bloomberg_terminal`}{Orange + neutral gray. Safe under all
+#'     three CVD types thanks to Okabe-Ito-style hue separation.}
+#'   \item{`default`, `payout`}{Cyan/teal + blue or dark slate. Safe under
+#'     all three CVD types — the color pair sits inside the blue-yellow
+#'     axis that CVD users perceive normally.}
+#'   \item{`bid_n_ask`}{Blue + red. Safe under deuteranopia and
+#'     protanopia (the most common forms, affecting ~8% of males); the
+#'     pair separates more weakly under tritanopia.}
+#' }
+#'
+#' `tp_slapped` is the only built-in that uses a teal/red pair adjacent to
+#' the red-green CVD axis; prefer the themes above when accessibility
+#' matters.
 #'
 #' ## Theme Properties
 #'
@@ -51,6 +88,11 @@
 #'
 #' Any of these properties can be individually overridden via the `...`
 #' argument to [set_theme()].
+#'
+#' @references
+#' Okabe, M. & Ito, K. (2008). *Color Universal Design (CUD): How to make
+#' figures and presentations that are friendly to colorblind people.*
+#' \url{https://jfly.uni-koeln.de/color/}
 #'
 #' @example man/examples/set_theme.R
 #'
@@ -228,6 +270,115 @@ NULL
 
 		## grid
 		gridcolor = "#E6E6E6"
+	),
+
+	## ---- colorblind-friendly themes ----
+	## three themes designed to remain distinguishable under deuteranopia,
+	## protanopia, and tritanopia. Colorways use the Okabe-Ito qualitative
+	## palette (Okabe & Ito, 2008) reordered to suit each background.
+
+	bloomberg_terminal = list(
+		## candle-colors
+		## orange + neutral gray - distinguishable under all CVD types
+		bearish_body = "#BBB9B2",
+		bearish_wick = "#8F5125",
+		bearish_border = "#BBB9B2",
+		bullish_body = "#FF8F40",
+		bullish_wick = "#8F5125",
+		bullish_border = "#FF8F40",
+
+		## general-colors
+		background_color = "#0E1017",
+		foreground_color = "#FFFFFF",
+		text_color = "#FFFFFF",
+		threshold_color = "#5A6168",
+
+		## colorway - Okabe-Ito for dark backgrounds
+		colorway = c(
+			"#E69F00",
+			"#56B4E9",
+			"#F0E442",
+			"#009E73",
+			"#0072B2",
+			"#D55E00",
+			"#CC79A7",
+			"#FFFFFF",
+			"#BBBBBB",
+			"#888888"
+		),
+
+		## grid
+		gridcolor = "#1E2128"
+	),
+
+	limit_up = list(
+		## candle-colors
+		## pure luminance contrast - safe under all CVD types
+		## including full achromatopsia
+		bearish_body = "#5A5A5A",
+		bearish_wick = "#4A4A4A",
+		bearish_border = "#3F3F3F",
+		bullish_body = "#B0B0B0",
+		bullish_wick = "#A0A0A0",
+		bullish_border = "#D0D0D0",
+
+		## general-colors
+		background_color = "#121212",
+		foreground_color = "#E0E0E0",
+		text_color = "#E0E0E0",
+		threshold_color = "#7A7A7A",
+
+		## colorway - Okabe-Ito for dark monochrome backgrounds
+		colorway = c(
+			"#56B4E9",
+			"#E69F00",
+			"#009E73",
+			"#F0E442",
+			"#CC79A7",
+			"#0072B2",
+			"#D55E00",
+			"#FFFFFF",
+			"#BBBBBB",
+			"#888888"
+		),
+
+		## grid
+		gridcolor = "#1E1E1E"
+	),
+
+	bid_n_ask = list(
+		## candle-colors
+		## blue + red - distinguishable under deuteranopia and
+		## protanopia, weaker under tritanopia
+		bearish_body = "#FF6347",
+		bearish_wick = "#CD5C5C",
+		bearish_border = "#E03D00",
+		bullish_body = "#4682B4",
+		bullish_wick = "#1E90FF",
+		bullish_border = "#4169E1",
+
+		## general-colors
+		background_color = "#F0FFFF",
+		foreground_color = "#2F4F4F",
+		text_color = "#2F4F4F",
+		threshold_color = "#7A8C99",
+
+		## colorway - Okabe-Ito for light backgrounds
+		colorway = c(
+			"#0072B2",
+			"#D55E00",
+			"#009E73",
+			"#CC79A7",
+			"#E69F00",
+			"#56B4E9",
+			"#F0E442",
+			"#000000",
+			"#666666",
+			"#AAAAAA"
+		),
+
+		## grid
+		gridcolor = "#D6E6F2"
 	)
 )
 

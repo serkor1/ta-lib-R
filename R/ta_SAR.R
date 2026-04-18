@@ -18,9 +18,9 @@
 parabolic_stop_and_reverse <- function(
 	x,
 	cols,
-	acceleration = 0.5,
-	maximum = 0.75,
-	na.ignore = FALSE,
+	acceleration = 0.02,
+	maximum = 0.2,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("parabolic_stop_and_reverse")
@@ -40,9 +40,9 @@ SAR <- parabolic_stop_and_reverse
 parabolic_stop_and_reverse.default <- function(
 	x,
 	cols,
-	acceleration = 0.5,
-	maximum = 0.75,
-	na.ignore = FALSE,
+	acceleration = 0.02,
+	maximum = 0.2,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -67,14 +67,14 @@ parabolic_stop_and_reverse.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_SAR",
+		C_impl_ta_SAR,
 		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		as.double(acceleration),
 		as.double(maximum),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -91,9 +91,9 @@ parabolic_stop_and_reverse.default <- function(
 parabolic_stop_and_reverse.data.frame <- function(
 	x,
 	cols,
-	acceleration = 0.5,
-	maximum = 0.75,
-	na.ignore = FALSE,
+	acceleration = 0.02,
+	maximum = 0.2,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -102,7 +102,7 @@ parabolic_stop_and_reverse.data.frame <- function(
 			cols = cols,
 			acceleration = acceleration,
 			maximum = maximum,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -115,9 +115,9 @@ parabolic_stop_and_reverse.data.frame <- function(
 parabolic_stop_and_reverse.matrix <- function(
 	x,
 	cols,
-	acceleration = 0.5,
-	maximum = 0.75,
-	na.ignore = FALSE,
+	acceleration = 0.02,
+	maximum = 0.2,
+	na.bridge = FALSE,
 	...
 ) {
 	parabolic_stop_and_reverse.default(
@@ -125,7 +125,7 @@ parabolic_stop_and_reverse.matrix <- function(
 		cols = cols,
 		acceleration = acceleration,
 		maximum = maximum,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -138,16 +138,16 @@ parabolic_stop_and_reverse.matrix <- function(
 parabolic_stop_and_reverse.plotly <- function(
 	x,
 	cols,
-	acceleration = 0.5,
-	maximum = 0.75,
-	na.ignore = FALSE,
+	acceleration = 0.02,
+	maximum = 0.2,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	...
 ) {
 	## check that input value
 	## 'x' is <plotly>-object
-	assert_plotly(x)
+	assert_plotly_object(x)
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -173,7 +173,7 @@ parabolic_stop_and_reverse.plotly <- function(
 		),
 		acceleration = acceleration,
 		maximum = maximum,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## add conditional idx
@@ -222,8 +222,9 @@ parabolic_stop_and_reverse.plotly <- function(
 	)
 	## splice:plotly-assembly:end
 
-	plotly_object <- .chart_environment[["main"]] <- build_plotly(
-		init = .chart_environment[["main"]],
+	state <- .chart_state()
+	plotly_object <- build_plotly(
+		init = state[["main"]],
 		traces = traces,
 		decorators = list(),
 		name = get0(
@@ -232,6 +233,7 @@ parabolic_stop_and_reverse.plotly <- function(
 		),
 		data = constructed_indicator
 	)
+	state[["main"]] <- plotly_object
 
 	plotly_object
 }
@@ -243,9 +245,9 @@ parabolic_stop_and_reverse.plotly <- function(
 parabolic_stop_and_reverse.ggplot <- function(
 	x,
 	cols,
-	acceleration = 0.5,
-	maximum = 0.75,
-	na.ignore = FALSE,
+	acceleration = 0.02,
+	maximum = 0.2,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	...
@@ -277,7 +279,7 @@ parabolic_stop_and_reverse.ggplot <- function(
 		),
 		acceleration = acceleration,
 		maximum = maximum,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## add conditional idx
@@ -293,8 +295,9 @@ parabolic_stop_and_reverse.ggplot <- function(
 	name <- "SAR"
 	## splice:ggplot-assembly:end
 
-	ggplot_object <- .chart_environment[["main"]] <- build_ggplot(
-		init = .chart_environment[["main"]],
+	state <- .chart_state()
+	ggplot_object <- build_ggplot(
+		init = state[["main"]],
 		layers = layers,
 		decorators = list(),
 		name = get0(
@@ -303,6 +306,7 @@ parabolic_stop_and_reverse.ggplot <- function(
 		),
 		data = constructed_indicator
 	)
+	state[["main"]] <- ggplot_object
 
 	ggplot_object
 }

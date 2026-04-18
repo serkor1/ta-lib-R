@@ -26,7 +26,7 @@
 $FUN <- function(
 	x,
 	cols, ${ARGS}
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...) {
   UseMethod("$FUN")
 }
@@ -45,7 +45,7 @@ $ALIAS <- $FUN
 $FUN.default <- function(
 	x,
 	cols, ${ARGS}
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...) {
 
 	## get candlestick pattern
@@ -83,13 +83,13 @@ $FUN.default <- function(
 	## return as data.frame
 	x <- as.matrix(
 		.Call(
-			"impl_ta_$ALIAS",
+			C_impl_ta_$ALIAS,
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
 		constructed_series[[4]] ${CARGS},
 		normalize,
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 	)
 
@@ -110,7 +110,7 @@ $FUN.default <- function(
 $FUN.data.frame <- function(
 	x,
 	cols, ${ARGS}
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...) {
 
 	map_dfr(
@@ -125,7 +125,7 @@ $FUN.data.frame <- function(
 $FUN.matrix <- function(
 	x,
 	cols,${ARGS}
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...) {
 		NextMethod()
 }
@@ -137,12 +137,12 @@ $FUN.matrix <- function(
 $FUN.plotly <- function(
 	x,
 	cols, ${ARGS}
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...) {
 
 	## check that input value
 	## 'x' is <plotly>-object
-	assert_plotly(x)
+	assert_plotly_object(x)
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -174,13 +174,15 @@ $FUN.plotly <- function(
 	)
 
 	## construct {plotly}-object
-	plotly_object <- .chart_environment[["main"]] <-  pattern_ly(
-		p = .chart_environment[["main"]],
+	state <- .chart_state()
+	plotly_object <- pattern_ly(
+		p = state[["main"]],
 		x = constructed_indicator,
 		high = constructed_series[[2]],
 		low = constructed_series[[3]],
 		pattern_name = "$FUN",
 		agnostic = $AGNOSTIC	)
+	state[["main"]] <- plotly_object
 
 	plotly_object
  }

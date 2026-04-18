@@ -20,7 +20,7 @@ chaikin_accumulation_distribution_oscillator <- function(
 	cols,
 	fast = 3,
 	slow = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("chaikin_accumulation_distribution_oscillator")
@@ -42,7 +42,7 @@ chaikin_accumulation_distribution_oscillator.default <- function(
 	cols,
 	fast = 3,
 	slow = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -67,7 +67,7 @@ chaikin_accumulation_distribution_oscillator.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_ADOSC",
+		C_impl_ta_ADOSC,
 		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
@@ -76,7 +76,7 @@ chaikin_accumulation_distribution_oscillator.default <- function(
 		as.integer(fast),
 		as.integer(slow),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -95,7 +95,7 @@ chaikin_accumulation_distribution_oscillator.data.frame <- function(
 	cols,
 	fast = 3,
 	slow = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -104,7 +104,7 @@ chaikin_accumulation_distribution_oscillator.data.frame <- function(
 			cols = cols,
 			fast = fast,
 			slow = slow,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -119,7 +119,7 @@ chaikin_accumulation_distribution_oscillator.matrix <- function(
 	cols,
 	fast = 3,
 	slow = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	chaikin_accumulation_distribution_oscillator.default(
@@ -127,7 +127,7 @@ chaikin_accumulation_distribution_oscillator.matrix <- function(
 		cols = cols,
 		fast = fast,
 		slow = slow,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -142,7 +142,7 @@ chaikin_accumulation_distribution_oscillator.plotly <- function(
 	cols,
 	fast = 3,
 	slow = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -150,7 +150,7 @@ chaikin_accumulation_distribution_oscillator.plotly <- function(
 ) {
 	## check that input value
 	## 'x' is <plotly>-object
-	assert_plotly(x)
+	assert_plotly_object(x)
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -176,7 +176,7 @@ chaikin_accumulation_distribution_oscillator.plotly <- function(
 		),
 		fast = fast,
 		slow = slow,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -222,10 +222,8 @@ chaikin_accumulation_distribution_oscillator.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(plotly_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(plotly_object))
 
 	plotly_object
 }
@@ -239,7 +237,7 @@ chaikin_accumulation_distribution_oscillator.ggplot <- function(
 	cols,
 	fast = 3,
 	slow = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -272,7 +270,7 @@ chaikin_accumulation_distribution_oscillator.ggplot <- function(
 		),
 		fast = fast,
 		slow = slow,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -319,10 +317,8 @@ chaikin_accumulation_distribution_oscillator.ggplot <- function(
 		name = get0(x = "name", ifnotfound = NULL)
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(ggplot_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(ggplot_object))
 
 	ggplot_object
 }

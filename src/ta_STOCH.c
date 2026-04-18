@@ -38,7 +38,7 @@ SEXP impl_ta_STOCH(
 	SEXP optInSlowK_MAType,
 	SEXP optInSlowD_Period,
 	SEXP optInSlowD_MAType,
-	SEXP na_ignore
+	SEXP na_bridge
 )
 // clang-format on
 {
@@ -65,7 +65,7 @@ SEXP impl_ta_STOCH(
   int *na_mask = NULL;
   const int n_original = n;
 
-  if (LOGICAL(na_ignore)[0]) {
+  if (LOGICAL(na_bridge)[0]) {
     na_mask = (int *)R_alloc(n, sizeof(int));
     const double *na_arrays[] = {inHigh_ptr, inLow_ptr, inClose_ptr};
     n = build_na_mask(na_mask, n, 3, na_arrays);

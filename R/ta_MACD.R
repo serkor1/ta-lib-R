@@ -22,7 +22,7 @@ moving_average_convergence_divergence <- function(
 	fast = 12,
 	slow = 26,
 	signal = 9,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("moving_average_convergence_divergence")
@@ -45,7 +45,7 @@ moving_average_convergence_divergence.default <- function(
 	fast = 12,
 	slow = 26,
 	signal = 9,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -70,14 +70,14 @@ moving_average_convergence_divergence.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_MACD",
+		C_impl_ta_MACD,
 		## splice:call:start
 		constructed_series[[1]],
 		as.integer(fast),
 		as.integer(slow),
 		as.integer(signal),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -97,7 +97,7 @@ moving_average_convergence_divergence.data.frame <- function(
 	fast = 12,
 	slow = 26,
 	signal = 9,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -107,7 +107,7 @@ moving_average_convergence_divergence.data.frame <- function(
 			fast = fast,
 			slow = slow,
 			signal = signal,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -123,7 +123,7 @@ moving_average_convergence_divergence.matrix <- function(
 	fast = 12,
 	slow = 26,
 	signal = 9,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	moving_average_convergence_divergence.default(
@@ -132,7 +132,7 @@ moving_average_convergence_divergence.matrix <- function(
 		fast = fast,
 		slow = slow,
 		signal = signal,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -148,7 +148,7 @@ moving_average_convergence_divergence.numeric <- function(
 	fast = 12,
 	slow = 26,
 	signal = 9,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -162,14 +162,14 @@ moving_average_convergence_divergence.numeric <- function(
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
-		"impl_ta_MACD",
+		C_impl_ta_MACD,
 		## splice:numeric:start
 		as.double(x),
 		as.integer(fast),
 		as.integer(slow),
 		as.integer(signal),
 		## splice:numeric:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## check if it has 'dims'
@@ -198,7 +198,7 @@ moving_average_convergence_divergence.plotly <- function(
 	fast = 12,
 	slow = 26,
 	signal = 9,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -206,7 +206,7 @@ moving_average_convergence_divergence.plotly <- function(
 ) {
 	## check that input value
 	## 'x' is <plotly>-object
-	assert_plotly(x)
+	assert_plotly_object(x)
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -233,7 +233,7 @@ moving_average_convergence_divergence.plotly <- function(
 		fast = fast,
 		slow = slow,
 		signal = signal,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -317,10 +317,8 @@ moving_average_convergence_divergence.plotly <- function(
 		values_to_extract = values_to_extract
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(plotly_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(plotly_object))
 
 	plotly_object
 }
@@ -335,7 +333,7 @@ moving_average_convergence_divergence.ggplot <- function(
 	fast = 12,
 	slow = 26,
 	signal = 9,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -369,7 +367,7 @@ moving_average_convergence_divergence.ggplot <- function(
 		fast = fast,
 		slow = slow,
 		signal = signal,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -427,10 +425,8 @@ moving_average_convergence_divergence.ggplot <- function(
 		name = get0(x = "name", ifnotfound = NULL)
 	)
 
-	.chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(ggplot_object)
-	)
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(ggplot_object))
 
 	ggplot_object
 }

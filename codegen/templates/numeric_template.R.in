@@ -5,7 +5,7 @@
 ${FUN}.numeric <- function(
 	x,
 	cols,${ARGS}
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...) {
 
 		## warn if 'cols' have been
@@ -19,11 +19,11 @@ ${FUN}.numeric <- function(
 		## pass the argument directly
 		## to 'C'
 		x <- .Call(
-			"impl_ta_${TA_FUN}",
+			C_impl_ta_${TA_FUN},
 			## splice:numeric:start
 			${CARGS}
 			## splice:numeric:end
-			as.logical(na.ignore)
+			as.logical(na.bridge)
 		)
 
 		## check if it has 'dims'

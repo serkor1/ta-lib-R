@@ -197,7 +197,7 @@ The `subset` argument lets you apply an indicator to a specific range of the dat
 
 ## Themes
 
-The package includes a theme system that controls candle colors, background, text, grid, and the color palette used for indicator traces. Four built-in themes are available.
+The package includes a theme system that controls candle colors, background, text, grid, and the color palette used for indicator traces. Eight built-in themes are available; three of them (`bloomberg_terminal`, `limit_up`, `bid_n_ask`) are designed to remain distinguishable under the most common color-vision deficiencies. See `?chart_themes` for the full accessibility breakdown.
 
 ### Setting a theme
 
@@ -288,6 +288,57 @@ A light, muted theme with earthy tones.
 ```{r}
 {
   talib::set_theme$trust_the_process
+  talib::chart(talib::BTC)
+  talib::indicator(talib::SMA, n = 7)
+  talib::indicator(talib::SMA, n = 14)
+  talib::indicator(talib::SMA, n = 21)
+  talib::indicator(talib::SMA, n = 28)
+  talib::indicator(talib::MACD)
+  talib::indicator(talib::trading_volume)
+}
+```
+
+### Bloomberg Terminal (colorblind-friendly)
+
+A dark theme inspired by the Bloomberg Terminal interface. Orange bullish candles paired with neutral-gray bearish candles — the orange/gray pair separates cleanly under deuteranopia, protanopia, and tritanopia. The colorway is the Okabe-Ito qualitative palette.
+
+```{r}
+{
+  talib::set_theme$bloomberg_terminal
+  talib::chart(talib::BTC)
+  talib::indicator(talib::SMA, n = 7)
+  talib::indicator(talib::SMA, n = 14)
+  talib::indicator(talib::SMA, n = 21)
+  talib::indicator(talib::SMA, n = 28)
+  talib::indicator(talib::MACD)
+  talib::indicator(talib::trading_volume)
+}
+```
+
+### Limit Up (colorblind-friendly)
+
+A dark monochrome theme that encodes direction with luminance only. Light-gray bullish candles vs dark-gray bearish candles — the contrast is large enough to remain unambiguous under all three CVD types and even under full achromatopsia.
+
+```{r}
+{
+  talib::set_theme$limit_up
+  talib::chart(talib::BTC)
+  talib::indicator(talib::SMA, n = 7)
+  talib::indicator(talib::SMA, n = 14)
+  talib::indicator(talib::SMA, n = 21)
+  talib::indicator(talib::SMA, n = 28)
+  talib::indicator(talib::MACD)
+  talib::indicator(talib::trading_volume)
+}
+```
+
+### Bid n Ask (colorblind-friendly)
+
+A light theme with the classic blue-vs-red trading pair. Steel-blue bullish and tomato-red bearish candles separate well under deuteranopia and protanopia (the most common CVD forms, affecting roughly 8% of males); separation under tritanopia is weaker but still readable.
+
+```{r}
+{
+  talib::set_theme$bid_n_ask
   talib::chart(talib::BTC)
   talib::indicator(talib::SMA, n = 7)
   talib::indicator(talib::SMA, n = 14)

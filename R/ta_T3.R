@@ -20,7 +20,7 @@ t3_exponential_moving_average <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## if 'x' is missing t3_exponential_moving_average functions
@@ -57,7 +57,7 @@ t3_exponential_moving_average.default <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -82,11 +82,11 @@ t3_exponential_moving_average.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		"impl_ta_MA",
+		C_impl_ta_MA,
 		as.double(constructed_series[[1]]),
 		as.integer(n),
 		8L,
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -104,7 +104,7 @@ t3_exponential_moving_average.data.frame <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -120,7 +120,7 @@ t3_exponential_moving_average.matrix <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## pass directly to
@@ -130,7 +130,7 @@ t3_exponential_moving_average.matrix <- function(
 		x = x,
 		cols = cols,
 		n = n,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -143,7 +143,7 @@ t3_exponential_moving_average.numeric <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -157,11 +157,11 @@ t3_exponential_moving_average.numeric <- function(
 	## pass to 'C' directly
 	## with the input vector
 	x <- .Call(
-		"impl_ta_MA",
+		C_impl_ta_MA,
 		as.double(x),
 		as.integer(n),
 		8L,
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## 'C' returns a named matrix
@@ -179,12 +179,12 @@ t3_exponential_moving_average.plotly <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## check that input value
 	## 'x' is <plotly>-object
-	assert_plotly(x)
+	assert_plotly_object(x)
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -217,8 +217,9 @@ t3_exponential_moving_average.plotly <- function(
 	)
 
 	## construct {plotly}-object
-	plotly_object <- .chart_environment[["main"]] <- build_plotly(
-		init = .chart_environment[["main"]],
+	state <- .chart_state()
+	plotly_object <- build_plotly(
+		init = state[["main"]],
 		traces = list(
 			list(
 				y = ~ constructed_indicator[["T3"]][
@@ -233,6 +234,7 @@ t3_exponential_moving_average.plotly <- function(
 		name = sprintf("T3(%d)", n),
 		decorators = list()
 	)
+	state[["main"]] <- plotly_object
 
 	plotly_object
 }
@@ -246,7 +248,7 @@ t3_exponential_moving_average.ggplot <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## check ggplot2 availability
@@ -283,8 +285,9 @@ t3_exponential_moving_average.ggplot <- function(
 	)
 
 	## construct {ggplot2}-object
-	ggplot_object <- .chart_environment[["main"]] <- build_ggplot(
-		init = .chart_environment[["main"]],
+	state <- .chart_state()
+	ggplot_object <- build_ggplot(
+		init = state[["main"]],
 		layers = list(
 			list(
 				y = "T3"
@@ -294,6 +297,7 @@ t3_exponential_moving_average.ggplot <- function(
 		decorators = list(),
 		data = constructed_indicator
 	)
+	state[["main"]] <- ggplot_object
 
 	ggplot_object
 }
