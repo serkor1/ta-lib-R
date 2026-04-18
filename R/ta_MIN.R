@@ -13,7 +13,7 @@
 #' @template rolling_returns
 rolling_min <- function(
 	x,
-	n = 10,
+	n = 30,
 	na.bridge = FALSE
 ) {
 	UseMethod("rolling_min")
@@ -32,7 +32,7 @@ MIN <- rolling_min
 #' @export
 rolling_min.default <- function(
 	x,
-	n = 10,
+	n = 30,
 	na.bridge = FALSE
 ) {
 	## calculate indicator and
@@ -56,7 +56,7 @@ rolling_min.default <- function(
 #' @export
 rolling_min.numeric <- function(
 	x,
-	n = 10,
+	n = 30,
 	na.bridge = FALSE
 ) {
 	## calculate indicator and

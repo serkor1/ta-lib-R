@@ -14,7 +14,7 @@
 #' @template rolling_returns
 rolling_variance <- function(
 	x,
-	n = 10,
+	n = 5,
 	k = 1,
 	na.bridge = FALSE
 ) {
@@ -34,7 +34,7 @@ VAR <- rolling_variance
 #' @export
 rolling_variance.default <- function(
 	x,
-	n = 10,
+	n = 5,
 	k = 1,
 	na.bridge = FALSE
 ) {
@@ -60,7 +60,7 @@ rolling_variance.default <- function(
 #' @export
 rolling_variance.numeric <- function(
 	x,
-	n = 10,
+	n = 5,
 	k = 1,
 	na.bridge = FALSE
 ) {

@@ -13,7 +13,7 @@
 #' @template rolling_returns
 rolling_max <- function(
 	x,
-	n = 10,
+	n = 30,
 	na.bridge = FALSE
 ) {
 	UseMethod("rolling_max")
@@ -32,7 +32,7 @@ MAX <- rolling_max
 #' @export
 rolling_max.default <- function(
 	x,
-	n = 10,
+	n = 30,
 	na.bridge = FALSE
 ) {
 	## calculate indicator and
@@ -56,7 +56,7 @@ rolling_max.default <- function(
 #' @export
 rolling_max.numeric <- function(
 	x,
-	n = 10,
+	n = 30,
 	na.bridge = FALSE
 ) {
 	## calculate indicator and

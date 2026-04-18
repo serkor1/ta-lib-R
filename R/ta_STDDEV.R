@@ -14,7 +14,7 @@
 #' @template rolling_returns
 rolling_standard_deviation <- function(
 	x,
-	n = 10,
+	n = 5,
 	k = 1,
 	na.bridge = FALSE
 ) {
@@ -34,7 +34,7 @@ STDDEV <- rolling_standard_deviation
 #' @export
 rolling_standard_deviation.default <- function(
 	x,
-	n = 10,
+	n = 5,
 	k = 1,
 	na.bridge = FALSE
 ) {
@@ -60,7 +60,7 @@ rolling_standard_deviation.default <- function(
 #' @export
 rolling_standard_deviation.numeric <- function(
 	x,
-	n = 10,
+	n = 5,
 	k = 1,
 	na.bridge = FALSE
 ) {

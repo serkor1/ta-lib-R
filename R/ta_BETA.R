@@ -14,7 +14,7 @@
 rolling_beta <- function(
 	x,
 	y,
-	n = 10,
+	n = 5,
 	na.bridge = FALSE
 ) {
 	UseMethod("rolling_beta")
@@ -34,7 +34,7 @@ BETA <- rolling_beta
 rolling_beta.default <- function(
 	x,
 	y,
-	n = 10,
+	n = 5,
 	na.bridge = FALSE
 ) {
 	## calculate indicator and
@@ -60,7 +60,7 @@ rolling_beta.default <- function(
 rolling_beta.numeric <- function(
 	x,
 	y,
-	n = 10,
+	n = 5,
 	na.bridge = FALSE
 ) {
 	## calculate indicator and

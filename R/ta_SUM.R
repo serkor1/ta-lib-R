@@ -13,7 +13,7 @@
 #' @template rolling_returns
 rolling_sum <- function(
 	x,
-	n = 10,
+	n = 30,
 	na.bridge = FALSE
 ) {
 	UseMethod("rolling_sum")
@@ -32,7 +32,7 @@ SUM <- rolling_sum
 #' @export
 rolling_sum.default <- function(
 	x,
-	n = 10,
+	n = 30,
 	na.bridge = FALSE
 ) {
 	## calculate indicator and
@@ -56,7 +56,7 @@ rolling_sum.default <- function(
 #' @export
 rolling_sum.numeric <- function(
 	x,
-	n = 10,
+	n = 30,
 	na.bridge = FALSE
 ) {
 	## calculate indicator and

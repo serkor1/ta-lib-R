@@ -258,7 +258,7 @@ indicators <- list(
 	overlap("Bollinger Bands", "bollinger_bands", "BBANDS", "~close", c("ma=SMA(n=5)", "sd=2", "sd_down", "sd_up")),
 	overlap("Hilbert Transform - Instantaneous Trendline", "trendline", "HT_TRENDLINE", "~close", ""),
 	overlap("Parabolic Stop and Reverse (SAR)", "parabolic_stop_and_reverse", "SAR", "~high+low", c("acceleration=0.02", "maximum=0.2")),
-	overlap("Parabolic Stop and Reverse (SAR) - Extended", "extended_parabolic_stop_and_reverse", "SAREXT", "~high+low", c("init=0", "offset=0", "init_long=0", "long=0", "max_long=0", "init_short=0", "short=0", "max_short=0")),
+	overlap("Parabolic Stop and Reverse (SAR) - Extended", "extended_parabolic_stop_and_reverse", "SAREXT", "~high+low", c("init=0", "offset=0", "init_long=0.02", "long=0.02", "max_long=0.2", "init_short=0.02", "short=0.02", "max_short=0.2")),
 	overlap("Acceleration Bands", "acceleration_bands", "ACCBANDS", "~ high + low + close", c("n=20")),
 
 	## ========================
@@ -288,11 +288,11 @@ indicators <- list(
 	## ========================
 	## Rolling Statistics
 	## ========================
-	rolling("Rolling Sum", "rolling_sum", "SUM", "n = 10"),
-	rolling("Rolling Standard Deviation", "rolling_standard_deviation", "STDDEV", c("n=10", "k = 1")),
-	rolling("Rolling Standard Deviation", "rolling_variance", "VAR", c("n=10", "k = 1")),
-	rolling("Rolling Beta", "rolling_beta", "BETA", c("y", "n=10")),
-	rolling("Rolling Correlation", "rolling_correlation", "CORREL", c("y", "n=10")),
-	rolling("Rolling Max", "rolling_max", "MAX", c("n=10")),
-	rolling("Rolling Min", "rolling_min", "MIN", c("n=10"))
+	rolling("Rolling Sum", "rolling_sum", "SUM", "n = 30"),
+	rolling("Rolling Standard Deviation", "rolling_standard_deviation", "STDDEV", c("n=5", "k = 1")),
+	rolling("Rolling Standard Deviation", "rolling_variance", "VAR", c("n=5", "k = 1")),
+	rolling("Rolling Beta", "rolling_beta", "BETA", c("y", "n=5")),
+	rolling("Rolling Correlation", "rolling_correlation", "CORREL", c("y", "n=30")),
+	rolling("Rolling Max", "rolling_max", "MAX", c("n=30")),
+	rolling("Rolling Min", "rolling_min", "MIN", c("n=30"))
 )

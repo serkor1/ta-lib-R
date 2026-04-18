@@ -14,7 +14,7 @@
 rolling_correlation <- function(
 	x,
 	y,
-	n = 10,
+	n = 30,
 	na.bridge = FALSE
 ) {
 	UseMethod("rolling_correlation")
@@ -34,7 +34,7 @@ CORREL <- rolling_correlation
 rolling_correlation.default <- function(
 	x,
 	y,
-	n = 10,
+	n = 30,
 	na.bridge = FALSE
 ) {
 	## calculate indicator and
@@ -60,7 +60,7 @@ rolling_correlation.default <- function(
 rolling_correlation.numeric <- function(
 	x,
 	y,
-	n = 10,
+	n = 30,
 	na.bridge = FALSE
 ) {
 	## calculate indicator and
