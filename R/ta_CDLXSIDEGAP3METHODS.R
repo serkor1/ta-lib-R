@@ -26,7 +26,7 @@
 xside_gap_3_methods <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("xside_gap_3_methods")
@@ -46,7 +46,7 @@ CDLXSIDEGAP3METHODS <- xside_gap_3_methods
 xside_gap_3_methods.default <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## get candlestick pattern
@@ -90,7 +90,7 @@ xside_gap_3_methods.default <- function(
 			constructed_series[[3]],
 			constructed_series[[4]],
 			normalize,
-			as.logical(na.ignore)
+			as.logical(na.bridge)
 		)
 	)
 
@@ -111,7 +111,7 @@ xside_gap_3_methods.default <- function(
 xside_gap_3_methods.data.frame <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -126,7 +126,7 @@ xside_gap_3_methods.data.frame <- function(
 xside_gap_3_methods.matrix <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	NextMethod()
@@ -139,7 +139,7 @@ xside_gap_3_methods.matrix <- function(
 xside_gap_3_methods.plotly <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## check that input value
@@ -198,7 +198,7 @@ xside_gap_3_methods.plotly <- function(
 xside_gap_3_methods.ggplot <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## check ggplot2 availability

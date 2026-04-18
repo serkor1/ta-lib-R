@@ -17,7 +17,7 @@ momentum <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("momentum")
@@ -38,7 +38,7 @@ momentum.default <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -68,7 +68,7 @@ momentum.default <- function(
 		constructed_series[[1]],
 		as.integer(n),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -86,7 +86,7 @@ momentum.data.frame <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -94,7 +94,7 @@ momentum.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -108,14 +108,14 @@ momentum.matrix <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	momentum.default(
 		x = x,
 		cols = cols,
 		n = n,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -129,7 +129,7 @@ momentum.numeric <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -148,7 +148,7 @@ momentum.numeric <- function(
 		as.double(x),
 		as.integer(n),
 		## splice:numeric:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## check if it has 'dims'
@@ -175,7 +175,7 @@ momentum.plotly <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -208,7 +208,7 @@ momentum.plotly <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -271,7 +271,7 @@ momentum.ggplot <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -303,7 +303,7 @@ momentum.ggplot <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator

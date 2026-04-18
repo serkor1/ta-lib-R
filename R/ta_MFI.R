@@ -17,7 +17,7 @@ money_flow_index <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("money_flow_index")
@@ -38,7 +38,7 @@ money_flow_index.default <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -71,7 +71,7 @@ money_flow_index.default <- function(
 		constructed_series[[4]],
 		as.integer(n),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -89,7 +89,7 @@ money_flow_index.data.frame <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -97,7 +97,7 @@ money_flow_index.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -111,14 +111,14 @@ money_flow_index.matrix <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	money_flow_index.default(
 		x = x,
 		cols = cols,
 		n = n,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -132,7 +132,7 @@ money_flow_index.plotly <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = -20,
 	upper_bound = 80,
@@ -167,7 +167,7 @@ money_flow_index.plotly <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -232,7 +232,7 @@ money_flow_index.ggplot <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -264,7 +264,7 @@ money_flow_index.ggplot <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator

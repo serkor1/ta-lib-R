@@ -17,7 +17,7 @@ plus_directional_indicator <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("plus_directional_indicator")
@@ -38,7 +38,7 @@ plus_directional_indicator.default <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -70,7 +70,7 @@ plus_directional_indicator.default <- function(
 		constructed_series[[3]],
 		as.integer(n),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -88,7 +88,7 @@ plus_directional_indicator.data.frame <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -96,7 +96,7 @@ plus_directional_indicator.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -110,14 +110,14 @@ plus_directional_indicator.matrix <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	plus_directional_indicator.default(
 		x = x,
 		cols = cols,
 		n = n,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -131,7 +131,7 @@ plus_directional_indicator.plotly <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -164,7 +164,7 @@ plus_directional_indicator.plotly <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -224,7 +224,7 @@ plus_directional_indicator.ggplot <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -256,7 +256,7 @@ plus_directional_indicator.ggplot <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator

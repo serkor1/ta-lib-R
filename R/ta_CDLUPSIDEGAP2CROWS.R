@@ -26,7 +26,7 @@
 upside_gap_2_crows <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("upside_gap_2_crows")
@@ -46,7 +46,7 @@ CDLUPSIDEGAP2CROWS <- upside_gap_2_crows
 upside_gap_2_crows.default <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## get candlestick pattern
@@ -90,7 +90,7 @@ upside_gap_2_crows.default <- function(
 			constructed_series[[3]],
 			constructed_series[[4]],
 			normalize,
-			as.logical(na.ignore)
+			as.logical(na.bridge)
 		)
 	)
 
@@ -111,7 +111,7 @@ upside_gap_2_crows.default <- function(
 upside_gap_2_crows.data.frame <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -126,7 +126,7 @@ upside_gap_2_crows.data.frame <- function(
 upside_gap_2_crows.matrix <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	NextMethod()
@@ -139,7 +139,7 @@ upside_gap_2_crows.matrix <- function(
 upside_gap_2_crows.plotly <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## check that input value
@@ -198,7 +198,7 @@ upside_gap_2_crows.plotly <- function(
 upside_gap_2_crows.ggplot <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## check ggplot2 availability

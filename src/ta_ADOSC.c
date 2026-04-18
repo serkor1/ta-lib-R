@@ -34,7 +34,7 @@ SEXP impl_ta_ADOSC(
 	SEXP inVolume,
 	SEXP optInFastPeriod,
 	SEXP optInSlowPeriod,
-	SEXP na_ignore
+	SEXP na_bridge
 )
 // clang-format on
 {
@@ -59,7 +59,7 @@ SEXP impl_ta_ADOSC(
   int *na_mask = NULL;
   const int n_original = n;
 
-  if (LOGICAL(na_ignore)[0]) {
+  if (LOGICAL(na_bridge)[0]) {
     na_mask = (int *)R_alloc(n, sizeof(int));
     const double *na_arrays[] =
       {inHigh_ptr, inLow_ptr, inClose_ptr, inVolume_ptr};

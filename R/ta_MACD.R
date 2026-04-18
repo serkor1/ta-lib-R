@@ -22,7 +22,7 @@ moving_average_convergence_divergence <- function(
 	fast = 12,
 	slow = 26,
 	signal = 9,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("moving_average_convergence_divergence")
@@ -45,7 +45,7 @@ moving_average_convergence_divergence.default <- function(
 	fast = 12,
 	slow = 26,
 	signal = 9,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -77,7 +77,7 @@ moving_average_convergence_divergence.default <- function(
 		as.integer(slow),
 		as.integer(signal),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -97,7 +97,7 @@ moving_average_convergence_divergence.data.frame <- function(
 	fast = 12,
 	slow = 26,
 	signal = 9,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -107,7 +107,7 @@ moving_average_convergence_divergence.data.frame <- function(
 			fast = fast,
 			slow = slow,
 			signal = signal,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -123,7 +123,7 @@ moving_average_convergence_divergence.matrix <- function(
 	fast = 12,
 	slow = 26,
 	signal = 9,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	moving_average_convergence_divergence.default(
@@ -132,7 +132,7 @@ moving_average_convergence_divergence.matrix <- function(
 		fast = fast,
 		slow = slow,
 		signal = signal,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -148,7 +148,7 @@ moving_average_convergence_divergence.numeric <- function(
 	fast = 12,
 	slow = 26,
 	signal = 9,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -169,7 +169,7 @@ moving_average_convergence_divergence.numeric <- function(
 		as.integer(slow),
 		as.integer(signal),
 		## splice:numeric:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## check if it has 'dims'
@@ -198,7 +198,7 @@ moving_average_convergence_divergence.plotly <- function(
 	fast = 12,
 	slow = 26,
 	signal = 9,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -233,7 +233,7 @@ moving_average_convergence_divergence.plotly <- function(
 		fast = fast,
 		slow = slow,
 		signal = signal,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -333,7 +333,7 @@ moving_average_convergence_divergence.ggplot <- function(
 	fast = 12,
 	slow = 26,
 	signal = 9,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -367,7 +367,7 @@ moving_average_convergence_divergence.ggplot <- function(
 		fast = fast,
 		slow = slow,
 		signal = signal,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator

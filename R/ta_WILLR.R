@@ -17,7 +17,7 @@ williams_oscillator <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("williams_oscillator")
@@ -38,7 +38,7 @@ williams_oscillator.default <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -70,7 +70,7 @@ williams_oscillator.default <- function(
 		constructed_series[[3]],
 		as.integer(n),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -88,7 +88,7 @@ williams_oscillator.data.frame <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -96,7 +96,7 @@ williams_oscillator.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -110,14 +110,14 @@ williams_oscillator.matrix <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	williams_oscillator.default(
 		x = x,
 		cols = cols,
 		n = n,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -131,7 +131,7 @@ williams_oscillator.plotly <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = -20,
 	upper_bound = -80,
@@ -166,7 +166,7 @@ williams_oscillator.plotly <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -232,7 +232,7 @@ williams_oscillator.ggplot <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -264,7 +264,7 @@ williams_oscillator.ggplot <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator

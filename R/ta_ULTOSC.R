@@ -17,7 +17,7 @@ ultimate_oscillator <- function(
 	x,
 	cols,
 	n = c(7, 14, 28),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("ultimate_oscillator")
@@ -38,7 +38,7 @@ ultimate_oscillator.default <- function(
 	x,
 	cols,
 	n = c(7, 14, 28),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -72,7 +72,7 @@ ultimate_oscillator.default <- function(
 		as.integer(n[2]),
 		as.integer(n[3]),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -90,7 +90,7 @@ ultimate_oscillator.data.frame <- function(
 	x,
 	cols,
 	n = c(7, 14, 28),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -98,7 +98,7 @@ ultimate_oscillator.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -112,14 +112,14 @@ ultimate_oscillator.matrix <- function(
 	x,
 	cols,
 	n = c(7, 14, 28),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	ultimate_oscillator.default(
 		x = x,
 		cols = cols,
 		n = n,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -133,7 +133,7 @@ ultimate_oscillator.plotly <- function(
 	x,
 	cols,
 	n = c(7, 14, 28),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 30,
 	upper_bound = 70,
@@ -168,7 +168,7 @@ ultimate_oscillator.plotly <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -239,7 +239,7 @@ ultimate_oscillator.ggplot <- function(
 	x,
 	cols,
 	n = c(7, 14, 28),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -271,7 +271,7 @@ ultimate_oscillator.ggplot <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator

@@ -20,7 +20,7 @@ simple_moving_average <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## if 'x' is missing simple_moving_average functions
@@ -57,7 +57,7 @@ simple_moving_average.default <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -86,7 +86,7 @@ simple_moving_average.default <- function(
 		as.double(constructed_series[[1]]),
 		as.integer(n),
 		0L,
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -104,7 +104,7 @@ simple_moving_average.data.frame <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -120,7 +120,7 @@ simple_moving_average.matrix <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## pass directly to
@@ -130,7 +130,7 @@ simple_moving_average.matrix <- function(
 		x = x,
 		cols = cols,
 		n = n,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -143,7 +143,7 @@ simple_moving_average.numeric <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -161,7 +161,7 @@ simple_moving_average.numeric <- function(
 		as.double(x),
 		as.integer(n),
 		0L,
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## 'C' returns a named matrix
@@ -179,7 +179,7 @@ simple_moving_average.plotly <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## check that input value
@@ -248,7 +248,7 @@ simple_moving_average.ggplot <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## check ggplot2 availability

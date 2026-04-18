@@ -23,7 +23,7 @@ stochastic_relative_strength_index <- function(
 	n_rsi = 14,
 	fastk = 5,
 	fastd = SMA(n = 3),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("stochastic_relative_strength_index")
@@ -47,7 +47,7 @@ stochastic_relative_strength_index.default <- function(
 	n_rsi = 14,
 	fastk = 5,
 	fastd = SMA(n = 3),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -77,7 +77,7 @@ stochastic_relative_strength_index.default <- function(
 		relative_strength_index(
 			constructed_series,
 			n = n_rsi,
-			na.ignore = na.ignore
+			na.bridge = na.bridge
 		)[[
 			1
 		]][
@@ -89,7 +89,7 @@ stochastic_relative_strength_index.default <- function(
 		fastd$maType,
 		as.integer(n_rsi),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -110,7 +110,7 @@ stochastic_relative_strength_index.data.frame <- function(
 	n_rsi = 14,
 	fastk = 5,
 	fastd = SMA(n = 3),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -121,7 +121,7 @@ stochastic_relative_strength_index.data.frame <- function(
 			n_rsi = n_rsi,
 			fastk = fastk,
 			fastd = fastd,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -138,7 +138,7 @@ stochastic_relative_strength_index.matrix <- function(
 	n_rsi = 14,
 	fastk = 5,
 	fastd = SMA(n = 3),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	stochastic_relative_strength_index.default(
@@ -148,7 +148,7 @@ stochastic_relative_strength_index.matrix <- function(
 		n_rsi = n_rsi,
 		fastk = fastk,
 		fastd = fastd,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -165,7 +165,7 @@ stochastic_relative_strength_index.plotly <- function(
 	n_rsi = 14,
 	fastk = 5,
 	fastd = SMA(n = 3),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 20,
 	upper_bound = 80,
@@ -203,7 +203,7 @@ stochastic_relative_strength_index.plotly <- function(
 		n_rsi = n_rsi,
 		fastk = fastk,
 		fastd = fastd,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -273,7 +273,7 @@ stochastic_relative_strength_index.ggplot <- function(
 	n_rsi = 14,
 	fastk = 5,
 	fastd = SMA(n = 3),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -308,7 +308,7 @@ stochastic_relative_strength_index.ggplot <- function(
 		n_rsi = n_rsi,
 		fastk = fastk,
 		fastd = fastd,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator

@@ -22,7 +22,7 @@ absolute_price_oscillator <- function(
 	fast = 12,
 	slow = 26,
 	ma = SMA(n = 9),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("absolute_price_oscillator")
@@ -45,7 +45,7 @@ absolute_price_oscillator.default <- function(
 	fast = 12,
 	slow = 26,
 	ma = SMA(n = 9),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -77,7 +77,7 @@ absolute_price_oscillator.default <- function(
 		as.integer(slow),
 		ma$maType,
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -97,7 +97,7 @@ absolute_price_oscillator.data.frame <- function(
 	fast = 12,
 	slow = 26,
 	ma = SMA(n = 9),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -107,7 +107,7 @@ absolute_price_oscillator.data.frame <- function(
 			fast = fast,
 			slow = slow,
 			ma = ma,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -123,7 +123,7 @@ absolute_price_oscillator.matrix <- function(
 	fast = 12,
 	slow = 26,
 	ma = SMA(n = 9),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	absolute_price_oscillator.default(
@@ -132,7 +132,7 @@ absolute_price_oscillator.matrix <- function(
 		fast = fast,
 		slow = slow,
 		ma = ma,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -148,7 +148,7 @@ absolute_price_oscillator.numeric <- function(
 	fast = 12,
 	slow = 26,
 	ma = SMA(n = 9),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -169,7 +169,7 @@ absolute_price_oscillator.numeric <- function(
 		as.integer(slow),
 		ma$maType,
 		## splice:numeric:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## check if it has 'dims'
@@ -198,7 +198,7 @@ absolute_price_oscillator.plotly <- function(
 	fast = 12,
 	slow = 26,
 	ma = SMA(n = 9),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -233,7 +233,7 @@ absolute_price_oscillator.plotly <- function(
 		fast = fast,
 		slow = slow,
 		ma = ma,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -302,7 +302,7 @@ absolute_price_oscillator.ggplot <- function(
 	fast = 12,
 	slow = 26,
 	ma = SMA(n = 9),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -336,7 +336,7 @@ absolute_price_oscillator.ggplot <- function(
 		fast = fast,
 		slow = slow,
 		ma = ma,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator

@@ -20,7 +20,7 @@ parabolic_stop_and_reverse <- function(
 	cols,
 	acceleration = 0.02,
 	maximum = 0.2,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("parabolic_stop_and_reverse")
@@ -42,7 +42,7 @@ parabolic_stop_and_reverse.default <- function(
 	cols,
 	acceleration = 0.02,
 	maximum = 0.2,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -74,7 +74,7 @@ parabolic_stop_and_reverse.default <- function(
 		as.double(acceleration),
 		as.double(maximum),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -93,7 +93,7 @@ parabolic_stop_and_reverse.data.frame <- function(
 	cols,
 	acceleration = 0.02,
 	maximum = 0.2,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -102,7 +102,7 @@ parabolic_stop_and_reverse.data.frame <- function(
 			cols = cols,
 			acceleration = acceleration,
 			maximum = maximum,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -117,7 +117,7 @@ parabolic_stop_and_reverse.matrix <- function(
 	cols,
 	acceleration = 0.02,
 	maximum = 0.2,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	parabolic_stop_and_reverse.default(
@@ -125,7 +125,7 @@ parabolic_stop_and_reverse.matrix <- function(
 		cols = cols,
 		acceleration = acceleration,
 		maximum = maximum,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -140,7 +140,7 @@ parabolic_stop_and_reverse.plotly <- function(
 	cols,
 	acceleration = 0.02,
 	maximum = 0.2,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	...
@@ -173,7 +173,7 @@ parabolic_stop_and_reverse.plotly <- function(
 		),
 		acceleration = acceleration,
 		maximum = maximum,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## add conditional idx
@@ -247,7 +247,7 @@ parabolic_stop_and_reverse.ggplot <- function(
 	cols,
 	acceleration = 0.02,
 	maximum = 0.2,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	...
@@ -279,7 +279,7 @@ parabolic_stop_and_reverse.ggplot <- function(
 		),
 		acceleration = acceleration,
 		maximum = maximum,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## add conditional idx

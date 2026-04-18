@@ -5,7 +5,7 @@
 ${FUN}.ggplot <- function(
 	x,
 	cols,${ARGS}
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	...) {
@@ -36,7 +36,7 @@ ${FUN}.ggplot <- function(
 			names(constructed_series)
 		)
 		${PPARGS},
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## add conditional idx

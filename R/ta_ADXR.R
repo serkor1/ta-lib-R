@@ -17,7 +17,7 @@ average_directional_movement_index_rating <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("average_directional_movement_index_rating")
@@ -38,7 +38,7 @@ average_directional_movement_index_rating.default <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -70,7 +70,7 @@ average_directional_movement_index_rating.default <- function(
 		constructed_series[[3]],
 		as.integer(n),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -88,7 +88,7 @@ average_directional_movement_index_rating.data.frame <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -96,7 +96,7 @@ average_directional_movement_index_rating.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -110,14 +110,14 @@ average_directional_movement_index_rating.matrix <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	average_directional_movement_index_rating.default(
 		x = x,
 		cols = cols,
 		n = n,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -131,7 +131,7 @@ average_directional_movement_index_rating.plotly <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 25,
 	middle_bound = 50,
@@ -167,7 +167,7 @@ average_directional_movement_index_rating.plotly <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -237,7 +237,7 @@ average_directional_movement_index_rating.ggplot <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -269,7 +269,7 @@ average_directional_movement_index_rating.ggplot <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator

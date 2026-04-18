@@ -17,7 +17,7 @@ aroon_oscillator <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("aroon_oscillator")
@@ -38,7 +38,7 @@ aroon_oscillator.default <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -69,7 +69,7 @@ aroon_oscillator.default <- function(
 		constructed_series[[2]],
 		as.integer(n),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -87,7 +87,7 @@ aroon_oscillator.data.frame <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -95,7 +95,7 @@ aroon_oscillator.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -109,14 +109,14 @@ aroon_oscillator.matrix <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	aroon_oscillator.default(
 		x = x,
 		cols = cols,
 		n = n,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -130,7 +130,7 @@ aroon_oscillator.plotly <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -163,7 +163,7 @@ aroon_oscillator.plotly <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -228,7 +228,7 @@ aroon_oscillator.ggplot <- function(
 	x,
 	cols,
 	n = 14,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -260,7 +260,7 @@ aroon_oscillator.ggplot <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator

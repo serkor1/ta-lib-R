@@ -27,7 +27,7 @@ morning_doji_star <- function(
 	x,
 	cols,
 	eps = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("morning_doji_star")
@@ -48,7 +48,7 @@ morning_doji_star.default <- function(
 	x,
 	cols,
 	eps = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## get candlestick pattern
@@ -93,7 +93,7 @@ morning_doji_star.default <- function(
 			constructed_series[[4]],
 			eps,
 			normalize,
-			as.logical(na.ignore)
+			as.logical(na.bridge)
 		)
 	)
 
@@ -115,7 +115,7 @@ morning_doji_star.data.frame <- function(
 	x,
 	cols,
 	eps = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -131,7 +131,7 @@ morning_doji_star.matrix <- function(
 	x,
 	cols,
 	eps = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	NextMethod()
@@ -145,7 +145,7 @@ morning_doji_star.plotly <- function(
 	x,
 	cols,
 	eps = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## check that input value
@@ -206,7 +206,7 @@ morning_doji_star.ggplot <- function(
 	x,
 	cols,
 	eps = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## check ggplot2 availability

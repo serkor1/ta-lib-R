@@ -14,7 +14,7 @@
 rolling_min <- function(
 	x,
 	n = 10,
-	na.ignore = FALSE
+	na.bridge = FALSE
 ) {
 	UseMethod("rolling_min")
 }
@@ -33,7 +33,7 @@ MIN <- rolling_min
 rolling_min.default <- function(
 	x,
 	n = 10,
-	na.ignore = FALSE
+	na.bridge = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
@@ -43,7 +43,7 @@ rolling_min.default <- function(
 		as.double(x),
 		as.integer(n),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## return indicator
@@ -57,14 +57,14 @@ rolling_min.default <- function(
 rolling_min.numeric <- function(
 	x,
 	n = 10,
-	na.ignore = FALSE
+	na.bridge = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
 	x <- rolling_min.default(
 		x = x,
 		n = n,
-		na.ignore = na.ignore
+		na.bridge = na.bridge
 	)
 
 	## return indicator

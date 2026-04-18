@@ -6,7 +6,7 @@ $FUN.ggplot <- function(
 	x,
 	cols,
 	n = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...) {
 
 	## check ggplot2 availability

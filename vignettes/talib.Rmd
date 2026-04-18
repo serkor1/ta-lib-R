@@ -167,11 +167,11 @@ tail(
 )
 ```
 
-## Handling missing values with `na.ignore`
+## Handling missing values with `na.bridge`
 
-Real-world data often contains missing values. By default (`na.ignore = FALSE`), any `NA` in the input propagates through the entire calculation, which can fill the result with `NA`s.
+Real-world data often contains missing values. By default (`na.bridge = FALSE`), any `NA` in the input propagates through the entire calculation, which can fill the result with `NA`s.
 
-Setting `na.ignore = TRUE` strips `NA` rows before calculation, computes the indicator on the clean data, and then re-inserts `NA`s at their original positions:
+Setting `na.bridge = TRUE` strips `NA` rows before calculation, computes the indicator on the clean data, and then re-inserts `NA`s at their original positions:
 
 ```{r}
 ## inject some NAs
@@ -187,16 +187,16 @@ sum(is.na(
 ```
 
 ```{r}
-## na.ignore = TRUE: NAs are skipped
+## na.bridge = TRUE: NAs are skipped
 sum(is.na(
-	talib::RSI(x, na.ignore = TRUE)
+	talib::RSI(x, na.bridge = TRUE)
 ))
 ```
 
 The stripped rows are restored in the output, so the result always has the same number of rows as the input:
 
 ```{r}
-nrow(talib::RSI(x, na.ignore = TRUE)) == nrow(x)
+nrow(talib::RSI(x, na.bridge = TRUE)) == nrow(x)
 ```
 
 ## Moving Average specifications

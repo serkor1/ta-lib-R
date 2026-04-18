@@ -16,7 +16,7 @@
 weighted_close_price <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("weighted_close_price")
@@ -36,7 +36,7 @@ WCLPRICE <- weighted_close_price
 weighted_close_price.default <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -67,7 +67,7 @@ weighted_close_price.default <- function(
 		constructed_series[[2]],
 		constructed_series[[3]],
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -84,14 +84,14 @@ weighted_close_price.default <- function(
 weighted_close_price.data.frame <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
 		weighted_close_price.default(
 			x = x,
 			cols = cols,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -104,13 +104,13 @@ weighted_close_price.data.frame <- function(
 weighted_close_price.matrix <- function(
 	x,
 	cols,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	weighted_close_price.default(
 		x = x,
 		cols = cols,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }

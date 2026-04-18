@@ -11,13 +11,13 @@ testthat::test_that("indicators reject non-numeric input via default coercion", 
 testthat::test_that("indicators handle NA inputs without crashing", {
 	x <- c(1, 2, NA, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
 
-	## without na.ignore - NAs propagate (entire output may be NA)
+	## without na.bridge - NAs propagate (entire output may be NA)
 	testthat::expect_no_error(
 		relative_strength_index(x)
 	)
 
-	## with na.ignore - NAs stripped, computed, re-inserted
-	out <- relative_strength_index(x, na.ignore = TRUE)
+	## with na.bridge - NAs stripped, computed, re-inserted
+	out <- relative_strength_index(x, na.bridge = TRUE)
 	testthat::expect_true(
 		is.na(out[3])
 	)

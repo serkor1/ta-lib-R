@@ -20,7 +20,7 @@ chaikin_accumulation_distribution_oscillator <- function(
 	cols,
 	fast = 3,
 	slow = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("chaikin_accumulation_distribution_oscillator")
@@ -42,7 +42,7 @@ chaikin_accumulation_distribution_oscillator.default <- function(
 	cols,
 	fast = 3,
 	slow = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -76,7 +76,7 @@ chaikin_accumulation_distribution_oscillator.default <- function(
 		as.integer(fast),
 		as.integer(slow),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -95,7 +95,7 @@ chaikin_accumulation_distribution_oscillator.data.frame <- function(
 	cols,
 	fast = 3,
 	slow = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -104,7 +104,7 @@ chaikin_accumulation_distribution_oscillator.data.frame <- function(
 			cols = cols,
 			fast = fast,
 			slow = slow,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -119,7 +119,7 @@ chaikin_accumulation_distribution_oscillator.matrix <- function(
 	cols,
 	fast = 3,
 	slow = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	chaikin_accumulation_distribution_oscillator.default(
@@ -127,7 +127,7 @@ chaikin_accumulation_distribution_oscillator.matrix <- function(
 		cols = cols,
 		fast = fast,
 		slow = slow,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -142,7 +142,7 @@ chaikin_accumulation_distribution_oscillator.plotly <- function(
 	cols,
 	fast = 3,
 	slow = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -176,7 +176,7 @@ chaikin_accumulation_distribution_oscillator.plotly <- function(
 		),
 		fast = fast,
 		slow = slow,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -237,7 +237,7 @@ chaikin_accumulation_distribution_oscillator.ggplot <- function(
 	cols,
 	fast = 3,
 	slow = 10,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -270,7 +270,7 @@ chaikin_accumulation_distribution_oscillator.ggplot <- function(
 		),
 		fast = fast,
 		slow = slow,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator

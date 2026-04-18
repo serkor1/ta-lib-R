@@ -24,7 +24,7 @@ bollinger_bands <- function(
 	sd = 2,
 	sd_down,
 	sd_up,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("bollinger_bands")
@@ -48,7 +48,7 @@ bollinger_bands.default <- function(
 	sd = 2,
 	sd_down,
 	sd_up,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -81,7 +81,7 @@ bollinger_bands.default <- function(
 		as.double(sd_down %or% sd),
 		ma$maType,
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -102,7 +102,7 @@ bollinger_bands.data.frame <- function(
 	sd = 2,
 	sd_down,
 	sd_up,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -113,7 +113,7 @@ bollinger_bands.data.frame <- function(
 			sd = sd,
 			sd_down = sd_down,
 			sd_up = sd_up,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -130,7 +130,7 @@ bollinger_bands.matrix <- function(
 	sd = 2,
 	sd_down,
 	sd_up,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	bollinger_bands.default(
@@ -140,7 +140,7 @@ bollinger_bands.matrix <- function(
 		sd = sd,
 		sd_down = sd_down,
 		sd_up = sd_up,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -157,7 +157,7 @@ bollinger_bands.numeric <- function(
 	sd = 2,
 	sd_down,
 	sd_up,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -179,7 +179,7 @@ bollinger_bands.numeric <- function(
 		as.double(sd_down %or% sd),
 		ma$maType,
 		## splice:numeric:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## check if it has 'dims'
@@ -209,7 +209,7 @@ bollinger_bands.plotly <- function(
 	sd = 2,
 	sd_down,
 	sd_up,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	color = "steelblue",
 	alpha = 0.2,
@@ -246,7 +246,7 @@ bollinger_bands.plotly <- function(
 		sd = sd,
 		sd_down = sd_down,
 		sd_up = sd_up,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## add conditional idx
@@ -334,7 +334,7 @@ bollinger_bands.ggplot <- function(
 	sd = 2,
 	sd_down,
 	sd_up,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	...
@@ -368,7 +368,7 @@ bollinger_bands.ggplot <- function(
 		sd = sd,
 		sd_down = sd_down,
 		sd_up = sd_up,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## add conditional idx

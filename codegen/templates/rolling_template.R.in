@@ -14,7 +14,7 @@
 ${FUN} <- function(
 	x,
     ${ARGS},
-	na.ignore = FALSE
+	na.bridge = FALSE
 	) {
   UseMethod("${FUN}")
 }
@@ -33,7 +33,7 @@ ${ALIAS} <- ${FUN}
 ${FUN}.default <- function(
 	x,
     ${ARGS},
-	na.ignore = FALSE
+	na.bridge = FALSE
 	) {
 
 	## calculate indicator and
@@ -42,7 +42,7 @@ ${FUN}.default <- function(
 		C_impl_ta_${TA_FUN},
         ## splice:call:start
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## return indicator
@@ -56,14 +56,14 @@ ${FUN}.default <- function(
 ${FUN}.numeric <- function(
 	x,
     ${ARGS},
-	na.ignore = FALSE
+	na.bridge = FALSE
 	) {
 
 	## calculate indicator and
 	## return as data.frame
 	x <- ${FUN}.default(
 			x = x ${PARGS},
-			na.ignore = na.ignore
+			na.bridge = na.bridge
 
 	)
 

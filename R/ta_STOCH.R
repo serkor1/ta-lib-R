@@ -22,7 +22,7 @@ stochastic <- function(
 	fastk = 5,
 	slowk = SMA(n = 3),
 	slowd = SMA(n = 3),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("stochastic")
@@ -45,7 +45,7 @@ stochastic.default <- function(
 	fastk = 5,
 	slowk = SMA(n = 3),
 	slowd = SMA(n = 3),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -81,7 +81,7 @@ stochastic.default <- function(
 		as.integer(slowd$n),
 		as.integer(slowd$maType),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -101,7 +101,7 @@ stochastic.data.frame <- function(
 	fastk = 5,
 	slowk = SMA(n = 3),
 	slowd = SMA(n = 3),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -111,7 +111,7 @@ stochastic.data.frame <- function(
 			fastk = fastk,
 			slowk = slowk,
 			slowd = slowd,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -127,7 +127,7 @@ stochastic.matrix <- function(
 	fastk = 5,
 	slowk = SMA(n = 3),
 	slowd = SMA(n = 3),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	stochastic.default(
@@ -136,7 +136,7 @@ stochastic.matrix <- function(
 		fastk = fastk,
 		slowk = slowk,
 		slowd = slowd,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -152,7 +152,7 @@ stochastic.plotly <- function(
 	fastk = 5,
 	slowk = SMA(n = 3),
 	slowd = SMA(n = 3),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 20,
 	upper_bound = 80,
@@ -189,7 +189,7 @@ stochastic.plotly <- function(
 		fastk = fastk,
 		slowk = slowk,
 		slowd = slowd,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -261,7 +261,7 @@ stochastic.ggplot <- function(
 	fastk = 5,
 	slowk = SMA(n = 3),
 	slowd = SMA(n = 3),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -295,7 +295,7 @@ stochastic.ggplot <- function(
 		fastk = fastk,
 		slowk = slowk,
 		slowd = slowd,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator

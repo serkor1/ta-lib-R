@@ -20,7 +20,7 @@ fast_stochastic <- function(
 	cols,
 	fastk = 5,
 	fastd = SMA(n = 3),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("fast_stochastic")
@@ -42,7 +42,7 @@ fast_stochastic.default <- function(
 	cols,
 	fastk = 5,
 	fastd = SMA(n = 3),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -76,7 +76,7 @@ fast_stochastic.default <- function(
 		as.integer(fastd$n),
 		as.integer(fastd$maType),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -95,7 +95,7 @@ fast_stochastic.data.frame <- function(
 	cols,
 	fastk = 5,
 	fastd = SMA(n = 3),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -104,7 +104,7 @@ fast_stochastic.data.frame <- function(
 			cols = cols,
 			fastk = fastk,
 			fastd = fastd,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -119,7 +119,7 @@ fast_stochastic.matrix <- function(
 	cols,
 	fastk = 5,
 	fastd = SMA(n = 3),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	fast_stochastic.default(
@@ -127,7 +127,7 @@ fast_stochastic.matrix <- function(
 		cols = cols,
 		fastk = fastk,
 		fastd = fastd,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -142,7 +142,7 @@ fast_stochastic.plotly <- function(
 	cols,
 	fastk = 5,
 	fastd = SMA(n = 3),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 20,
 	upper_bound = 80,
@@ -178,7 +178,7 @@ fast_stochastic.plotly <- function(
 		),
 		fastk = fastk,
 		fastd = fastd,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -247,7 +247,7 @@ fast_stochastic.ggplot <- function(
 	cols,
 	fastk = 5,
 	fastd = SMA(n = 3),
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -280,7 +280,7 @@ fast_stochastic.ggplot <- function(
 		),
 		fastk = fastk,
 		fastd = fastd,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator

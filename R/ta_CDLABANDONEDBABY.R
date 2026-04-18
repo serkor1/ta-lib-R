@@ -27,7 +27,7 @@ abandoned_baby <- function(
 	x,
 	cols,
 	eps = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("abandoned_baby")
@@ -48,7 +48,7 @@ abandoned_baby.default <- function(
 	x,
 	cols,
 	eps = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## get candlestick pattern
@@ -93,7 +93,7 @@ abandoned_baby.default <- function(
 			constructed_series[[4]],
 			eps,
 			normalize,
-			as.logical(na.ignore)
+			as.logical(na.bridge)
 		)
 	)
 
@@ -115,7 +115,7 @@ abandoned_baby.data.frame <- function(
 	x,
 	cols,
 	eps = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -131,7 +131,7 @@ abandoned_baby.matrix <- function(
 	x,
 	cols,
 	eps = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	NextMethod()
@@ -145,7 +145,7 @@ abandoned_baby.plotly <- function(
 	x,
 	cols,
 	eps = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## check that input value
@@ -206,7 +206,7 @@ abandoned_baby.ggplot <- function(
 	x,
 	cols,
 	eps = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## check ggplot2 availability

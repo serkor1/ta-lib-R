@@ -27,7 +27,7 @@ dark_cloud_cover <- function(
 	x,
 	cols,
 	eps = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("dark_cloud_cover")
@@ -48,7 +48,7 @@ dark_cloud_cover.default <- function(
 	x,
 	cols,
 	eps = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## get candlestick pattern
@@ -93,7 +93,7 @@ dark_cloud_cover.default <- function(
 			constructed_series[[4]],
 			eps,
 			normalize,
-			as.logical(na.ignore)
+			as.logical(na.bridge)
 		)
 	)
 
@@ -115,7 +115,7 @@ dark_cloud_cover.data.frame <- function(
 	x,
 	cols,
 	eps = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -131,7 +131,7 @@ dark_cloud_cover.matrix <- function(
 	x,
 	cols,
 	eps = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	NextMethod()
@@ -145,7 +145,7 @@ dark_cloud_cover.plotly <- function(
 	x,
 	cols,
 	eps = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## check that input value
@@ -206,7 +206,7 @@ dark_cloud_cover.ggplot <- function(
 	x,
 	cols,
 	eps = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## check ggplot2 availability

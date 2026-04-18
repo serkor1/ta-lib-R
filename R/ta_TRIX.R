@@ -17,7 +17,7 @@ triple_exponential_average <- function(
 	x,
 	cols,
 	n = 30,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("triple_exponential_average")
@@ -38,7 +38,7 @@ triple_exponential_average.default <- function(
 	x,
 	cols,
 	n = 30,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -68,7 +68,7 @@ triple_exponential_average.default <- function(
 		constructed_series[[1]],
 		as.integer(n),
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -86,7 +86,7 @@ triple_exponential_average.data.frame <- function(
 	x,
 	cols,
 	n = 30,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -94,7 +94,7 @@ triple_exponential_average.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -108,14 +108,14 @@ triple_exponential_average.matrix <- function(
 	x,
 	cols,
 	n = 30,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	triple_exponential_average.default(
 		x = x,
 		cols = cols,
 		n = n,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -129,7 +129,7 @@ triple_exponential_average.numeric <- function(
 	x,
 	cols,
 	n = 30,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## warn if 'cols' have been
@@ -148,7 +148,7 @@ triple_exponential_average.numeric <- function(
 		as.double(x),
 		as.integer(n),
 		## splice:numeric:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## check if it has 'dims'
@@ -175,7 +175,7 @@ triple_exponential_average.plotly <- function(
 	x,
 	cols,
 	n = 30,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
@@ -208,7 +208,7 @@ triple_exponential_average.plotly <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator
@@ -268,7 +268,7 @@ triple_exponential_average.ggplot <- function(
 	x,
 	cols,
 	n = 30,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	title,
@@ -300,7 +300,7 @@ triple_exponential_average.ggplot <- function(
 			names(constructed_series)
 		),
 		n = n,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## the constructed indicator

@@ -32,7 +32,7 @@ extended_parabolic_stop_and_reverse <- function(
 	init_short = 0,
 	short = 0,
 	max_short = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	UseMethod("extended_parabolic_stop_and_reverse")
@@ -60,7 +60,7 @@ extended_parabolic_stop_and_reverse.default <- function(
 	init_short = 0,
 	short = 0,
 	max_short = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	## validate 'cols'-argument
@@ -98,7 +98,7 @@ extended_parabolic_stop_and_reverse.default <- function(
 		short,
 		max_short,
 		## splice:call:end
-		as.logical(na.ignore)
+		as.logical(na.bridge)
 	)
 
 	## readd rownames
@@ -123,7 +123,7 @@ extended_parabolic_stop_and_reverse.data.frame <- function(
 	init_short = 0,
 	short = 0,
 	max_short = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
@@ -138,7 +138,7 @@ extended_parabolic_stop_and_reverse.data.frame <- function(
 			init_short = init_short,
 			short = short,
 			max_short = max_short,
-			na.ignore = na.ignore,
+			na.bridge = na.bridge,
 			...
 		)
 	)
@@ -159,7 +159,7 @@ extended_parabolic_stop_and_reverse.matrix <- function(
 	init_short = 0,
 	short = 0,
 	max_short = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	...
 ) {
 	extended_parabolic_stop_and_reverse.default(
@@ -173,7 +173,7 @@ extended_parabolic_stop_and_reverse.matrix <- function(
 		init_short = init_short,
 		short = short,
 		max_short = max_short,
-		na.ignore = na.ignore,
+		na.bridge = na.bridge,
 		...
 	)
 }
@@ -194,7 +194,7 @@ extended_parabolic_stop_and_reverse.plotly <- function(
 	init_short = 0,
 	short = 0,
 	max_short = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	...
@@ -233,7 +233,7 @@ extended_parabolic_stop_and_reverse.plotly <- function(
 		init_short = init_short,
 		short = short,
 		max_short = max_short,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## add conditional idx
@@ -313,7 +313,7 @@ extended_parabolic_stop_and_reverse.ggplot <- function(
 	init_short = 0,
 	short = 0,
 	max_short = 0,
-	na.ignore = FALSE,
+	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	...
@@ -351,7 +351,7 @@ extended_parabolic_stop_and_reverse.ggplot <- function(
 		init_short = init_short,
 		short = short,
 		max_short = max_short,
-		na.ignore = TRUE
+		na.bridge = TRUE
 	)
 
 	## add conditional idx
