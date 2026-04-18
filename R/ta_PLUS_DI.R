@@ -16,7 +16,7 @@
 plus_directional_indicator <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -37,7 +37,7 @@ PLUS_DI <- plus_directional_indicator
 plus_directional_indicator.default <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -87,7 +87,7 @@ plus_directional_indicator.default <- function(
 plus_directional_indicator.data.frame <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -109,7 +109,7 @@ plus_directional_indicator.data.frame <- function(
 plus_directional_indicator.matrix <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -130,7 +130,7 @@ plus_directional_indicator.matrix <- function(
 plus_directional_indicator.plotly <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -225,7 +225,7 @@ plus_directional_indicator.plotly <- function(
 plus_directional_indicator.ggplot <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end

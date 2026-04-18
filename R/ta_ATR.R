@@ -16,7 +16,7 @@
 average_true_range <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -37,7 +37,7 @@ ATR <- average_true_range
 average_true_range.default <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -87,7 +87,7 @@ average_true_range.default <- function(
 average_true_range.data.frame <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -109,7 +109,7 @@ average_true_range.data.frame <- function(
 average_true_range.matrix <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -130,7 +130,7 @@ average_true_range.matrix <- function(
 average_true_range.plotly <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -225,7 +225,7 @@ average_true_range.plotly <- function(
 average_true_range.ggplot <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end

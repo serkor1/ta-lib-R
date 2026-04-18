@@ -16,7 +16,7 @@
 minus_directional_movement <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -37,7 +37,7 @@ MINUS_DM <- minus_directional_movement
 minus_directional_movement.default <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -86,7 +86,7 @@ minus_directional_movement.default <- function(
 minus_directional_movement.data.frame <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -108,7 +108,7 @@ minus_directional_movement.data.frame <- function(
 minus_directional_movement.matrix <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -129,7 +129,7 @@ minus_directional_movement.matrix <- function(
 minus_directional_movement.plotly <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -224,7 +224,7 @@ minus_directional_movement.plotly <- function(
 minus_directional_movement.ggplot <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end

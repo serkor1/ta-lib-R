@@ -16,7 +16,7 @@
 commodity_channel_index <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -37,7 +37,7 @@ CCI <- commodity_channel_index
 commodity_channel_index.default <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -87,7 +87,7 @@ commodity_channel_index.default <- function(
 commodity_channel_index.data.frame <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -109,7 +109,7 @@ commodity_channel_index.data.frame <- function(
 commodity_channel_index.matrix <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -130,7 +130,7 @@ commodity_channel_index.matrix <- function(
 commodity_channel_index.plotly <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = -100,
@@ -207,7 +207,7 @@ commodity_channel_index.plotly <- function(
 commodity_channel_index.ggplot <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end

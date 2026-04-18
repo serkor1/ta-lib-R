@@ -19,9 +19,9 @@
 absolute_price_oscillator <- function(
 	x,
 	cols,
-	fast = 7,
-	slow = 14,
-	ma = SMA(n = 10),
+	fast = 12,
+	slow = 26,
+	ma = SMA(n = 9),
 	na.ignore = FALSE,
 	...
 ) {
@@ -42,9 +42,9 @@ APO <- absolute_price_oscillator
 absolute_price_oscillator.default <- function(
 	x,
 	cols,
-	fast = 7,
-	slow = 14,
-	ma = SMA(n = 10),
+	fast = 12,
+	slow = 26,
+	ma = SMA(n = 9),
 	na.ignore = FALSE,
 	...
 ) {
@@ -94,9 +94,9 @@ absolute_price_oscillator.default <- function(
 absolute_price_oscillator.data.frame <- function(
 	x,
 	cols,
-	fast = 7,
-	slow = 14,
-	ma = SMA(n = 10),
+	fast = 12,
+	slow = 26,
+	ma = SMA(n = 9),
 	na.ignore = FALSE,
 	...
 ) {
@@ -120,9 +120,9 @@ absolute_price_oscillator.data.frame <- function(
 absolute_price_oscillator.matrix <- function(
 	x,
 	cols,
-	fast = 7,
-	slow = 14,
-	ma = SMA(n = 10),
+	fast = 12,
+	slow = 26,
+	ma = SMA(n = 9),
 	na.ignore = FALSE,
 	...
 ) {
@@ -145,9 +145,9 @@ absolute_price_oscillator.matrix <- function(
 absolute_price_oscillator.numeric <- function(
 	x,
 	cols,
-	fast = 7,
-	slow = 14,
-	ma = SMA(n = 10),
+	fast = 12,
+	slow = 26,
+	ma = SMA(n = 9),
 	na.ignore = FALSE,
 	...
 ) {
@@ -195,9 +195,9 @@ absolute_price_oscillator.numeric <- function(
 absolute_price_oscillator.plotly <- function(
 	x,
 	cols,
-	fast = 7,
-	slow = 14,
-	ma = SMA(n = 10),
+	fast = 12,
+	slow = 26,
+	ma = SMA(n = 9),
 	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -301,9 +301,9 @@ absolute_price_oscillator.plotly <- function(
 absolute_price_oscillator.ggplot <- function(
 	x,
 	cols,
-	fast = 7,
-	slow = 14,
-	ma = SMA(n = 10),
+	fast = 12,
+	slow = 26,
+	ma = SMA(n = 9),
 	na.ignore = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end

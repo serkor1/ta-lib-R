@@ -16,7 +16,7 @@
 williams_oscillator <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -37,7 +37,7 @@ WILLR <- williams_oscillator
 williams_oscillator.default <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -87,7 +87,7 @@ williams_oscillator.default <- function(
 williams_oscillator.data.frame <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -109,7 +109,7 @@ williams_oscillator.data.frame <- function(
 williams_oscillator.matrix <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -130,7 +130,7 @@ williams_oscillator.matrix <- function(
 williams_oscillator.plotly <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = -20,
@@ -233,7 +233,7 @@ williams_oscillator.plotly <- function(
 williams_oscillator.ggplot <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end

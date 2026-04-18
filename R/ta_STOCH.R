@@ -20,8 +20,8 @@ stochastic <- function(
 	x,
 	cols,
 	fastk = 5,
-	slowk = SMA(n = 10),
-	slowd = SMA(n = 8),
+	slowk = SMA(n = 3),
+	slowd = SMA(n = 3),
 	na.ignore = FALSE,
 	...
 ) {
@@ -43,8 +43,8 @@ stochastic.default <- function(
 	x,
 	cols,
 	fastk = 5,
-	slowk = SMA(n = 10),
-	slowd = SMA(n = 8),
+	slowk = SMA(n = 3),
+	slowd = SMA(n = 3),
 	na.ignore = FALSE,
 	...
 ) {
@@ -99,8 +99,8 @@ stochastic.data.frame <- function(
 	x,
 	cols,
 	fastk = 5,
-	slowk = SMA(n = 10),
-	slowd = SMA(n = 8),
+	slowk = SMA(n = 3),
+	slowd = SMA(n = 3),
 	na.ignore = FALSE,
 	...
 ) {
@@ -125,8 +125,8 @@ stochastic.matrix <- function(
 	x,
 	cols,
 	fastk = 5,
-	slowk = SMA(n = 10),
-	slowd = SMA(n = 8),
+	slowk = SMA(n = 3),
+	slowd = SMA(n = 3),
 	na.ignore = FALSE,
 	...
 ) {
@@ -150,8 +150,8 @@ stochastic.plotly <- function(
 	x,
 	cols,
 	fastk = 5,
-	slowk = SMA(n = 10),
-	slowd = SMA(n = 8),
+	slowk = SMA(n = 3),
+	slowd = SMA(n = 3),
 	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 20,
@@ -261,8 +261,8 @@ stochastic.ggplot <- function(
 	x,
 	cols,
 	fastk = 5,
-	slowk = SMA(n = 10),
-	slowd = SMA(n = 8),
+	slowk = SMA(n = 3),
+	slowd = SMA(n = 3),
 	na.ignore = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end

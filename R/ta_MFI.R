@@ -16,7 +16,7 @@
 money_flow_index <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -37,7 +37,7 @@ MFI <- money_flow_index
 money_flow_index.default <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -88,7 +88,7 @@ money_flow_index.default <- function(
 money_flow_index.data.frame <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -110,7 +110,7 @@ money_flow_index.data.frame <- function(
 money_flow_index.matrix <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -131,7 +131,7 @@ money_flow_index.matrix <- function(
 money_flow_index.plotly <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = -20,
@@ -233,7 +233,7 @@ money_flow_index.plotly <- function(
 money_flow_index.ggplot <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end

@@ -146,7 +146,12 @@ indicator.function <- function(FUN, ...) {
 				match.call()[["data"]]
 			)
 		} else {
-			stop("'data'-argument has to be provided.")
+			stop(
+				"'data' must be supplied when calling indicator() ",
+				"without first calling chart(). ",
+				"Example: indicator(RSI, data = BTC).",
+				call. = FALSE
+			)
 		}
 
 		## create an empty chart object
@@ -154,7 +159,10 @@ indicator.function <- function(FUN, ...) {
 		backend <- getOption("talib.chart.backend", "plotly")
 		plt <- switch(
 			backend,
-			plotly = plotly::plot_ly(),
+			plotly = {
+				assert_plotly_pkg()
+				plotly::plot_ly()
+			},
 			ggplot2 = {
 				assert_ggplot2()
 				ggplot2::ggplot()
@@ -193,7 +201,13 @@ indicator.function <- function(FUN, ...) {
 
 	## verify return type
 	if (!inherits(outcome, c("plotly", "gg"))) {
-		stop("Unexpected error.")
+		stop(
+			"indicator() expected FUN to return a 'plotly' or 'gg' object, ",
+			"got ",
+			paste(class(outcome), collapse = "/"),
+			".",
+			call. = FALSE
+		)
 	}
 
 	if (chart_called) {
@@ -399,7 +413,7 @@ merge_subchart_ggplot <- function(from, to) {
 	legend_names <- unique(legend_names)
 
 	if (length(legend_names) > 0L) {
-		color_map <- setNames(
+		color_map <- .set_names(
 			colorway[seq_along(legend_names)],
 			legend_names
 		)
@@ -591,6 +605,13 @@ assemble_ggplot2 <- function() {
 ## uses grid viewports for proportional panel heights
 #' @export
 print.talib_chart <- function(x, ...) {
+	## avoid Rplots.pdf when no device is open
+	## (e.g., R CMD check, tests, vignette knit)
+	if (grDevices::dev.cur() == 1L) {
+		grDevices::pdf(nullfile())
+		on.exit(grDevices::dev.off(), add = TRUE)
+	}
+
 	grid::grid.newpage()
 
 	layout <- grid::grid.layout(

@@ -14,6 +14,18 @@ assert_ggplot2 <- function() {
 	}
 }
 
+assert_plotly_pkg <- function() {
+	if (!requireNamespace("plotly", quietly = TRUE)) {
+		stop(
+			"Package 'plotly' is required for the plotly backend. ",
+			"Install it with install.packages('plotly'), ",
+			"or set options(talib.chart.backend = 'ggplot2') ",
+			"to use the ggplot2 backend instead.",
+			call. = FALSE
+		)
+	}
+}
+
 ## ---- chart creation ----
 
 ## build a candlestick or OHLC chart
@@ -40,7 +52,7 @@ chart_ggplot2 <- function(
 	p <- ggplot2::ggplot(
 		data,
 		ggplot2::aes(
-			x = .data[[".chart_pos"]]
+			x = !!as.name(".chart_pos")
 		)
 	)
 
@@ -50,10 +62,10 @@ chart_ggplot2 <- function(
 	bear <- data[data$direction == "bear", ]
 
 	candle_aes <- ggplot2::aes(
-		xmin = .data[[".chart_pos"]] - 0.4,
-		xmax = .data[[".chart_pos"]] + 0.4,
-		ymin = pmin(.data[["open"]], .data[["close"]]),
-		ymax = pmax(.data[["open"]], .data[["close"]])
+		xmin = !!as.name(".chart_pos") - 0.4,
+		xmax = !!as.name(".chart_pos") + 0.4,
+		ymin = pmin(!!as.name("open"), !!as.name("close")),
+		ymax = pmax(!!as.name("open"), !!as.name("close"))
 	)
 
 	if (type == "candlestick") {
@@ -68,9 +80,9 @@ chart_ggplot2 <- function(
 					ggplot2::geom_segment(
 						data = side$d,
 						ggplot2::aes(
-							xend = .data[[".chart_pos"]],
-							y = .data[["low"]],
-							yend = .data[["high"]]
+							xend = !!as.name(".chart_pos"),
+							y = !!as.name("low"),
+							yend = !!as.name("high")
 						),
 						color = side$col,
 						linewidth = 0.4
@@ -116,9 +128,9 @@ chart_ggplot2 <- function(
 					ggplot2::geom_segment(
 						data = side$d,
 						ggplot2::aes(
-							xend = .data[[".chart_pos"]],
-							y = .data[["low"]],
-							yend = .data[["high"]]
+							xend = !!as.name(".chart_pos"),
+							y = !!as.name("low"),
+							yend = !!as.name("high")
 						),
 						color = side$col,
 						linewidth = 0.5
@@ -129,10 +141,10 @@ chart_ggplot2 <- function(
 					ggplot2::geom_segment(
 						data = side$d,
 						ggplot2::aes(
-							x = .data[[".chart_pos"]] - 0.3,
-							xend = .data[[".chart_pos"]],
-							y = .data[["open"]],
-							yend = .data[["open"]]
+							x = !!as.name(".chart_pos") - 0.3,
+							xend = !!as.name(".chart_pos"),
+							y = !!as.name("open"),
+							yend = !!as.name("open")
 						),
 						color = side$col,
 						linewidth = 0.5
@@ -143,10 +155,10 @@ chart_ggplot2 <- function(
 					ggplot2::geom_segment(
 						data = side$d,
 						ggplot2::aes(
-							x = .data[[".chart_pos"]],
-							xend = .data[[".chart_pos"]] + 0.3,
-							y = .data[["close"]],
-							yend = .data[["close"]]
+							x = !!as.name(".chart_pos"),
+							xend = !!as.name(".chart_pos") + 0.3,
+							y = !!as.name("close"),
+							yend = !!as.name("close")
 						),
 						color = side$col,
 						linewidth = 0.5

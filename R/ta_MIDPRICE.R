@@ -16,7 +16,7 @@
 midpoint_price <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -37,7 +37,7 @@ MIDPRICE <- midpoint_price
 midpoint_price.default <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -86,7 +86,7 @@ midpoint_price.default <- function(
 midpoint_price.data.frame <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -108,7 +108,7 @@ midpoint_price.data.frame <- function(
 midpoint_price.matrix <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {

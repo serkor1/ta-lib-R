@@ -16,7 +16,7 @@
 chande_momentum_oscillator <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -37,7 +37,7 @@ CMO <- chande_momentum_oscillator
 chande_momentum_oscillator.default <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -85,7 +85,7 @@ chande_momentum_oscillator.default <- function(
 chande_momentum_oscillator.data.frame <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -107,7 +107,7 @@ chande_momentum_oscillator.data.frame <- function(
 chande_momentum_oscillator.matrix <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -128,7 +128,7 @@ chande_momentum_oscillator.matrix <- function(
 chande_momentum_oscillator.numeric <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -174,7 +174,7 @@ chande_momentum_oscillator.numeric <- function(
 chande_momentum_oscillator.plotly <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = -50,
@@ -285,7 +285,7 @@ chande_momentum_oscillator.plotly <- function(
 chande_momentum_oscillator.ggplot <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end

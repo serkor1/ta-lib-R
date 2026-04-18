@@ -16,7 +16,7 @@
 acceleration_bands <- function(
 	x,
 	cols,
-	n = 10,
+	n = 20,
 	na.ignore = FALSE,
 	...
 ) {
@@ -37,7 +37,7 @@ ACCBANDS <- acceleration_bands
 acceleration_bands.default <- function(
 	x,
 	cols,
-	n = 10,
+	n = 20,
 	na.ignore = FALSE,
 	...
 ) {
@@ -87,7 +87,7 @@ acceleration_bands.default <- function(
 acceleration_bands.data.frame <- function(
 	x,
 	cols,
-	n = 10,
+	n = 20,
 	na.ignore = FALSE,
 	...
 ) {
@@ -109,7 +109,7 @@ acceleration_bands.data.frame <- function(
 acceleration_bands.matrix <- function(
 	x,
 	cols,
-	n = 10,
+	n = 20,
 	na.ignore = FALSE,
 	...
 ) {
@@ -130,7 +130,7 @@ acceleration_bands.matrix <- function(
 acceleration_bands.plotly <- function(
 	x,
 	cols,
-	n = 10,
+	n = 20,
 	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	color = "steelblue",
@@ -233,7 +233,7 @@ acceleration_bands.plotly <- function(
 acceleration_bands.ggplot <- function(
 	x,
 	cols,
-	n = 10,
+	n = 20,
 	na.ignore = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end

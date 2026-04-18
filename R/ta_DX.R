@@ -16,7 +16,7 @@
 directional_movement_index <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -37,7 +37,7 @@ DX <- directional_movement_index
 directional_movement_index.default <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -87,7 +87,7 @@ directional_movement_index.default <- function(
 directional_movement_index.data.frame <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -109,7 +109,7 @@ directional_movement_index.data.frame <- function(
 directional_movement_index.matrix <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -130,7 +130,7 @@ directional_movement_index.matrix <- function(
 directional_movement_index.plotly <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -234,7 +234,7 @@ directional_movement_index.plotly <- function(
 directional_movement_index.ggplot <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end

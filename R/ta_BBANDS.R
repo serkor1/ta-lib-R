@@ -20,7 +20,7 @@
 bollinger_bands <- function(
 	x,
 	cols,
-	ma = SMA(n = 10),
+	ma = SMA(n = 5),
 	sd = 2,
 	sd_down,
 	sd_up,
@@ -44,7 +44,7 @@ BBANDS <- bollinger_bands
 bollinger_bands.default <- function(
 	x,
 	cols,
-	ma = SMA(n = 10),
+	ma = SMA(n = 5),
 	sd = 2,
 	sd_down,
 	sd_up,
@@ -98,7 +98,7 @@ bollinger_bands.default <- function(
 bollinger_bands.data.frame <- function(
 	x,
 	cols,
-	ma = SMA(n = 10),
+	ma = SMA(n = 5),
 	sd = 2,
 	sd_down,
 	sd_up,
@@ -126,7 +126,7 @@ bollinger_bands.data.frame <- function(
 bollinger_bands.matrix <- function(
 	x,
 	cols,
-	ma = SMA(n = 10),
+	ma = SMA(n = 5),
 	sd = 2,
 	sd_down,
 	sd_up,
@@ -153,7 +153,7 @@ bollinger_bands.matrix <- function(
 bollinger_bands.numeric <- function(
 	x,
 	cols,
-	ma = SMA(n = 10),
+	ma = SMA(n = 5),
 	sd = 2,
 	sd_down,
 	sd_up,
@@ -205,7 +205,7 @@ bollinger_bands.numeric <- function(
 bollinger_bands.plotly <- function(
 	x,
 	cols,
-	ma = SMA(n = 10),
+	ma = SMA(n = 5),
 	sd = 2,
 	sd_down,
 	sd_up,
@@ -328,7 +328,7 @@ bollinger_bands.plotly <- function(
 bollinger_bands.ggplot <- function(
 	x,
 	cols,
-	ma = SMA(n = 10),
+	ma = SMA(n = 5),
 	sd = 2,
 	sd_down,
 	sd_up,

@@ -16,7 +16,7 @@
 aroon_oscillator <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -37,7 +37,7 @@ AROONOSC <- aroon_oscillator
 aroon_oscillator.default <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -86,7 +86,7 @@ aroon_oscillator.default <- function(
 aroon_oscillator.data.frame <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -108,7 +108,7 @@ aroon_oscillator.data.frame <- function(
 aroon_oscillator.matrix <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -129,7 +129,7 @@ aroon_oscillator.matrix <- function(
 aroon_oscillator.plotly <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -229,7 +229,7 @@ aroon_oscillator.plotly <- function(
 aroon_oscillator.ggplot <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end

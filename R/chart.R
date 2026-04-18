@@ -177,13 +177,16 @@ chart.default <- function(
 
 	switch(
 		backend,
-		plotly = chart_plotly(
-			data = x,
-			type = type,
-			title = chart_title,
-			idx = idx,
-			...
-		),
+		plotly = {
+			assert_plotly_pkg()
+			chart_plotly(
+				data = x,
+				type = type,
+				title = chart_title,
+				idx = idx,
+				...
+			)
+		},
 		ggplot2 = chart_ggplot2(
 			data = x,
 			type = type,

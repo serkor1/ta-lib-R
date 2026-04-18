@@ -106,6 +106,21 @@ assert_column_names <- function(formula, available_variables) {
 	}
 }
 
+## small base-R replacements - kept internal
+## to avoid Imports on utils/stats just for these
+.tail <- function(x, n = 1L) {
+	len <- length(x)
+	if (len == 0L) {
+		return(x)
+	}
+	x[seq.int(max(1L, len - n + 1L), len)]
+}
+
+.set_names <- function(x, nm) {
+	names(x) <- nm
+	x
+}
+
 ## class related utility
 ## functions
 is.formula <- function(x) {

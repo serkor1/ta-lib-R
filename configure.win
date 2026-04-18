@@ -189,10 +189,10 @@ if ! cmake -S "$TA_SRC" -B "$BUILDROOT/cmake" -G "$GEN" \
   -DBUILD_SHARED_LIBS=OFF \
   -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
   -DCMAKE_C_FLAGS="-w" -DCMAKE_CXX_FLAGS="-w" \
-  -DCMAKE_C_FLAGS_RELEASE="-O3 -march=native -fPIC" \
+  -DCMAKE_C_FLAGS_RELEASE="-fPIC" \
   -DBUILD_DEV_TOOLS=OFF
 then
-  rm -rf "$BUILDROOT/cmake" 
+  rm -rf "$BUILDROOT/cmake"
   GEN="MSYS Makefiles"
   if ! cmake -S "$TA_SRC" -B "$BUILDROOT/cmake" -G "$GEN" \
     -DCMAKE_BUILD_TYPE=Release \
@@ -200,7 +200,7 @@ then
     -DBUILD_SHARED_LIBS=OFF \
     -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
     -DCMAKE_C_FLAGS="-w" -DCMAKE_CXX_FLAGS="-w" \
-    -DCMAKE_C_FLAGS_RELEASE="-O3 -march=native -fPIC" \
+    -DCMAKE_C_FLAGS_RELEASE="-fPIC" \
     -DBUILD_DEV_TOOLS=OFF
   then
     echo

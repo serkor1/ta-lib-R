@@ -66,6 +66,9 @@ print_init() {
 void R_init_talib(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
+    /* R_forceSymbols(dll, TRUE) intentionally omitted: every .Call()
+     * in this package uses string-based lookup. Switching requires
+     * a coordinated refactor to symbol-object lookup. */
 }
 EOF
 }

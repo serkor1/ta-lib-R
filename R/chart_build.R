@@ -4,22 +4,9 @@
 
 ## ---- plotly builder ----
 
-#' @title build_plotly
-#'
-#' @description
-#' A high-level <plotly> builder for the <plotly>-methods.
-#'
-#' @param init A <plotly>-object to be built, or built upon.
-#' @param traces A nested <[list]> of <plotly> arguments.
-#' @param decorators A <[list]> of functions that decorates the <plotly>-objecty. Can be an empty <[list]>.
-#' @param name A <[character]>-vector of [length] 1. The name of the indicator; relevant mainly for univariate series.
-#' @param data A <[data.frame]> with the calculated indicator.
-#' @param title A <[character]>-vector of [length] 1. This adds a title to the subchart.
-#'
-#' @returns
-#' A <plotly>-object
-#'
-#' @keywords internal
+## A high-level <plotly> builder for the <plotly>-methods.
+## Internal helper - not exposed via Rd.
+#' @noRd
 build_plotly <- function(
 	init,
 	traces,
@@ -237,7 +224,7 @@ build_ggplot <- function(
 				y_lower <- layer$y_lower
 				ribbon_color <- layer[["color"]] %nn%
 					if (length(color_map) > 0L) {
-						unname(tail(color_map, 1L))
+						unname(.tail(color_map, 1L))
 					} else {
 						colorway[1L]
 					}
@@ -254,9 +241,9 @@ build_ggplot <- function(
 					ggplot2::geom_ribbon(
 						data = data,
 						ggplot2::aes(
-							x = .data[[".chart_pos"]],
-							ymin = .data[[y_lower]],
-							ymax = .data[[y_upper]]
+							x = !!as.name(".chart_pos"),
+							ymin = !!as.name(y_lower),
+							ymax = !!as.name(y_upper)
 						),
 						fill = ribbon_color,
 						alpha = ribbon_alpha,
@@ -289,9 +276,9 @@ build_ggplot <- function(
 						ggplot2::geom_line(
 							data = layer_data,
 							ggplot2::aes(
-								x = .data[[".chart_pos"]],
-								y = .data[[y_col]],
-								colour = .data[[".legend"]]
+								x = !!as.name(".chart_pos"),
+								y = !!as.name(y_col),
+								colour = !!as.name(".legend")
 							),
 							linewidth = 0.5,
 							na.rm = TRUE
@@ -304,9 +291,9 @@ build_ggplot <- function(
 							ggplot2::geom_col(
 								data = data,
 								ggplot2::aes(
-									x = .data[[".chart_pos"]],
-									y = .data[[y_col]],
-									fill = .data[[layer$direction]]
+									x = !!as.name(".chart_pos"),
+									y = !!as.name(y_col),
+									fill = !!as.name(layer$direction)
 								),
 								width = 0.8,
 								na.rm = TRUE
@@ -338,8 +325,8 @@ build_ggplot <- function(
 							ggplot2::geom_col(
 								data = data,
 								ggplot2::aes(
-									x = .data[[".chart_pos"]],
-									y = .data[[y_col]]
+									x = !!as.name(".chart_pos"),
+									y = !!as.name(y_col)
 								),
 								fill = line_color,
 								width = 0.8,
@@ -351,9 +338,9 @@ build_ggplot <- function(
 						ggplot2::geom_point(
 							data = layer_data,
 							ggplot2::aes(
-								x = .data[[".chart_pos"]],
-								y = .data[[y_col]],
-								colour = .data[[".legend"]]
+								x = !!as.name(".chart_pos"),
+								y = !!as.name(y_col),
+								colour = !!as.name(".legend")
 							),
 							size = 6 * 25.4 / 96,
 							na.rm = TRUE

@@ -19,7 +19,7 @@ fast_stochastic <- function(
 	x,
 	cols,
 	fastk = 5,
-	fastd = SMA(n = 10),
+	fastd = SMA(n = 3),
 	na.ignore = FALSE,
 	...
 ) {
@@ -41,7 +41,7 @@ fast_stochastic.default <- function(
 	x,
 	cols,
 	fastk = 5,
-	fastd = SMA(n = 10),
+	fastd = SMA(n = 3),
 	na.ignore = FALSE,
 	...
 ) {
@@ -94,7 +94,7 @@ fast_stochastic.data.frame <- function(
 	x,
 	cols,
 	fastk = 5,
-	fastd = SMA(n = 10),
+	fastd = SMA(n = 3),
 	na.ignore = FALSE,
 	...
 ) {
@@ -118,7 +118,7 @@ fast_stochastic.matrix <- function(
 	x,
 	cols,
 	fastk = 5,
-	fastd = SMA(n = 10),
+	fastd = SMA(n = 3),
 	na.ignore = FALSE,
 	...
 ) {
@@ -141,7 +141,7 @@ fast_stochastic.plotly <- function(
 	x,
 	cols,
 	fastk = 5,
-	fastd = SMA(n = 10),
+	fastd = SMA(n = 3),
 	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 20,
@@ -248,7 +248,7 @@ fast_stochastic.ggplot <- function(
 	x,
 	cols,
 	fastk = 5,
-	fastd = SMA(n = 10),
+	fastd = SMA(n = 3),
 	na.ignore = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end

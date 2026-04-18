@@ -19,10 +19,10 @@
 stochastic_relative_strength_index <- function(
 	x,
 	cols,
-	n = 10,
-	n_rsi = 10,
+	n = 14,
+	n_rsi = 14,
 	fastk = 5,
-	fastd = SMA(n = 10),
+	fastd = SMA(n = 3),
 	na.ignore = FALSE,
 	...
 ) {
@@ -43,10 +43,10 @@ STOCHRSI <- stochastic_relative_strength_index
 stochastic_relative_strength_index.default <- function(
 	x,
 	cols,
-	n = 10,
-	n_rsi = 10,
+	n = 14,
+	n_rsi = 14,
 	fastk = 5,
-	fastd = SMA(n = 10),
+	fastd = SMA(n = 3),
 	na.ignore = FALSE,
 	...
 ) {
@@ -106,10 +106,10 @@ stochastic_relative_strength_index.default <- function(
 stochastic_relative_strength_index.data.frame <- function(
 	x,
 	cols,
-	n = 10,
-	n_rsi = 10,
+	n = 14,
+	n_rsi = 14,
 	fastk = 5,
-	fastd = SMA(n = 10),
+	fastd = SMA(n = 3),
 	na.ignore = FALSE,
 	...
 ) {
@@ -134,10 +134,10 @@ stochastic_relative_strength_index.data.frame <- function(
 stochastic_relative_strength_index.matrix <- function(
 	x,
 	cols,
-	n = 10,
-	n_rsi = 10,
+	n = 14,
+	n_rsi = 14,
 	fastk = 5,
-	fastd = SMA(n = 10),
+	fastd = SMA(n = 3),
 	na.ignore = FALSE,
 	...
 ) {
@@ -161,10 +161,10 @@ stochastic_relative_strength_index.matrix <- function(
 stochastic_relative_strength_index.plotly <- function(
 	x,
 	cols,
-	n = 10,
-	n_rsi = 10,
+	n = 14,
+	n_rsi = 14,
 	fastk = 5,
-	fastd = SMA(n = 10),
+	fastd = SMA(n = 3),
 	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 20,
@@ -271,10 +271,10 @@ stochastic_relative_strength_index.plotly <- function(
 stochastic_relative_strength_index.ggplot <- function(
 	x,
 	cols,
-	n = 10,
-	n_rsi = 10,
+	n = 14,
+	n_rsi = 14,
 	fastk = 5,
-	fastd = SMA(n = 10),
+	fastd = SMA(n = 3),
 	na.ignore = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end

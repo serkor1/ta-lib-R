@@ -16,7 +16,7 @@
 triple_exponential_average <- function(
 	x,
 	cols,
-	n = 10,
+	n = 30,
 	na.ignore = FALSE,
 	...
 ) {
@@ -37,7 +37,7 @@ TRIX <- triple_exponential_average
 triple_exponential_average.default <- function(
 	x,
 	cols,
-	n = 10,
+	n = 30,
 	na.ignore = FALSE,
 	...
 ) {
@@ -85,7 +85,7 @@ triple_exponential_average.default <- function(
 triple_exponential_average.data.frame <- function(
 	x,
 	cols,
-	n = 10,
+	n = 30,
 	na.ignore = FALSE,
 	...
 ) {
@@ -107,7 +107,7 @@ triple_exponential_average.data.frame <- function(
 triple_exponential_average.matrix <- function(
 	x,
 	cols,
-	n = 10,
+	n = 30,
 	na.ignore = FALSE,
 	...
 ) {
@@ -128,7 +128,7 @@ triple_exponential_average.matrix <- function(
 triple_exponential_average.numeric <- function(
 	x,
 	cols,
-	n = 10,
+	n = 30,
 	na.ignore = FALSE,
 	...
 ) {
@@ -174,7 +174,7 @@ triple_exponential_average.numeric <- function(
 triple_exponential_average.plotly <- function(
 	x,
 	cols,
-	n = 10,
+	n = 30,
 	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -269,7 +269,7 @@ triple_exponential_average.plotly <- function(
 triple_exponential_average.ggplot <- function(
 	x,
 	cols,
-	n = 10,
+	n = 30,
 	na.ignore = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end

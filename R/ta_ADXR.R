@@ -16,7 +16,7 @@
 average_directional_movement_index_rating <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -37,7 +37,7 @@ ADXR <- average_directional_movement_index_rating
 average_directional_movement_index_rating.default <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -87,7 +87,7 @@ average_directional_movement_index_rating.default <- function(
 average_directional_movement_index_rating.data.frame <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -109,7 +109,7 @@ average_directional_movement_index_rating.data.frame <- function(
 average_directional_movement_index_rating.matrix <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -130,7 +130,7 @@ average_directional_movement_index_rating.matrix <- function(
 average_directional_movement_index_rating.plotly <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 25,
@@ -238,7 +238,7 @@ average_directional_movement_index_rating.plotly <- function(
 average_directional_movement_index_rating.ggplot <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end

@@ -16,7 +16,7 @@
 relative_strength_index <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -37,7 +37,7 @@ RSI <- relative_strength_index
 relative_strength_index.default <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -85,7 +85,7 @@ relative_strength_index.default <- function(
 relative_strength_index.data.frame <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -107,7 +107,7 @@ relative_strength_index.data.frame <- function(
 relative_strength_index.matrix <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -128,7 +128,7 @@ relative_strength_index.matrix <- function(
 relative_strength_index.numeric <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	...
 ) {
@@ -174,7 +174,7 @@ relative_strength_index.numeric <- function(
 relative_strength_index.plotly <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 20,
@@ -280,7 +280,7 @@ relative_strength_index.plotly <- function(
 relative_strength_index.ggplot <- function(
 	x,
 	cols,
-	n = 10,
+	n = 14,
 	na.ignore = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end

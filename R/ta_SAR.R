@@ -18,8 +18,8 @@
 parabolic_stop_and_reverse <- function(
 	x,
 	cols,
-	acceleration = 0.5,
-	maximum = 0.75,
+	acceleration = 0.02,
+	maximum = 0.2,
 	na.ignore = FALSE,
 	...
 ) {
@@ -40,8 +40,8 @@ SAR <- parabolic_stop_and_reverse
 parabolic_stop_and_reverse.default <- function(
 	x,
 	cols,
-	acceleration = 0.5,
-	maximum = 0.75,
+	acceleration = 0.02,
+	maximum = 0.2,
 	na.ignore = FALSE,
 	...
 ) {
@@ -91,8 +91,8 @@ parabolic_stop_and_reverse.default <- function(
 parabolic_stop_and_reverse.data.frame <- function(
 	x,
 	cols,
-	acceleration = 0.5,
-	maximum = 0.75,
+	acceleration = 0.02,
+	maximum = 0.2,
 	na.ignore = FALSE,
 	...
 ) {
@@ -115,8 +115,8 @@ parabolic_stop_and_reverse.data.frame <- function(
 parabolic_stop_and_reverse.matrix <- function(
 	x,
 	cols,
-	acceleration = 0.5,
-	maximum = 0.75,
+	acceleration = 0.02,
+	maximum = 0.2,
 	na.ignore = FALSE,
 	...
 ) {
@@ -138,8 +138,8 @@ parabolic_stop_and_reverse.matrix <- function(
 parabolic_stop_and_reverse.plotly <- function(
 	x,
 	cols,
-	acceleration = 0.5,
-	maximum = 0.75,
+	acceleration = 0.02,
+	maximum = 0.2,
 	na.ignore = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -243,8 +243,8 @@ parabolic_stop_and_reverse.plotly <- function(
 parabolic_stop_and_reverse.ggplot <- function(
 	x,
 	cols,
-	acceleration = 0.5,
-	maximum = 0.75,
+	acceleration = 0.02,
+	maximum = 0.2,
 	na.ignore = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
