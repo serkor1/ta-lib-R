@@ -105,17 +105,22 @@
 ## threshold line color
 .chart_variables$threshold_color <- "#5A6270"
 
-## actions on attach
-## and load
+## package hooks
+##
+## .onLoad initializes TA-Lib when the namespace is loaded (including via
+## `::` without attach). .onAttach only emits the startup banner; the C
+## initializer lives in .onLoad to avoid running TA_Initialize twice on
+## library(talib).
+##
+## Symmetrically, teardown lives in .onUnload only. A bare detach()
+## leaves the namespace loaded, so resetting candle settings / shutting
+## down TA-Lib there would strand a half-initialized library; .onUnload
+## fires exactly when the namespace is truly gone.
 .onAttach <- function(
 	libname,
 	pkgname,
 	...
 ) {
-	## initialize TA-Lib
-	## on attach
-	.Call(C_initialize_ta_lib)
-
 	## startup message when
 	## library(talib)
 	packageStartupMessage(
@@ -136,21 +141,6 @@
 	## initialize TA-Lib
 	## on load
 	.Call(C_initialize_ta_lib)
-}
-
-## actions on attach
-## and unload
-.onDetach <- function(
-	libpath,
-	...
-) {
-	## reset candles on
-	## detach
-	.Call(C_reset_candle_setting)
-
-	## shutdown TA-Lib
-	## on detach
-	.Call(C_shutdown_ta_lib)
 }
 
 .onUnload <- function(

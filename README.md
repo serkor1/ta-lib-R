@@ -184,7 +184,7 @@ ecosystem:
 | Volume Indicators     | `TA_OBV()`           | `on_balance_volume()`       |
 | Volatility Indicators | `TA_ATR()`           | `average_true_range()`      |
 | Price Transform       | `TA_AVGPRICE()`      | `average_price()`           |
-| Cycle Indicators      | `TA_HT_SINE()`       | `ht_sine_wave()`            |
+| Cycle Indicators      | `TA_HT_SINE()`       | `sine_wave()`               |
 | Pattern Recognition   | `TA_CDLHANGINGMAN()` | `hanging_man()`             |
 
 </div>

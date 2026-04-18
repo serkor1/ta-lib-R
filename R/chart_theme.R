@@ -396,7 +396,7 @@ NULL
 			.chart_variables[[nm]] <- spec[[nm]]
 		}
 	}
-	invisible(.chart_variables)
+	invisible(NULL)
 }
 
 #' Set or List Chart Themes
@@ -451,8 +451,8 @@ NULL
 #'
 #' @returns
 #' When called without arguments, a [character] vector of available theme
-#' names. Otherwise, invisibly returns the internal theme environment after
-#' modification.
+#' names. Otherwise, invisibly returns `NULL`; the theme is applied as a
+#' side effect to the internal chart-variables state.
 #'
 #' @seealso [chart_themes] for descriptions of each theme, [chart()] for
 #'   creating charts.
@@ -477,7 +477,7 @@ set_theme <- local({
 			.apply_chart_theme(overrides)
 		}
 
-		invisible(.chart_variables)
+		invisible(NULL)
 	}
 	class(f) <- c("chart_theme", class(f))
 	f
