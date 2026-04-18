@@ -218,8 +218,9 @@ $FUN.plotly <- function(
 	)
 
 	## construct {plotly}-object
-	plotly_object <- .chart_environment[["main"]] <- build_plotly(
-		init = .chart_environment[["main"]],
+	state <- .chart_state()
+	plotly_object <- build_plotly(
+		init = state[["main"]],
 		traces = list(
 			list(y = ~constructed_indicator[["$ALIAS"]][-(1:attr(constructed_indicator, "lookback", TRUE))],
 		legendgroup = "MovingAverage",
@@ -231,6 +232,7 @@ $FUN.plotly <- function(
 		name = sprintf("$ALIAS(%d)", n),
 		decorators = list()
 	)
+	state[["main"]] <- plotly_object
 
 	plotly_object
  }

@@ -58,6 +58,30 @@
 #' Colors are controlled via [set_theme()]. See [set_theme()] for available
 #' themes and color customization.
 #'
+#' ## State and concurrency
+#'
+#' The `chart()` + [indicator()] pair follows the same active-target
+#' model as base R's [plot()] / [lines()]. When `chart()` is called it
+#' stashes a per-pipeline state object in its caller's evaluation frame;
+#' subsequent [indicator()] calls retrieve the state by walking up the
+#' call stack.
+#'
+#' The practical consequences:
+#'
+#' - `chart()` and the subsequent [indicator()] calls must live in the
+#'   **same enclosing frame** - the same REPL session, the same function
+#'   body, the same `renderPlot()` / `renderPlotly()` block, the same
+#'   `local({...})` expression, the same `testthat::test_that({...})`
+#'   block, etc. Splitting them across unrelated helpers is not
+#'   supported.
+#' - Two unrelated function bodies (or two parallel `renderPlot()`
+#'   callbacks in a Shiny app, or two `future::future()` blocks) each
+#'   get their own frame, so their chart states are isolated by
+#'   construction - without `talib` taking any dependency on Shiny,
+#'   promises, or futures.
+#' - Calling `chart()` with no arguments clears the state in the
+#'   caller's frame, mirroring a fresh `plot()` call on a new device.
+#'
 #' @param x An OHLC-V [data.frame] (or object coercible to one) with columns
 #'   named `open`, `high`, `low`, `close`, and optionally `volume`. Column
 #'   names are case-sensitive.
@@ -95,14 +119,10 @@ chart <- function(
 	title,
 	...
 ) {
-	## clear env if called
+	## clear state if called
 	## without passing 'x'
 	if (missing(x)) {
-		rm(
-			list = ls(envir = .chart_environment, all.names = TRUE),
-			envir = .chart_environment
-		)
-
+		.chart_state_reset(envir = parent.frame())
 		return(invisible(NULL))
 	}
 
@@ -139,12 +159,15 @@ chart.default <- function(
 	} else {
 		chart_title <- title
 	}
-	## reset subchart and user-facing chart lists
-	.chart_environment$sub <- .chart_environment$chart <- list()
 
-	## convert input to data.frame and
-	## store in .chart_environment to avoid
-	## having to pass OHLC on every call
+	## create a fresh per-pipeline state env in the user's frame.
+	## With UseMethod dispatch, parent.frame() inside chart.default
+	## resolves to the user's frame (one level above the generic).
+	state <- .chart_state_create(envir = parent.frame())
+	state$sub <- list()
+	state$chart <- list()
+
+	## convert input to data.frame and store in state
 	x <- as.data.frame(x)
 	x$idx <- if (is.null(idx)) {
 		## check if rownames can be
@@ -162,8 +185,8 @@ chart.default <- function(
 	} else {
 		idx
 	}
-	.chart_environment$x <- x
-	.chart_environment$idx <- list(
+	state$x <- x
+	state$idx <- list(
 		label = x$idx,
 		index = seq_along(x$idx)
 	)
@@ -287,7 +310,8 @@ chart_plotly <- function(
 	)
 
 	## construct chart title
-	if (is.integer(.chart_environment$idx$label)) {
+	state <- .chart_state()
+	if (is.integer(state$idx$label)) {
 		title_text <- sprintf(
 			fmt = "%s <span style='font-size:10;'><b>N:</b> %d </span>",
 			title,
@@ -299,10 +323,10 @@ chart_plotly <- function(
 			title,
 			nrow(data),
 			paste(
-				.chart_environment$idx$label[1],
+				state$idx$label[1],
 				"-",
-				.chart_environment$idx$label[length(
-					.chart_environment$idx$label
+				state$idx$label[length(
+					state$idx$label
 				)]
 			)
 		)
@@ -329,13 +353,13 @@ chart_plotly <- function(
 		function(p) layout_color(p)
 	)
 
-	.chart_environment$main <- Reduce(
+	state$main <- Reduce(
 		f = function(p, f) f(p),
 		x = fns,
 		init = price_chart
 	)
 
 	layout_settings(
-		.chart_environment$main
+		state$main
 	)
 }

@@ -132,7 +132,7 @@ pattern_gg <- function(
 
 	## convert idx labels to integer chart positions
 	## the ggplot2 backend uses integer positions on x-axis
-	chart_pos <- match(x$idx, .chart_environment$idx$label)
+	chart_pos <- match(x$idx, .chart_state()$idx$label)
 
 	## offset markers from candle body
 	## so they do not overlap with wicks

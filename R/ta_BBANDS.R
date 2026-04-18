@@ -307,8 +307,9 @@ bollinger_bands.plotly <- function(
 	)
 	## splice:plotly-assembly:end
 
-	plotly_object <- .chart_environment[["main"]] <- build_plotly(
-		init = .chart_environment[["main"]],
+	state <- .chart_state()
+	plotly_object <- build_plotly(
+		init = state[["main"]],
 		traces = traces,
 		decorators = list(),
 		name = get0(
@@ -317,6 +318,7 @@ bollinger_bands.plotly <- function(
 		),
 		data = constructed_indicator
 	)
+	state[["main"]] <- plotly_object
 
 	plotly_object
 }
@@ -390,8 +392,9 @@ bollinger_bands.ggplot <- function(
 	name <- label("Bollinger Bands", ma$n, sd)
 	## splice:ggplot-assembly:end
 
-	ggplot_object <- .chart_environment[["main"]] <- build_ggplot(
-		init = .chart_environment[["main"]],
+	state <- .chart_state()
+	ggplot_object <- build_ggplot(
+		init = state[["main"]],
 		layers = layers,
 		decorators = list(),
 		name = get0(
@@ -400,6 +403,7 @@ bollinger_bands.ggplot <- function(
 		),
 		data = constructed_indicator
 	)
+	state[["main"]] <- ggplot_object
 
 	ggplot_object
 }

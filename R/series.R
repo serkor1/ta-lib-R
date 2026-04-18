@@ -36,7 +36,15 @@ series.ggplot <- function(
 	}
 
 	if (!("data" %in% dn)) {
-		dotsQ$data <- quote(.chart_environment$x)
+		state <- .chart_state()
+		if (is.null(state) || is.null(state$x)) {
+			stop(
+				"series.ggplot(): no active chart found. ",
+				"Call chart() in the same frame before adding indicators.",
+				call. = FALSE
+			)
+		}
+		dotsQ$data <- state$x
 	}
 
 	out <- as.data.frame(
@@ -77,7 +85,15 @@ series.plotly <- function(
 
 	# If caller didn't provide data=..., default to the chart's data
 	if (!("data" %in% dn)) {
-		dotsQ$data <- quote(.chart_environment$x)
+		state <- .chart_state()
+		if (is.null(state) || is.null(state$x)) {
+			stop(
+				"series.plotly(): no active chart found. ",
+				"Call chart() in the same frame before adding indicators.",
+				call. = FALSE
+			)
+		}
+		dotsQ$data <- state$x
 	}
 
 	out <- as.data.frame(

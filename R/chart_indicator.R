@@ -127,20 +127,17 @@ indicator.function <- function(FUN, ...) {
 		)
 	}
 
-	## plotting environment
-	## does exist
-	chart_called <- TRUE
-
 	## extract the function
 	## directly
 	FUN <- match.fun(FUN)
 
-	## locate the main chart
-	plt <- .chart_environment$main
+	## locate the active chart state from the caller's frame chain
+	state <- .chart_state()
+	plt <- if (!is.null(state)) state$main else NULL
+	chart_called <- !is.null(plt)
 
-	if (is.null(plt)) {
-		chart_called <- FALSE
-
+	if (!chart_called) {
+		## standalone mode: indicator() called without prior chart()
 		if (has_arg(data)) {
 			data <- eval.parent(
 				match.call()[["data"]]
@@ -186,7 +183,13 @@ indicator.function <- function(FUN, ...) {
 			)
 		}
 
-		.chart_environment$idx$label <- idx
+		## create transient state in indicator()'s OWN frame so that
+		## helpers called from FUN (series(), add_idx(), ...) can find
+		## what they need via dynGet. The state evaporates when this
+		## function returns - no leakage to the user's frame.
+		state <- .chart_state_create(envir = environment())
+		state$idx <- list(label = idx)
+		state$x <- as.data.frame(data)
 	}
 
 	## dispatch to the appropriate backend method
@@ -213,13 +216,13 @@ indicator.function <- function(FUN, ...) {
 	if (chart_called) {
 		## assemble the multi-panel chart
 		## based on the backend
-		if (inherits(.chart_environment$main, "plotly")) {
+		if (inherits(state$main, "plotly")) {
 			return(
 				assemble_plotly()
 			)
 		}
 
-		if (inherits(.chart_environment$main, "gg")) {
+		if (inherits(state$main, "gg")) {
 			return(
 				assemble_ggplot2()
 			)
@@ -271,7 +274,7 @@ indicator.function <- function(FUN, ...) {
 ## call on the same subchart panel, then merge
 indicator_multi <- function(exprs, envir) {
 	## require an existing chart
-	plt <- .chart_environment$main
+	plt <- .chart_state()$main
 	if (is.null(plt)) {
 		stop(
 			"chart() must be called before using indicator() ",
@@ -281,7 +284,7 @@ indicator_multi <- function(exprs, envir) {
 	}
 
 	## record current subchart count
-	n_before <- length(.chart_environment$sub)
+	n_before <- length(.chart_state()$sub)
 
 	## evaluate each indicator expression
 	## with x = <chart> injected as first argument
@@ -303,7 +306,7 @@ indicator_multi <- function(exprs, envir) {
 		do.call(fn, args)
 	}
 
-	n_after <- length(.chart_environment$sub)
+	n_after <- length(.chart_state()$sub)
 	n_new <- n_after - n_before
 
 	## merge if multiple subchart panels were added
@@ -335,13 +338,15 @@ indicator_multi <- function(exprs, envir) {
 ## for the plotly backend - used by indicator_multi
 ## to overlay indicators on a single panel
 merge_subchart_plotly <- function(from, to) {
+	state <- .chart_state()
+
 	## build the base panel
-	base <- plotly::plotly_build(.chart_environment$sub[[from]])
+	base <- plotly::plotly_build(state$sub[[from]])
 
 	## merge traces and annotations
 	## from subsequent panels
 	for (i in seq(from + 1L, to)) {
-		other <- plotly::plotly_build(.chart_environment$sub[[i]])
+		other <- plotly::plotly_build(state$sub[[i]])
 		base$x$data <- c(base$x$data, other$x$data)
 
 		## merge annotations like subchart
@@ -374,19 +379,20 @@ merge_subchart_plotly <- function(from, to) {
 
 	## replace first panel with merged
 	## and drop the rest
-	.chart_environment$sub[[from]] <- base
-	length(.chart_environment$sub) <- from
+	state$sub[[from]] <- base
+	length(state$sub) <- from
 }
 
 ## merge multiple subchart panels into one
 ## for the ggplot2 backend - used by indicator_multi
 ## to overlay indicators on a single panel
 merge_subchart_ggplot <- function(from, to) {
-	base <- .chart_environment$sub[[from]]
+	state <- .chart_state()
+	base <- state$sub[[from]]
 
 	## collect layers from subsequent panels
 	for (i in seq(from + 1L, to)) {
-		other <- .chart_environment$sub[[i]]
+		other <- state$sub[[i]]
 		for (layer in other$layers) {
 			base <- base + layer
 		}
@@ -437,7 +443,7 @@ merge_subchart_ggplot <- function(from, to) {
 	if (getOption("talib.chart.merged_last_value", TRUE)) {
 		last_values <- list()
 		for (i in seq(from, to)) {
-			lv <- attr(.chart_environment$sub[[i]], "talib_last_value")
+			lv <- attr(state$sub[[i]], "talib_last_value")
 			if (!is.null(lv)) {
 				last_values <- c(last_values, list(lv))
 			}
@@ -491,8 +497,8 @@ merge_subchart_ggplot <- function(from, to) {
 
 	## replace first panel with merged
 	## and drop the rest
-	.chart_environment$sub[[from]] <- base
-	length(.chart_environment$sub) <- from
+	state$sub[[from]] <- base
+	length(state$sub) <- from
 }
 
 ## ---- plotly assembly ----
@@ -500,7 +506,8 @@ merge_subchart_ggplot <- function(from, to) {
 ## combine main chart and subcharts
 ## into a multi-panel plotly subplot
 assemble_plotly <- function() {
-	panels <- c(list(.chart_environment$main), .chart_environment$sub)
+	state <- .chart_state()
+	panels <- c(list(state$main), state$sub)
 	n <- length(panels)
 
 	## main panel gets most of the height
@@ -527,7 +534,7 @@ assemble_plotly <- function() {
 			tickmode = "auto"
 		)
 	)
-	.chart_environment$chart <- fig
+	state$chart <- fig
 
 	layout_axis(layout_color(layout_settings(fig)))
 }
@@ -537,15 +544,16 @@ assemble_plotly <- function() {
 ## combine main chart and subcharts
 ## into a multi-panel ggplot2 layout
 assemble_ggplot2 <- function() {
+	state <- .chart_state()
 	panels <- c(
-		list(.chart_environment$main),
-		.chart_environment$sub
+		list(state$main),
+		state$sub
 	)
 	n <- length(panels)
 
 	## single panel - return as-is
 	if (n == 1L) {
-		.chart_environment$chart <- panels[[1]]
+		state$chart <- panels[[1]]
 		return(panels[[1]])
 	}
 
@@ -597,7 +605,7 @@ assemble_ggplot2 <- function() {
 		class = "talib_chart"
 	)
 
-	.chart_environment$chart <- fig
+	state$chart <- fig
 	fig
 }
 

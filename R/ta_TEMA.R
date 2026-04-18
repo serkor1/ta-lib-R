@@ -217,8 +217,9 @@ triple_exponential_moving_average.plotly <- function(
 	)
 
 	## construct {plotly}-object
-	plotly_object <- .chart_environment[["main"]] <- build_plotly(
-		init = .chart_environment[["main"]],
+	state <- .chart_state()
+	plotly_object <- build_plotly(
+		init = state[["main"]],
 		traces = list(
 			list(
 				y = ~ constructed_indicator[["TEMA"]][
@@ -233,6 +234,7 @@ triple_exponential_moving_average.plotly <- function(
 		name = sprintf("TEMA(%d)", n),
 		decorators = list()
 	)
+	state[["main"]] <- plotly_object
 
 	plotly_object
 }
@@ -283,8 +285,9 @@ triple_exponential_moving_average.ggplot <- function(
 	)
 
 	## construct {ggplot2}-object
-	ggplot_object <- .chart_environment[["main"]] <- build_ggplot(
-		init = .chart_environment[["main"]],
+	state <- .chart_state()
+	ggplot_object <- build_ggplot(
+		init = state[["main"]],
 		layers = list(
 			list(
 				y = "TEMA"
@@ -294,6 +297,7 @@ triple_exponential_moving_average.ggplot <- function(
 		decorators = list(),
 		data = constructed_indicator
 	)
+	state[["main"]] <- ggplot_object
 
 	ggplot_object
 }

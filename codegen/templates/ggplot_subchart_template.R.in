@@ -80,10 +80,8 @@ ${FUN}.ggplot <- function(
 		name = get0(x = "name", ifnotfound = NULL)
 	)
 
-    .chart_environment$sub <- c(
-		.chart_environment$sub,
-		list(ggplot_object)
-	)
+    state <- .chart_state()
+	state$sub <- c(state$sub, list(ggplot_object))
 
 	ggplot_object
  }

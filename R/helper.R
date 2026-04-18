@@ -79,7 +79,7 @@ rebuild_formula <- function(
 add_idx <- function(x) {
 	## retrieve idx labels stored
 	## by chart during initialization
-	idx <- .chart_environment$idx$label
+	idx <- .chart_state()$idx$label
 
 	if (!is.null(idx)) {
 		idx[

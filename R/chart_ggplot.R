@@ -169,7 +169,8 @@ chart_ggplot2 <- function(
 
 	## construct title text with observation
 	## count and date range if available
-	if (is.integer(.chart_environment$idx$label)) {
+	state <- .chart_state()
+	if (is.integer(state$idx$label)) {
 		title_text <- sprintf(
 			"%s (N: %d)",
 			title,
@@ -181,10 +182,10 @@ chart_ggplot2 <- function(
 			title,
 			nrow(data),
 			paste(
-				.chart_environment$idx$label[1],
+				state$idx$label[1],
 				"-",
-				.chart_environment$idx$label[
-					length(.chart_environment$idx$label)
+				state$idx$label[
+					length(state$idx$label)
 				]
 			)
 		)
@@ -206,10 +207,10 @@ chart_ggplot2 <- function(
 
 	## reset colorway counter and color map
 	## for subsequent indicator calls
-	.chart_environment$color_idx <- 0L
-	.chart_environment$color_map <- character(0)
+	state$color_idx <- 0L
+	state$color_map <- character(0)
 
-	.chart_environment$main <- p
+	state$main <- p
 	p
 }
 
@@ -246,7 +247,7 @@ format_axis_number <- function(x) {
 ## build the x-axis scale using integer positions
 ## with labels from the chart environment idx
 ggplot_x_scale <- function() {
-	idx_labels <- .chart_environment$idx$label
+	idx_labels <- .chart_state()$idx$label
 	n <- length(idx_labels)
 	xlim <- c(0.5, n + 0.5)
 

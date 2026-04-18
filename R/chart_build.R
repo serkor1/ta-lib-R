@@ -114,7 +114,7 @@ build_plotly.plotly <- function(
 
 	## add subchart title if this is
 	## attached to an existing chart
-	if (!is.null(title) && !is.null(.chart_environment$main)) {
+	if (!is.null(title) && !is.null(.chart_state()$main)) {
 		plotly_object <- add_title(
 			plotly_object,
 			text = title
@@ -187,11 +187,12 @@ build_ggplot <- function(
 
 	p <- init
 	colorway <- .chart_variables$colorway
-	color_idx <- .chart_environment$color_idx %nn% 0L
+	state <- .chart_state()
+	color_idx <- state$color_idx %nn% 0L
 	color_map <- if (needs_scales) {
 		character(0)
 	} else {
-		.chart_environment$color_map %nn% character(0)
+		state$color_map %nn% character(0)
 	}
 
 	## track whether fill scale has been used
@@ -352,7 +353,7 @@ build_ggplot <- function(
 
 	## persist colorway counter so subsequent
 	## indicator calls continue cycling
-	.chart_environment$color_idx <- color_idx
+	state$color_idx <- color_idx
 
 	## add colour scale for legend entries
 	if (length(color_map) > 0L) {
@@ -372,11 +373,11 @@ build_ggplot <- function(
 
 	## persist color map for main chart overlays
 	if (!needs_scales) {
-		.chart_environment$color_map <- color_map
+		state$color_map <- color_map
 	}
 
 	## add title for subcharts
-	if (!is.null(title) && !is.null(.chart_environment$main)) {
+	if (!is.null(title) && !is.null(state$main)) {
 		p <- p + ggplot2::ggtitle(title)
 	}
 
