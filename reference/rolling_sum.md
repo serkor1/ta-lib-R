@@ -8,16 +8,27 @@
 ### Handling of -values
 
 Leading `NA`s are always produced for the initial lookback period where
-insufficient data is available. If the input itself contains `NA`s they
-are passed through to the underlying C routine, which can cause the
-**entire** output to be filled with `NA`s. Set `na.ignore = TRUE` to
-strip `NA`s before calculation and re-insert them at their original
-positions in the output.
+insufficient data is available. If the input itself contains `NA`s, the
+behaviour depends on `na.bridge`:
+
+- `na.bridge = FALSE` (default):
+
+  `NA`s propagate through the TA-Lib C routine. Because rolling
+  statistics smooth across time, a single `NA` in the input typically
+  poisons every subsequent value.
+
+- `na.bridge = TRUE`:
+
+  Input `NA`s are stripped, the statistic is computed on the dense
+  series, and `NA`s are re-inserted at the original positions. Output
+  length matches input length, but the computation treats
+  non-consecutive observations as if they were adjacent - fine for
+  sparse missing values, misleading across clustered gaps.
 
 ## Usage
 
 ``` r
-rolling_sum(x, n = 10, na.ignore = FALSE)
+rolling_sum(x, n = 30, na.bridge = FALSE)
 ```
 
 ## Arguments
@@ -34,15 +45,20 @@ rolling_sum(x, n = 10, na.ignore = FALSE)
   [integer](https://rdrr.io/r/base/integer.html) of
   [length](https://rdrr.io/r/base/length.html) 1.
 
-- na.ignore:
+- na.bridge:
 
   ([logical](https://rdrr.io/r/base/logical.html)). A
   [logical](https://rdrr.io/r/base/logical.html) of
   [length](https://rdrr.io/r/base/length.html) 1.
-  [FALSE](https://rdrr.io/r/base/logical.html) by default. If
-  [TRUE](https://rdrr.io/r/base/logical.html), `NA`s in the input are
-  stripped before calculation and re-inserted at their original
-  positions in the output.
+  [FALSE](https://rdrr.io/r/base/logical.html) by default. When
+  [FALSE](https://rdrr.io/r/base/logical.html), input `NA`s propagate
+  through the TA-Lib C routine (the rolling computation typically fills
+  the remaining output with `NA`). When
+  [TRUE](https://rdrr.io/r/base/logical.html), input `NA` rows are
+  stripped before computation and re-inserted at the original positions
+  in the output, causing the statistic to treat non-consecutive non-`NA`
+  observations as if they were adjacent - see the **Handling of
+  \\NA\\-values** section above for the consequences.
 
 ## Value
 
@@ -76,5 +92,5 @@ output <- talib::rolling_sum(x = BTC[[1]])
 
 ## display the results
 utils::tail(output)
-#> [1] 992608.1 982182.7 970213.6 965190.9 961369.3 956225.7
+#> [1] 2958500 2962256 2960467 2959927 2955992 2952146
 ```

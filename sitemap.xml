@@ -10,6 +10,7 @@
 <url><loc>https://serkor1.github.io/ta-lib-R/articles/tidyverse.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/authors.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/index.html</loc></url>
+<url><loc>https://serkor1.github.io/ta-lib-R/news/index.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/ATOM.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/BTC.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/NVDA.html</loc></url>
@@ -28,7 +29,6 @@
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/belt_hold.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/bollinger_bands.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/break_away.html</loc></url>
-<url><loc>https://serkor1.github.io/ta-lib-R/reference/build_plotly.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/chaikin_accumulation_distribution_line.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/chaikin_accumulation_distribution_oscillator.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/chande_momentum_oscillator.html</loc></url>
@@ -55,7 +55,6 @@
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/fast_stochastic.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/fixed_moving_average_convergence_divergence.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/gaps_side_white.html</loc></url>
-<url><loc>https://serkor1.github.io/ta-lib-R/reference/generic_documentation.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/gravestone_doji.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/hammer.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/hanging_man.html</loc></url>

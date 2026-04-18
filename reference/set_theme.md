@@ -92,8 +92,9 @@ Other Charting:
 ``` r
 ## list available themes
 talib::set_theme()
-#> [1] "default"           "hawks_and_doves"   "payout"           
-#> [4] "tp_slapped"        "trust_the_process"
+#> [1] "default"            "hawks_and_doves"    "payout"            
+#> [4] "tp_slapped"         "trust_the_process"  "bloomberg_terminal"
+#> [7] "limit_up"           "bid_n_ask"         
 
 ## apply a theme by name
 talib::set_theme("payout")

@@ -31,6 +31,7 @@ Use ggplot2::set_theme() to apply or list themes."><meta property="og:image" con
     <li><a class="dropdown-item" href="../articles/charting.html">Financial Charts</a></li>
     <li><a class="dropdown-item" href="../articles/tidyverse.html">Tidyverse Workflows</a></li>
   </ul></li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/serkor1/ta-lib-R/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
@@ -97,8 +98,59 @@ saturated colors.</p></dd>
 keeping the focus on indicator lines. The colorway uses muted natural
 tones.</p></dd>
 
+<dt><code>bloomberg_terminal</code></dt>
+<dd><p>A dark theme on a near-black (<code>#0E1017</code>)
+background with orange (<code>#FF8F40</code>) bullish and neutral-gray
+(<code>#BBB9B2</code>) bearish candles. Inspired by the Bloomberg Terminal
+interface. Colorblind-friendly (see below).</p></dd>
+
+<dt><code>limit_up</code></dt>
+<dd><p>A dark monochrome theme on a near-black (<code>#121212</code>)
+background. Candles use only luminance to encode direction (light-gray
+bullish vs dark-gray bearish). Colorblind-friendly (see below).</p></dd>
+
+<dt><code>bid_n_ask</code></dt>
+<dd><p>A light theme on an azure (<code>#F0FFFF</code>) background
+with steel-blue (<code>#4682B4</code>) bullish and tomato-red (<code>#FF6347</code>)
+bearish candles. The classic blue-vs-red trading pair.
+Colorblind-friendly (see below).</p></dd>
+
 
 </dl></div>
+
+<div class="section">
+<h3 id="colorblind-friendly-themes">Colorblind-Friendly Themes<a class="anchor" aria-label="anchor" href="#colorblind-friendly-themes"></a></h3>
+
+
+<p>The following themes encode bull/bear direction in ways that remain
+distinguishable under the most common color-vision deficiencies. The
+colorways for <code>bloomberg_terminal</code>, <code>limit_up</code>, and <code>bid_n_ask</code> are
+derived from the Okabe &amp; Ito (2008) qualitative palette, the de-facto
+standard for accessible scientific visualization.</p>
+<dl><dt><code>limit_up</code>, <code>hawks_and_doves</code>, <code>trust_the_process</code></dt>
+<dd><p>Encode
+direction with luminance only. Safe under deuteranopia, protanopia,
+tritanopia, and full achromatopsia.</p></dd>
+
+<dt><code>bloomberg_terminal</code></dt>
+<dd><p>Orange + neutral gray. Safe under all
+three CVD types thanks to Okabe-Ito-style hue separation.</p></dd>
+
+<dt><code>default</code>, <code>payout</code></dt>
+<dd><p>Cyan/teal + blue or dark slate. Safe under
+all three CVD types — the color pair sits inside the blue-yellow
+axis that CVD users perceive normally.</p></dd>
+
+<dt><code>bid_n_ask</code></dt>
+<dd><p>Blue + red. Safe under deuteranopia and
+protanopia (the most common forms, affecting ~8% of males); the
+pair separates more weakly under tritanopia.</p></dd>
+
+
+</dl><p><code>tp_slapped</code> is the only built-in that uses a teal/red pair adjacent to
+the red-green CVD axis; prefer the themes above when accessibility
+matters.</p>
+</div>
 
 <div class="section">
 <h3 id="theme-properties">Theme Properties<a class="anchor" aria-label="anchor" href="#theme-properties"></a></h3>
@@ -128,6 +180,12 @@ argument to <code><a href="https://ggplot2.tidyverse.org/reference/get_theme.htm
 
     </div>
     <div class="section level2">
+    <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
+    <p>Okabe, M. &amp; Ito, K. (2008). <em>Color Universal Design (CUD): How to make
+figures and presentations that are friendly to colorblind people.</em>
+<a href="https://jfly.uni-koeln.de/color/" class="external-link">https://jfly.uni-koeln.de/color/</a></p>
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other Charting:
 <code><a href="chart.html">chart()</a></code>,
@@ -139,8 +197,9 @@ argument to <code><a href="https://ggplot2.tidyverse.org/reference/get_theme.htm
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## list available themes</span></span></span>
 <span class="r-in"><span><span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="set_theme.html">set_theme</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "default"           "hawks_and_doves"   "payout"           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "tp_slapped"        "trust_the_process"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "default"            "hawks_and_doves"    "payout"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "tp_slapped"         "trust_the_process"  "bloomberg_terminal"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [7] "limit_up"           "bid_n_ask"         </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## apply a theme by name</span></span></span>
 <span class="r-in"><span><span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="set_theme.html">set_theme</a></span><span class="op">(</span><span class="st">"payout"</span><span class="op">)</span></span></span>

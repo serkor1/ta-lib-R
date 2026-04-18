@@ -224,7 +224,11 @@ comparing different indicators across different time windows.
 
 The package includes a theme system that controls candle colors,
 background, text, grid, and the color palette used for indicator traces.
-Four built-in themes are available.
+Eight built-in themes are available; three of them
+(`bloomberg_terminal`, `limit_up`, `bid_n_ask`) are designed to remain
+distinguishable under the most common color-vision deficiencies. See
+[`?chart_themes`](https://serkor1.github.io/ta-lib-R/reference/chart_themes.md)
+for the full accessibility breakdown.
 
 ### Setting a theme
 
@@ -328,6 +332,66 @@ A light, muted theme with earthy tones.
 }
 ```
 
+### Bloomberg Terminal (colorblind-friendly)
+
+A dark theme inspired by the Bloomberg Terminal interface. Orange
+bullish candles paired with neutral-gray bearish candles — the
+orange/gray pair separates cleanly under deuteranopia, protanopia, and
+tritanopia. The colorway is the Okabe-Ito qualitative palette.
+
+``` r
+{
+  talib::set_theme$bloomberg_terminal
+  talib::chart(talib::BTC)
+  talib::indicator(talib::SMA, n = 7)
+  talib::indicator(talib::SMA, n = 14)
+  talib::indicator(talib::SMA, n = 21)
+  talib::indicator(talib::SMA, n = 28)
+  talib::indicator(talib::MACD)
+  talib::indicator(talib::trading_volume)
+}
+```
+
+### Limit Up (colorblind-friendly)
+
+A dark monochrome theme that encodes direction with luminance only.
+Light-gray bullish candles vs dark-gray bearish candles — the contrast
+is large enough to remain unambiguous under all three CVD types and even
+under full achromatopsia.
+
+``` r
+{
+  talib::set_theme$limit_up
+  talib::chart(talib::BTC)
+  talib::indicator(talib::SMA, n = 7)
+  talib::indicator(talib::SMA, n = 14)
+  talib::indicator(talib::SMA, n = 21)
+  talib::indicator(talib::SMA, n = 28)
+  talib::indicator(talib::MACD)
+  talib::indicator(talib::trading_volume)
+}
+```
+
+### Bid n Ask (colorblind-friendly)
+
+A light theme with the classic blue-vs-red trading pair. Steel-blue
+bullish and tomato-red bearish candles separate well under deuteranopia
+and protanopia (the most common CVD forms, affecting roughly 8% of
+males); separation under tritanopia is weaker but still readable.
+
+``` r
+{
+  talib::set_theme$bid_n_ask
+  talib::chart(talib::BTC)
+  talib::indicator(talib::SMA, n = 7)
+  talib::indicator(talib::SMA, n = 14)
+  talib::indicator(talib::SMA, n = 21)
+  talib::indicator(talib::SMA, n = 28)
+  talib::indicator(talib::MACD)
+  talib::indicator(talib::trading_volume)
+}
+```
+
 ### Custom color overrides
 
 Pass named color arguments to
@@ -403,4 +467,4 @@ work the same way.
 }
 ```
 
-![](charting_files/figure-html/unnamed-chunk-24-1.png)
+![](charting_files/figure-html/unnamed-chunk-27-1.png)

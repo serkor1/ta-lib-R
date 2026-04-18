@@ -39,6 +39,7 @@
     <li><a class="dropdown-item" href="../articles/tidyverse.html">Tidyverse Workflows</a></li>
   </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
@@ -147,19 +148,19 @@ three columns, and all three get bound:</p>
 <span>    <span class="fu">tidy_ta</span><span class="op">(</span><span class="va">bollinger_bands</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                         open     high      low    close   volume UpperBand</span></span>
-<span><span class="co">#&gt; 2024-12-26 01:00:00 99356.00 99879.98 95088.99 95676.01 2872.119 104478.35</span></span>
-<span><span class="co">#&gt; 2024-12-27 01:00:00 95676.00 97388.00 93320.54 94167.77 3483.965 100877.73</span></span>
-<span><span class="co">#&gt; 2024-12-28 01:00:00 94167.78 95563.86 94000.00 95120.76 1333.381  99886.22</span></span>
-<span><span class="co">#&gt; 2024-12-29 01:00:00 95124.01 95170.03 92831.78 93564.00 2131.462  99871.12</span></span>
-<span><span class="co">#&gt; 2024-12-30 01:00:00 93564.00 94915.26 91310.00 92628.01 4069.841  99713.92</span></span>
-<span><span class="co">#&gt; 2024-12-31 01:00:00 92624.41 96132.00 91884.18 93390.63 2960.960  99373.89</span></span>
+<span><span class="co">#&gt; 2024-12-26 01:00:00 99356.00 99879.98 95088.99 95676.01 2872.119 100487.38</span></span>
+<span><span class="co">#&gt; 2024-12-27 01:00:00 95676.00 97388.00 93320.54 94167.77 3483.965 100670.65</span></span>
+<span><span class="co">#&gt; 2024-12-28 01:00:00 94167.78 95563.86 94000.00 95120.76 1333.381 100632.13</span></span>
+<span><span class="co">#&gt; 2024-12-29 01:00:00 95124.01 95170.03 92831.78 93564.00 2131.462  99628.77</span></span>
+<span><span class="co">#&gt; 2024-12-30 01:00:00 93564.00 94915.26 91310.00 92628.01 4069.841  96403.53</span></span>
+<span><span class="co">#&gt; 2024-12-31 01:00:00 92624.41 96132.00 91884.18 93390.63 2960.960  95441.13</span></span>
 <span><span class="co">#&gt;                     MiddleBand LowerBand</span></span>
-<span><span class="co">#&gt; 2024-12-26 01:00:00   98217.88  91957.42</span></span>
-<span><span class="co">#&gt; 2024-12-27 01:00:00   97020.16  93162.59</span></span>
-<span><span class="co">#&gt; 2024-12-28 01:00:00   96516.01  93145.81</span></span>
-<span><span class="co">#&gt; 2024-12-29 01:00:00   96134.41  92397.71</span></span>
-<span><span class="co">#&gt; 2024-12-30 01:00:00   95620.42  91526.92</span></span>
-<span><span class="co">#&gt; 2024-12-31 01:00:00   95236.42  91098.95</span></span></code></pre></div>
+<span><span class="co">#&gt; 2024-12-26 01:00:00   96698.61  92909.83</span></span>
+<span><span class="co">#&gt; 2024-12-27 01:00:00   96512.96  92355.27</span></span>
+<span><span class="co">#&gt; 2024-12-28 01:00:00   96581.91  92531.69</span></span>
+<span><span class="co">#&gt; 2024-12-29 01:00:00   95576.60  91524.43</span></span>
+<span><span class="co">#&gt; 2024-12-30 01:00:00   94231.31  92059.09</span></span>
+<span><span class="co">#&gt; 2024-12-31 01:00:00   93774.23  92107.34</span></span></code></pre></div>
 <p>Chaining multiple indicators composes naturally:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">BTC</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -175,12 +176,12 @@ three columns, and all three get bound:</p>
 <span><span class="co">#&gt; 2024-12-30 01:00:00 93564.00 94915.26 91310.00 92628.01 4069.841 41.47686</span></span>
 <span><span class="co">#&gt; 2024-12-31 01:00:00 92624.41 96132.00 91884.18 93390.63 2960.960 43.37358</span></span>
 <span><span class="co">#&gt;                     UpperBand MiddleBand LowerBand       MACD MACDSignal</span></span>
-<span><span class="co">#&gt; 2024-12-26 01:00:00 104478.35   98217.88  91957.42  608.68287  1590.9032</span></span>
-<span><span class="co">#&gt; 2024-12-27 01:00:00 100877.73   97020.16  93162.59  243.07106  1321.3368</span></span>
-<span><span class="co">#&gt; 2024-12-28 01:00:00  99886.22   96516.01  93145.81   29.87501  1063.0444</span></span>
-<span><span class="co">#&gt; 2024-12-29 01:00:00  99871.12   96134.41  92397.71 -261.68536   798.0985</span></span>
-<span><span class="co">#&gt; 2024-12-30 01:00:00  99713.92   95620.42  91526.92 -561.79956   526.1189</span></span>
-<span><span class="co">#&gt; 2024-12-31 01:00:00  99373.89   95236.42  91098.95 -729.69370   274.9564</span></span>
+<span><span class="co">#&gt; 2024-12-26 01:00:00 100487.38   96698.61  92909.83  608.68287  1590.9032</span></span>
+<span><span class="co">#&gt; 2024-12-27 01:00:00 100670.65   96512.96  92355.27  243.07106  1321.3368</span></span>
+<span><span class="co">#&gt; 2024-12-28 01:00:00 100632.13   96581.91  92531.69   29.87501  1063.0444</span></span>
+<span><span class="co">#&gt; 2024-12-29 01:00:00  99628.77   95576.60  91524.43 -261.68536   798.0985</span></span>
+<span><span class="co">#&gt; 2024-12-30 01:00:00  96403.53   94231.31  92059.09 -561.79956   526.1189</span></span>
+<span><span class="co">#&gt; 2024-12-31 01:00:00  95441.13   93774.23  92107.34 -729.69370   274.9564</span></span>
 <span><span class="co">#&gt;                       MACDHist</span></span>
 <span><span class="co">#&gt; 2024-12-26 01:00:00  -982.2204</span></span>
 <span><span class="co">#&gt; 2024-12-27 01:00:00 -1078.2657</span></span>
@@ -292,15 +293,15 @@ multiple indicators by chaining inside the <code><a href="https://rdrr.io/r/base
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 9 × 7</span></span></span>
 <span><span class="co">#&gt;   ticker date                  close   RSI UpperBand MiddleBand LowerBand</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> BTC    2024-12-29 01:00:00 <span style="text-decoration: underline;">93</span>564    43.1   <span style="text-decoration: underline;">99</span>871.     <span style="text-decoration: underline;">96</span>134.    <span style="text-decoration: underline;">92</span>398. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> BTC    2024-12-30 01:00:00 <span style="text-decoration: underline;">92</span>628.   41.5   <span style="text-decoration: underline;">99</span>714.     <span style="text-decoration: underline;">95</span>620.    <span style="text-decoration: underline;">91</span>527. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> BTC    2024-12-31 01:00:00 <span style="text-decoration: underline;">93</span>391.   43.4   <span style="text-decoration: underline;">99</span>374.     <span style="text-decoration: underline;">95</span>236.    <span style="text-decoration: underline;">91</span>099. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> SPY    499                   601.   54.6     613.       598.      583. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> SPY    500                   595.   47.8     611.       597.      583. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> SPY    501                   588.   41.9     610.       596.      581. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> NVDA   499                    49.4  57.8      50.2       49.0      47.7</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">8</span> NVDA   500                    49.5  58.3      50.2       49.1      48.0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">9</span> NVDA   501                    49.5  58.3      50.3       49.2      48.2</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> BTC    2024-12-29 01:00:00 <span style="text-decoration: underline;">93</span>564    43.1   <span style="text-decoration: underline;">99</span>629.     <span style="text-decoration: underline;">95</span>577.    <span style="text-decoration: underline;">91</span>524. </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> BTC    2024-12-30 01:00:00 <span style="text-decoration: underline;">92</span>628.   41.5   <span style="text-decoration: underline;">96</span>404.     <span style="text-decoration: underline;">94</span>231.    <span style="text-decoration: underline;">92</span>059. </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> BTC    2024-12-31 01:00:00 <span style="text-decoration: underline;">93</span>391.   43.4   <span style="text-decoration: underline;">95</span>441.     <span style="text-decoration: underline;">93</span>774.    <span style="text-decoration: underline;">92</span>107. </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> SPY    499                   601.   54.6     607.       595.      583. </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> SPY    500                   595.   47.8     605.       597.      589. </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> SPY    501                   588.   41.9     606.       596.      586. </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> NVDA   499                    49.4  57.8      49.8       48.9      48.0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">8</span> NVDA   500                    49.5  58.3      49.7       49.2      48.7</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">9</span> NVDA   501                    49.5  58.3      49.8       49.3      48.8</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="putting-it-all-together">Putting it all together<a class="anchor" aria-label="anchor" href="#putting-it-all-together"></a>

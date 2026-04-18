@@ -44,6 +44,59 @@ to apply or list themes.
   Both bull and bear candles use shades of gray, keeping the focus on
   indicator lines. The colorway uses muted natural tones.
 
+- `bloomberg_terminal`:
+
+  A dark theme on a near-black (`#0E1017`) background with orange
+  (`#FF8F40`) bullish and neutral-gray (`#BBB9B2`) bearish candles.
+  Inspired by the Bloomberg Terminal interface. Colorblind-friendly (see
+  below).
+
+- `limit_up`:
+
+  A dark monochrome theme on a near-black (`#121212`) background.
+  Candles use only luminance to encode direction (light-gray bullish vs
+  dark-gray bearish). Colorblind-friendly (see below).
+
+- `bid_n_ask`:
+
+  A light theme on an azure (`#F0FFFF`) background with steel-blue
+  (`#4682B4`) bullish and tomato-red (`#FF6347`) bearish candles. The
+  classic blue-vs-red trading pair. Colorblind-friendly (see below).
+
+### Colorblind-Friendly Themes
+
+The following themes encode bull/bear direction in ways that remain
+distinguishable under the most common color-vision deficiencies. The
+colorways for `bloomberg_terminal`, `limit_up`, and `bid_n_ask` are
+derived from the Okabe & Ito (2008) qualitative palette, the de-facto
+standard for accessible scientific visualization.
+
+- `limit_up`, `hawks_and_doves`, `trust_the_process`:
+
+  Encode direction with luminance only. Safe under deuteranopia,
+  protanopia, tritanopia, and full achromatopsia.
+
+- `bloomberg_terminal`:
+
+  Orange + neutral gray. Safe under all three CVD types thanks to
+  Okabe-Ito-style hue separation.
+
+- `default`, `payout`:
+
+  Cyan/teal + blue or dark slate. Safe under all three CVD types — the
+  color pair sits inside the blue-yellow axis that CVD users perceive
+  normally.
+
+- `bid_n_ask`:
+
+  Blue + red. Safe under deuteranopia and protanopia (the most common
+  forms, affecting ~8% of males); the pair separates more weakly under
+  tritanopia.
+
+`tp_slapped` is the only built-in that uses a teal/red pair adjacent to
+the red-green CVD axis; prefer the themes above when accessibility
+matters.
+
 ### Theme Properties
 
 Each theme sets the following color properties:
@@ -71,6 +124,12 @@ Any of these properties can be individually overridden via the `...`
 argument to
 [`ggplot2::set_theme()`](https://ggplot2.tidyverse.org/reference/get_theme.html).
 
+## References
+
+Okabe, M. & Ito, K. (2008). *Color Universal Design (CUD): How to make
+figures and presentations that are friendly to colorblind people.*
+<https://jfly.uni-koeln.de/color/>
+
 ## See also
 
 Other Charting:
@@ -83,8 +142,9 @@ Other Charting:
 ``` r
 ## list available themes
 talib::set_theme()
-#> [1] "default"           "hawks_and_doves"   "payout"           
-#> [4] "tp_slapped"        "trust_the_process"
+#> [1] "default"            "hawks_and_doves"    "payout"            
+#> [4] "tp_slapped"         "trust_the_process"  "bloomberg_terminal"
+#> [7] "limit_up"           "bid_n_ask"         
 
 ## apply a theme by name
 talib::set_theme("payout")

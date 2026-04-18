@@ -5,6 +5,9 @@
 - **[Serkan Korkmaz](https://github.com/serkor1)**. Maintainer, author,
   copyright holder. [](https://orcid.org/0000-0002-5052-0982)
 
+- **Mario Fortier**. Copyright holder.  
+  Copyright holder of the bundled TA-Lib C library (src/ta-lib/)
+
 ## Citation
 
 Source:

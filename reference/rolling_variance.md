@@ -8,16 +8,27 @@
 ### Handling of -values
 
 Leading `NA`s are always produced for the initial lookback period where
-insufficient data is available. If the input itself contains `NA`s they
-are passed through to the underlying C routine, which can cause the
-**entire** output to be filled with `NA`s. Set `na.ignore = TRUE` to
-strip `NA`s before calculation and re-insert them at their original
-positions in the output.
+insufficient data is available. If the input itself contains `NA`s, the
+behaviour depends on `na.bridge`:
+
+- `na.bridge = FALSE` (default):
+
+  `NA`s propagate through the TA-Lib C routine. Because rolling
+  statistics smooth across time, a single `NA` in the input typically
+  poisons every subsequent value.
+
+- `na.bridge = TRUE`:
+
+  Input `NA`s are stripped, the statistic is computed on the dense
+  series, and `NA`s are re-inserted at the original positions. Output
+  length matches input length, but the computation treats
+  non-consecutive observations as if they were adjacent - fine for
+  sparse missing values, misleading across clustered gaps.
 
 ## Usage
 
 ``` r
-rolling_variance(x, n = 10, k = 1, na.ignore = FALSE)
+rolling_variance(x, n = 5, k = 1, na.bridge = FALSE)
 ```
 
 ## Arguments
@@ -38,15 +49,20 @@ rolling_variance(x, n = 10, k = 1, na.ignore = FALSE)
 
   multiplier
 
-- na.ignore:
+- na.bridge:
 
   ([logical](https://rdrr.io/r/base/logical.html)). A
   [logical](https://rdrr.io/r/base/logical.html) of
   [length](https://rdrr.io/r/base/length.html) 1.
-  [FALSE](https://rdrr.io/r/base/logical.html) by default. If
-  [TRUE](https://rdrr.io/r/base/logical.html), `NA`s in the input are
-  stripped before calculation and re-inserted at their original
-  positions in the output.
+  [FALSE](https://rdrr.io/r/base/logical.html) by default. When
+  [FALSE](https://rdrr.io/r/base/logical.html), input `NA`s propagate
+  through the TA-Lib C routine (the rolling computation typically fills
+  the remaining output with `NA`). When
+  [TRUE](https://rdrr.io/r/base/logical.html), input `NA` rows are
+  stripped before computation and re-inserted at the original positions
+  in the output, causing the statistic to treat non-consecutive non-`NA`
+  observations as if they were adjacent - see the **Handling of
+  \\NA\\-values** section above for the consequences.
 
 ## Value
 
@@ -80,5 +96,5 @@ output <- talib::rolling_variance(x = BTC[[1]])
 
 ## display the results
 utils::tail(output)
-#> [1] 14255653  9774488  3711983  2842938  3495055  4198248
+#> [1] 3341785 3588907 4321770 4099366 4106782 1183102
 ```
