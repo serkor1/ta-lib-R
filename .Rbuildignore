@@ -104,3 +104,4 @@ src/ta-lib/Makefile.in
 
 ^\.github$
 ^codegen$
+^CRAN-SUBMISSION$
