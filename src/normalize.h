@@ -25,7 +25,7 @@
 // normalize double arrays
 static inline void
 normalize_double(double *arr, int n, double factor, int shift) {
-  for (size_t i = shift; i < n; ++i) {
+  for (size_t i = (size_t)shift; i < (size_t)n; ++i) {
     arr[i] /= factor;
   }
 }
@@ -33,7 +33,7 @@ normalize_double(double *arr, int n, double factor, int shift) {
 // normalize int arrays
 static inline void normalize_int(int *arr, int n, int factor, int shift) {
 
-  for (size_t i = shift; i < n; ++i) {
+  for (size_t i = (size_t)shift; i < (size_t)n; ++i) {
     arr[i] /= factor;
   }
 }

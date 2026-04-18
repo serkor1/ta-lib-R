@@ -10,7 +10,7 @@
 #include "Rinternals.h"
 #include "ta_defs.h"
 
-static inline const TA_MAType as_MAType(SEXP x) {
+static inline TA_MAType as_MAType(SEXP x) {
   int x_ = INTEGER(x)[0];
   return (TA_MAType)x_;
 }

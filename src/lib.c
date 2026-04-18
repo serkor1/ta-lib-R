@@ -45,10 +45,10 @@ SEXP reset_candle_setting() {
   // to allow the interface some slack
   if (return_code != TA_SUCCESS) {
     Rf_warning("Candle settings failed (Code %d)", return_code);
-  };
+  }
 
   return Rf_ScalarLogical(1);
-};
+}
 
 // Candle Settings
 //
@@ -106,7 +106,7 @@ SEXP set_candle_setting(
   // to allow the interface some slack
   if (return_code != TA_SUCCESS) {
     Rf_warning("Candle settings failed (Code %d)", return_code);
-  };
+  }
 
   return Rf_ScalarLogical(1);
-};
+}

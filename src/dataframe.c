@@ -18,18 +18,8 @@ static SEXP map_dfr_impl(
   const int nrows = INTEGER(dim)[0];
   const int ncols = INTEGER(dim)[1];
 
-  // construct input pointers and
-  // column sizes
+  // column stride used by both REALSXP/INTSXP branches below
   const size_t nrow_len = (size_t)nrows;
-  const size_t col_bytes =
-    (type == REALSXP) ? nrow_len * sizeof(double) : nrow_len * sizeof(int);
-
-  const void *restrict x_ptr;
-  if (type == REALSXP) {
-    x_ptr = (const void *restrict)REAL(x);
-  } else {
-    x_ptr = (const void *restrict)INTEGER(x);
-  }
 
   // clang-format off
   SEXP data_frame = PROTECT(
