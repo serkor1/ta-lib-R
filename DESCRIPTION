@@ -16,12 +16,14 @@ Authors@R: c(
       comment = "Copyright holder of the bundled TA-Lib C library (src/ta-lib/)"
     )
   )
-Description: Interface to the 'TA-Lib' technical analysis library, providing
-    access to 150+ indicators (e.g., ADX, MACD, RSI, Stochastic, Bollinger
-    Bands), candlestick pattern recognition, and rolling-window utilities.
-    Core computations are implemented in C for fast OHLCV time-series
-    feature engineering and rule-based signal generation, with optional
-    interactive visualization via 'plotly'.
+Description: Interface to the 'TA-Lib' (Technical Analysis Library) C
+    library, providing access to 150+ indicators (e.g. Average Directional
+    Movement Index (ADX), Moving Average Convergence Divergence (MACD),
+    Relative Strength Index (RSI), Stochastic Oscillator, Bollinger Bands),
+    candlestick pattern recognition, and rolling-window utilities. Core
+    computations are implemented in C for fast Open-High-Low-Close-Volume
+    (OHLCV) time-series feature engineering and rule-based signal
+    generation, with optional interactive visualization via 'plotly'.
 X-schema.org-keywords: technical analysis, TA-Lib, technical indicators,
     algorithmic trading, trading signals, quantitative finance,
     financial time series, OHLCV, candlestick patterns, RSI, MACD,
