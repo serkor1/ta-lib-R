@@ -37,8 +37,8 @@ set_theme(name, ...)
 
 When called without arguments, a
 [character](https://rdrr.io/r/base/character.html) vector of available
-theme names. Otherwise, invisibly returns the internal theme environment
-after modification.
+theme names. Otherwise, invisibly returns `NULL`; the theme is applied
+as a side effect to the internal chart-variables state.
 
 ## Details
 
