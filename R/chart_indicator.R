@@ -92,16 +92,59 @@
 #' @author Serkan Korkmaz
 #' @export
 indicator <- function(FUN, ...) {
-	## detect multi-indicator mode:
-	## indicator(RSI(n = 10), MACD()) passes calls
-	## indicator(RSI, n = 14) passes a bare function
+	## Routing between SINGLE-indicator and MULTI-indicator modes.
+	##
+	## SINGLE mode (one indicator, args via ...):
+	##   indicator(RSI, n = 14)
+	##   indicator(talib::RSI, n = 14)
+	##   indicator(get("RSI"), n = 14)         # indirect lookup
+	##   indicator(match.fun(RSI), n = 14)     # also indirect
+	##   indicator(my_fn_holding_RSI, n = 14)  # bound variable
+	##
+	## MULTI mode (merge several indicator panels - each call is re-
+	## evaluated with x = <chart> injected by indicator_multi):
+	##   indicator(RSI(n = 10), RSI(n = 14), RSI(n = 21))
+	##   indicator(RSI(n = 14), MACD())
+	##
+	## The disambiguation rule is:
+	##   - a bare name (`RSI`) or a namespace expression (`talib::RSI`)
+	##     never routes to MULTI (these are cheap to evaluate and
+	##     always denote the indicator function itself)
+	##   - every other call expression is evaluated once in the caller's
+	##     frame; if it resolves to a function the call must be an
+	##     indirect reference (`get()`, `match.fun()`, ...) and we take
+	##     SINGLE mode; otherwise we fall back to MULTI, which will
+	##     re-evaluate the call with x = <chart> injected.
+	##
+	## Previously this code assumed every call-shaped FUN was an
+	## indicator call, which broke `indicator(get("RSI"), n = 14)` and
+	## similar indirect-lookup forms.
 	fun_expr <- substitute(FUN)
 
-	is_ns_call <- is.call(fun_expr) &&
-		(identical(fun_expr[[1]], quote(`::`)) ||
-			identical(fun_expr[[1]], quote(`:::`)))
+	is_simple_ref <- is.name(fun_expr) ||
+		(is.call(fun_expr) &&
+			(identical(fun_expr[[1L]], quote(`::`)) ||
+				identical(fun_expr[[1L]], quote(`:::`))))
 
-	if (is.call(fun_expr) && !is_ns_call) {
+	if (!is_simple_ref && is.call(fun_expr)) {
+		## A call that isn't a bare name or namespace expression - could
+		## be an indicator call (multi mode) or an indirect function
+		## reference (single mode). Try evaluating it; if we get back a
+		## function, single mode wins.
+		resolved <- tryCatch(
+			eval(fun_expr, envir = parent.frame()),
+			error = function(e) NULL
+		)
+
+		if (is.function(resolved)) {
+			## Indirect function reference - reuse resolved to skip a
+			## second evaluation in the downstream dispatch.
+			FUN <- resolved
+			return(UseMethod("indicator"))
+		}
+
+		## Fall through to MULTI mode. indicator_multi will re-evaluate
+		## each expression with x = <chart> injected.
 		mc <- match.call(expand.dots = FALSE)
 		exprs <- c(list(fun_expr), mc$`...`)
 		return(indicator_multi(exprs, parent.frame()))
