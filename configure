@@ -16,44 +16,20 @@ set -eu
 RPKGNAME=$(grep "^Package:" DESCRIPTION | sed "s/Package: //")
 RPKGVERSION=$(grep "^Version:" DESCRIPTION | sed "s/Version: //")
 
-echo 
-echo Configure for {$RPKGNAME} v$RPKGVERSION 
+echo
+echo Configure for {$RPKGNAME} v$RPKGVERSION
 echo
 
-## configure args and vars
-## 
-## details:
-##  args are passed as: --configure-args="--foo-bar"
-##  vars are passed as: --configure-vars="FOO='DOTHIS'"
-##
-##  args:
-##      --force-vendor: if passed it will use the vendored
-##      TA-Lib via CMake
-## 
-##  vars:
-##      
-FORCE_VENDOR=0
-OPTIMIZE=""
-for arg in "$@"; do
-  case "$arg" in
-    --force-vendor)
-      FORCE_VENDOR=1
-      ;;
-    --optimize)
-      OPTIMIZE="${OPTIMIZE} -O3"
-      ;;
-    *)
-      echo "$(error) Unknown option: $arg" >&2
-      exit 1
-  esac
-done
-
 ## utility functions
-## 
+##
 ## details:
 ##  these functions serves absolutely no *real*
-##  purpose other than coloring simplifying the 
+##  purpose other than coloring simplifying the
 ##  messages sent to the host.
+##
+##  NOTE: defined before the argument parser so the
+##        helpers are available if an unknown flag
+##        triggers an error message.
 error() {
     printf '\e[0;31m%s\033[0m' "Build-error:"
 }
@@ -90,6 +66,44 @@ temporary_directory() {
   }
   printf '%s' "$dir"
 }
+
+## configure args and vars
+##
+## details:
+##  args are passed as: --configure-args="--foo-bar"
+##  vars are passed as: --configure-vars="FOO='DOTHIS'"
+##
+##  args:
+##      --force-vendor: if passed it will use the vendored
+##          TA-Lib via CMake
+##
+##  any other argument is forwarded verbatim as a C/C++
+##  compiler flag to both the vendored TA-Lib (CMake) build
+##  and the R wrapper compile step (Makevars). Example:
+##
+##      R CMD INSTALL . --configure-args="-O3 -march=native"
+##
+##  NOTE: binaries built with -march=native are tied to the
+##        build host's CPU features and are NOT portable.
+##
+##  vars:
+##
+FORCE_VENDOR=0
+OPTFLAGS=""
+for arg in "$@"; do
+  case "$arg" in
+    --force-vendor)
+      FORCE_VENDOR=1
+      ;;
+    *)
+      OPTFLAGS="${OPTFLAGS} ${arg}"
+      ;;
+  esac
+done
+
+if [ -n "$OPTFLAGS" ]; then
+    printf '%s Forwarding compiler flags:%s\n' "$(info)" "$OPTFLAGS"
+fi
 
 ## sanity checks
 ##
@@ -223,11 +237,13 @@ if [ "$(( PREINSTALLED + FORCE_VENDOR ))" -ne 0 ]; then
 
     ## vendor check end
     TARGET="$(cd "$TALIB" 2>/dev/null && pwd)/local"
-    trap 'rm -rf "$TARGET"' EXIT
 
     ## NOTE: this builds a temporary
     ##       directory to build TA-Lib
     ##       without this step .Rbuildignore will riot.
+    ##       $TARGET must NOT be cleaned here — R CMD INSTALL
+    ##       links against libta-lib.a inside it after configure
+    ##       completes.
     BUILDLOCATION=$(temporary_directory)
     trap 'rm -rf "$BUILDLOCATION"' EXIT
 
@@ -235,13 +251,13 @@ if [ "$(( PREINSTALLED + FORCE_VENDOR ))" -ne 0 ]; then
         printf '%s Configure and generate TA-Lib\n' "$(info)"
 
         cmake -S "$TALIB" -B "${BUILDLOCATION}" \
+            -Wno-dev --log-level=NOTICE \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_INSTALL_PREFIX="$TARGET" \
             -DBUILD_SHARED_LIBS=OFF \
             -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-            -DCMAKE_C_FLAGS="-w -fPIC" \
-            -DCMAKE_CXX_FLAGS="-w -fPIC" \
-            -DCMAKE_C_FLAGS_RELEASE="-fPIC" \
+            -DCMAKE_C_FLAGS="-w -fPIC ${OPTFLAGS}" \
+            -DCMAKE_CXX_FLAGS="-w -fPIC ${OPTFLAGS}" \
             -DBUILD_DEV_TOOLS=OFF
 
         printf '%s\n' "$(success)"
@@ -326,7 +342,7 @@ if [ $PREINSTALLED -eq 0 ]; then
     fi
 
 else
-    CFLAGS="-I${TARGET#*/src/}/include -I${TARGET#*/src/}/include/ta-lib"
+    CFLAGS="-I${TARGET##*/src/}/include -I${TARGET##*/src/}/include/ta-lib"
     SEARCH_DIR="$TALIB/local/lib/"
 
     ## details
@@ -340,10 +356,10 @@ else
         echo This is a bug, please submit a issue here: $(url https://github.com/serkor1/ta-lib-R)
         exit 1
     fi
-    PKG_LIBS="${PKG_LIBS#*src/} -lm"
+    PKG_LIBS="${PKG_LIBS##*src/} -lm"
 fi
 
-CFLAGS="$CFLAGS $OPTIMIZE"
+CFLAGS="$CFLAGS $OPTFLAGS"
 printf ' %s\n' "$(success)"
 
 printf '%s Constructing %s' "$(info)" "$(var Makevars)"
