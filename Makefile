@@ -25,16 +25,19 @@ build: clean fmt ## Build the R package
 	@rm -rf README.md
 	@Rscript -e "rmarkdown::render('dev/README.Rmd', output_dir = '.', output_format = rmarkdown::github_document(html_preview = FALSE), clean = TRUE)"
 
-check: fmt document ## Check the R package
-	@R CMD build .
-	@TALIB_STRICT_WARNINGS=1 R CMD check --as-cran $(tarball_location)
+check: fmt document build parity-prepare ## Check the R package
+	@TALIB_PARITY_SNAPSHOT_DIR=$$(pwd)/tests/parity/snapshot \
+	 TALIB_STRICT_WARNINGS=1 \
+	 R CMD check --as-cran $(tarball_location)
 
-check-full: fmt document ## Check the R package with valgrind
-	@R CMD build .
-	@TALIB_STRICT_WARNINGS=1 R CMD check --as-cran --use-valgrind $(tarball_location)
+check-full: fmt document build parity-prepare ## Check the R package with valgrind
+	@TALIB_PARITY_SNAPSHOT_DIR=$$(pwd)/tests/parity/snapshot \
+	 TALIB_STRICT_WARNINGS=1 \
+	 R CMD check --as-cran --use-valgrind $(tarball_location)
 
-test: fmt ## Run tests
-	@Rscript --verbose -e "library(talib); testthat::test_dir('tests/testthat')"
+test: fmt parity-prepare ## Run tests (incl. parity)
+	@TALIB_PARITY_SNAPSHOT_DIR=$$(pwd)/tests/parity/snapshot
+	Rscript --verbose -e "library(talib); testthat::test_dir('tests/testthat')"
 
 clean: ## Remove artifacts
 	@rm -rf src/*.o
@@ -43,11 +46,14 @@ clean: ## Remove artifacts
 	@rm -rf src/Makevars
 	@rm -rf $(package_name).Rcheck
 	@rm -rf docs
+	@rm -f tests/testthat/test-parity.R
 
 purge: clean ## Remove TA-Lib arifacts
 	@git -C src/ta-lib restore --staged --worktree .
 	@git -C src/ta-lib clean -fdx
 	@Rscript -e "try(remove.packages('$(package_name)'))"
+	@rm -rf tests/parity/snapshot
+	@rm -f codegen/parity/parity_gen
 
 fmt: ## Format code
 	@clang-format \
@@ -95,6 +101,36 @@ validate: ## Validate R output against TA-Lib core
 	R CMD SHLIB codegen/validation/validate.c
 	@Rscript codegen/validation/validate.R
 	@rm -f codegen/validation/validate.o codegen/validation/validate.so
+
+parity-gen: ## Build the standalone parity_gen exe (pure C, no R linkage)
+	@CC=$${CC:-gcc}; \
+	$$CC -O2 -Wall -Wextra \
+	  -Isrc/ta-lib/local/include -Isrc/ta-lib/local/include/ta-lib \
+	  codegen/parity/parity_gen.c \
+	  src/ta-lib/local/lib/libta-lib.a -lm \
+	  -o codegen/parity/parity_gen
+
+## Internal helper: build the C exe, regenerate the upstream snapshot,
+## and stage tests/testthat/test-parity.R from the template. Invoked
+## by `make parity`, `make test`, `make check`, `make check-full`.
+parity-prepare: parity-gen
+	@TMPDIR=$$(mktemp -d); \
+	trap 'rm -rf "$$TMPDIR"' EXIT; \
+	mkdir -p "$$TMPDIR/csv" tests/parity/snapshot; \
+	Rscript codegen/parity/btc_to_csv.R "$$TMPDIR/btc.csv"; \
+	./codegen/parity/parity_gen "$$TMPDIR/btc.csv" "$$TMPDIR/csv"; \
+	Rscript codegen/parity/csv_to_rds.R "$$TMPDIR/csv" tests/parity/snapshot
+	@cp codegen/parity/test_parity_template.R tests/testthat/test-parity.R
+
+parity: parity-prepare ## Regenerate the upstream snapshot and run the parity test only
+	@TALIB_PARITY_SNAPSHOT_DIR=$$(pwd)/tests/parity/snapshot \
+	 NOT_CRAN=true \
+	 Rscript -e "library(talib); testthat::test_file('tests/testthat/test-parity.R')"
+
+parity-clean: ## Remove parity build artifacts and the generated test file
+	@rm -f codegen/parity/parity_gen
+	@rm -f tests/testthat/test-parity.R
+	@rm -rf tests/parity/snapshot
 
 gen-code: ## Generate R wrappers and unit-tests
 	@Rscript --verbose ./codegen/gen_code/generate.R

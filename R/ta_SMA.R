@@ -19,7 +19,7 @@
 simple_moving_average <- function(
 	x,
 	cols,
-	n = 10,
+	n = 30,
 	na.bridge = FALSE,
 	...
 ) {
@@ -31,7 +31,7 @@ simple_moving_average <- function(
 		x <- structure(
 			{
 				list(
-					n = if (missing(n)) 10L else as.integer(n),
+					n = if (missing(n)) 30L else as.integer(n),
 					maType = 0L
 				)
 			}
@@ -56,7 +56,7 @@ SMA <- simple_moving_average
 simple_moving_average.default <- function(
 	x,
 	cols,
-	n = 10,
+	n = 30,
 	na.bridge = FALSE,
 	...
 ) {
@@ -103,7 +103,7 @@ simple_moving_average.default <- function(
 simple_moving_average.data.frame <- function(
 	x,
 	cols,
-	n = 10,
+	n = 30,
 	na.bridge = FALSE,
 	...
 ) {
@@ -119,7 +119,7 @@ simple_moving_average.data.frame <- function(
 simple_moving_average.matrix <- function(
 	x,
 	cols,
-	n = 10,
+	n = 30,
 	na.bridge = FALSE,
 	...
 ) {
@@ -142,7 +142,7 @@ simple_moving_average.matrix <- function(
 simple_moving_average.numeric <- function(
 	x,
 	cols,
-	n = 10,
+	n = 30,
 	na.bridge = FALSE,
 	...
 ) {
@@ -178,7 +178,7 @@ simple_moving_average.numeric <- function(
 simple_moving_average.plotly <- function(
 	x,
 	cols,
-	n = 10,
+	n = 30,
 	na.bridge = FALSE,
 	...
 ) {

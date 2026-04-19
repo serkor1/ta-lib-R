@@ -19,9 +19,9 @@
 extended_moving_average_convergence_divergence <- function(
 	x,
 	cols,
-	fast = EMA(n = 12),
-	slow = EMA(n = 26),
-	signal = EMA(n = 9),
+	fast = SMA(n = 12),
+	slow = SMA(n = 26),
+	signal = SMA(n = 9),
 	na.bridge = FALSE,
 	...
 ) {
@@ -42,9 +42,9 @@ MACDEXT <- extended_moving_average_convergence_divergence
 extended_moving_average_convergence_divergence.default <- function(
 	x,
 	cols,
-	fast = EMA(n = 12),
-	slow = EMA(n = 26),
-	signal = EMA(n = 9),
+	fast = SMA(n = 12),
+	slow = SMA(n = 26),
+	signal = SMA(n = 9),
 	na.bridge = FALSE,
 	...
 ) {
@@ -97,9 +97,9 @@ extended_moving_average_convergence_divergence.default <- function(
 extended_moving_average_convergence_divergence.data.frame <- function(
 	x,
 	cols,
-	fast = EMA(n = 12),
-	slow = EMA(n = 26),
-	signal = EMA(n = 9),
+	fast = SMA(n = 12),
+	slow = SMA(n = 26),
+	signal = SMA(n = 9),
 	na.bridge = FALSE,
 	...
 ) {
@@ -123,9 +123,9 @@ extended_moving_average_convergence_divergence.data.frame <- function(
 extended_moving_average_convergence_divergence.matrix <- function(
 	x,
 	cols,
-	fast = EMA(n = 12),
-	slow = EMA(n = 26),
-	signal = EMA(n = 9),
+	fast = SMA(n = 12),
+	slow = SMA(n = 26),
+	signal = SMA(n = 9),
 	na.bridge = FALSE,
 	...
 ) {
@@ -148,9 +148,9 @@ extended_moving_average_convergence_divergence.matrix <- function(
 extended_moving_average_convergence_divergence.numeric <- function(
 	x,
 	cols,
-	fast = EMA(n = 12),
-	slow = EMA(n = 26),
-	signal = EMA(n = 9),
+	fast = SMA(n = 12),
+	slow = SMA(n = 26),
+	signal = SMA(n = 9),
 	na.bridge = FALSE,
 	...
 ) {
@@ -201,9 +201,9 @@ extended_moving_average_convergence_divergence.numeric <- function(
 extended_moving_average_convergence_divergence.plotly <- function(
 	x,
 	cols,
-	fast = EMA(n = 12),
-	slow = EMA(n = 26),
-	signal = EMA(n = 9),
+	fast = SMA(n = 12),
+	slow = SMA(n = 26),
+	signal = SMA(n = 9),
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -336,9 +336,9 @@ extended_moving_average_convergence_divergence.plotly <- function(
 extended_moving_average_convergence_divergence.ggplot <- function(
 	x,
 	cols,
-	fast = EMA(n = 12),
-	slow = EMA(n = 26),
-	signal = EMA(n = 9),
+	fast = SMA(n = 12),
+	slow = SMA(n = 26),
+	signal = SMA(n = 9),
 	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
