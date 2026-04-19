@@ -55,7 +55,7 @@ testthat::test_that(desc = 'Default calls', code = {
 		),
 		expected = stochastic_relative_strength_index(
 			BTC,
-			cols = ~ high + low + close
+			cols = ~close
 		)
 	)
 })
@@ -229,4 +229,29 @@ testthat::test_that(desc = '<ggplot>-methods for <matrix>', code = {
 	testthat::expect_true(
 		inherits(output, "gg") || inherits(output, "talib_chart")
 	)
+})
+
+## check that <numeric> methods runs without
+## issues and returns proper lengths
+testthat::test_that(desc = '<numeric> methods', code = {
+	## check that the <numeric> method
+	## runs
+	x <- testthat::expect_no_condition(
+		stochastic_relative_strength_index(BTC[[1]])
+	)
+
+	## the numeric methods returns <matrix>
+	## depending on the underlying functions
+	## so the checks for equal lengths is conditional
+	target_length <- length(BTC[[1]])
+
+	if (is.null(dim(x))) {
+		testthat::expect_true(
+			length(x) == target_length
+		)
+	} else {
+		testthat::expect_true(
+			nrow(x) == target_length
+		)
+	}
 })

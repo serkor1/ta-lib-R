@@ -6,7 +6,6 @@
 //		integer optInFastK_Period
 //		integer optInFastD_Period
 //		integer optInFastD_MAType (MAType)
-//    integer offset
 //
 // Returns
 //      matrix (n x 2) with colum:
@@ -14,11 +13,6 @@
 //
 // Source
 //      https://github.com/TA-Lib/ta-lib/blob/main/src/ta_func/ta_STOCHRSI.c
-//
-// Details
-//   This function wraps RSI from the R side, so all
-//   values are offset by the <NA> values produced
-//   otherwise all returned values are <NA>
 //
 #include "MAType.h"
 #include "attributes.h"
@@ -38,8 +32,7 @@ SEXP impl_ta_STOCHRSI(
 	SEXP optInFastK_Period,
 	SEXP optInFastD_Period,
 	SEXP optInFastD_MAType,
-  SEXP offset,
-  SEXP na_ignore
+	SEXP na_bridge
 )
 // clang-format on
 {
@@ -57,21 +50,20 @@ SEXP impl_ta_STOCHRSI(
   const int optInFastK_Period_value = INTEGER(optInFastK_Period)[0];
   const int optInFastD_Period_value = INTEGER(optInFastD_Period)[0];
   const TA_MAType optInFastD_MAType_value = as_MAType(optInFastD_MAType);
-  const int offset_value = INTEGER(offset)[0];
 
   // NA handling
   // see na.h for more details
   int *na_mask = NULL;
   const int n_original = n;
 
-  if (LOGICAL(na_ignore)[0]) {
+  if (LOGICAL(na_bridge)[0]) {
     na_mask = (int *)R_alloc(n, sizeof(int));
     const double *na_arrays[] = {inReal_ptr};
     n = build_na_mask(na_mask, n, 1, na_arrays);
     if (n < n_original) {
-      double *compact_0 = (double *)R_alloc(n, sizeof(double));
-      compact_array(compact_0, inReal_ptr, na_mask, n_original);
-      inReal_ptr = compact_0;
+      compact_arrays(na_arrays, 1, na_mask, n_original, n);
+      inReal_ptr = na_arrays[0];
+
     } else {
       na_mask = NULL;
     }
@@ -85,11 +77,10 @@ SEXP impl_ta_STOCHRSI(
   // the function function early if
   // there is a mismatch
   const int lookback = TA_STOCHRSI_Lookback(
-                         optInTimePeriod_value,
-                         optInFastK_Period_value,
-                         optInFastD_Period_value,
-                         optInFastD_MAType_value) +
-                       offset_value;
+    optInTimePeriod_value,
+    optInFastK_Period_value,
+    optInFastD_Period_value,
+    optInFastD_MAType_value);
 
   // the output container is either a INTSXP or
   // REALSXP depending on the type and will
@@ -97,20 +88,15 @@ SEXP impl_ta_STOCHRSI(
   // between lookback and n
   //
   // see container.h for more details
-  const int proceed = output_container(
-    n + offset_value,
-    lookback,
-    2,
-    &output,
-    &output_ptr,
-    &protection_count);
+  const int proceed =
+    output_container(n, lookback, 2, &output, &output_ptr, &protection_count);
 
   if (proceed) {
     int start_idx = 0;
     int end_idx = 0;
 
     double *fastk = output_ptr;
-    double *fastd = output_ptr + 1 * (n + offset_value);
+    double *fastd = output_ptr + 1 * n;
 
     // TA_STOCHRSI returns an TA_RetCode
     // which is TA_SUCCESS if it succeeds
@@ -138,8 +124,8 @@ SEXP impl_ta_STOCHRSI(
     // of rows as 'n' - shifted values is replaced
     // with <NA>
     // see shift.h for more details
-    shift_array(fastk, n + offset_value, start_idx + offset_value);
-    shift_array(fastd, n + offset_value, start_idx + offset_value);
+    shift_array(fastk, n, start_idx);
+    shift_array(fastd, n, start_idx);
   }
 
   // set the column names and lookback attribute
@@ -150,19 +136,13 @@ SEXP impl_ta_STOCHRSI(
 
   // re-expand output if NAs were stripped
   // see na.h for more details
-  //
-  // The output has (n_compacted + offset_value) rows but must expand to
-  // (n_original + offset_value) rows.  Build an extended mask: the first
-  // offset_value entries are 0 (pass-through for the shift-generated NA
-  // padding), followed by the original data mask.
   if (na_mask != NULL) {
-    const int n_full = n_original + offset_value;
-    int *ext_mask = (int *)R_alloc(n_full, sizeof(int));
-    memset(ext_mask, 0, offset_value * sizeof(int));
-    memcpy(ext_mask + offset_value, na_mask, n_original * sizeof(int));
-
-    output =
-      reexpand_double_matrix(output, ext_mask, n_full, &protection_count);
+    output = reexpand_matrix(
+      output,
+      output_ptr,
+      na_mask,
+      n_original,
+      &protection_count);
   }
 
   UNPROTECT(protection_count);

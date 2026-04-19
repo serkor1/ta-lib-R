@@ -156,7 +156,12 @@ fi
 
 ## 5) splice protected code regions
 ##    (this is the old code, it works)
-if [[ -f "$OUTPUTFILE" ]]; then
+##    NOTE: use -s (exists AND non-empty). If the file exists but is
+##    0 bytes, awk's FNR==NR pass-1 trick misfires: no records from
+##    pass 1 means `tmp_render` gets consumed as pass 1 (harvest-only),
+##    pass 2 never runs, and the output is empty. -s routes 0-byte
+##    files through the `else` branch which copies the rendered template.
+if [[ -s "$OUTPUTFILE" ]]; then
   awk '
     function rtrim(s){ sub(/[[:space:]]+$/,"",s); return s }
     function label_from(line, part,   pos,rest,needle) {
