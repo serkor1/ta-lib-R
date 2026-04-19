@@ -6,12 +6,11 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun stochastic_relative_strength_index
 #' @templateVar .family Momentum Indicator
-#' @templateVar .formula ~ high + low + close
+#' @templateVar .formula ~close
 #'
 ## splice:documentation:start
 #' @param fastk ([integer]). Period for the fast-k line.
 #' @param fastd ([list]). Period and Moving Average (MA) type for the fast-d line. [SMA] by default.
-#' @param n_rsi ([integer]). Period for the [relative_strength_index].
 ## splice:documentation:end
 #'
 #' @template description
@@ -20,7 +19,6 @@ stochastic_relative_strength_index <- function(
 	x,
 	cols,
 	n = 14,
-	n_rsi = 14,
 	fastk = 5,
 	fastd = SMA(n = 3),
 	na.bridge = FALSE,
@@ -44,7 +42,6 @@ stochastic_relative_strength_index.default <- function(
 	x,
 	cols,
 	n = 14,
-	n_rsi = 14,
 	fastk = 5,
 	fastd = SMA(n = 3),
 	na.bridge = FALSE,
@@ -60,7 +57,7 @@ stochastic_relative_strength_index.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default = ~ high + low + close,
+		default = ~close,
 		data = x,
 		...
 	)
@@ -74,20 +71,11 @@ stochastic_relative_strength_index.default <- function(
 	x <- .Call(
 		C_impl_ta_STOCHRSI,
 		## splice:call:start
-		relative_strength_index(
-			constructed_series,
-			n = n_rsi,
-			na.bridge = na.bridge
-		)[[
-			1
-		]][
-			-seq_len(n_rsi)
-		],
+		constructed_series[[1]],
 		as.integer(n),
 		as.integer(fastk),
-		fastd$n,
-		fastd$maType,
-		as.integer(n_rsi),
+		as.integer(fastd$n),
+		as.integer(fastd$maType),
 		## splice:call:end
 		as.logical(na.bridge)
 	)
@@ -107,7 +95,6 @@ stochastic_relative_strength_index.data.frame <- function(
 	x,
 	cols,
 	n = 14,
-	n_rsi = 14,
 	fastk = 5,
 	fastd = SMA(n = 3),
 	na.bridge = FALSE,
@@ -118,7 +105,6 @@ stochastic_relative_strength_index.data.frame <- function(
 			x = x,
 			cols = cols,
 			n = n,
-			n_rsi = n_rsi,
 			fastk = fastk,
 			fastd = fastd,
 			na.bridge = na.bridge,
@@ -135,7 +121,6 @@ stochastic_relative_strength_index.matrix <- function(
 	x,
 	cols,
 	n = 14,
-	n_rsi = 14,
 	fastk = 5,
 	fastd = SMA(n = 3),
 	na.bridge = FALSE,
@@ -145,7 +130,6 @@ stochastic_relative_strength_index.matrix <- function(
 		x = x,
 		cols = cols,
 		n = n,
-		n_rsi = n_rsi,
 		fastk = fastk,
 		fastd = fastd,
 		na.bridge = na.bridge,
@@ -158,11 +142,61 @@ stochastic_relative_strength_index.matrix <- function(
 #' @aliases stochastic_relative_strength_index
 #'
 #' @export
+stochastic_relative_strength_index.numeric <- function(
+	x,
+	cols,
+	n = 14,
+	fastk = 5,
+	fastd = SMA(n = 3),
+	na.bridge = FALSE,
+	...
+) {
+	## warn if 'cols' have been
+	## passed just to make sure
+	## the user knows its not possible
+	## or relevant
+	if (!missing(cols)) {
+		warning("'cols' is passed but is unused for vectors.")
+	}
+
+	## pass the argument directly
+	## to 'C'
+	x <- .Call(
+		C_impl_ta_STOCHRSI,
+		## splice:numeric:start
+		as.double(x),
+		as.integer(n),
+		as.integer(fastk),
+		as.integer(fastd$n),
+		as.integer(fastd$maType),
+		## splice:numeric:end
+		as.logical(na.bridge)
+	)
+
+	## check if it has 'dims'
+	## and convert to double if
+	## not to honor the 'type-safety'-esque
+	## approach
+	##
+	## NOTE: this adds a few ns overhead but
+	##       its a robust alternative to code it
+	##       manually. Any suggestions are welcome
+	if (is.null(dim(x))) {
+		x <- as.double(x)
+	}
+
+	x
+}
+
+
+#' @usage NULL
+#' @aliases stochastic_relative_strength_index
+#'
+#' @export
 stochastic_relative_strength_index.plotly <- function(
 	x,
 	cols,
 	n = 14,
-	n_rsi = 14,
 	fastk = 5,
 	fastd = SMA(n = 3),
 	na.bridge = FALSE,
@@ -188,7 +222,7 @@ stochastic_relative_strength_index.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ high + low + close,
+		default = ~close,
 		...
 	)
 
@@ -200,7 +234,6 @@ stochastic_relative_strength_index.plotly <- function(
 			names(constructed_series)
 		),
 		n = n,
-		n_rsi = n_rsi,
 		fastk = fastk,
 		fastd = fastd,
 		na.bridge = TRUE
@@ -270,7 +303,6 @@ stochastic_relative_strength_index.ggplot <- function(
 	x,
 	cols,
 	n = 14,
-	n_rsi = 14,
 	fastk = 5,
 	fastd = SMA(n = 3),
 	na.bridge = FALSE,
@@ -293,7 +325,7 @@ stochastic_relative_strength_index.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ high + low + close,
+		default = ~close,
 		...
 	)
 
@@ -305,7 +337,6 @@ stochastic_relative_strength_index.ggplot <- function(
 			names(constructed_series)
 		),
 		n = n,
-		n_rsi = n_rsi,
 		fastk = fastk,
 		fastd = fastd,
 		na.bridge = TRUE

@@ -221,7 +221,7 @@ indicators <- list(
 	momentum("Moving Average Convergence Divergence (Fixed)", "fixed_moving_average_convergence_divergence", "MACDFIX", "~close", c("signal=9")),
 	momentum("Relative Strength Index", "relative_strength_index", "RSI", "~close", c("n=14")),
 	momentum("Stochastic", "stochastic", "STOCH", "~ high + low + close", c("fastk = 5", "slowk = SMA(n = 3)", "slowd = SMA(n = 3)")),
-	momentum("Stochastic Relative Strength Index", "stochastic_relative_strength_index", "STOCHRSI", "~ high + low + close", c("n=14", "n_rsi=14", "fastk=5", "fastd=SMA(n=3)"), c_generator = "skip"),
+	momentum("Stochastic Relative Strength Index", "stochastic_relative_strength_index", "STOCHRSI", "~close", c("n=14", "fastk=5", "fastd=SMA(n=3)")),
 	momentum("Ultimate Oscillator", "ultimate_oscillator", "ULTOSC", "~ high + low + close", c("n=c(7, 14, 28)")),
 	momentum("Average Directional Movement Index", "average_directional_movement_index", "ADX", "~ high + low + close", c("n=14")),
 	momentum("Average Directional Movement Index Rating", "average_directional_movement_index_rating", "ADXR", "~ high + low + close", c("n=14")),

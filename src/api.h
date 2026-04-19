@@ -114,7 +114,7 @@ SEXP impl_ta_SAREXT(SEXP inHigh, SEXP inLow, SEXP optInStartValue, SEXP optInOff
 SEXP impl_ta_SAR(SEXP inHigh, SEXP inLow, SEXP optInAcceleration, SEXP optInMaximum, SEXP na_bridge);
 SEXP impl_ta_STDDEV(SEXP inReal, SEXP optInTimePeriod, SEXP optInNbDev, SEXP na_bridge);
 SEXP impl_ta_STOCHF(SEXP inHigh, SEXP inLow, SEXP inClose, SEXP optInFastK_Period, SEXP optInFastD_Period, SEXP optInFastD_MAType, SEXP na_bridge);
-SEXP impl_ta_STOCHRSI(SEXP inReal, SEXP optInTimePeriod, SEXP optInFastK_Period, SEXP optInFastD_Period, SEXP optInFastD_MAType, SEXP offset, SEXP na_ignore);
+SEXP impl_ta_STOCHRSI(SEXP inReal, SEXP optInTimePeriod, SEXP optInFastK_Period, SEXP optInFastD_Period, SEXP optInFastD_MAType, SEXP na_bridge);
 SEXP impl_ta_STOCH(SEXP inHigh, SEXP inLow, SEXP inClose, SEXP optInFastK_Period, SEXP optInSlowK_Period, SEXP optInSlowK_MAType, SEXP optInSlowD_Period, SEXP optInSlowD_MAType, SEXP na_bridge);
 SEXP impl_ta_SUM(SEXP inReal, SEXP optInTimePeriod, SEXP na_bridge);
 SEXP impl_ta_TRANGE(SEXP inHigh, SEXP inLow, SEXP inClose, SEXP na_bridge);
