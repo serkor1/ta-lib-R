@@ -105,3 +105,4 @@ src/ta-lib/Makefile.in
 ^\.github$
 ^codegen$
 ^CRAN-SUBMISSION$
+^tests/testthat/test-parity.R

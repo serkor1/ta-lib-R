@@ -78,3 +78,12 @@ inst/doc
 
 ## ignore files in benchmark
 benchmark/*.rds
+
+## Parity snapshots are regenerated from upstream on every run; no value
+## in tracking them. The standalone exe is also a build artifact.
+## tests/testthat/test-parity.R is auto-generated from the template at
+## codegen/parity/test_parity_template.R by `make parity-prepare`.
+tests/parity/snapshot/
+tests/testthat/test-parity.R
+codegen/parity/parity_gen
+codegen/parity/parity_gen.exe
