@@ -9,13 +9,26 @@
 ## What this checks:
 ##   For every .rds in $TALIB_PARITY_SNAPSHOT_DIR, resolve the matching
 ##   R wrapper via the package's alias convention (every TA-Lib name X
-##   is exported as both x_long_name() and X()), invoke it, and compare
-##   each output column positionally against the snapshot using
+##   is exported as both x_long_name() and X()), invoke it WITH WRAPPER
+##   DEFAULTS (no extra args), and compare each output column
+##   positionally against the canonical upstream snapshot using
 ##   all.equal() with sqrt(.Machine$double.eps) tolerance.
 ##
+## Test philosophy:
+##   The snapshot reflects canonical TA-Lib behaviour with metadata
+##   defaults (including the conventional input columns: close for
+##   single-Real inputs, OHLCV per flags for Price inputs). The R
+##   wrapper is invoked with its own defaults. Any divergence -
+##   wrong default column, wrong default period, wrong default MAType,
+##   missing output, etc. - shows up as a failed expectation.
+##
+## One narrow exemption, encoded as an override below:
+##   - MAMA: the R wrapper routes through TA_MA(maType=MAMA), which
+##     internally calls TA_MAMA(close, 0.5, 0.05) and discards FAMA.
+##     Compare the MAMA column only; the missing FAMA is intentional.
+##
 ## Skip behaviour:
-##   -  ensures CRAN's automated checks see SKIP, not RUN.
-##   - skip when TALIB_PARITY_SNAPSHOT_DIR is unset or empty (e.g. when
+##   - skip when TALIB_PARITY_SNAPSHOT_DIR is unset/missing (e.g. when
 ##     someone runs devtools::test() without first running `make parity`).
 
 suppressPackageStartupMessages(library(talib))
@@ -36,106 +49,49 @@ options(talib.normalize = FALSE)
 	d
 }
 
-## ---- Per-indicator R-call overrides -------------------------------------
+## ---- Per-indicator overrides --------------------------------------------
 ##
-## Default invocation: do.call(name, list(BTC)) - one positional data.frame
-## arg. A handful of wrappers take separate (x, y, ...) args; encode those
-## here. NOT a spec catalog - call shape only, no parameter values.
-
+## Each entry is one of:
+##   - a function(btc, snap) returning the R wrapper's output
+##   - a list(call = function(btc, snap), compare_cols = N) for partial
+##     comparisons (e.g. MAMA where the wrapper exposes 1 of 2 columns)
+##
+## What overrides DO and DON'T do:
+##   DO bridge a signature mismatch (wrapper takes vector(s), not data.frame)
+##   DO forward snapshot-supplied params for indicators where the wrapper's
+##      default is intentionally different from TA-Lib's metadata default
+##      (today: only the MA family)
+##   DO restrict comparison shape when the wrapper intentionally exposes a
+##      subset of upstream's outputs (today: only MAMA)
+##   DON'T silently match the wrapper's actual behaviour to make the test
+##      pass. If the wrapper has a real bug (wrong default column, wrong
+##      MAType, etc.), the test should fail and surface it.
 R_CALL_OVERRIDES <- list(
-	## Vector-input wrappers (rolling_*, etc).
-	CORREL = function(btc, snap) {
-		talib::CORREL(btc$high, btc$low, n = snap_n(snap))
-	},
-	BETA = function(btc, snap) talib::BETA(btc$high, btc$low, n = snap_n(snap)),
-	VAR = function(btc, snap) talib::VAR(btc$close, n = snap_n(snap)),
-	STDDEV = function(btc, snap) talib::STDDEV(btc$close, n = snap_n(snap)),
-	MAX = function(btc, snap) talib::MAX(btc$close, n = snap_n(snap)),
-	MIN = function(btc, snap) talib::MIN(btc$close, n = snap_n(snap)),
-	SUM = function(btc, snap) talib::SUM(btc$close, n = snap_n(snap)),
-	## MAMA: the R wrapper routes through TA_MA(maType=MAMA), which
-	## internally calls TA_MAMA(close, 0.5, 0.05) and discards the FAMA
-	## output. So the wrapper returns 1 column; upstream TA_MAMA returns 2
-	## (outMAMA, outFAMA). The MAMA column itself is bit-identical, so
-	## we compare just that column. The missing FAMA column is tracked as
-	## an intentional wrapper asymmetry (see repo issue tracker).
+	## --- Signature bridges (wrapper takes vector inputs, not a data.frame) ---
+	## Inputs match the canonical snapshot wiring in parity_gen.c
+	## (high+low for the 2-Real convention; close for single-Real).
+	## NO period forwarding: wrapper defaults are tested against canonical.
+	CORREL = function(btc, snap) talib::CORREL(btc$high, btc$low),
+	BETA = function(btc, snap) talib::BETA(btc$high, btc$low),
+	VAR = function(btc, snap) talib::VAR(btc$close),
+	STDDEV = function(btc, snap) talib::STDDEV(btc$close),
+	MAX = function(btc, snap) talib::MAX(btc$close),
+	MIN = function(btc, snap) talib::MIN(btc$close),
+	SUM = function(btc, snap) talib::SUM(btc$close),
+
+	## --- MAMA: structural asymmetry (FAMA dropped via TA_MA dispatch) ---
 	MAMA = list(
 		call = function(btc, snap) talib::MAMA(btc),
 		compare_cols = 1L
-	),
-	## STOCHRSI: the R wrapper exposes two periods (n_rsi for the inner
-	## TA_RSI call, n for the outer TA_STOCHRSI step). The snapshot for
-	## STOCHRSI is generated as a composite (TA_RSI -> strip -> TA_STOCHRSI)
-	## in parity_gen.c, matching the wrapper exactly. No override needed
-	## beyond calling the wrapper with no args.
-	STOCHRSI = function(btc, snap) talib::STOCHRSI(btc),
-	## MACDEXT: R wrapper takes MA-spec lists (fast = EMA(n=12), etc.);
-	## TA-Lib upstream defaults all three MAType to SMA. Mirror upstream
-	## defaults explicitly so we test the same configuration.
-	MACDEXT = function(btc, snap) {
-		opts <- snap$opt_inputs
-		talib::MACDEXT(
-			btc,
-			fast = talib::SMA(n = as.integer(opts$optInFastPeriod)),
-			slow = talib::SMA(n = as.integer(opts$optInSlowPeriod)),
-			signal = talib::SMA(n = as.integer(opts$optInSignalPeriod))
-		)
-	}
+	)
 )
-
-snap_n <- function(snap, default = 30L) {
-	v <- snap$opt_inputs$optInTimePeriod
-	if (is.null(v) || !nzchar(v)) {
-		return(default)
-	}
-	as.integer(v)
-}
-
-## Generic TA-Lib opt -> R wrapper arg translation. Many R wrappers
-## default to a different `n` than TA-Lib (e.g. SMA's R default is 10,
-## TA-Lib's metadata default is 30). Forwarding the snapshot's
-## optInTimePeriod into the wrapper as `n` keeps the test apples-to-apples.
-TA_TO_R_ARG <- c(
-	optInTimePeriod = "n",
-	optInFastPeriod = "fast",
-	optInSlowPeriod = "slow",
-	optInSignalPeriod = "signal"
-)
-
-coerce_opt <- function(ta_name, value) {
-	if (grepl("Period", ta_name, fixed = TRUE)) {
-		return(as.integer(value))
-	}
-	if (grepl("MAType", ta_name, fixed = TRUE)) {
-		return(as.integer(value))
-	}
-	suppressWarnings(as.numeric(value))
-}
-
-build_args_from_snap <- function(snap) {
-	opts <- snap$opt_inputs
-	args <- list()
-	for (ta_name in names(opts)) {
-		r_name <- TA_TO_R_ARG[ta_name]
-		if (is.na(r_name)) {
-			next
-		}
-		args[[r_name]] <- coerce_opt(ta_name, opts[[ta_name]])
-	}
-	args
-}
 
 ## Invoke the R wrapper for an indicator. Returns a list:
 ##   result       - the raw output (matrix / data.frame / NULL)
 ##   compare_cols - NULL to compare all columns (default), or an integer
 ##                  N to restrict comparison to the first N columns
-##                  (used when the wrapper intentionally exposes a subset
-##                  of upstream's output slots; e.g. MAMA drops FAMA)
 call_r_wrapper <- function(name, btc, snap) {
 	override <- R_CALL_OVERRIDES[[name]]
-	if (identical(override, NA)) {
-		return(list(result = NULL, compare_cols = NULL))
-	}
 	if (is.function(override)) {
 		return(list(result = override(btc, snap), compare_cols = NULL))
 	}
@@ -145,17 +101,15 @@ call_r_wrapper <- function(name, btc, snap) {
 			compare_cols = override$compare_cols
 		))
 	}
+	## Default: call with no args. Wrapper's own defaults drive the test.
+	## Anything that diverges from canonical (default column choice,
+	## default MAType, default period, default formula) shows up as a
+	## failed expectation downstream.
 	fn <- get(name, envir = asNamespace("talib"), inherits = FALSE)
-	args <- build_args_from_snap(snap)
-	list(result = do.call(fn, c(list(btc), args)), compare_cols = NULL)
+	list(result = fn(btc), compare_cols = NULL)
 }
 
 ## ---- Test enumeration ---------------------------------------------------
-##
-## We emit one test_that() per indicator so the testthat report shows
-## per-indicator PASS/FAIL/SKIP. Each test calls  before
-## doing any real work; if the snapshot dir is unavailable we skip the
-## entire batch with a single sentinel test that explains why.
 
 .parity_run <- function() {
 	snapshot_dir <- .parity_snapshot_dir()
@@ -199,12 +153,6 @@ call_r_wrapper <- function(name, btc, snap) {
 
 			called <- call_r_wrapper(name, BTC, snap)
 			result <- called$result
-			if (is.null(result)) {
-				skip(paste0(
-					name,
-					": R wrapper diverges from upstream entry point"
-				))
-			}
 
 			mat <- if (is.matrix(result)) {
 				result

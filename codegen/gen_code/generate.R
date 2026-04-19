@@ -29,7 +29,8 @@ generate_R <- function(x) {
 		candlestick = x$candlestick %||% 0,
 		maType    = x$maType %||% -1,
 		rolling   = x$rolling %||% 0,
-		univariate = x$univariate
+		univariate = x$univariate,
+		n_default = x$n_default %||% 30L
 	)
 }
 

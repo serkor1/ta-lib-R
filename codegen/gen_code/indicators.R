@@ -55,12 +55,13 @@ candlestick <- function(title, fun, alias, signature = "", agnostic = FALSE) {
 	)
 }
 
-moving_avg <- function(title, fun, alias, ma_type) {
+moving_avg <- function(title, fun, alias, ma_type, n_default = 30L) {
 	list(
 		title = title, fun = fun, alias = alias,
 		family = "Overlap Study",
 		formula = "~close",
 		maType = ma_type,
+		n_default = as.integer(n_default),
 		plotly = 0, test_plotly = 1,
 		univariate = 0, # MA template has built-in numeric method
 		c_generator = "shared_ma"
@@ -216,7 +217,7 @@ indicators <- list(
 	momentum("Fast Stochastic", "fast_stochastic", "STOCHF", "~ high + low + close", c("fastk=5", "fastd=SMA(n=3)")),
 	momentum("Money Flow Index", "money_flow_index", "MFI", "~ high + low + close + volume", c("n = 14")),
 	momentum("Moving Average Convergence Divergence", "moving_average_convergence_divergence", "MACD", "~close", c("fast = 12", "slow = 26", "signal = 9")),
-	momentum("Moving Average Convergence Divergence (Extended)", "extended_moving_average_convergence_divergence", "MACDEXT", "~close", c("fast = EMA(n = 12)", "slow = EMA(n = 26)", "signal = EMA(n = 9)")),
+	momentum("Moving Average Convergence Divergence (Extended)", "extended_moving_average_convergence_divergence", "MACDEXT", "~close", c("fast = SMA(n = 12)", "slow = SMA(n = 26)", "signal = SMA(n = 9)")),
 	momentum("Moving Average Convergence Divergence (Fixed)", "fixed_moving_average_convergence_divergence", "MACDFIX", "~close", c("signal=9")),
 	momentum("Relative Strength Index", "relative_strength_index", "RSI", "~close", c("n=14")),
 	momentum("Stochastic", "stochastic", "STOCH", "~ high + low + close", c("fastk = 5", "slowk = SMA(n = 3)", "slowd = SMA(n = 3)")),
@@ -250,7 +251,7 @@ indicators <- list(
 	moving_avg("Triangular Moving Average", "triangular_moving_average", "TRIMA", "5L"),
 	moving_avg("Kaufman Adaptive Moving Average", "kaufman_adaptive_moving_average", "KAMA", "6L"),
 	moving_avg("MESA Adaptive Moving Average", "mesa_adaptive_moving_average", "MAMA", "7L"),
-	moving_avg("Triple Exponential Moving Average (T3)", "t3_exponential_moving_average", "T3", "8L"),
+	moving_avg("Triple Exponential Moving Average (T3)", "t3_exponential_moving_average", "T3", "8L", n_default = 5L),
 
 	## ========================
 	## Overlap Studies

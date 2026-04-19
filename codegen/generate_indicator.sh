@@ -93,6 +93,7 @@ export CARGS;    REPLACE+='${CARGS}'
 export PPARGS;   REPLACE+='${PPARGS}'
 export AGNOSTIC; REPLACE+='${AGNOSTIC}'
 export maType;   REPLACE+='${maType}'
+export N_DEFAULT; REPLACE+='${N_DEFAULT}'
 
 ## 4) construct R files
 ##    in temporary locations

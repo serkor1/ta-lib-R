@@ -19,7 +19,7 @@
 $FUN <- function(
 	x,
 	cols,
-	n = 10,
+	n = ${N_DEFAULT},
 	na.bridge = FALSE,
 	...) {
 
@@ -31,7 +31,7 @@ $FUN <- function(
 			x <- structure(
 				{
 				list(
-					n = if (missing(n)) 10L else as.integer(n),
+					n = if (missing(n)) ${N_DEFAULT}L else as.integer(n),
 					maType = ${maType}
 				)
 				}
@@ -56,7 +56,7 @@ $ALIAS <- $FUN
 $FUN.default <- function(
 	x,
 	cols,
-	n = 10,
+	n = ${N_DEFAULT},
 	na.bridge = FALSE,
 	...) {
 
@@ -103,7 +103,7 @@ $FUN.default <- function(
 $FUN.data.frame <- function(
 	x,
 	cols,
-	n = 10,
+	n = ${N_DEFAULT},
 	na.bridge = FALSE,
 	...) {
 
@@ -119,7 +119,7 @@ $FUN.data.frame <- function(
 $FUN.matrix <- function(
 	x,
 	cols,
-	n = 10,
+	n = ${N_DEFAULT},
 	na.bridge = FALSE,
 	...) {
 
@@ -142,7 +142,7 @@ $FUN.matrix <- function(
 $FUN.numeric <- function(
 	x,
 	cols,
-	n = 10,
+	n = ${N_DEFAULT},
 	na.bridge = FALSE,
 	...) {
 
@@ -179,7 +179,7 @@ $FUN.numeric <- function(
 $FUN.plotly <- function(
 	x,
 	cols,
-	n = 10,
+	n = ${N_DEFAULT},
 	na.bridge = FALSE,
 	...) {
 

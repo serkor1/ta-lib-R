@@ -18,7 +18,8 @@ impl_generate_indicator <- function(
 	candlestick = 0,
 	maType = -1,
 	rolling = 0,
-	univariate = NULL
+	univariate = NULL,
+	n_default = 30L
 ) {
 	if (is.null(formula)) formula <- "~close"
 	if (missing(univariate) | is.null(univariate)) {
@@ -51,7 +52,8 @@ impl_generate_indicator <- function(
 			sprintf(
 				"NUMERIC='%s'",
 				has_numeric
-			)
+			),
+			sprintf("N_DEFAULT='%s'", as.integer(n_default))
 		)
 	)
 }

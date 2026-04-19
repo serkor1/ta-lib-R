@@ -43,6 +43,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include <string.h>
 #include <math.h>
 #include <ta_libc.h>
@@ -50,6 +51,34 @@
 #define MAX_BTC_ROWS 200000
 #define PATH_BUF 1024
 #define OPT_BUF 2048
+
+// ---- snprintf accumulator --------------------------------------------------
+//
+// Append to a fixed buffer at `pos`, returning the new position. Safe
+// against the CWE-190 underflow pattern CodeQL flags around naive
+// `pos += snprintf(buf + pos, BUF - pos, ...)`: the `BUF - pos`
+// expression underflows once `pos` overshoots the buffer (which can
+// happen because snprintf returns the length it WOULD have written,
+// even when truncated). This helper:
+//   - returns `pos` unchanged when the buffer is already full;
+//   - clamps `pos` to `bufsize - 1` on truncation, so the next call
+//     sees a valid (possibly zero) remaining space.
+static size_t append_fmt(
+  char *buf,
+  size_t bufsize,
+  size_t pos,
+  const char *fmt,
+  ...
+) {
+  if (bufsize == 0 || pos >= bufsize) return pos;
+  va_list ap;
+  va_start(ap, fmt);
+  int written = vsnprintf(buf + pos, bufsize - pos, fmt, ap);
+  va_end(ap);
+  if (written < 0) return pos;
+  if ((size_t)written >= bufsize - pos) return bufsize - 1;  // truncated
+  return pos + (size_t)written;
+}
 
 // ---- BTC reader ------------------------------------------------------------
 
@@ -215,21 +244,11 @@ static void format_opt_summary(
     if (TA_GetOptInputParameterInfo(handle, i, &op) != TA_SUCCESS || !op) continue;
     const char *sep = (i > 0) ? ";" : "";
     if (op->type == TA_OptInput_RealRange || op->type == TA_OptInput_RealList) {
-      pos += (size_t)snprintf(
-        buf + pos,
-        bufsz > pos ? bufsz - pos : 0,
-        "%s%s=%g",
-        sep,
-        op->paramName,
-        op->defaultValue);
+      pos = append_fmt(buf, bufsz, pos, "%s%s=%g",
+                       sep, op->paramName, op->defaultValue);
     } else {
-      pos += (size_t)snprintf(
-        buf + pos,
-        bufsz > pos ? bufsz - pos : 0,
-        "%s%s=%d",
-        sep,
-        op->paramName,
-        (int)op->defaultValue);
+      pos = append_fmt(buf, bufsz, pos, "%s%s=%d",
+                       sep, op->paramName, (int)op->defaultValue);
     }
     if (pos >= bufsz) break;
   }
@@ -258,45 +277,35 @@ static void format_input_summary(
 
     const char *sep = (i > 0) ? "," : "";
     if (ip->type == TA_Input_Price) {
-      kpos += (size_t)snprintf(kind + kpos, kindsz > kpos ? kindsz - kpos : 0,
-                               "%sPrice", sep);
+      kpos = append_fmt(kind, kindsz, kpos, "%sPrice", sep);
       // OHLCV components actually consumed (per flags).
       const char *plus = "";
       if (ip->flags & TA_IN_PRICE_OPEN) {
-        cpos += (size_t)snprintf(cols + cpos, colsz > cpos ? colsz - cpos : 0,
-                                 "%sopen", plus); plus = "+";
+        cpos = append_fmt(cols, colsz, cpos, "%sopen", plus); plus = "+";
       }
       if (ip->flags & TA_IN_PRICE_HIGH) {
-        cpos += (size_t)snprintf(cols + cpos, colsz > cpos ? colsz - cpos : 0,
-                                 "%shigh", plus); plus = "+";
+        cpos = append_fmt(cols, colsz, cpos, "%shigh", plus); plus = "+";
       }
       if (ip->flags & TA_IN_PRICE_LOW) {
-        cpos += (size_t)snprintf(cols + cpos, colsz > cpos ? colsz - cpos : 0,
-                                 "%slow", plus); plus = "+";
+        cpos = append_fmt(cols, colsz, cpos, "%slow", plus); plus = "+";
       }
       if (ip->flags & TA_IN_PRICE_CLOSE) {
-        cpos += (size_t)snprintf(cols + cpos, colsz > cpos ? colsz - cpos : 0,
-                                 "%sclose", plus); plus = "+";
+        cpos = append_fmt(cols, colsz, cpos, "%sclose", plus); plus = "+";
       }
       if (ip->flags & TA_IN_PRICE_VOLUME) {
-        cpos += (size_t)snprintf(cols + cpos, colsz > cpos ? colsz - cpos : 0,
-                                 "%svolume", plus);
+        cpos = append_fmt(cols, colsz, cpos, "%svolume", plus);
       }
     } else if (ip->type == TA_Input_Real) {
-      kpos += (size_t)snprintf(kind + kpos, kindsz > kpos ? kindsz - kpos : 0,
-                               "%sReal", sep);
+      kpos = append_fmt(kind, kindsz, kpos, "%sReal", sep);
       const char *col;
       if (strcmp(ip->paramName, "inReal0") == 0) col = "high";
       else if (strcmp(ip->paramName, "inReal1") == 0) col = "low";
       else if (strcmp(ip->paramName, "inVolume") == 0) col = "volume";
       else col = "close";
-      cpos += (size_t)snprintf(cols + cpos, colsz > cpos ? colsz - cpos : 0,
-                               "%s%s", sep, col);
+      cpos = append_fmt(cols, colsz, cpos, "%s%s", sep, col);
     } else {
-      kpos += (size_t)snprintf(kind + kpos, kindsz > kpos ? kindsz - kpos : 0,
-                               "%sInteger", sep);
-      cpos += (size_t)snprintf(cols + cpos, colsz > cpos ? colsz - cpos : 0,
-                               "%s(unsupported)", sep);
+      kpos = append_fmt(kind, kindsz, kpos, "%sInteger", sep);
+      cpos = append_fmt(cols, colsz, cpos, "%s(unsupported)", sep);
     }
   }
 }
@@ -384,16 +393,14 @@ static int process_one(const TA_FuncInfo *info, btc_t *btc, const char *out_dir)
       outputs[i] = malloc((size_t)btc->n * sizeof(double));
       rc = TA_SetOutputParamRealPtr(params, i, (double *)outputs[i]);
       output_is_int[i] = 0;
-      ots_pos += (size_t)snprintf(output_types_str + ots_pos,
-                                  sizeof(output_types_str) - ots_pos,
-                                  "%sReal", sep);
+      ots_pos = append_fmt(output_types_str, sizeof(output_types_str),
+                           ots_pos, "%sReal", sep);
     } else {
       outputs[i] = malloc((size_t)btc->n * sizeof(int));
       rc = TA_SetOutputParamIntegerPtr(params, i, (int *)outputs[i]);
       output_is_int[i] = 1;
-      ots_pos += (size_t)snprintf(output_types_str + ots_pos,
-                                  sizeof(output_types_str) - ots_pos,
-                                  "%sInteger", sep);
+      ots_pos = append_fmt(output_types_str, sizeof(output_types_str),
+                           ots_pos, "%sInteger", sep);
     }
     if (rc != TA_SUCCESS) {
       fprintf(stderr, "  ERR  %-22s SetOutputParam[%u] rc=%d\n", info->name, i, rc);
@@ -518,52 +525,63 @@ static int process_volume_composite(btc_t *btc, const char *out_dir) {
 
 // ---- Composite: STOCHRSI --------------------------------------------------
 //
-// The R wrapper (R/ta_STOCHRSI.R + src/ta_STOCHRSI.c) defines its own
-// two-period StochRSI: it calls TA_RSI(close, n_rsi) first, strips the
-// leading n_rsi NAs, and feeds the resulting RSI series to TA_STOCHRSI
-// with period n. Upstream's standalone TA_STOCHRSI uses a single period
-// for both the inner RSI and the outer step, so a direct comparison
-// against TA_STOCHRSI(close, ...) would diverge by design.
+// Canonical Chande/Kroll Stochastic RSI per the original 1994 paper:
 //
-// Reproduce the wrapper's composition exactly. Defaults match the
-// wrapper (n_rsi = n = 14, fastk = 5, fastd = SMA(3)).
+//     RSI(close, optInTimePeriod)
+//   then
+//     STOCHF(rsi as H/L/C, optInFastK_Period, optInFastD_Period, optInFastD_MAType)
+//
+// We compose this explicitly (TA_RSI -> TA_STOCHF) rather than calling
+// TA_STOCHRSI directly. Functionally identical numerically, but the
+// composite makes the canonical recipe self-documenting and is the
+// reference the R wrapper is expected to match.
+//
+// Defaults are TA-Lib's metadata defaults for STOCHRSI:
+//   optInTimePeriod    = 14
+//   optInFastK_Period  = 5
+//   optInFastD_Period  = 3
+//   optInFastD_MAType  = SMA (0)
+//
+// If the R wrapper diverges from this composite (e.g. by computing RSI
+// twice via TA_STOCHRSI on a pre-computed RSI series), the parity test
+// is expected to fail until the wrapper is corrected.
 static int process_stochrsi_composite(btc_t *btc, const char *out_dir) {
   const int n = btc->n;
-  const int n_rsi = 14;          /* wrapper default */
-  const int n_stoch = 14;        /* wrapper default */
+  const int period = 14;
   const int fastk = 5;
   const int fastd = 3;
   const TA_MAType fastd_ma = (TA_MAType)0;  /* SMA */
 
-  /* Step 1: RSI(close, n_rsi). Output buffer is full length (n - n_rsi). */
+  /* Step 1: RSI(close, period). */
   double *rsi = (double *)malloc((size_t)n * sizeof(double));
   TA_Integer rsi_beg = 0, rsi_nb = 0;
-  TA_RetCode rc = TA_RSI(0, n - 1, btc->close, n_rsi, &rsi_beg, &rsi_nb, rsi);
+  TA_RetCode rc = TA_RSI(0, n - 1, btc->close, period, &rsi_beg, &rsi_nb, rsi);
   if (rc != TA_SUCCESS) {
     fprintf(stderr, "  ERR  STOCHRSI composite TA_RSI rc=%d\n", rc);
     free(rsi); return -1;
   }
-  /* rsi[0..rsi_nb-1] contains valid values; the wrapper strips the
-   * leading n_rsi NAs, so it feeds rsi[0..rsi_nb-1] into TA_STOCHRSI. */
 
-  /* Step 2: TA_STOCHRSI on the stripped RSI series. */
+  /* Step 2: STOCHF(rsi as H/L/C, fastk, fastd, ma). On a single-line
+   * series the high/low/close inputs are all the same vector; min/max
+   * over the FastK window collapses to min/max of that series. */
   double *fastK = (double *)malloc((size_t)rsi_nb * sizeof(double));
   double *fastD = (double *)malloc((size_t)rsi_nb * sizeof(double));
   TA_Integer st_beg = 0, st_nb = 0;
-  rc = TA_STOCHRSI(0, rsi_nb - 1, rsi, n_stoch, fastk, fastd, fastd_ma,
-                   &st_beg, &st_nb, fastK, fastD);
+  rc = TA_STOCHF(0, rsi_nb - 1, rsi, rsi, rsi,
+                 fastk, fastd, fastd_ma,
+                 &st_beg, &st_nb, fastK, fastD);
   if (rc != TA_SUCCESS) {
-    fprintf(stderr, "  ERR  STOCHRSI composite TA_STOCHRSI rc=%d\n", rc);
+    fprintf(stderr, "  ERR  STOCHRSI composite TA_STOCHF rc=%d\n", rc);
     free(rsi); free(fastK); free(fastD); return -1;
   }
 
-  /* Composite lookback in the original series:
-   *   rsi_beg              (NAs from inner TA_RSI, == n_rsi for startIdx=0)
-   * + st_beg               (NAs from the outer TA_STOCHRSI on the stripped series)
-   * Per the C wrapper this equals TA_STOCHRSI_Lookback(...) + n_rsi.
-   * Pre-fill full-length buffers with NaN; copy values starting at the
-   * composite offset. */
+  /* Combined lookback in the original close series:
+   *   rsi_beg              (NAs from inner TA_RSI; equals period for startIdx=0)
+   * + st_beg               (NAs from TA_STOCHF on the RSI series)
+   * Equals TA_STOCHRSI_Lookback() -- same shape as a direct call.        */
   const int composite_offset = rsi_beg + st_beg;
+
+  /* Pad to full n with NaN, copy values into the right positions. */
   double *fastK_full = (double *)malloc((size_t)n * sizeof(double));
   double *fastD_full = (double *)malloc((size_t)n * sizeof(double));
   for (int i = 0; i < n; i++) {
@@ -581,8 +599,8 @@ static int process_stochrsi_composite(btc_t *btc, const char *out_dir) {
 
   char opt_summary[256];
   snprintf(opt_summary, sizeof(opt_summary),
-           "n_rsi=%d;optInTimePeriod=%d;optInFastK_Period=%d;optInFastD_Period=%d;optInFastD_MAType=%d",
-           n_rsi, n_stoch, fastk, fastd, (int)fastd_ma);
+           "optInTimePeriod=%d;optInFastK_Period=%d;optInFastD_Period=%d;optInFastD_MAType=%d",
+           period, fastk, fastd, (int)fastd_ma);
 
   int ret = emit_snapshot(
     out_dir, "STOCHRSI",
@@ -592,7 +610,7 @@ static int process_stochrsi_composite(btc_t *btc, const char *out_dir) {
     output_names,
     "Real,Real",
     composite_offset,          /* lookback (metadata) */
-    0,                         /* outBegIdx: we already padded */
+    0,                         /* outBegIdx: pre-padded */
     n,                         /* outNbElement: emit full buffers */
     n,
     outputs, output_is_int);
