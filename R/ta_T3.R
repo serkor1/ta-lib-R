@@ -36,6 +36,7 @@ t3_exponential_moving_average <- function(
 		x <- structure(
 			list(
 				n = if (missing(n)) 5L else as.integer(n),
+				vfactor = if (missing(vfactor)) 0.7 else as.double(vfactor),
 				maType = 8L
 			)
 		)

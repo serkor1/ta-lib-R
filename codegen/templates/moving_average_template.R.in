@@ -32,7 +32,7 @@ $FUN <- function(
 			## from call
 			x <- structure(
 				list(
-					${SPEC_N},
+					${SPEC_FIELDS},
 					maType = ${maType}
 				)
 			)

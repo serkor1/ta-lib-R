@@ -144,7 +144,7 @@ positional parameters (the `signature` field in the metadata):
 | `${CARGS}`        | Bare names for `.Call()`: `,key`              | `,n ,vfactor`                            |
 | `${CARGS_TYPED}`  | Type-coerced names (`as.integer`/`as.double`) | `,as.integer(n) ,as.double(vfactor)`     |
 | `${PPARGS}`       | Named forwarding, no trailing comma (plotly)  | `,n=n ,vfactor=vfactor`                  |
-| `${SPEC_N}`       | MA spec-mode `n` field                        | `n = if (missing(n)) 10L else as.integer(n)` (or `n = 10L` when `n` not in sig) |
+| `${SPEC_FIELDS}`  | MA spec-mode list fields, one per signature arg | `n = if (missing(n)) 10L else as.integer(n),\n\t\t\t\tvfactor = if (missing(vfactor)) 0.7 else as.double(vfactor)` |
 
 ## How C wrapper generation works
 

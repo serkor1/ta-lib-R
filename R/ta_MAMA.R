@@ -36,7 +36,8 @@ mesa_adaptive_moving_average <- function(
 		## from call
 		x <- structure(
 			list(
-				n = 30L,
+				fast = if (missing(fast)) 0.5 else as.double(fast),
+				slow = if (missing(slow)) 0.05 else as.double(slow),
 				maType = 7L
 			)
 		)

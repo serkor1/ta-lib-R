@@ -53,7 +53,7 @@ ARGS_ARRAY=( "$@" )
 PARGS_ARR=() # arguments inside calls, becomes n = n, or k = k
 CARGS_ARR=() # arguments inside .Call, becomes n, k
 CARGS_TYPED_ARR=() # arguments inside .Call, type-coerced (as.integer/as.double)
-has_n=0
+SPEC_FIELDS_ARR=() # fields for MA spec-mode list(...) (key = coerced-or-default)
 for a in "${ARGS_ARRAY[@]}"; do
   if [[ $a == *=* ]]; then
     k=${a%%=*}
@@ -67,10 +67,11 @@ for a in "${ARGS_ARRAY[@]}"; do
   ## decide coercion by default-value shape: dot => double, else integer
   if [[ "$v" == *.* ]]; then
     CARGS_TYPED_ARR+=( ",as.double($k)" )
+    SPEC_FIELDS_ARR+=( "$k = if (missing($k)) $v else as.double($k)" )
   else
     CARGS_TYPED_ARR+=( ",as.integer($k)" )
+    SPEC_FIELDS_ARR+=( "$k = if (missing($k)) ${v}L else as.integer($k)" )
   fi
-  if [[ "$k" == "n" ]]; then has_n=1; fi
 done
 
 ## 2.2) construct arguments 
@@ -90,15 +91,18 @@ PPARGS=$(printf '%s ' "${PARGS_ARR[@]}");
 CARGS=$(printf '%s ' "${CARGS_ARR[@]}");
 CARGS_TYPED=$(printf '%s ' "${CARGS_TYPED_ARR[@]}");
 
-## 2.3) spec-mode 'n' expression used by the moving_average
-##      template. When 'n' is a declared arg we round-trip it,
-##      otherwise (e.g. MAMA) we emit the default placeholder so
-##      downstream consumers (BBANDS, APO, ...) still find ma$n.
-if [[ "$has_n" -eq 1 ]]; then
-  SPEC_N='n = if (missing(n)) '"${N_DEFAULT:-30}"'L else as.integer(n)'
-else
-  SPEC_N='n = '"${N_DEFAULT:-30}"'L'
-fi
+## 2.3) spec-mode list fields for the moving_average template.
+##      Each signature argument becomes a round-tripped entry in
+##      the list returned when the MA is called without 'x'.
+##      Joined with ',' + newline + indent so 'air' can reformat.
+SPEC_FIELDS=""
+for ((_i=0; _i<${#SPEC_FIELDS_ARR[@]}; _i++)); do
+  if [[ $_i -eq 0 ]]; then
+    SPEC_FIELDS="${SPEC_FIELDS_ARR[$_i]}"
+  else
+    SPEC_FIELDS="${SPEC_FIELDS},"$'\n\t\t\t\t'"${SPEC_FIELDS_ARR[$_i]}"
+  fi
+done
 
 ## 3) export environment variables
 ##    to replace in templates
@@ -117,7 +121,7 @@ export PPARGS;   REPLACE+='${PPARGS}'
 export AGNOSTIC; REPLACE+='${AGNOSTIC}'
 export maType;   REPLACE+='${maType}'
 export N_DEFAULT; REPLACE+='${N_DEFAULT}'
-export SPEC_N;   REPLACE+='${SPEC_N}'
+export SPEC_FIELDS; REPLACE+='${SPEC_FIELDS}'
 
 ## 4) construct R files
 ##    in temporary locations
