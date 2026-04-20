@@ -23,7 +23,6 @@
 ##   c_generator - C generation strategy:
 ##                 NULL      = standard (generate_indicator_core.sh → stdout)
 ##                 "candlestick" = generate_core_candlestick.sh
-##                 "shared_ma"   = shared ta_MA.c (generate once)
 ##                 "skip"        = do not generate C
 
 ## -----------------------------------------------------------
@@ -55,16 +54,20 @@ candlestick <- function(title, fun, alias, signature = "", agnostic = FALSE) {
 	)
 }
 
-moving_avg <- function(title, fun, alias, ma_type, n_default = 30L) {
+moving_avg <- function(title, fun, alias, ma_type, n_default = 30L, signature = NULL) {
+	if (is.null(signature)) {
+		signature <- sprintf("n=%d", as.integer(n_default))
+	}
 	list(
 		title = title, fun = fun, alias = alias,
 		family = "Overlap Study",
 		formula = "~close",
 		maType = ma_type,
 		n_default = as.integer(n_default),
+		signature = signature,
 		plotly = 0, test_plotly = 1,
 		univariate = 0, # MA template has built-in numeric method
-		c_generator = "shared_ma"
+		c_generator = NULL
 	)
 }
 
@@ -250,8 +253,15 @@ indicators <- list(
 	moving_avg("Triple Exponential Moving Average", "triple_exponential_moving_average", "TEMA", "4L"),
 	moving_avg("Triangular Moving Average", "triangular_moving_average", "TRIMA", "5L"),
 	moving_avg("Kaufman Adaptive Moving Average", "kaufman_adaptive_moving_average", "KAMA", "6L"),
-	moving_avg("MESA Adaptive Moving Average", "mesa_adaptive_moving_average", "MAMA", "7L"),
-	moving_avg("Triple Exponential Moving Average (T3)", "t3_exponential_moving_average", "T3", "8L", n_default = 5L),
+	moving_avg(
+		"MESA Adaptive Moving Average", "mesa_adaptive_moving_average", "MAMA", "7L",
+		signature = c("fast=0.5", "slow=0.05")
+	),
+	moving_avg(
+		"Triple Exponential Moving Average (T3)", "t3_exponential_moving_average", "T3", "8L",
+		n_default = 5L,
+		signature = c("n=5", "vfactor=0.7")
+	),
 
 	## ========================
 	## Overlap Studies

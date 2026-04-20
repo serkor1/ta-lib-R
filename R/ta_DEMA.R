@@ -8,6 +8,9 @@
 #' @templateVar .family Overlap Study
 #' @templateVar .formula ~close
 #'
+## splice:documentation:start
+## splice:documentation:end
+#'
 #' @details
 #' When passed without 'x', [double_exponential_moving_average] functions as an 'Moving Average'-specification which is used in, for example, [stochastic] when constructing the smoothing lines.
 #'
@@ -29,12 +32,10 @@ double_exponential_moving_average <- function(
 		## construct Moving Average specification
 		## from call
 		x <- structure(
-			{
-				list(
-					n = if (missing(n)) 30L else as.integer(n),
-					maType = 3L
-				)
-			}
+			list(
+				n = if (missing(n)) 30L else as.integer(n),
+				maType = 3L
+			)
 		)
 
 		return(x)
@@ -82,10 +83,9 @@ double_exponential_moving_average.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		C_impl_ta_MA,
+		C_impl_ta_DEMA,
 		as.double(constructed_series[[1]]),
 		as.integer(n),
-		3L,
 		as.logical(na.bridge)
 	)
 
@@ -157,10 +157,9 @@ double_exponential_moving_average.numeric <- function(
 	## pass to 'C' directly
 	## with the input vector
 	x <- .Call(
-		C_impl_ta_MA,
+		C_impl_ta_DEMA,
 		as.double(x),
 		as.integer(n),
-		3L,
 		as.logical(na.bridge)
 	)
 
@@ -231,7 +230,7 @@ double_exponential_moving_average.plotly <- function(
 				)
 			)
 		),
-		name = sprintf("DEMA(%d)", n),
+		name = label("DEMA", n),
 		decorators = list()
 	)
 	state[["main"]] <- plotly_object
@@ -247,7 +246,7 @@ double_exponential_moving_average.plotly <- function(
 double_exponential_moving_average.ggplot <- function(
 	x,
 	cols,
-	n = 10,
+	n = 30,
 	na.bridge = FALSE,
 	...
 ) {
@@ -293,7 +292,7 @@ double_exponential_moving_average.ggplot <- function(
 				y = "DEMA"
 			)
 		),
-		name = sprintf("DEMA(%d)", n),
+		name = label("DEMA", n),
 		decorators = list(),
 		data = constructed_indicator
 	)

@@ -1,16 +1,15 @@
-// interface to ta_MA.c
+// interface to ta_EMA.c
 //
 // Parameters
 // 		double  inReal
 // 		integer optInTimePeriod
-//		integer optInMAType (MAType)
 //
 // Returns
-//      matrix (n x 1) with colum name
-//      depending on MAType, for example "SMA"
+//      matrix (n x 1) with colum:
+//          "EMA"
 //
 // Source
-//      https://github.com/TA-Lib/ta-lib/blob/main/src/ta_func/ta_MA.c
+//      https://github.com/TA-Lib/ta-lib/blob/main/src/ta_func/ta_EMA.c
 //
 #include "MAType.h"
 #include "attributes.h"
@@ -24,11 +23,10 @@
 #include <ta_libc.h>
 
 // clang-format off
-SEXP impl_ta_MA(
+SEXP impl_ta_EMA(
 	SEXP inReal,
 	SEXP optInTimePeriod,
-	SEXP optInMAType,
-	SEXP na_rm
+	SEXP na_bridge
 )
 // clang-format on
 {
@@ -43,21 +41,20 @@ SEXP impl_ta_MA(
 
   // extract input values
   const int optInTimePeriod_value = INTEGER(optInTimePeriod)[0];
-  const TA_MAType optInMAType_value = as_MAType(optInMAType);
 
   // NA handling
   // see na.h for more details
   int *na_mask = NULL;
   const int n_original = n;
 
-  if (LOGICAL(na_rm)[0]) {
+  if (LOGICAL(na_bridge)[0]) {
     na_mask = (int *)R_alloc(n, sizeof(int));
     const double *na_arrays[] = {inReal_ptr};
     n = build_na_mask(na_mask, n, 1, na_arrays);
     if (n < n_original) {
-      double *compact_0 = (double *)R_alloc(n, sizeof(double));
-      compact_array(compact_0, inReal_ptr, na_mask, n_original);
-      inReal_ptr = compact_0;
+      compact_arrays(na_arrays, 1, na_mask, n_original, n);
+      inReal_ptr = na_arrays[0];
+
     } else {
       na_mask = NULL;
     }
@@ -70,7 +67,7 @@ SEXP impl_ta_MA(
   // calculate look back and exit
   // the function function early if
   // there is a mismatch
-  const int lookback = TA_MA_Lookback(optInTimePeriod_value, optInMAType_value);
+  const int lookback = TA_EMA_Lookback(optInTimePeriod_value);
 
   // the output container is either a INTSXP or
   // REALSXP depending on the type and will
@@ -87,16 +84,15 @@ SEXP impl_ta_MA(
 
     double *real = output_ptr;
 
-    // TA_MA returns an TA_RetCode
+    // TA_EMA returns an TA_RetCode
     // which is TA_SUCCESS if it succeeds
     // values in output_ptr gets populated
     // by pointers
-    TA_RetCode return_code = TA_MA(
+    TA_RetCode return_code = TA_EMA(
       0,
       n - 1,
       inReal_ptr,
       optInTimePeriod_value,
-      optInMAType_value,
       &start_idx,
       &end_idx,
       real);
@@ -113,11 +109,10 @@ SEXP impl_ta_MA(
     shift_array(real, n, start_idx);
   }
 
-  // set the column names of the output
-  // see names.h for more details
-  // determine column name
-  const char *colname = _MAType_(optInMAType_value);
-  set_colnames(output, colname);
+  // set the column names and lookback attribute
+  // of the output container
+  // see names.h and attributes.h for more details
+  set_colnames(output, "EMA");
   set_attribute(output, lookback, &protection_count);
 
   // re-expand output if NAs were stripped

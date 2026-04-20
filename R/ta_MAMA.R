@@ -8,6 +8,11 @@
 #' @templateVar .family Overlap Study
 #' @templateVar .formula ~close
 #'
+## splice:documentation:start
+#' @param fast ([double]). Upper limit of the adaptive smoothing factor (alpha) used in the MESA algorithm. A [double] in `[0.01, 0.99]`. `0.5` by default.
+#' @param slow ([double]). Lower limit of the adaptive smoothing factor (alpha) used in the MESA algorithm. A [double] in `[0.01, 0.99]`. `0.05` by default.
+## splice:documentation:end
+#'
 #' @details
 #' When passed without 'x', [mesa_adaptive_moving_average] functions as an 'Moving Average'-specification which is used in, for example, [stochastic] when constructing the smoothing lines.
 #'
@@ -19,7 +24,8 @@
 mesa_adaptive_moving_average <- function(
 	x,
 	cols,
-	n = 30,
+	fast = 0.5,
+	slow = 0.05,
 	na.bridge = FALSE,
 	...
 ) {
@@ -29,12 +35,10 @@ mesa_adaptive_moving_average <- function(
 		## construct Moving Average specification
 		## from call
 		x <- structure(
-			{
-				list(
-					n = if (missing(n)) 30L else as.integer(n),
-					maType = 7L
-				)
-			}
+			list(
+				n = 30L,
+				maType = 7L
+			)
 		)
 
 		return(x)
@@ -56,7 +60,8 @@ MAMA <- mesa_adaptive_moving_average
 mesa_adaptive_moving_average.default <- function(
 	x,
 	cols,
-	n = 30,
+	fast = 0.5,
+	slow = 0.05,
 	na.bridge = FALSE,
 	...
 ) {
@@ -82,10 +87,10 @@ mesa_adaptive_moving_average.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		C_impl_ta_MA,
+		C_impl_ta_MAMA,
 		as.double(constructed_series[[1]]),
-		as.integer(n),
-		7L,
+		as.double(fast),
+		as.double(slow),
 		as.logical(na.bridge)
 	)
 
@@ -103,7 +108,8 @@ mesa_adaptive_moving_average.default <- function(
 mesa_adaptive_moving_average.data.frame <- function(
 	x,
 	cols,
-	n = 30,
+	fast = 0.5,
+	slow = 0.05,
 	na.bridge = FALSE,
 	...
 ) {
@@ -119,7 +125,8 @@ mesa_adaptive_moving_average.data.frame <- function(
 mesa_adaptive_moving_average.matrix <- function(
 	x,
 	cols,
-	n = 30,
+	fast = 0.5,
+	slow = 0.05,
 	na.bridge = FALSE,
 	...
 ) {
@@ -129,7 +136,8 @@ mesa_adaptive_moving_average.matrix <- function(
 	mesa_adaptive_moving_average.default(
 		x = x,
 		cols = cols,
-		n = n,
+		fast = fast,
+		slow = slow,
 		na.bridge = na.bridge,
 		...
 	)
@@ -142,7 +150,8 @@ mesa_adaptive_moving_average.matrix <- function(
 mesa_adaptive_moving_average.numeric <- function(
 	x,
 	cols,
-	n = 30,
+	fast = 0.5,
+	slow = 0.05,
 	na.bridge = FALSE,
 	...
 ) {
@@ -157,10 +166,10 @@ mesa_adaptive_moving_average.numeric <- function(
 	## pass to 'C' directly
 	## with the input vector
 	x <- .Call(
-		C_impl_ta_MA,
+		C_impl_ta_MAMA,
 		as.double(x),
-		as.integer(n),
-		7L,
+		as.double(fast),
+		as.double(slow),
 		as.logical(na.bridge)
 	)
 
@@ -178,7 +187,8 @@ mesa_adaptive_moving_average.numeric <- function(
 mesa_adaptive_moving_average.plotly <- function(
 	x,
 	cols,
-	n = 30,
+	fast = 0.5,
+	slow = 0.05,
 	na.bridge = FALSE,
 	...
 ) {
@@ -208,7 +218,8 @@ mesa_adaptive_moving_average.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n
+		fast = fast,
+		slow = slow
 	)
 
 	## add conditional idx
@@ -231,7 +242,7 @@ mesa_adaptive_moving_average.plotly <- function(
 				)
 			)
 		),
-		name = sprintf("MAMA(%d)", n),
+		name = label("MAMA", fast, slow),
 		decorators = list()
 	)
 	state[["main"]] <- plotly_object
@@ -247,7 +258,8 @@ mesa_adaptive_moving_average.plotly <- function(
 mesa_adaptive_moving_average.ggplot <- function(
 	x,
 	cols,
-	n = 10,
+	fast = 0.5,
+	slow = 0.05,
 	na.bridge = FALSE,
 	...
 ) {
@@ -276,7 +288,8 @@ mesa_adaptive_moving_average.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n
+		fast = fast,
+		slow = slow
 	)
 
 	## add conditional idx
@@ -293,7 +306,7 @@ mesa_adaptive_moving_average.ggplot <- function(
 				y = "MAMA"
 			)
 		),
-		name = sprintf("MAMA(%d)", n),
+		name = label("MAMA", fast, slow),
 		decorators = list(),
 		data = constructed_indicator
 	)

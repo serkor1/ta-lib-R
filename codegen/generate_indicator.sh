@@ -52,14 +52,25 @@ ARGS_ARRAY=( "$@" )
 ##      '=' to avoid using awk
 PARGS_ARR=() # arguments inside calls, becomes n = n, or k = k
 CARGS_ARR=() # arguments inside .Call, becomes n, k
+CARGS_TYPED_ARR=() # arguments inside .Call, type-coerced (as.integer/as.double)
+has_n=0
 for a in "${ARGS_ARRAY[@]}"; do
   if [[ $a == *=* ]]; then
     k=${a%%=*}
+    v=${a#*=}
   else
     k=$a
+    v=""
   fi
   PARGS_ARR+=( ",$k=$k" )
   CARGS_ARR+=( ",$k" )
+  ## decide coercion by default-value shape: dot => double, else integer
+  if [[ "$v" == *.* ]]; then
+    CARGS_TYPED_ARR+=( ",as.double($k)" )
+  else
+    CARGS_TYPED_ARR+=( ",as.integer($k)" )
+  fi
+  if [[ "$k" == "n" ]]; then has_n=1; fi
 done
 
 ## 2.2) construct arguments 
@@ -73,10 +84,21 @@ printf -v ARGS '%s, ' "${ARGS_ARRAY[@]}"; ARGS=${ARGS%, }
 if [[ "$ROLLING" != "1" ]]; then
   if [[ -n ${ARGS} ]]; then ARGS+=','; fi
 fi
-## NOTE: this is passed down to 
+## NOTE: this is passed down to
 ##       the {plotly} template
 PPARGS=$(printf '%s ' "${PARGS_ARR[@]}");
 CARGS=$(printf '%s ' "${CARGS_ARR[@]}");
+CARGS_TYPED=$(printf '%s ' "${CARGS_TYPED_ARR[@]}");
+
+## 2.3) spec-mode 'n' expression used by the moving_average
+##      template. When 'n' is a declared arg we round-trip it,
+##      otherwise (e.g. MAMA) we emit the default placeholder so
+##      downstream consumers (BBANDS, APO, ...) still find ma$n.
+if [[ "$has_n" -eq 1 ]]; then
+  SPEC_N='n = if (missing(n)) '"${N_DEFAULT:-30}"'L else as.integer(n)'
+else
+  SPEC_N='n = '"${N_DEFAULT:-30}"'L'
+fi
 
 ## 3) export environment variables
 ##    to replace in templates
@@ -90,10 +112,12 @@ export FORMULA;  REPLACE+='${FORMULA}'
 export ARGS;     REPLACE+='${ARGS}'
 export PARGS;    REPLACE+='${PARGS}'
 export CARGS;    REPLACE+='${CARGS}'
+export CARGS_TYPED; REPLACE+='${CARGS_TYPED}'
 export PPARGS;   REPLACE+='${PPARGS}'
 export AGNOSTIC; REPLACE+='${AGNOSTIC}'
 export maType;   REPLACE+='${maType}'
 export N_DEFAULT; REPLACE+='${N_DEFAULT}'
+export SPEC_N;   REPLACE+='${SPEC_N}'
 
 ## 4) construct R files
 ##    in temporary locations

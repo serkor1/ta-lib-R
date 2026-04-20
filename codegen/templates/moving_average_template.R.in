@@ -8,6 +8,9 @@
 #' @templateVar .family ${FAMILY}
 #' @templateVar .formula ${FORMULA}
 #'
+## splice:documentation:start
+## splice:documentation:end
+#'
 #' @details
 #' When passed without 'x', [$FUN] functions as an 'Moving Average'-specification which is used in, for example, [stochastic] when constructing the smoothing lines.
 #'
@@ -18,8 +21,7 @@
 #' @template returns
 $FUN <- function(
 	x,
-	cols,
-	n = ${N_DEFAULT},
+	cols,${ARGS}
 	na.bridge = FALSE,
 	...) {
 
@@ -29,12 +31,10 @@ $FUN <- function(
 			## construct Moving Average specification
 			## from call
 			x <- structure(
-				{
 				list(
-					n = if (missing(n)) ${N_DEFAULT}L else as.integer(n),
+					${SPEC_N},
 					maType = ${maType}
 				)
-				}
 			)
 
 			return(x)
@@ -55,8 +55,7 @@ $ALIAS <- $FUN
 #' @export
 $FUN.default <- function(
 	x,
-	cols,
-	n = ${N_DEFAULT},
+	cols,${ARGS}
 	na.bridge = FALSE,
 	...) {
 
@@ -82,10 +81,8 @@ $FUN.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		C_impl_ta_MA,
-		as.double(constructed_series[[1]]),
-		as.integer(n),
-		${maType},
+		C_impl_ta_${TA_FUN},
+		as.double(constructed_series[[1]])${CARGS_TYPED},
 		as.logical(na.bridge)
 	)
 
@@ -102,8 +99,7 @@ $FUN.default <- function(
 #' @export
 $FUN.data.frame <- function(
 	x,
-	cols,
-	n = ${N_DEFAULT},
+	cols,${ARGS}
 	na.bridge = FALSE,
 	...) {
 
@@ -118,8 +114,7 @@ $FUN.data.frame <- function(
 #' @export
 $FUN.matrix <- function(
 	x,
-	cols,
-	n = ${N_DEFAULT},
+	cols,${ARGS}
 	na.bridge = FALSE,
 	...) {
 
@@ -128,8 +123,7 @@ $FUN.matrix <- function(
 		## shenanigans with NextMethod()
 		$FUN.default(
 				x = x,
-				cols = cols,
-				n = n,
+				cols = cols ${PARGS}
 				na.bridge = na.bridge,
 				...
 		)
@@ -141,8 +135,7 @@ $FUN.matrix <- function(
 #' @export
 $FUN.numeric <- function(
 	x,
-	cols,
-	n = ${N_DEFAULT},
+	cols,${ARGS}
 	na.bridge = FALSE,
 	...) {
 
@@ -157,10 +150,8 @@ $FUN.numeric <- function(
 		## pass to 'C' directly
 		## with the input vector
 		x <- .Call(
-			C_impl_ta_MA,
-			as.double(x),
-			as.integer(n),
-			${maType},
+			C_impl_ta_${TA_FUN},
+			as.double(x)${CARGS_TYPED},
 			as.logical(na.bridge)
 		)
 
@@ -178,8 +169,7 @@ $FUN.numeric <- function(
 #' @export
 $FUN.plotly <- function(
 	x,
-	cols,
-	n = ${N_DEFAULT},
+	cols,${ARGS}
 	na.bridge = FALSE,
 	...) {
 
@@ -208,8 +198,7 @@ $FUN.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		),
-		n = n
+		) ${PPARGS}
 	)
 
 	## add conditional idx
@@ -229,7 +218,7 @@ $FUN.plotly <- function(
 		)
 			)
 		),
-		name = sprintf("$ALIAS(%d)", n),
+		name = label("$ALIAS" ${CARGS}),
 		decorators = list()
 	)
 	state[["main"]] <- plotly_object
