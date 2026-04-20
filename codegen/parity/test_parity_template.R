@@ -50,13 +50,12 @@ options(talib.normalize = FALSE)
 ## Each entry is one of:
 ##   - a function(btc, snap) returning the R wrapper's output
 ##   - a list(call = function(btc, snap), compare_cols = N) for partial
-##     comparisons (e.g. MAMA where the wrapper exposes 1 of 2 columns)
+##     comparisons when a wrapper intentionally exposes a subset of
+##     upstream's outputs
 ##
 ## What overrides DO and DON'T do:
-##   DO bridge a signature mismatch (wrapper takes vector(s), not data.frame)
-##   DO forward snapshot-supplied params for indicators where the wrapper's
-##      default is intentionally different from TA-Lib's metadata default
-##      (today: only the MA family)
+##   DO bridge a signature mismatch (wrapper takes vector(s), not a
+##      data.frame) - see the rolling-statistics family below
 ##   DO restrict comparison shape when the wrapper intentionally exposes a
 ##      subset of upstream's outputs
 ##   DON'T silently match the wrapper's actual behaviour to make the test
@@ -162,7 +161,7 @@ call_r_wrapper <- function(name, btc, snap) {
 
 			## How many columns to compare. Default: all of upstream's.
 			## Override: the wrapper intentionally exposes a subset
-			## (e.g. MAMA returns 1 column vs upstream's 2).
+			## of upstream's outputs.
 			n_expected <- if (is.null(called$compare_cols)) {
 				length(snap$output_names)
 			} else {
