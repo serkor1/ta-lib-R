@@ -177,15 +177,15 @@ ecosystem:
 
 <div align="center">
 
-| Category              | TA-Lib (C)           | {talib}                     |
-|:----------------------|:---------------------|:----------------------------|
-| Overlap Studies       | `TA_BBANDS()`        | `bollinger_bands()`         |
-| Momentum Indicators   | `TA_CCI()`           | `commodity_channel_index()` |
-| Volume Indicators     | `TA_OBV()`           | `on_balance_volume()`       |
-| Volatility Indicators | `TA_ATR()`           | `average_true_range()`      |
-| Price Transform       | `TA_AVGPRICE()`      | `average_price()`           |
-| Cycle Indicators      | `TA_HT_SINE()`       | `sine_wave()`               |
-| Pattern Recognition   | `TA_CDLHANGINGMAN()` | `hanging_man()`             |
+| Category              | TA-Lib (C)           | {talib}                     | {talib} alias     |
+|:----------------------|:---------------------|:----------------------------|:------------------|
+| Overlap Studies       | `TA_BBANDS()`        | `bollinger_bands()`         | `BBANDS()`        |
+| Momentum Indicators   | `TA_CCI()`           | `commodity_channel_index()` | `CCI()`           |
+| Volume Indicators     | `TA_OBV()`           | `on_balance_volume()`       | `OBV()`           |
+| Volatility Indicators | `TA_ATR()`           | `average_true_range()`      | `ATR()`           |
+| Price Transform       | `TA_AVGPRICE()`      | `average_price()`           | `AVGPRICE()`      |
+| Cycle Indicators      | `TA_HT_SINE()`       | `sine_wave()`               | `HT_SINE()`       |
+| Pattern Recognition   | `TA_CDLHANGINGMAN()` | `hanging_man()`             | `CDLHANGINGMAN()` |
 
 </div>
 
@@ -201,16 +201,38 @@ all.equal(
 
 ## Installation[^1]
 
+Install the release version from CRAN:
+
+``` r
+install.packages("talib")
+```
+
+Install the development version from GitHub:
+
 ``` r
 pak::pak("serkor1/ta-lib-R")
 ```
 
-Or from source:
+### Aggressive optimizations
+
+Unknown flags passed to `configure` are forwarded verbatim to both the
+CMake build of the vendored TA-Lib and the R wrapper compile step.
+Rebuild from source with any compiler flags you like:
+
+``` r
+install.packages(
+    "talib",
+    type = "source",
+    configure.args = "-O3 -march=native"
+)
+```
+
+Or from a local clone:
 
 ``` shell
 git clone --recursive https://github.com/serkor1/ta-lib-R.git
 cd ta-lib-R
-make build
+R CMD INSTALL . --configure-args="-O3 -march=native"
 ```
 
 ## Code of Conduct
