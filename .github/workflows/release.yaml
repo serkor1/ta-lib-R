@@ -1,0 +1,60 @@
+on:
+  push:
+    branches: [CRAN]
+
+name: release
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Collect tags at pushed commit
+        id: tags
+        run: |
+          tags=$(git tag --points-at HEAD)
+          {
+            echo "tags<<EOF"
+            echo "$tags"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+          if [ -z "$tags" ]; then
+            echo "No tags point at HEAD; nothing to release."
+          fi
+
+      - name: Create releases from NEWS.md
+        if: steps.tags.outputs.tags != ''
+        env:
+          TAGS: ${{ steps.tags.outputs.tags }}
+        run: |
+          set -euo pipefail
+          while IFS= read -r tag; do
+            [ -z "$tag" ] && continue
+            version="${tag#v}"
+            notes=$(awk -v ver="$version" '
+              /^# version / {
+                if (found) exit
+                if ($3 == ver) { found = 1; next }
+              }
+              found { print }
+            ' NEWS.md)
+            if [ -z "$(printf "%s" "$notes" | tr -d "[:space:]")" ]; then
+              echo "::warning::No NEWS.md entry matched version $version; release body will be empty."
+            fi
+            if gh release view "$tag" >/dev/null 2>&1; then
+              echo "Release $tag already exists; skipping."
+              continue
+            fi
+            printf "%s" "$notes" | gh release create "$tag" \
+              --title "$tag" \
+              --notes-file -
+          done <<< "$TAGS"
