@@ -54,6 +54,7 @@ PARGS_ARR=() # arguments inside calls, becomes n = n, or k = k
 CARGS_ARR=() # arguments inside .Call, becomes n, k
 CARGS_TYPED_ARR=() # arguments inside .Call, type-coerced (as.integer/as.double)
 SPEC_FIELDS_ARR=() # fields for MA spec-mode list(...) (key = coerced-or-default)
+HAS_N=0            # track whether 'n' is already a formal signature arg
 for a in "${ARGS_ARRAY[@]}"; do
   if [[ $a == *=* ]]; then
     k=${a%%=*}
@@ -62,6 +63,7 @@ for a in "${ARGS_ARRAY[@]}"; do
     k=$a
     v=""
   fi
+  [[ "$k" == "n" ]] && HAS_N=1
   PARGS_ARR+=( ",$k=$k" )
   CARGS_ARR+=( ",$k" )
   ## decide coercion by default-value shape: dot => double, else integer
@@ -73,6 +75,24 @@ for a in "${ARGS_ARRAY[@]}"; do
     SPEC_FIELDS_ARR+=( "$k = if (missing($k)) ${v}L else as.integer($k)" )
   fi
 done
+
+## 2.1.1) inject 'n' as a spec-only field for MAs whose signature
+##        lacks it (today: MAMA). Every MA spec carries 'n' so that
+##        downstream consumers (BBANDS, STOCH, MACDEXT, ...) can
+##        read ma$n uniformly to drive their calculation period.
+##        The R function accepts 'n' as a formal arg so MAMA(n = 14)
+##        parses in spec-mode, but it is NOT forwarded to .Call()
+##        (TA_MAMA's C signature takes no period).
+if [[ "$maType" != "-1" && $HAS_N -eq 0 ]]; then
+  _n_default=${N_DEFAULT:-30}
+  ## prepend so 'n' is the first spec field and first forwarding arg,
+  ## matching the ordering used by the n-bearing MAs.
+  SPEC_FIELDS_ARR=( "n = if (missing(n)) ${_n_default}L else as.integer(n)" "${SPEC_FIELDS_ARR[@]}" )
+  PARGS_ARR=( ",n=n" "${PARGS_ARR[@]}" )
+  ARGS_ARRAY=( "n=${_n_default}" "${ARGS_ARRAY[@]}" )
+  ## NOTE: deliberately NOT adding to CARGS_ARR / CARGS_TYPED_ARR -
+  ## the C wrapper for MAMA has no period parameter.
+fi
 
 ## 2.2) construct arguments 
 ##      a la paste + collapse
