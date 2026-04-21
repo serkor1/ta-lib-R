@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="index.html">talib</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9-0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9-1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -191,50 +191,59 @@
 <div align="center">
 <table class="table">
 <colgroup>
+<col width="24%">
+<col width="23%">
 <col width="31%">
-<col width="29%">
-<col width="39%">
+<col width="20%">
 </colgroup>
 <thead><tr class="header">
 <th align="left">Category</th>
 <th align="left">TA-Lib (C)</th>
 <th align="left">{talib}</th>
+<th align="left">{talib} alias</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td align="left">Overlap Studies</td>
 <td align="left"><code>TA_BBANDS()</code></td>
 <td align="left"><code><a href="reference/bollinger_bands.html">bollinger_bands()</a></code></td>
+<td align="left"><code><a href="reference/bollinger_bands.html">BBANDS()</a></code></td>
 </tr>
 <tr class="even">
 <td align="left">Momentum Indicators</td>
 <td align="left"><code>TA_CCI()</code></td>
 <td align="left"><code><a href="reference/commodity_channel_index.html">commodity_channel_index()</a></code></td>
+<td align="left"><code><a href="reference/commodity_channel_index.html">CCI()</a></code></td>
 </tr>
 <tr class="odd">
 <td align="left">Volume Indicators</td>
 <td align="left"><code>TA_OBV()</code></td>
 <td align="left"><code><a href="reference/on_balance_volume.html">on_balance_volume()</a></code></td>
+<td align="left"><code><a href="reference/on_balance_volume.html">OBV()</a></code></td>
 </tr>
 <tr class="even">
 <td align="left">Volatility Indicators</td>
 <td align="left"><code>TA_ATR()</code></td>
 <td align="left"><code><a href="reference/average_true_range.html">average_true_range()</a></code></td>
+<td align="left"><code><a href="reference/average_true_range.html">ATR()</a></code></td>
 </tr>
 <tr class="odd">
 <td align="left">Price Transform</td>
 <td align="left"><code>TA_AVGPRICE()</code></td>
 <td align="left"><code><a href="reference/average_price.html">average_price()</a></code></td>
+<td align="left"><code><a href="reference/average_price.html">AVGPRICE()</a></code></td>
 </tr>
 <tr class="even">
 <td align="left">Cycle Indicators</td>
 <td align="left"><code>TA_HT_SINE()</code></td>
 <td align="left"><code><a href="reference/sine_wave.html">sine_wave()</a></code></td>
+<td align="left"><code><a href="reference/sine_wave.html">HT_SINE()</a></code></td>
 </tr>
 <tr class="odd">
 <td align="left">Pattern Recognition</td>
 <td align="left"><code>TA_CDLHANGINGMAN()</code></td>
 <td align="left"><code><a href="reference/hanging_man.html">hanging_man()</a></code></td>
+<td align="left"><code><a href="reference/hanging_man.html">CDLHANGINGMAN()</a></code></td>
 </tr>
 </tbody>
 </table>
@@ -252,12 +261,27 @@
 <h2 id="installation1">Installation<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;&lt;a href="https://github.com/TA-Lib/ta-lib" class="external-link"&gt;TA-Lib&lt;/a&gt; is vendored via &lt;code&gt;CMake&lt;/code&gt;, so a pre-installed TA-Lib is not required. Some systems (Windows in particular) may require &lt;code&gt;CMake&lt;/code&gt; to be explicitly installed.&lt;/p&gt;'><sup>1</sup></a>
 <a class="anchor" aria-label="anchor" href="#installation1"></a>
 </h2>
+<p>Install the release version from CRAN:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"talib"</span><span class="op">)</span></span></code></pre></div>
+<p>Install the development version from GitHub:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"serkor1/ta-lib-R"</span><span class="op">)</span></span></code></pre></div>
-<p>Or from source:</p>
+<div class="section level3">
+<h3 id="aggressive-optimizations">Aggressive optimizations<a class="anchor" aria-label="anchor" href="#aggressive-optimizations"></a>
+</h3>
+<p>Unknown flags passed to <code>configure</code> are forwarded verbatim to both the CMake build of the vendored TA-Lib and the R wrapper compile step. Rebuild from source with any compiler flags you like:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span></span>
+<span>    <span class="st">"talib"</span>,</span>
+<span>    type <span class="op">=</span> <span class="st">"source"</span>,</span>
+<span>    configure.args <span class="op">=</span> <span class="st">"-O3 -march=native"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Or from a local clone:</p>
 <pre class="shell"><code>git clone --recursive https://github.com/serkor1/ta-lib-R.git
 cd ta-lib-R
-make build</code></pre>
+R CMD INSTALL . --configure-args="-O3 -march=native"</code></pre>
+</div>
 </div>
 <div class="section level2">
 <h2 id="code-of-conduct">Code of Conduct<a class="anchor" aria-label="anchor" href="#code-of-conduct"></a>
@@ -270,6 +294,7 @@ make build</code></pre>
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
+<li><a href="https://cloud.r-project.org/package=talib" class="external-link">View on CRAN</a></li>
 <li><a href="https://github.com/serkor1/ta-lib-R/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/serkor1/ta-lib-R/issues" class="external-link">Report a bug</a></li>
 </ul>

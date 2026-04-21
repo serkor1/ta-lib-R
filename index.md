@@ -165,15 +165,15 @@ Functions use descriptive snake_case names, but every function is
 aliased to its TA-Lib shorthand for compatibility with the broader
 ecosystem:
 
-| Category              | TA-Lib (C)           | {talib}                                                                                                |
-|:----------------------|:---------------------|:-------------------------------------------------------------------------------------------------------|
-| Overlap Studies       | `TA_BBANDS()`        | [`bollinger_bands()`](https://serkor1.github.io/ta-lib-R/reference/bollinger_bands.md)                 |
-| Momentum Indicators   | `TA_CCI()`           | [`commodity_channel_index()`](https://serkor1.github.io/ta-lib-R/reference/commodity_channel_index.md) |
-| Volume Indicators     | `TA_OBV()`           | [`on_balance_volume()`](https://serkor1.github.io/ta-lib-R/reference/on_balance_volume.md)             |
-| Volatility Indicators | `TA_ATR()`           | [`average_true_range()`](https://serkor1.github.io/ta-lib-R/reference/average_true_range.md)           |
-| Price Transform       | `TA_AVGPRICE()`      | [`average_price()`](https://serkor1.github.io/ta-lib-R/reference/average_price.md)                     |
-| Cycle Indicators      | `TA_HT_SINE()`       | [`sine_wave()`](https://serkor1.github.io/ta-lib-R/reference/sine_wave.md)                             |
-| Pattern Recognition   | `TA_CDLHANGINGMAN()` | [`hanging_man()`](https://serkor1.github.io/ta-lib-R/reference/hanging_man.md)                         |
+| Category              | TA-Lib (C)           | {talib}                                                                                                | {talib} alias                                                                      |
+|:----------------------|:---------------------|:-------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------|
+| Overlap Studies       | `TA_BBANDS()`        | [`bollinger_bands()`](https://serkor1.github.io/ta-lib-R/reference/bollinger_bands.md)                 | [`BBANDS()`](https://serkor1.github.io/ta-lib-R/reference/bollinger_bands.md)      |
+| Momentum Indicators   | `TA_CCI()`           | [`commodity_channel_index()`](https://serkor1.github.io/ta-lib-R/reference/commodity_channel_index.md) | [`CCI()`](https://serkor1.github.io/ta-lib-R/reference/commodity_channel_index.md) |
+| Volume Indicators     | `TA_OBV()`           | [`on_balance_volume()`](https://serkor1.github.io/ta-lib-R/reference/on_balance_volume.md)             | [`OBV()`](https://serkor1.github.io/ta-lib-R/reference/on_balance_volume.md)       |
+| Volatility Indicators | `TA_ATR()`           | [`average_true_range()`](https://serkor1.github.io/ta-lib-R/reference/average_true_range.md)           | [`ATR()`](https://serkor1.github.io/ta-lib-R/reference/average_true_range.md)      |
+| Price Transform       | `TA_AVGPRICE()`      | [`average_price()`](https://serkor1.github.io/ta-lib-R/reference/average_price.md)                     | [`AVGPRICE()`](https://serkor1.github.io/ta-lib-R/reference/average_price.md)      |
+| Cycle Indicators      | `TA_HT_SINE()`       | [`sine_wave()`](https://serkor1.github.io/ta-lib-R/reference/sine_wave.md)                             | [`HT_SINE()`](https://serkor1.github.io/ta-lib-R/reference/sine_wave.md)           |
+| Pattern Recognition   | `TA_CDLHANGINGMAN()` | [`hanging_man()`](https://serkor1.github.io/ta-lib-R/reference/hanging_man.md)                         | [`CDLHANGINGMAN()`](https://serkor1.github.io/ta-lib-R/reference/hanging_man.md)   |
 
 ``` r
 ## snake_case and TA-Lib aliases
@@ -187,16 +187,38 @@ all.equal(
 
 ## Installation[¹](#fn1)
 
+Install the release version from CRAN:
+
+``` r
+install.packages("talib")
+```
+
+Install the development version from GitHub:
+
 ``` r
 pak::pak("serkor1/ta-lib-R")
 ```
 
-Or from source:
+### Aggressive optimizations
+
+Unknown flags passed to `configure` are forwarded verbatim to both the
+CMake build of the vendored TA-Lib and the R wrapper compile step.
+Rebuild from source with any compiler flags you like:
+
+``` r
+install.packages(
+    "talib",
+    type = "source",
+    configure.args = "-O3 -march=native"
+)
+```
+
+Or from a local clone:
 
 ``` shell
 git clone --recursive https://github.com/serkor1/ta-lib-R.git
 cd ta-lib-R
-make build
+R CMD INSTALL . --configure-args="-O3 -march=native"
 ```
 
 ## Code of Conduct
