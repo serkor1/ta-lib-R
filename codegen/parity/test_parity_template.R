@@ -22,10 +22,6 @@
 ##   wrong default column, wrong default period, wrong default MAType,
 ##   missing output, etc. - shows up as a failed expectation.
 ##
-## One narrow exemption, encoded as an override below:
-##   - MAMA: the R wrapper routes through TA_MA(maType=MAMA), which
-##     internally calls TA_MAMA(close, 0.5, 0.05) and discards FAMA.
-##     Compare the MAMA column only; the missing FAMA is intentional.
 ##
 ## Skip behaviour:
 ##   - skip when TALIB_PARITY_SNAPSHOT_DIR is unset/missing (e.g. when
@@ -54,15 +50,14 @@ options(talib.normalize = FALSE)
 ## Each entry is one of:
 ##   - a function(btc, snap) returning the R wrapper's output
 ##   - a list(call = function(btc, snap), compare_cols = N) for partial
-##     comparisons (e.g. MAMA where the wrapper exposes 1 of 2 columns)
+##     comparisons when a wrapper intentionally exposes a subset of
+##     upstream's outputs
 ##
 ## What overrides DO and DON'T do:
-##   DO bridge a signature mismatch (wrapper takes vector(s), not data.frame)
-##   DO forward snapshot-supplied params for indicators where the wrapper's
-##      default is intentionally different from TA-Lib's metadata default
-##      (today: only the MA family)
+##   DO bridge a signature mismatch (wrapper takes vector(s), not a
+##      data.frame) - see the rolling-statistics family below
 ##   DO restrict comparison shape when the wrapper intentionally exposes a
-##      subset of upstream's outputs (today: only MAMA)
+##      subset of upstream's outputs
 ##   DON'T silently match the wrapper's actual behaviour to make the test
 ##      pass. If the wrapper has a real bug (wrong default column, wrong
 ##      MAType, etc.), the test should fail and surface it.
@@ -77,13 +72,7 @@ R_CALL_OVERRIDES <- list(
 	STDDEV = function(btc, snap) talib::STDDEV(btc$close),
 	MAX = function(btc, snap) talib::MAX(btc$close),
 	MIN = function(btc, snap) talib::MIN(btc$close),
-	SUM = function(btc, snap) talib::SUM(btc$close),
-
-	## --- MAMA: structural asymmetry (FAMA dropped via TA_MA dispatch) ---
-	MAMA = list(
-		call = function(btc, snap) talib::MAMA(btc),
-		compare_cols = 1L
-	)
+	SUM = function(btc, snap) talib::SUM(btc$close)
 )
 
 ## Invoke the R wrapper for an indicator. Returns a list:
@@ -172,7 +161,7 @@ call_r_wrapper <- function(name, btc, snap) {
 
 			## How many columns to compare. Default: all of upstream's.
 			## Override: the wrapper intentionally exposes a subset
-			## (e.g. MAMA returns 1 column vs upstream's 2).
+			## of upstream's outputs.
 			n_expected <- if (is.null(called$compare_cols)) {
 				length(snap$output_names)
 			} else {

@@ -8,6 +8,10 @@
 #' @templateVar .family Overlap Study
 #' @templateVar .formula ~close
 #'
+## splice:documentation:start
+#' @param vfactor ([double]). Volume Factor controlling the smoothing weight of the T3 curve. A [double] in `[0, 1]`: `0` collapses T3 to a standard triple EMA, larger values shift the curve closer to a DEMA. `0.7` by default, following Tillson (1998).
+## splice:documentation:end
+#'
 #' @details
 #' When passed without 'x', [t3_exponential_moving_average] functions as an 'Moving Average'-specification which is used in, for example, [stochastic] when constructing the smoothing lines.
 #'
@@ -20,6 +24,7 @@ t3_exponential_moving_average <- function(
 	x,
 	cols,
 	n = 5,
+	vfactor = 0.7,
 	na.bridge = FALSE,
 	...
 ) {
@@ -29,12 +34,11 @@ t3_exponential_moving_average <- function(
 		## construct Moving Average specification
 		## from call
 		x <- structure(
-			{
-				list(
-					n = if (missing(n)) 5L else as.integer(n),
-					maType = 8L
-				)
-			}
+			list(
+				n = if (missing(n)) 5L else as.integer(n),
+				vfactor = if (missing(vfactor)) 0.7 else as.double(vfactor),
+				maType = 8L
+			)
 		)
 
 		return(x)
@@ -57,6 +61,7 @@ t3_exponential_moving_average.default <- function(
 	x,
 	cols,
 	n = 5,
+	vfactor = 0.7,
 	na.bridge = FALSE,
 	...
 ) {
@@ -82,10 +87,10 @@ t3_exponential_moving_average.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		C_impl_ta_MA,
+		C_impl_ta_T3,
 		as.double(constructed_series[[1]]),
 		as.integer(n),
-		8L,
+		as.double(vfactor),
 		as.logical(na.bridge)
 	)
 
@@ -104,6 +109,7 @@ t3_exponential_moving_average.data.frame <- function(
 	x,
 	cols,
 	n = 5,
+	vfactor = 0.7,
 	na.bridge = FALSE,
 	...
 ) {
@@ -120,6 +126,7 @@ t3_exponential_moving_average.matrix <- function(
 	x,
 	cols,
 	n = 5,
+	vfactor = 0.7,
 	na.bridge = FALSE,
 	...
 ) {
@@ -130,6 +137,7 @@ t3_exponential_moving_average.matrix <- function(
 		x = x,
 		cols = cols,
 		n = n,
+		vfactor = vfactor,
 		na.bridge = na.bridge,
 		...
 	)
@@ -143,6 +151,7 @@ t3_exponential_moving_average.numeric <- function(
 	x,
 	cols,
 	n = 5,
+	vfactor = 0.7,
 	na.bridge = FALSE,
 	...
 ) {
@@ -157,16 +166,24 @@ t3_exponential_moving_average.numeric <- function(
 	## pass to 'C' directly
 	## with the input vector
 	x <- .Call(
-		C_impl_ta_MA,
+		C_impl_ta_T3,
 		as.double(x),
 		as.integer(n),
-		8L,
+		as.double(vfactor),
 		as.logical(na.bridge)
 	)
 
-	## 'C' returns a named matrix
-	## return the first column
-	x <- as.double(x)
+	## check if it has 'dims'
+	## and convert to double if
+	## not to honor the 'type-safety'-esque
+	## approach
+	##
+	## NOTE: this adds a few ns overhead but
+	##       its a robust alternative to code it
+	##       manually. Any suggestions are welcome
+	if (is.null(dim(x))) {
+		x <- as.double(x)
+	}
 
 	x
 }
@@ -179,6 +196,7 @@ t3_exponential_moving_average.plotly <- function(
 	x,
 	cols,
 	n = 5,
+	vfactor = 0.7,
 	na.bridge = FALSE,
 	...
 ) {
@@ -208,7 +226,8 @@ t3_exponential_moving_average.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n
+		n = n,
+		vfactor = vfactor
 	)
 
 	## add conditional idx
@@ -231,7 +250,7 @@ t3_exponential_moving_average.plotly <- function(
 				)
 			)
 		),
-		name = sprintf("T3(%d)", n),
+		name = label("T3", n, vfactor),
 		decorators = list()
 	)
 	state[["main"]] <- plotly_object
@@ -247,7 +266,8 @@ t3_exponential_moving_average.plotly <- function(
 t3_exponential_moving_average.ggplot <- function(
 	x,
 	cols,
-	n = 10,
+	n = 5,
+	vfactor = 0.7,
 	na.bridge = FALSE,
 	...
 ) {
@@ -276,7 +296,8 @@ t3_exponential_moving_average.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n
+		n = n,
+		vfactor = vfactor
 	)
 
 	## add conditional idx
@@ -293,7 +314,7 @@ t3_exponential_moving_average.ggplot <- function(
 				y = "T3"
 			)
 		),
-		name = sprintf("T3(%d)", n),
+		name = label("T3", n, vfactor),
 		decorators = list(),
 		data = constructed_indicator
 	)

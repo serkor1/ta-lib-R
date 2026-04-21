@@ -35,9 +35,6 @@ generate_R <- function(x) {
 }
 
 ## 4) generate C wrapper
-##    tracks shared_ma to avoid regenerating ta_MA.c
-.ma_generated <- FALSE
-
 generate_C <- function(x) {
 	type <- x$c_generator %||% "standard"
 
@@ -54,21 +51,6 @@ generate_C <- function(x) {
 				shQuote(x$signature %||% "")
 			)
 		)
-		return(invisible(NULL))
-	}
-
-	if (type == "shared_ma") {
-		if (.ma_generated || file.exists("src/ta_MA.c")) {
-			return(invisible(NULL))
-		}
-		system2(
-			command = "bash",
-			args = c(
-				"codegen/generate_indicator_core.sh",
-				"MA > src/ta_MA.c"
-			)
-		)
-		.ma_generated <<- TRUE
 		return(invisible(NULL))
 	}
 

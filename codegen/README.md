@@ -78,7 +78,7 @@ codegen/
    |-----------------|----------------------|---------------------------------|
    | `momentum()`    | Momentum Indicator   | Most common                     |
    | `candlestick()` | Pattern Recognition  | OHLC patterns, boolean output   |
-   | `moving_avg()`  | Overlap Study        | All share `src/ta_MA.c`         |
+   | `moving_avg()`  | Overlap Study        | Each MA gets its own `src/ta_<ALIAS>.c` |
    | `overlap()`     | Overlap Study        | Non-MA overlays (BBANDS, SAR)   |
    | `cycle()`       | Cycle Indicator      | Hilbert transforms              |
    | `price_xform()` | Price Transform      | No charting, no subchart        |
@@ -137,12 +137,14 @@ codegen/
 The shell script constructs several argument-related variables from the
 positional parameters (the `signature` field in the metadata):
 
-| Variable   | Description                          | Example (`n=10`)      |
-|------------|--------------------------------------|-----------------------|
-| `${ARGS}`  | Signature args with trailing comma   | `n=10,`               |
-| `${PARGS}` | Named forwarding: `key=key,`         | `,n=n,`               |
-| `${CARGS}` | Bare names for `.Call()`: `,key`     | `,n`                  |
-| `${PPARGS}`| Named forwarding for plotly          | `,n=n`                |
+| Variable          | Description                                   | Example (`n=10,vfactor=0.7`)             |
+|-------------------|-----------------------------------------------|------------------------------------------|
+| `${ARGS}`         | Signature args with trailing comma            | `n=10,vfactor=0.7,`                      |
+| `${PARGS}`        | Named forwarding: `key=key,`                  | `,n=n ,vfactor=vfactor ,`                |
+| `${CARGS}`        | Bare names for `.Call()`: `,key`              | `,n ,vfactor`                            |
+| `${CARGS_TYPED}`  | Type-coerced names (`as.integer`/`as.double`) | `,as.integer(n) ,as.double(vfactor)`     |
+| `${PPARGS}`       | Named forwarding, no trailing comma (plotly)  | `,n=n ,vfactor=vfactor`                  |
+| `${SPEC_FIELDS}`  | MA spec-mode list fields, one per signature arg | `n = if (missing(n)) 10L else as.integer(n),\n\t\t\t\tvfactor = if (missing(vfactor)) 0.7 else as.double(vfactor)` |
 
 ## How C wrapper generation works
 
@@ -171,9 +173,13 @@ Simpler variant that:
 
 ### Moving averages
 
-All 9 MA types (SMA, EMA, WMA, ...) share a single `src/ta_MA.c` file because
-TA-Lib uses one `TA_MA()` function with a `TA_MAType` enum. The generator runs
-once for the first MA entry and skips the rest.
+Each MA type (SMA, EMA, WMA, DEMA, TEMA, TRIMA, KAMA, MAMA, T3) uses the
+standard `generate_indicator_core.sh` path and gets its own per-function
+`src/ta_<ALIAS>.c` calling the TA-Lib entry point directly (e.g. `TA_SMA`,
+`TA_MAMA`). The `moving_avg()` helper wires per-MA signatures and routes R
+wrappers through `moving_average_template.R.in`, which retains the spec-mode
+`missing(x)` branch so `SMA(n = 5)` still returns `list(n, maType)` for
+downstream consumers (BBANDS, APO, PPO, MACDEXT, STOCH*).
 
 ## How test generation works
 

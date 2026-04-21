@@ -52,15 +52,47 @@ ARGS_ARRAY=( "$@" )
 ##      '=' to avoid using awk
 PARGS_ARR=() # arguments inside calls, becomes n = n, or k = k
 CARGS_ARR=() # arguments inside .Call, becomes n, k
+CARGS_TYPED_ARR=() # arguments inside .Call, type-coerced (as.integer/as.double)
+SPEC_FIELDS_ARR=() # fields for MA spec-mode list(...) (key = coerced-or-default)
+HAS_N=0            # track whether 'n' is already a formal signature arg
 for a in "${ARGS_ARRAY[@]}"; do
   if [[ $a == *=* ]]; then
     k=${a%%=*}
+    v=${a#*=}
   else
     k=$a
+    v=""
   fi
+  [[ "$k" == "n" ]] && HAS_N=1
   PARGS_ARR+=( ",$k=$k" )
   CARGS_ARR+=( ",$k" )
+  ## decide coercion by default-value shape: dot => double, else integer
+  if [[ "$v" == *.* ]]; then
+    CARGS_TYPED_ARR+=( ",as.double($k)" )
+    SPEC_FIELDS_ARR+=( "$k = if (missing($k)) $v else as.double($k)" )
+  else
+    CARGS_TYPED_ARR+=( ",as.integer($k)" )
+    SPEC_FIELDS_ARR+=( "$k = if (missing($k)) ${v}L else as.integer($k)" )
+  fi
 done
+
+## 2.1.1) inject 'n' as a spec-only field for MAs whose signature
+##        lacks it (today: MAMA). Every MA spec carries 'n' so that
+##        downstream consumers (BBANDS, STOCH, MACDEXT, ...) can
+##        read ma$n uniformly to drive their calculation period.
+##        The R function accepts 'n' as a formal arg so MAMA(n = 14)
+##        parses in spec-mode, but it is NOT forwarded to .Call()
+##        (TA_MAMA's C signature takes no period).
+if [[ "$maType" != "-1" && $HAS_N -eq 0 ]]; then
+  _n_default=${N_DEFAULT:-30}
+  ## prepend so 'n' is the first spec field and first forwarding arg,
+  ## matching the ordering used by the n-bearing MAs.
+  SPEC_FIELDS_ARR=( "n = if (missing(n)) ${_n_default}L else as.integer(n)" "${SPEC_FIELDS_ARR[@]}" )
+  PARGS_ARR=( ",n=n" "${PARGS_ARR[@]}" )
+  ARGS_ARRAY=( "n=${_n_default}" "${ARGS_ARRAY[@]}" )
+  ## NOTE: deliberately NOT adding to CARGS_ARR / CARGS_TYPED_ARR -
+  ## the C wrapper for MAMA has no period parameter.
+fi
 
 ## 2.2) construct arguments 
 ##      a la paste + collapse
@@ -73,10 +105,24 @@ printf -v ARGS '%s, ' "${ARGS_ARRAY[@]}"; ARGS=${ARGS%, }
 if [[ "$ROLLING" != "1" ]]; then
   if [[ -n ${ARGS} ]]; then ARGS+=','; fi
 fi
-## NOTE: this is passed down to 
+## NOTE: this is passed down to
 ##       the {plotly} template
 PPARGS=$(printf '%s ' "${PARGS_ARR[@]}");
 CARGS=$(printf '%s ' "${CARGS_ARR[@]}");
+CARGS_TYPED=$(printf '%s ' "${CARGS_TYPED_ARR[@]}");
+
+## 2.3) spec-mode list fields for the moving_average template.
+##      Each signature argument becomes a round-tripped entry in
+##      the list returned when the MA is called without 'x'.
+##      Joined with ',' + newline + indent so 'air' can reformat.
+SPEC_FIELDS=""
+for ((_i=0; _i<${#SPEC_FIELDS_ARR[@]}; _i++)); do
+  if [[ $_i -eq 0 ]]; then
+    SPEC_FIELDS="${SPEC_FIELDS_ARR[$_i]}"
+  else
+    SPEC_FIELDS="${SPEC_FIELDS},"$'\n\t\t\t\t'"${SPEC_FIELDS_ARR[$_i]}"
+  fi
+done
 
 ## 3) export environment variables
 ##    to replace in templates
@@ -90,10 +136,12 @@ export FORMULA;  REPLACE+='${FORMULA}'
 export ARGS;     REPLACE+='${ARGS}'
 export PARGS;    REPLACE+='${PARGS}'
 export CARGS;    REPLACE+='${CARGS}'
+export CARGS_TYPED; REPLACE+='${CARGS_TYPED}'
 export PPARGS;   REPLACE+='${PPARGS}'
 export AGNOSTIC; REPLACE+='${AGNOSTIC}'
 export maType;   REPLACE+='${maType}'
 export N_DEFAULT; REPLACE+='${N_DEFAULT}'
+export SPEC_FIELDS; REPLACE+='${SPEC_FIELDS}'
 
 ## 4) construct R files
 ##    in temporary locations

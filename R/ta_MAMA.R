@@ -8,6 +8,12 @@
 #' @templateVar .family Overlap Study
 #' @templateVar .formula ~close
 #'
+## splice:documentation:start
+#' @param n ([integer]). Present only for interface uniformity with the other Moving Average specifications (see e.g. [simple_moving_average]) so that every MA spec exposes a uniform `n` field to downstream consumers (e.g. [bollinger_bands], [stochastic], [extended_moving_average_convergence_divergence]). **`n` has no effect on the standalone calculation of [mesa_adaptive_moving_average]** - the actual smoothing is controlled entirely by `fast` and `slow`.
+#' @param fast ([double]). Upper limit of the adaptive smoothing factor (alpha) used in the MESA algorithm. A [double] in `[0.01, 0.99]`. `0.5` by default.
+#' @param slow ([double]). Lower limit of the adaptive smoothing factor (alpha) used in the MESA algorithm. A [double] in `[0.01, 0.99]`. `0.05` by default.
+## splice:documentation:end
+#'
 #' @details
 #' When passed without 'x', [mesa_adaptive_moving_average] functions as an 'Moving Average'-specification which is used in, for example, [stochastic] when constructing the smoothing lines.
 #'
@@ -20,6 +26,8 @@ mesa_adaptive_moving_average <- function(
 	x,
 	cols,
 	n = 30,
+	fast = 0.5,
+	slow = 0.05,
 	na.bridge = FALSE,
 	...
 ) {
@@ -29,12 +37,12 @@ mesa_adaptive_moving_average <- function(
 		## construct Moving Average specification
 		## from call
 		x <- structure(
-			{
-				list(
-					n = if (missing(n)) 30L else as.integer(n),
-					maType = 7L
-				)
-			}
+			list(
+				n = if (missing(n)) 30L else as.integer(n),
+				fast = if (missing(fast)) 0.5 else as.double(fast),
+				slow = if (missing(slow)) 0.05 else as.double(slow),
+				maType = 7L
+			)
 		)
 
 		return(x)
@@ -57,6 +65,8 @@ mesa_adaptive_moving_average.default <- function(
 	x,
 	cols,
 	n = 30,
+	fast = 0.5,
+	slow = 0.05,
 	na.bridge = FALSE,
 	...
 ) {
@@ -82,10 +92,10 @@ mesa_adaptive_moving_average.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		C_impl_ta_MA,
+		C_impl_ta_MAMA,
 		as.double(constructed_series[[1]]),
-		as.integer(n),
-		7L,
+		as.double(fast),
+		as.double(slow),
 		as.logical(na.bridge)
 	)
 
@@ -104,6 +114,8 @@ mesa_adaptive_moving_average.data.frame <- function(
 	x,
 	cols,
 	n = 30,
+	fast = 0.5,
+	slow = 0.05,
 	na.bridge = FALSE,
 	...
 ) {
@@ -120,6 +132,8 @@ mesa_adaptive_moving_average.matrix <- function(
 	x,
 	cols,
 	n = 30,
+	fast = 0.5,
+	slow = 0.05,
 	na.bridge = FALSE,
 	...
 ) {
@@ -130,6 +144,8 @@ mesa_adaptive_moving_average.matrix <- function(
 		x = x,
 		cols = cols,
 		n = n,
+		fast = fast,
+		slow = slow,
 		na.bridge = na.bridge,
 		...
 	)
@@ -143,6 +159,8 @@ mesa_adaptive_moving_average.numeric <- function(
 	x,
 	cols,
 	n = 30,
+	fast = 0.5,
+	slow = 0.05,
 	na.bridge = FALSE,
 	...
 ) {
@@ -157,16 +175,24 @@ mesa_adaptive_moving_average.numeric <- function(
 	## pass to 'C' directly
 	## with the input vector
 	x <- .Call(
-		C_impl_ta_MA,
+		C_impl_ta_MAMA,
 		as.double(x),
-		as.integer(n),
-		7L,
+		as.double(fast),
+		as.double(slow),
 		as.logical(na.bridge)
 	)
 
-	## 'C' returns a named matrix
-	## return the first column
-	x <- as.double(x)
+	## check if it has 'dims'
+	## and convert to double if
+	## not to honor the 'type-safety'-esque
+	## approach
+	##
+	## NOTE: this adds a few ns overhead but
+	##       its a robust alternative to code it
+	##       manually. Any suggestions are welcome
+	if (is.null(dim(x))) {
+		x <- as.double(x)
+	}
 
 	x
 }
@@ -179,6 +205,8 @@ mesa_adaptive_moving_average.plotly <- function(
 	x,
 	cols,
 	n = 30,
+	fast = 0.5,
+	slow = 0.05,
 	na.bridge = FALSE,
 	...
 ) {
@@ -208,7 +236,9 @@ mesa_adaptive_moving_average.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n
+		n = n,
+		fast = fast,
+		slow = slow
 	)
 
 	## add conditional idx
@@ -231,7 +261,7 @@ mesa_adaptive_moving_average.plotly <- function(
 				)
 			)
 		),
-		name = sprintf("MAMA(%d)", n),
+		name = label("MAMA", fast, slow),
 		decorators = list()
 	)
 	state[["main"]] <- plotly_object
@@ -247,7 +277,9 @@ mesa_adaptive_moving_average.plotly <- function(
 mesa_adaptive_moving_average.ggplot <- function(
 	x,
 	cols,
-	n = 10,
+	n = 30,
+	fast = 0.5,
+	slow = 0.05,
 	na.bridge = FALSE,
 	...
 ) {
@@ -276,7 +308,9 @@ mesa_adaptive_moving_average.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n
+		n = n,
+		fast = fast,
+		slow = slow
 	)
 
 	## add conditional idx
@@ -293,7 +327,7 @@ mesa_adaptive_moving_average.ggplot <- function(
 				y = "MAMA"
 			)
 		),
-		name = sprintf("MAMA(%d)", n),
+		name = label("MAMA", fast, slow),
 		decorators = list(),
 		data = constructed_indicator
 	)
