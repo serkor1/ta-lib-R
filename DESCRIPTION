@@ -1,6 +1,6 @@
 Package: talib
 Title: Interface to 'TA-Lib' for Technical Analysis and Candlestick Patterns
-Version: 0.9-0
+Version: 0.9-1
 Authors@R: c(
     person(
       given   = "Serkan",
@@ -16,12 +16,12 @@ Authors@R: c(
       comment = "Copyright holder of the bundled TA-Lib C library (src/ta-lib/)"
     )
   )
-Description: Interface to the 'TA-Lib' (Technical Analysis Library) C
+Description: Interface to the 'TA-Lib' (Technical Analysis Library) 'C'
     library, providing access to 150+ indicators (e.g. Average Directional
     Movement Index (ADX), Moving Average Convergence Divergence (MACD),
     Relative Strength Index (RSI), Stochastic Oscillator, Bollinger Bands),
     candlestick pattern recognition, and rolling-window utilities. Core
-    computations are implemented in C for fast Open-High-Low-Close-Volume
+    computations are implemented in 'C' for fast Open-High-Low-Close-Volume
     (OHLCV) time-series feature engineering and rule-based signal
     generation, with optional interactive visualization via 'plotly'.
 X-schema.org-keywords: technical analysis, TA-Lib, technical indicators,
