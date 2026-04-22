@@ -18,6 +18,8 @@
 
 ## version 0.9-0
 
+CRAN release: 2026-04-21
+
 - Initial CRAN submission.
 - Wraps the TA-Lib C library, providing 67 technical indicators and 61
   candlestick pattern detectors.
