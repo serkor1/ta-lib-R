@@ -182,7 +182,14 @@ if [ "$(( PREINSTALLED + FORCE_VENDOR ))" -ne 0 ]; then
     TALIB="src/ta-lib" # vendor location
     
     ## vendor check start
-    if [ ! -d "$TALIB" ]; then
+    ##  it's NOT enough to check for $TALIB as
+    ##  the folder gets cloned, but its empty, 
+    ##  and therefore never enters the branch.
+    ##      - instead of checking for the folder
+    ##        we check for CMakeLists.txt inside the
+    ##        folder, which is safe because if its not
+    ##        there - then {talib} can't build anyways.
+    if  [ ! -f "$TALIB/CMakeLists.txt" ]; then
 
         if ! command -v git > /dev/null 2>&1; then
             printf ' %s\n' "$(warning)"
@@ -221,16 +228,16 @@ if [ "$(( PREINSTALLED + FORCE_VENDOR ))" -ne 0 ]; then
         ## version is being installed via {pak} or other tools which does not 
         ## include submodules by default
         else
-        printf ' %s\n' "$(warning)"
-        echo
-        echo "TA-Lib (core) not found. Cloning $(url https://github.com/TA-Lib/ta-lib.git)"
-        echo
-        git clone https://github.com/TA-Lib/ta-lib.git ${TALIB} || {
+            printf ' %s\n' "$(warning)"
+            echo
+            echo "TA-Lib (core) not found. Cloning $(url https://github.com/TA-Lib/ta-lib.git)"
+            echo
+            git clone https://github.com/TA-Lib/ta-lib.git ${TALIB} || {
 
-            echo $(error) Could not clone $(url https://github.com/TA-Lib/ta-lib.git).
-            echo Check your internet connection, or submit a bug-report.
-            exit 1
-            }
+                echo $(error) Could not clone $(url https://github.com/TA-Lib/ta-lib.git).
+                echo Check your internet connection, or submit a bug-report.
+                exit 1
+                }
         fi
 
     fi
@@ -238,44 +245,30 @@ if [ "$(( PREINSTALLED + FORCE_VENDOR ))" -ne 0 ]; then
     ## vendor check end
     TARGET="$(cd "$TALIB" 2>/dev/null && pwd)/local"
 
-    ## NOTE: this builds a temporary
-    ##       directory to build TA-Lib
-    ##       without this step .Rbuildignore will riot.
-    ##       $TARGET must NOT be cleaned here — R CMD INSTALL
-    ##       links against libta-lib.a inside it after configure
-    ##       completes.
-    BUILDLOCATION=$(temporary_directory)
-    trap 'rm -rf "$BUILDLOCATION"' EXIT
-
-    if command -v cmake >/dev/null 2>&1 && [ -f "$TALIB/CMakeLists.txt" ]; then
-        printf '%s Configure and generate TA-Lib\n' "$(info)"
-
-        cmake -S "$TALIB" -B "${BUILDLOCATION}" \
-            -Wno-dev --log-level=NOTICE \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_INSTALL_PREFIX="$TARGET" \
-            -DBUILD_SHARED_LIBS=OFF \
-            -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-            -DCMAKE_C_FLAGS="-w -fPIC ${OPTFLAGS}" \
-            -DCMAKE_CXX_FLAGS="-w -fPIC ${OPTFLAGS}" \
-            -DBUILD_DEV_TOOLS=OFF
-
-        printf '%s\n' "$(success)"
-
-        printf '%s Build and install TA-Lib\n' "$(info)"
-
-        cmake --build "${BUILDLOCATION}" --target install -- -j"$(nproc --ignore 2)"
-
-        printf '%s\n' "$(success)"
-
-    else
+    ## find CMake on PATH before proceeding
+    ## with the build - this approach is necessary
+    ## for MacOS which in (some) cases are located
+    ## in a different PATH than otherwise.
+    ##  - This approach is a part 'Writing R Extensions' and
+    ##    is also recommended by Dirk Eddelbuettel.
+    if test -z "${CMAKE:-}"; then
+        # Look for a cmake binary in the current path
+        CMAKE=`which cmake 2>/dev/null`
+    fi
+    
+    if test -z "${CMAKE:-}"; then
+        # Check for a MacOS specific path
+        CMAKE=`which /Applications/CMake.app/Contents/bin/cmake 2>/dev/null`
+    fi
+    
+    if test -z "${CMAKE:-}"; then  
         ## NOTE: after many attempts I can't make 
         ##       configure "work" using libtools. It either complains about
         ##       missing libraries, or links.
         ##
         ##       CMake just works well here, end of story.
         printf ' %s\n' "$(error)"
-        printf 'CMake not found on PATH'
+        printf 'CMake not found on PATH\n'
         echo "=========================================================================="
         echo "Install CMake:"
         echo "  Linux:"
@@ -294,6 +287,37 @@ if [ "$(( PREINSTALLED + FORCE_VENDOR ))" -ne 0 ]; then
         echo "Submit bug-reports here: $(url https://github.com/serkor1/ta-lib-R)"
         echo
         exit 1
+    fi
+
+    ## NOTE: this builds a temporary
+    ##       directory to build TA-Lib
+    ##       without this step .Rbuildignore will riot.
+    ##       $TARGET must NOT be cleaned here — R CMD INSTALL
+    ##       links against libta-lib.a inside it after configure
+    ##       completes.
+    BUILDLOCATION=$(temporary_directory)
+    trap 'rm -rf "$BUILDLOCATION"' EXIT
+
+    if command -v "${CMAKE}" >/dev/null 2>&1; then
+        printf '%s Configure and generate TA-Lib\n' "$(info)"
+
+        ${CMAKE} -S "$TALIB" -B "${BUILDLOCATION}" \
+            -Wno-dev --log-level=NOTICE \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX="$TARGET" \
+            -DBUILD_SHARED_LIBS=OFF \
+            -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+            -DCMAKE_C_FLAGS="-w -fPIC ${OPTFLAGS}" \
+            -DCMAKE_CXX_FLAGS="-w -fPIC ${OPTFLAGS}" \
+            -DBUILD_DEV_TOOLS=OFF
+
+        printf '%s\n' "$(success)"
+
+        printf '%s Build and install TA-Lib\n' "$(info)"
+
+        ${CMAKE} --build "${BUILDLOCATION}" --target install -- -j"$(nproc --ignore 2)"
+
+        printf '%s\n' "$(success)"        
     fi
 
 fi
