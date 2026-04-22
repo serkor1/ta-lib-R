@@ -101,7 +101,7 @@ rm -rf "$TESTDIR"
 
 ## 1) general setup of
 ##    the configure script
-TA_SRC="src/ta-lib"
+TALIB="src/ta-lib"
 CC_BIN="${CC:-cc}"
 
 ## 1.1) determine processors
@@ -118,7 +118,7 @@ nprocs() {
 ##      correctly and determine an action
 ##      conditional of how the repository
 ##      have been downloaded
-if [ ! -d "$TA_SRC" ]; then
+if [ ! -f "$TALIB/CMakeLists.txt" ]; then
 
    ## check if git is available
     ## on the system
@@ -145,7 +145,7 @@ if [ ! -d "$TA_SRC" ]; then
   ## so this part is "just" to give the developer a helpful
   ## message
   if git status > /dev/null 2>&1; then
-      echo "Build-error: $TA_SRC not found. Either make a new clone, or initialize the submodule."
+      echo "Build-error: $TALIB not found. Either make a new clone, or initialize the submodule."
       echo 
       echo "Clone: \t\t git clone --recursive https://github.com/serkor1/ta-lib-R.git"
       echo "Initialize: \t git submodule update --init --recursive"
@@ -162,7 +162,7 @@ if [ ! -d "$TA_SRC" ]; then
     echo
     echo "TA-Lib (core) not found. Cloning https://github.com/TA-Lib/ta-lib.git"
     echo
-    git clone https://github.com/TA-Lib/ta-lib.git ${TA_SRC} || {
+    git clone https://github.com/TA-Lib/ta-lib.git ${TALIB} || {
         echo
         echo "Build-error: Could not clone https://github.com/TA-Lib/ta-lib.git. Check your internet connection, or submit a bug-report."
         echo
@@ -219,7 +219,7 @@ GEN="MinGW Makefiles"; command -v ninja >/dev/null 2>&1 && GEN="Ninja"
 ##            and for (it seems) everyone else except
 ##            GHA workflows.
 ##
-if ! cmake -S "$TA_SRC" -B "$BUILDROOT/cmake" -G "$GEN" \
+if ! cmake -S "$TALIB" -B "$BUILDROOT/cmake" -G "$GEN" \
   -Wno-dev --log-level=NOTICE \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX="$OUT_PREFIX" \
@@ -230,7 +230,7 @@ if ! cmake -S "$TA_SRC" -B "$BUILDROOT/cmake" -G "$GEN" \
 then
   rm -rf "$BUILDROOT/cmake"
   GEN="MSYS Makefiles"
-  if ! cmake -S "$TA_SRC" -B "$BUILDROOT/cmake" -G "$GEN" \
+  if ! cmake -S "$TALIB" -B "$BUILDROOT/cmake" -G "$GEN" \
     -Wno-dev --log-level=NOTICE \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX="$OUT_PREFIX" \
@@ -256,8 +256,8 @@ cmake --install "$BUILDROOT/cmake" --config Release --prefix "$OUT_PREFIX"
 ##        NOTE: this might be a dangerous
 ##              step if pathing and naming
 ##              gets changed upstream.
-if [ -f "$TA_SRC/include/ta_config.h" ]; then
-  tmp="$(mktemp)"; tr -d '\r' < "$TA_SRC/include/ta_config.h" > "$tmp" && mv "$tmp" "$TA_SRC/include/ta_config.h"
+if [ -f "$TALIB/include/ta_config.h" ]; then
+  tmp="$(mktemp)"; tr -d '\r' < "$TALIB/include/ta_config.h" > "$tmp" && mv "$tmp" "$TALIB/include/ta_config.h"
 fi
 
 ## 2.3) construct flags
