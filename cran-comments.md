@@ -2,22 +2,21 @@
 
 0 errors | 0 warnings | 1 note
 
-* This is a new release.
+* checking CRAN incoming feasibility ... [5s/20s] NOTE
+Maintainer: ‘Serkan Korkmaz <serkor1@duck.com>’
 
-## Spelling
+Days since last update: 2
 
-The words flagged by the spell-checker (ADX, Bollinger, MACD, OHLCV) are
-established technical-analysis terms and standard acronyms in the
-quantitative finance domain. Each acronym is fully expanded on first use
-in the Description (e.g. "Moving Average Convergence Divergence (MACD)");
-'Bollinger' is the surname in the proper-noun "Bollinger Bands".
+### Days since last update: 2
 
-## Vendored library
+This submission is an immediate response to CRAN build-failures, warnings and Benjamin Altmann comments about
+my DESCRIPTION file.
 
-This package vendors the TA-Lib C library (BSD 3-Clause, source under
-`src/ta-lib/`) to avoid an external system dependency. The upstream
-copyright is reproduced verbatim in `inst/COPYRIGHTS` and the original
-copyright holder is credited in `Authors@R` as `cph`. The static library
-artifact built from `src/ta-lib/` produces a NOTE about an apparent object
-file under `src/ta-lib/local/lib/libta-lib.a`; this is a build-time artifact
-required for linking and is regenerated from source on every install.
+* This update comes with following fixes to build-failures and warnings on CRAN:
+    - MacOS: CMake PATH is now properly identified using the recommended approach as per 'Writing R Exentions'
+    - Windows: Fixed prototype warning in `lib.c` and `api.h`
+
+* During these fixes a bug in the package have been identified and fixed. This have been
+  mentioned in the `NEWS.md`.
+
+* DESCRIPTION: Single quoted names and programming languages.
