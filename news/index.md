@@ -2,6 +2,8 @@
 
 ## version 0.9-1
 
+CRAN release: 2026-04-23
+
 ### improvements
 
 - The `MAMA`-function now has two arguments: `fast` and `slow`, which
