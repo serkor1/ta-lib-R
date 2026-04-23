@@ -59,6 +59,9 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
+    outputs:
+      sha: ${{ steps.push.outputs.sha }}
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -81,6 +84,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Commit rendered docs and push
+        id: push
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
@@ -88,6 +92,7 @@ jobs:
           git add -f man/ NAMESPACE
           git commit --allow-empty -m "CI/CD: render documentation for r-universe build"
           git push origin r-universe/check-pkg
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
   build:
     needs: render-documentation
@@ -95,7 +100,7 @@ jobs:
     uses: r-universe-org/workflows/.github/workflows/build.yml@v3
     with:
       universe: ${{ github.repository_owner }}
-      ref: r-universe/check-pkg
+      ref: ${{ needs.render-documentation.outputs.sha }}
 
   cleanup:
     needs: [render-documentation, build]
