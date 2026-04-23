@@ -6,6 +6,8 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/serkor1/ta-lib-R/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/serkor1/ta-lib-R/actions/workflows/R-CMD-check.yaml)
+[![Test
+R-universe](https://github.com/serkor1/ta-lib-R/actions/workflows/r-universe.yaml/badge.svg)](https://github.com/serkor1/ta-lib-R/actions/workflows/r-universe.yaml)
 [![Remote
 Install](https://github.com/serkor1/ta-lib-R/actions/workflows/remote-install.yaml/badge.svg)](https://github.com/serkor1/ta-lib-R/actions/workflows/remote-install.yaml)
 [![Codecov test

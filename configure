@@ -95,6 +95,11 @@ for arg in "$@"; do
     --force-vendor)
       FORCE_VENDOR=1
       ;;
+    ## autotools-style arguments injected by `emconfigure` (and by other
+    ## cross-compile harnesses) — dropped so they don't leak into
+    ## CMAKE_C_FLAGS and get handed to the compiler as unknown flags.
+    --build=*|--host=*|--target=*|ac_cv_*=*)
+      ;;
     *)
       OPTFLAGS="${OPTFLAGS} ${arg}"
       ;;

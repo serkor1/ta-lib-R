@@ -29,6 +29,11 @@ for arg in "$@"; do
       echo "{talib} on Windows will always use the vendored TA-Lib source."
       echo "Feel free to submit a PR, if you have a solid solution to Windows + {talib} using system/user-installed TA-Lib."
       ;;
+    ## autotools-style arguments injected by cross-compile harnesses —
+    ## dropped so they don't leak into CMAKE_C_FLAGS as unknown compiler
+    ## flags. Kept parallel with the UNIX `configure` script.
+    --build=*|--host=*|--target=*|ac_cv_*=*)
+      ;;
     *)
       OPTFLAGS="${OPTFLAGS} ${arg}"
       ;;
