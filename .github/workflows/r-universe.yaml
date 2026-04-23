@@ -1,0 +1,41 @@
+name: Test R-universe
+
+on:
+  push:
+    branches: [devel, r-universe-checks]
+  pull_request:
+    branches: [devel]
+
+jobs:
+  render-documentation:
+    name: Render documentation and NAMESPACE
+    runs-on: ubuntu-latest
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: release
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::devtools any::roxygen2
+          needs: check
+
+      - name: Render documentation and NAMESPACE
+        run: devtools::document()
+        shell: Rscript {0}
+
+  build:
+    needs: render-documentation
+    name: R-universe testing
+    uses: r-universe-org/workflows/.github/workflows/build.yml@v3
+    with:
+      universe: ${{ github.repository_owner }}
