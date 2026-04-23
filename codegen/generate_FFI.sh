@@ -41,8 +41,8 @@ generate_entries() {
       args = parts[2]
       sub(/\)$/, "", args)                  
 
-      # count arguments: commas + 1 (or 0 if empty)
-      if (args ~ /^[[:space:]]*$/) {
+      # count arguments: commas + 1 (or 0 if empty or "void")
+      if (args ~ /^[[:space:]]*$/ || args ~ /^[[:space:]]*void[[:space:]]*$/) {
         n = 0
       } else {
         tmp = args

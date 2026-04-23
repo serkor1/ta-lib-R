@@ -10,7 +10,7 @@
 #include <ta_libc.h>
 
 // initialize TA-Lib
-SEXP initialize_ta_lib() {
+SEXP initialize_ta_lib(void) {
   TA_RetCode return_code = TA_Initialize();
 
   if (return_code != TA_SUCCESS) {
@@ -21,7 +21,7 @@ SEXP initialize_ta_lib() {
 }
 
 // shutdown TA-Lib
-SEXP shutdown_ta_lib() {
+SEXP shutdown_ta_lib(void) {
   TA_RetCode return_code = TA_Shutdown();
 
   if (return_code != TA_SUCCESS) {
@@ -33,7 +33,7 @@ SEXP shutdown_ta_lib() {
 
 // candlestick options
 //
-SEXP reset_candle_setting() {
+SEXP reset_candle_setting(void) {
 
   // reset all candle settings
   // clang-format off
