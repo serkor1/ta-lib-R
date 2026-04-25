@@ -1,7 +1,7 @@
 ## this workflow is primarily meant
 ## for testing against CRAN-systems and 
 ## not for aligning against r-universe.
-name: R-universe checks
+name: R-CMD-check
 
 on:
   push:
@@ -21,7 +21,7 @@ permissions:
 ## fixed, so if there is multiple pushes
 ## it will cancel the old ones
 concurrency:
-  group: r-universe-check
+  group: R-CMD-check
   cancel-in-progress: true
 
 jobs:
@@ -77,12 +77,10 @@ jobs:
           extra-packages: any::devtools any::roxygen2
           needs: check
 
-      - name: Document
-        run: devtools::document()
+      - run: devtools::document()
         shell: Rscript {0}
 
-      - name: Push
-        id: push
+      - id: push
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
