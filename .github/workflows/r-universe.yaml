@@ -1,11 +1,11 @@
 ## this workflow is primarily meant
 ## for testing against CRAN-systems and 
 ## not for aligning against r-universe.
-name: Test R-universe
+name: R-universe checks
 
 on:
   push:
-    branches: [devel]
+    branches: [devel, cleanup_tests]
   pull_request:
     branches: [devel]
 
@@ -33,15 +33,14 @@ jobs:
   ## we create a temporary branch where the .Rd
   ## files are pushed, and let r-universe build
   ## and test from there
-  create-branch:
-    name: Temporary branch creation
+  git-checkout:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: true
 
-      - name: Create and push r-universe/check-pkg
+      - name: Checkout and push
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
@@ -52,8 +51,7 @@ jobs:
   ## this step builds and pushes
   ## the documentation to the temporary branch
   render-documentation:
-    needs: create-branch
-    name: Render documentation and NAMESPACE
+    needs: git-checkout
     runs-on: ubuntu-latest
 
     env:
@@ -79,11 +77,11 @@ jobs:
           extra-packages: any::devtools any::roxygen2
           needs: check
 
-      - name: Render documentation and NAMESPACE
+      - name: Document
         run: devtools::document()
         shell: Rscript {0}
 
-      - name: Commit rendered docs and push
+      - name: Push
         id: push
         run: |
           set -euo pipefail
@@ -96,7 +94,6 @@ jobs:
 
   build:
     needs: render-documentation
-    name: R-universe testing
     uses: r-universe-org/workflows/.github/workflows/build.yml@v3
     with:
       universe: ${{ github.repository_owner }}
@@ -108,5 +105,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Delete temporary branch
+      - name: Delete r-universe/check-pkg
         run: git push origin --delete r-universe/check-pkg || true
