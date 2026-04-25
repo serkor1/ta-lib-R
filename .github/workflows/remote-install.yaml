@@ -5,8 +5,14 @@ name: Remote Install
 on:
   push:
     branches: [devel]
+    paths:
+      - 'configure'
+      - 'configure.win'
   pull_request:
     branches: [devel]
+    paths:
+      - 'configure'
+      - 'configure.win'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}

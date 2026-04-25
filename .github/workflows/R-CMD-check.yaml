@@ -1,5 +1,6 @@
-# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
-# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+## this workflow is primarily meant
+## for testing against CRAN-systems and 
+## not for aligning against r-universe.
 name: R-CMD-check
 
 on:
@@ -8,27 +9,63 @@ on:
   pull_request:
     branches: [devel]
 
+## the permission has to be 
+## set to write so we are allowed
+## to create a new branch
+permissions:
+  contents: write
+
+## this section is important
+## for this workflow - the 
+## branch it works off of is 
+## fixed, so if there is multiple pushes
+## it will cancel the old ones
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: R-CMD-check
   cancel-in-progress: true
 
-permissions: read-all
-
 jobs:
-  ## Upstream parity gate. Runs first against pinned src/ta-lib; the
-  ## cross-platform R-CMD-check matrix below waits on this via
-  ## 'needs: parity', so a divergence between the R wrapper and upstream
-  ## TA-Lib aborts the workflow before the 9 matrix builds spin up.
-  parity:
+  ## r-universe builds directly from
+  ## the repository its being run from
+  ## without modifictions to the actual runs.
+  ## this means that untracked .Rd files never
+  ## enters the build/check - to mitigate this
+  ## we create a temporary branch where the .Rd
+  ## files are pushed, and let r-universe build
+  ## and test from there
+  git-checkout:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Checkout and push
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -B r-universe/check-pkg
+          git push --force origin r-universe/check-pkg
+
+  ## this step builds and pushes
+  ## the documentation to the temporary branch
+  render-documentation:
+    needs: git-checkout
     runs-on: ubuntu-latest
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
+    outputs:
+      sha: ${{ steps.push.outputs.sha }}
+
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: r-universe/check-pkg
           submodules: recursive
+          persist-credentials: true
 
       - uses: r-lib/actions/setup-r@v2
         with:
@@ -37,90 +74,34 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: |
-            any::devtools
-            any::roxygen2
-            any::testthat
+          extra-packages: any::devtools any::roxygen2
           needs: check
 
-      ## parity_gen links statically against libta-lib.a; build the
-      ## vendored TA-Lib via CMake so the standalone exe in codegen/parity/
-      ## has something to link against.
-      - name: Build vendored TA-Lib
-        run: |
-          cmake -S src/ta-lib -B /tmp/talib-build \
-            -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/src/ta-lib/local \
-            -DBUILD_SHARED_LIBS=OFF \
-            -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-            -DCMAKE_C_FLAGS="-O2 -fPIC -DNDEBUG"
-          cmake --build /tmp/talib-build --target install
-
-      ## make parity calls library(talib) from inside the comparator,
-      ## so the R package must be installed first.
-      - name: Install R package
-        run: |
-          devtools::document()
-          install.packages(".", repos = NULL, type = "source")
+      - run: devtools::document()
         shell: Rscript {0}
 
-      ## Builds parity_gen, dumps BTC -> CSV, runs upstream for every
-      ## wrapped indicator, converts CSVs to .rds, copies the comparator
-      ## template into tests/testthat/test-parity.R, runs only that test.
-      - name: Run parity tests
-        run: make parity
+      - id: push
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f man/ NAMESPACE
+          git commit --allow-empty -m "CI/CD: render documentation for r-universe build"
+          git push origin r-universe/check-pkg
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-  R-CMD-check:
-    needs: parity
-    runs-on: ${{ matrix.config.os }}
+  build:
+    needs: render-documentation
+    uses: r-universe-org/workflows/.github/workflows/build.yml@v3
+    with:
+      universe: ${{ github.repository_owner }}
+      ref: ${{ needs.render-documentation.outputs.sha }}
 
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
-
-    strategy:
-      fail-fast: false
-      matrix:
-        config:
-          ## macOS
-          - {os: macos-latest,   r: 'release'}
-          - {os: macos-latest,   r: 'oldrel-1'}
-
-          ## windows
-          - {os: windows-latest, r: 'release'}
-          - {os: windows-latest, r: 'oldrel-1'}
-
-          ## Ubuntu
-          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
-          - {os: ubuntu-latest,   r: 'release'}
-          - {os: ubuntu-latest,   r: 'oldrel-1'}
-          - {os: ubuntu-latest,   r: 'oldrel-2'}
-          - {os: ubuntu-latest,   r: 'oldrel-3'}
-
-    env:
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      R_KEEP_PKG_SOURCE: yes
-
+  cleanup:
+    needs: [render-documentation, build]
+    if: always()
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-         submodules: recursive
-
-      - uses: r-lib/actions/setup-pandoc@v2
-
-      - uses: r-lib/actions/setup-r@v2
-        with:
-          r-version: ${{ matrix.config.r }}
-          http-user-agent: ${{ matrix.config.http-user-agent }}
-          use-public-rspm: true
-
-      - uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: any::rcmdcheck any::devtools any::roxygen2
-          needs: check
-
-      - name: Render documentation and NAMESPACE
-        run: devtools::document()
-        shell: Rscript {0}
-
-      - uses: r-lib/actions/check-r-package@v2
-        with:
-          upload-snapshots: true
-          build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
+      - name: Delete r-universe/check-pkg
+        run: git push origin --delete r-universe/check-pkg || true
