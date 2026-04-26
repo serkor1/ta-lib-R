@@ -324,14 +324,19 @@ if [ "$(( PREINSTALLED + FORCE_VENDOR ))" -ne 0 ]; then
     ## in a different PATH than otherwise.
     ##  - This approach is a part 'Writing R Extensions' and
     ##    is also recommended by Dirk Eddelbuettel.
+    ## details:
+    ##  `|| CMAKE=""` is load-bearing. Without it, `which` returning
+    ##  non-zero propagates through `var=$(...)` to the assignment's
+    ##  exit status; `set -e` then kills configure silently before the
+    ##  explicit "CMake not found on PATH" branch below can print.
     if test -z "${CMAKE:-}"; then
         # Look for a cmake binary in the current path
-        CMAKE=`which cmake 2>/dev/null`
+        CMAKE=`which cmake 2>/dev/null` || CMAKE=""
     fi
-    
+
     if test -z "${CMAKE:-}"; then
         # Check for a MacOS specific path
-        CMAKE=`which /Applications/CMake.app/Contents/bin/cmake 2>/dev/null`
+        CMAKE=`which /Applications/CMake.app/Contents/bin/cmake 2>/dev/null` || CMAKE=""
     fi
     
     if test -z "${CMAKE:-}"; then  
@@ -505,6 +510,6 @@ EOF
 
 printf ' %s\n' "$(success)"
 
-echo 
+echo
 echo Configure status $(success)
 echo
