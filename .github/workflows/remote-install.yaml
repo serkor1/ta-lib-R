@@ -4,7 +4,7 @@ name: Remote Install
 
 on:
   push:
-    branches: [devel, CRAN_builds]
+    branches: [devel]
     paths:
       - 'configure'
       - 'configure.win'
