@@ -152,29 +152,64 @@ rm -rf $SHLIB_TEST
 ## TA-Lib availability
 ##
 ## details:
-##  CRAN requires that compiled packages
-##  that uses external libraries should always
-##  default to the users installation
-printf '%s Compiling TA-Lib program with system headers' "$(info)"
-TALIB_SYSTEM=$(temporary_directory)
+##  CRAN requires compiled packages with external dependencies to
+##  prefer the user's installation. We probe via pkg-config — bare
+##  `$CC` only sees default include paths, so a Homebrew install
+##  under /opt/homebrew or a MacPorts install under /opt/local would
+##  be missed and the package would silently fall back to vendor.
+##  pkg-config supplies the right -I and -L; we then compile AND link
+##  a test program that calls a real TA-Lib symbol, so a stale header
+##  without a resolvable library can't masquerade as a working install.
+##
+##  Any failure (pkg-config missing, ta-lib.pc absent, link fails)
+##  falls through to the vendored build. --force-vendor short-circuits
+##  detection entirely so PREINSTALLED stays 1 and the Makevars step
+##  picks the vendored static library.
+PREINSTALLED=1
+TALIB_CFLAGS=""
+TALIB_LIBS=""
 
-cat > "${TALIB_SYSTEM}/conftest.c" <<'EOF'
+if [ "$FORCE_VENDOR" -eq 0 ]; then
+    printf '%s Probing for system TA-Lib via pkg-config' "$(info)"
+
+    PKG_CONFIG_MISSING=0
+    if ! command -v pkg-config >/dev/null 2>&1; then
+        PKG_CONFIG_MISSING=1
+    elif pkg-config --exists ta-lib; then
+        TALIB_CFLAGS="$(pkg-config --cflags ta-lib)"
+        TALIB_LIBS="$(pkg-config --libs ta-lib)"
+
+        TALIB_SYSTEM=$(temporary_directory)
+        cat > "${TALIB_SYSTEM}/conftest.c" <<'EOF'
 #include <ta-lib/ta_libc.h>
-int main(void){ return 0; }
+int main(void){ TA_Initialize(); TA_Shutdown(); return 0; }
 EOF
 
-## details:
-##  1 is BASH for EXIT, 0 is for SUCCESS 
-##  so the logic is reversed here
-: "${CC:=$("$R_BIN" CMD config CC)}"
-if ! ( cd "$TALIB_SYSTEM" && $CC conftest.c >/dev/null 2>&1 ); then
-    printf ' %s\n' "$(warning)"
-    PREINSTALLED=1
-else
-    printf ' %s\n' "$(success)"
-    PREINSTALLED=0
+        ## details:
+        ##  $TALIB_CFLAGS / $TALIB_LIBS are intentionally unquoted —
+        ##  pkg-config returns space-separated flag lists that must
+        ##  word-split to reach the compiler as separate arguments.
+        : "${CC:=$("$R_BIN" CMD config CC)}"
+        if ( cd "$TALIB_SYSTEM" && $CC $TALIB_CFLAGS conftest.c $TALIB_LIBS -o conftest >/dev/null 2>&1 ); then
+            PREINSTALLED=0
+        fi
+        rm -rf "$TALIB_SYSTEM"
+    fi
+
+    if [ "$PREINSTALLED" -eq 0 ]; then
+        printf ' %s\n' "$(success)"
+    else
+        printf ' %s\n' "$(warning)"
+        ## details:
+        ##  surface the most likely user-fixable cause of fallback —
+        ##  a missing system TA-Lib is normal on CRAN builders, but
+        ##  a missing pkg-config on a machine that *does* have ta-lib
+        ##  installed is silent and confusing without a hint here.
+        if [ "$PKG_CONFIG_MISSING" -eq 1 ]; then
+            printf '%s pkg-config not found on PATH — falling back to vendored TA-Lib. Install pkg-config to link against a system install instead.\n' "$(info)"
+        fi
+    fi
 fi
-rm -rf $TALIB_SYSTEM
 
 ## conditional building using CMake
 ## for vendored TA-Lib
@@ -335,41 +370,12 @@ fi
 printf '%s Constructing %s and %s' "$(info)" "$(var PKG_CFLAGS)" "$(var PKG_LIBS)"
 CFLAGS=""
 if [ $PREINSTALLED -eq 0 ]; then
-
-    if ! command -v pkg-config >/dev/null 2>&1; then
-        printf ' %s\n' "$(warning)"
-        echo $(error) pkg-config not found on default PATH
-        echo "=========================================================================="
-        echo "Install pkg-config:"
-        echo "  Linux:"
-        echo "    Debian/Ubuntu: sudo apt-get update && sudo apt-get install -y pkg-config"
-        echo "    Fedora/RHEL/CentOS: sudo dnf install -y pkgconf-pkg-config"
-        echo "    Arch: sudo pacman -S --needed pkgconf"
-        echo "    openSUSE: sudo zypper install -y pkg-config"
-        echo
-        echo "  macOS:"
-        echo "    Homebrew: brew install pkg-config"
-        echo "    MacPorts: sudo port install pkgconfig"
-        echo
-        echo "After installation, restart the shell or ensure pkg-config is on PATH"
-        echo "=========================================================================="
-        echo "Submit bug-reports here: $(url https://github.com/serkor1/ta-lib-R)"
-        echo
-        exit 1
-    fi
-    
-    if pkg-config --exists ta-lib; then
-        incdir="$(pkg-config --variable=includedir ta-lib)"
-        libdir="$(pkg-config --variable=libdir ta-lib)"
-        CFLAGS="-I$incdir -I$incdir/ta-lib"
-        PKG_LIBS="-L$libdir -lta-lib"
-    else
-        printf ' %s\n' "$(warning)"
-        echo $(error) pkg-config failed to link TA-Lib. 
-        echo This is a bug, please submit a issue here: $(url https://github.com/serkor1/ta-lib-R)
-        exit 1
-    fi
-
+    ## details:
+    ##  the pkg-config probe above already captured the cflags and
+    ##  libs and proved they link. Re-running pkg-config here would
+    ##  duplicate that work and could disagree with what we tested.
+    CFLAGS="$TALIB_CFLAGS"
+    PKG_LIBS="$TALIB_LIBS"
 else
     CFLAGS="-I${TARGET##*/src/}/include -I${TARGET##*/src/}/include/ta-lib"
     SEARCH_DIR="$TALIB/local/lib/"
