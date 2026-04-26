@@ -65,6 +65,32 @@ fi
 ##    "$(R_HOME)/bin$(R_ARCH_BIN)/Rscript" -e 'R expression'
 R_BIN="${R_HOME}/bin${R_ARCH_BIN}/R"
 
+## R compiler configuration
+##
+## details:
+##  WRE Section 1.2.6 ("Using cmake") instructs to propagate CC/CXX/
+##  CFLAGS/CXXFLAGS/CPPFLAGS/LDFLAGS from R's config to cmake.
+##  On Windows the risk is that CMake auto-detects whatever
+##  gcc.exe it finds first on PATH — Rtools43 ships gcc 13,
+##  Rtools44 ships gcc 14, and a stray MSYS2 / system Mingw can
+##  shadow these. Mismatch -> linker errors at the .dll link.
+##
+##  R CMD config returns the compiler with leading flags baked
+##  in (e.g. "gcc -std=gnu2x"). CMAKE_C_COMPILER expects a bare
+##  executable path, so split the first token off as the
+##  compiler binary and fold the remainder into the flags.
+R_CC_FULL=$("$R_BIN" CMD config CC)
+R_CXX_FULL=$("$R_BIN" CMD config CXX)
+R_CFLAGS=$("$R_BIN" CMD config CFLAGS)
+R_CXXFLAGS=$("$R_BIN" CMD config CXXFLAGS)
+R_CPPFLAGS=$("$R_BIN" CMD config CPPFLAGS)
+R_LDFLAGS=$("$R_BIN" CMD config LDFLAGS)
+
+R_CC=$(echo "$R_CC_FULL" | awk '{print $1}')
+R_CC_EXTRA=$(echo "$R_CC_FULL" | cut -s -d' ' -f2-)
+R_CXX=$(echo "$R_CXX_FULL" | awk '{print $1}')
+R_CXX_EXTRA=$(echo "$R_CXX_FULL" | cut -s -d' ' -f2-)
+
 ## construct temporary directory
 ## for the build tests
 ## See: https://stackoverflow.com/a/53063602/10400791
@@ -107,7 +133,10 @@ rm -rf "$TESTDIR"
 ## 1) general setup of
 ##    the configure script
 TALIB="src/ta-lib"
-CC_BIN="${CC:-cc}"
+## use R's compiler for the conftest below, not a guessed `cc`
+## which doesn't exist on stock Windows. Honour an explicit
+## CC env var if the caller set one.
+CC_BIN="${CC:-$R_CC}"
 
 ## 1.1) determine processors
 ##      for TA-Lib building
@@ -230,7 +259,12 @@ if ! cmake -S "$TALIB" -B "$BUILDROOT/cmake" -G "$GEN" \
   -DCMAKE_INSTALL_PREFIX="$OUT_PREFIX" \
   -DBUILD_SHARED_LIBS=OFF \
   -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-  -DCMAKE_C_FLAGS="-w ${OPTFLAGS}" -DCMAKE_CXX_FLAGS="-w ${OPTFLAGS}" \
+  -DCMAKE_C_COMPILER="$R_CC" \
+  -DCMAKE_CXX_COMPILER="$R_CXX" \
+  -DCMAKE_C_FLAGS="$R_CC_EXTRA $R_CFLAGS $R_CPPFLAGS -w ${OPTFLAGS}" \
+  -DCMAKE_CXX_FLAGS="$R_CXX_EXTRA $R_CXXFLAGS $R_CPPFLAGS -w ${OPTFLAGS}" \
+  -DCMAKE_EXE_LINKER_FLAGS="$R_LDFLAGS" \
+  -DCMAKE_SHARED_LINKER_FLAGS="$R_LDFLAGS" \
   -DBUILD_DEV_TOOLS=OFF
 then
   rm -rf "$BUILDROOT/cmake"
@@ -241,7 +275,12 @@ then
     -DCMAKE_INSTALL_PREFIX="$OUT_PREFIX" \
     -DBUILD_SHARED_LIBS=OFF \
     -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-    -DCMAKE_C_FLAGS="-w ${OPTFLAGS}" -DCMAKE_CXX_FLAGS="-w ${OPTFLAGS}" \
+    -DCMAKE_C_COMPILER="$R_CC" \
+    -DCMAKE_CXX_COMPILER="$R_CXX" \
+    -DCMAKE_C_FLAGS="$R_CC_EXTRA $R_CFLAGS $R_CPPFLAGS -w ${OPTFLAGS}" \
+    -DCMAKE_CXX_FLAGS="$R_CXX_EXTRA $R_CXXFLAGS $R_CPPFLAGS -w ${OPTFLAGS}" \
+    -DCMAKE_EXE_LINKER_FLAGS="$R_LDFLAGS" \
+    -DCMAKE_SHARED_LINKER_FLAGS="$R_LDFLAGS" \
     -DBUILD_DEV_TOOLS=OFF
   then
     echo
@@ -285,13 +324,19 @@ fi
 ## 2.3.1) check that TA-Lib
 ##        works with the vendored
 ##        library
+##
+## details:
+##  link a real TA-Lib symbol (not just compile the header) so an
+##  ABI mismatch between the static lib we just built and the
+##  compiler R will use surfaces here, not at the much later
+##  R CMD INSTALL link step where the error is harder to read.
 cat > "$BUILDROOT/conftest.c" <<'EOF'
 #include <ta_libc.h>
-int main(void){return 0;}
+int main(void){ TA_Initialize(); TA_Shutdown(); return 0; }
 EOF
-"$CC_BIN" -c "$BUILDROOT/conftest.c" -o "$BUILDROOT/conftest.o" \
-  -I"$ABS_INC" -I"$ABS_INC/ta-lib" >/dev/null 2>&1 || {
-  echo "ERROR: ta_libc.h not found in $ABS_INC" >&2
+"$CC_BIN" "$BUILDROOT/conftest.c" -o "$BUILDROOT/conftest" \
+  -I"$ABS_INC" -I"$ABS_INC/ta-lib" $PKG_LIBS >/dev/null 2>&1 || {
+  echo "ERROR: vendored TA-Lib link probe failed (header path: $ABS_INC, lib: $PKG_LIBS)" >&2
   exit 1
 }
 
