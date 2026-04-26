@@ -4,7 +4,7 @@ name: Remote Install
 
 on:
   push:
-    branches: [devel]
+    branches: [devel, CRAN_builds]
     paths:
       - 'configure'
       - 'configure.win'
@@ -31,10 +31,12 @@ jobs:
       matrix:
         config:
           ## macOS
+          - {os: macos-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: macos-latest,   r: 'release'}
           - {os: macos-latest,   r: 'oldrel-1'}
 
           ## windows
+          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
           - {os: windows-latest, r: 'release'}
           - {os: windows-latest, r: 'oldrel-1'}
           
