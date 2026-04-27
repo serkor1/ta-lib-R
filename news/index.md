@@ -1,5 +1,17 @@
 # Changelog
 
+## version 0.9-2
+
+### improvements
+
+- The `configure` for UNIX have been improved and follows ‘Writing R
+  Extensions’ more closely so its more robust across different operating
+  systems.
+
+- The `configure` now probes for user-installed libraries uses `pkgconf`
+  and *should* locate libraries and headers installed in non-default
+  PATHs.
+
 ## version 0.9-1
 
 CRAN release: 2026-04-23
