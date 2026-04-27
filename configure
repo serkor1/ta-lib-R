@@ -125,10 +125,43 @@ if test -z "${R_HOME}"; then
     printf '%s could not determine %s\n'"$(error)" "$(var R_HOME)"
     printf '\n'
     exit 1
-else 
+else
     printf ' %s\n' "$(success)"
     R_BIN="${R_HOME}/bin/R"
 fi
+
+## R compiler configuration
+##
+## details:
+##  CMake's compiler probe walks $PATH and on macOS picks up
+##  /usr/bin/clang from Xcode CLT instead of the R toolchain at
+##  /opt/R/<arch>/bin/clang. The resulting libta-lib.a then has
+##  a different SDK / deployment target than the .so being
+##  linked by R, which manifests on the CRAN macOS builder as
+##  an early install failure with no useful surface log.
+##
+##  WRE Section 1.2.6 ("Using cmake") instructs to propagate CC/CXX/
+##  CFLAGS/CXXFLAGS/CPPFLAGS/LDFLAGS from R's config to cmake.
+##  We capture them once here and reuse them below — both for
+##  the system TA-Lib link probe (so it tests the *same*
+##  compiler R will use) and for the vendored CMake build.
+R_CC_FULL=$("$R_BIN" CMD config CC)
+R_CXX_FULL=$("$R_BIN" CMD config CXX)
+R_CFLAGS=$("$R_BIN" CMD config CFLAGS)
+R_CXXFLAGS=$("$R_BIN" CMD config CXXFLAGS)
+R_CPPFLAGS=$("$R_BIN" CMD config CPPFLAGS)
+R_LDFLAGS=$("$R_BIN" CMD config LDFLAGS)
+
+## details:
+##  R CMD config returns the compiler with leading flags baked in
+##  (e.g. "clang -arch x86_64" or "/opt/R/x86_64/bin/clang -arch
+##  arm64"). CMAKE_C_COMPILER expects a bare executable path, so
+##  split the first token off as the compiler binary and fold the
+##  remainder into the flags.
+R_CC=$(echo "$R_CC_FULL" | awk '{print $1}')
+R_CC_EXTRA=$(echo "$R_CC_FULL" | cut -s -d' ' -f2-)
+R_CXX=$(echo "$R_CXX_FULL" | awk '{print $1}')
+R_CXX_EXTRA=$(echo "$R_CXX_FULL" | cut -s -d' ' -f2-)
 
 ## details:
 ##  compile a small C-routine with R CMD SHLIB
@@ -152,29 +185,64 @@ rm -rf $SHLIB_TEST
 ## TA-Lib availability
 ##
 ## details:
-##  CRAN requires that compiled packages
-##  that uses external libraries should always
-##  default to the users installation
-printf '%s Compiling TA-Lib program with system headers' "$(info)"
-TALIB_SYSTEM=$(temporary_directory)
+##  CRAN requires compiled packages with external dependencies to
+##  prefer the user's installation. We probe via pkg-config — bare
+##  `$CC` only sees default include paths, so a Homebrew install
+##  under /opt/homebrew or a MacPorts install under /opt/local would
+##  be missed and the package would silently fall back to vendor.
+##  pkg-config supplies the right -I and -L; we then compile AND link
+##  a test program that calls a real TA-Lib symbol, so a stale header
+##  without a resolvable library can't masquerade as a working install.
+##
+##  Any failure (pkg-config missing, ta-lib.pc absent, link fails)
+##  falls through to the vendored build. --force-vendor short-circuits
+##  detection entirely so PREINSTALLED stays 1 and the Makevars step
+##  picks the vendored static library.
+PREINSTALLED=1
+TALIB_CFLAGS=""
+TALIB_LIBS=""
 
-cat > "${TALIB_SYSTEM}/conftest.c" <<'EOF'
+if [ "$FORCE_VENDOR" -eq 0 ]; then
+    printf '%s Probing for system TA-Lib via pkg-config' "$(info)"
+
+    PKG_CONFIG_MISSING=0
+    if ! command -v pkg-config >/dev/null 2>&1; then
+        PKG_CONFIG_MISSING=1
+    elif pkg-config --exists ta-lib; then
+        TALIB_CFLAGS="$(pkg-config --cflags ta-lib)"
+        TALIB_LIBS="$(pkg-config --libs ta-lib)"
+
+        TALIB_SYSTEM=$(temporary_directory)
+        cat > "${TALIB_SYSTEM}/conftest.c" <<'EOF'
 #include <ta-lib/ta_libc.h>
-int main(void){ return 0; }
+int main(void){ TA_Initialize(); TA_Shutdown(); return 0; }
 EOF
 
-## details:
-##  1 is BASH for EXIT, 0 is for SUCCESS 
-##  so the logic is reversed here
-: "${CC:=$("$R_BIN" CMD config CC)}"
-if ! ( cd "$TALIB_SYSTEM" && $CC conftest.c >/dev/null 2>&1 ); then
-    printf ' %s\n' "$(warning)"
-    PREINSTALLED=1
-else
-    printf ' %s\n' "$(success)"
-    PREINSTALLED=0
+        ## details:
+        ##  $TALIB_CFLAGS / $TALIB_LIBS are intentionally unquoted —
+        ##  pkg-config returns space-separated flag lists that must
+        ##  word-split to reach the compiler as separate arguments.
+        : "${CC:=$R_CC}"
+        if ( cd "$TALIB_SYSTEM" && $CC $TALIB_CFLAGS conftest.c $TALIB_LIBS -o conftest >/dev/null 2>&1 ); then
+            PREINSTALLED=0
+        fi
+        rm -rf "$TALIB_SYSTEM"
+    fi
+
+    if [ "$PREINSTALLED" -eq 0 ]; then
+        printf ' %s\n' "$(success)"
+    else
+        printf ' %s\n' "$(warning)"
+        ## details:
+        ##  surface the most likely user-fixable cause of fallback —
+        ##  a missing system TA-Lib is normal on CRAN builders, but
+        ##  a missing pkg-config on a machine that *does* have ta-lib
+        ##  installed is silent and confusing without a hint here.
+        if [ "$PKG_CONFIG_MISSING" -eq 1 ]; then
+            printf '%s pkg-config not found on PATH — falling back to vendored TA-Lib. Install pkg-config to link against a system install instead.\n' "$(info)"
+        fi
+    fi
 fi
-rm -rf $TALIB_SYSTEM
 
 ## conditional building using CMake
 ## for vendored TA-Lib
@@ -256,14 +324,19 @@ if [ "$(( PREINSTALLED + FORCE_VENDOR ))" -ne 0 ]; then
     ## in a different PATH than otherwise.
     ##  - This approach is a part 'Writing R Extensions' and
     ##    is also recommended by Dirk Eddelbuettel.
+    ## details:
+    ##  `|| CMAKE=""` is load-bearing. Without it, `which` returning
+    ##  non-zero propagates through `var=$(...)` to the assignment's
+    ##  exit status; `set -e` then kills configure silently before the
+    ##  explicit "CMake not found on PATH" branch below can print.
     if test -z "${CMAKE:-}"; then
         # Look for a cmake binary in the current path
-        CMAKE=`which cmake 2>/dev/null`
+        CMAKE=`which cmake 2>/dev/null` || CMAKE=""
     fi
-    
+
     if test -z "${CMAKE:-}"; then
         # Check for a MacOS specific path
-        CMAKE=`which /Applications/CMake.app/Contents/bin/cmake 2>/dev/null`
+        CMAKE=`which /Applications/CMake.app/Contents/bin/cmake 2>/dev/null` || CMAKE=""
     fi
     
     if test -z "${CMAKE:-}"; then  
@@ -303,6 +376,54 @@ if [ "$(( PREINSTALLED + FORCE_VENDOR ))" -ne 0 ]; then
     BUILDLOCATION=$(temporary_directory)
     trap 'rm -rf "$BUILDLOCATION"' EXIT
 
+    ## macOS-specific CMake settings
+    ##
+    ## details:
+    ##  CRAN's macOS builders target a fixed deployment SDK (e.g.
+    ##  -mmacosx-version-min=11.0 baked into R's CFLAGS) but run on
+    ##  a newer host (e.g. Ventura 13.x). Without an explicit
+    ##  CMAKE_OSX_DEPLOYMENT_TARGET, CMake uses the host version,
+    ##  producing objects whose LC_BUILD_VERSION exceeds the .so's
+    ##  target and breaking the link. CMAKE_OSX_ARCHITECTURES is
+    ##  set from `uname -m` so the static lib matches the running R
+    ##  arch (x86_64 or arm64).
+    ##
+    ##  The block is no-op on Linux/other Unixes.
+    OSX_CMAKE_ARGS=""
+    case "$(uname -s)" in
+        Darwin)
+            OSX_ARCH=$(uname -m)
+            OSX_DEPLOY=$(printf '%s' "$R_CFLAGS $R_CXXFLAGS" \
+                | sed -n 's/.*-mmacosx-version-min=\([0-9.]*\).*/\1/p' \
+                | head -n1)
+            OSX_CMAKE_ARGS="-DCMAKE_OSX_ARCHITECTURES=$OSX_ARCH"
+            if [ -n "$OSX_DEPLOY" ]; then
+                OSX_CMAKE_ARGS="$OSX_CMAKE_ARGS -DCMAKE_OSX_DEPLOYMENT_TARGET=$OSX_DEPLOY"
+            fi
+            ;;
+    esac
+
+    ## Portable parallel-job count
+    ##
+    ## details:
+    ##  `nproc` is GNU coreutils and absent on macOS by default.
+    ##  Without inherit_errexit the failed substitution silently
+    ##  produced an empty `-j` argument, which Make tolerates but
+    ##  Ninja rejects. Use getconf (POSIX) which is present on
+    ##  both Linux and macOS, with a safe fallback.
+    if command -v getconf >/dev/null 2>&1; then
+        NJOBS=$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo 2)
+    elif command -v nproc >/dev/null 2>&1; then
+        NJOBS=$(nproc 2>/dev/null || echo 2)
+    else
+        NJOBS=2
+    fi
+    if [ "${NJOBS:-2}" -gt 2 ]; then
+        NJOBS=$((NJOBS - 2))
+    else
+        NJOBS=1
+    fi
+
     if command -v "${CMAKE}" >/dev/null 2>&1; then
         printf '%s Configure and generate TA-Lib\n' "$(info)"
 
@@ -312,17 +433,22 @@ if [ "$(( PREINSTALLED + FORCE_VENDOR ))" -ne 0 ]; then
             -DCMAKE_INSTALL_PREFIX="$TARGET" \
             -DBUILD_SHARED_LIBS=OFF \
             -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-            -DCMAKE_C_FLAGS="-w -fPIC ${OPTFLAGS}" \
-            -DCMAKE_CXX_FLAGS="-w -fPIC ${OPTFLAGS}" \
+            -DCMAKE_C_COMPILER="$R_CC" \
+            -DCMAKE_CXX_COMPILER="$R_CXX" \
+            -DCMAKE_C_FLAGS="$R_CC_EXTRA $R_CFLAGS $R_CPPFLAGS -w -fPIC ${OPTFLAGS}" \
+            -DCMAKE_CXX_FLAGS="$R_CXX_EXTRA $R_CXXFLAGS $R_CPPFLAGS -w -fPIC ${OPTFLAGS}" \
+            -DCMAKE_EXE_LINKER_FLAGS="$R_LDFLAGS" \
+            -DCMAKE_SHARED_LINKER_FLAGS="$R_LDFLAGS" \
+            $OSX_CMAKE_ARGS \
             -DBUILD_DEV_TOOLS=OFF
 
         printf '%s\n' "$(success)"
 
         printf '%s Build and install TA-Lib\n' "$(info)"
 
-        ${CMAKE} --build "${BUILDLOCATION}" --target install -- -j"$(nproc --ignore 2)"
+        ${CMAKE} --build "${BUILDLOCATION}" --target install -- -j"$NJOBS"
 
-        printf '%s\n' "$(success)"        
+        printf '%s\n' "$(success)"
     fi
 
 fi
@@ -335,41 +461,12 @@ fi
 printf '%s Constructing %s and %s' "$(info)" "$(var PKG_CFLAGS)" "$(var PKG_LIBS)"
 CFLAGS=""
 if [ $PREINSTALLED -eq 0 ]; then
-
-    if ! command -v pkg-config >/dev/null 2>&1; then
-        printf ' %s\n' "$(warning)"
-        echo $(error) pkg-config not found on default PATH
-        echo "=========================================================================="
-        echo "Install pkg-config:"
-        echo "  Linux:"
-        echo "    Debian/Ubuntu: sudo apt-get update && sudo apt-get install -y pkg-config"
-        echo "    Fedora/RHEL/CentOS: sudo dnf install -y pkgconf-pkg-config"
-        echo "    Arch: sudo pacman -S --needed pkgconf"
-        echo "    openSUSE: sudo zypper install -y pkg-config"
-        echo
-        echo "  macOS:"
-        echo "    Homebrew: brew install pkg-config"
-        echo "    MacPorts: sudo port install pkgconfig"
-        echo
-        echo "After installation, restart the shell or ensure pkg-config is on PATH"
-        echo "=========================================================================="
-        echo "Submit bug-reports here: $(url https://github.com/serkor1/ta-lib-R)"
-        echo
-        exit 1
-    fi
-    
-    if pkg-config --exists ta-lib; then
-        incdir="$(pkg-config --variable=includedir ta-lib)"
-        libdir="$(pkg-config --variable=libdir ta-lib)"
-        CFLAGS="-I$incdir -I$incdir/ta-lib"
-        PKG_LIBS="-L$libdir -lta-lib"
-    else
-        printf ' %s\n' "$(warning)"
-        echo $(error) pkg-config failed to link TA-Lib. 
-        echo This is a bug, please submit a issue here: $(url https://github.com/serkor1/ta-lib-R)
-        exit 1
-    fi
-
+    ## details:
+    ##  the pkg-config probe above already captured the cflags and
+    ##  libs and proved they link. Re-running pkg-config here would
+    ##  duplicate that work and could disagree with what we tested.
+    CFLAGS="$TALIB_CFLAGS"
+    PKG_LIBS="$TALIB_LIBS"
 else
     CFLAGS="-I${TARGET##*/src/}/include -I${TARGET##*/src/}/include/ta-lib"
     SEARCH_DIR="$TALIB/local/lib/"
@@ -413,6 +510,6 @@ EOF
 
 printf ' %s\n' "$(success)"
 
-echo 
+echo
 echo Configure status $(success)
 echo
