@@ -1,0 +1,62 @@
+## Workflow: Render Documentation
+## objective:
+##    - Render *.Rd-files on CRAN-branch which has the CRAN version
+##      of the package *and* the R-universe version.
+##
+name: Render Documentation
+
+## the workflow will run on
+## on all branches but for CRAN
+## branches it will also push *.Rd-files
+on:
+  push:
+    branches: [CRAN]
+  pull_request:
+    branches: [CRAN]
+  workflow_dispatch:
+
+## it needs the permission
+## to read and write
+permissions:
+  contents: write
+
+jobs:
+  render-documentation:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::devtools any::roxygen2
+
+      - name: Render documentation and NAMESPACE
+        run: devtools::document()
+        shell: Rscript {0}
+
+      - name: Push documentation
+        id: push
+        if: github.event_name == 'push'
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f man/ NAMESPACE
+          if git diff --cached --quiet; then
+            echo "No documentation changes - nothing to commit."
+          else
+            git commit -m ":books: Rendered documentation"
+            git push origin CRAN
+            echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          fi
+
