@@ -16,6 +16,7 @@ built-in datasets—`BTC`, `NVDA`, and `SPY`—used throughout this
 vignette.
 
 ``` r
+
 talib::chart(
   x = talib::NVDA
 )
@@ -25,6 +26,7 @@ The chart title defaults to the name of the object passed to `x`.
 Override it with the `title` argument.
 
 ``` r
+
 talib::chart(
   x = talib::BTC,
   title = "Bitcoin (USDC)"
@@ -37,6 +39,7 @@ Two chart types are supported via the `type` argument: `"candlestick"`
 (default) and `"ohlc"`.
 
 ``` r
+
 talib::chart(
   x = talib::BTC,
   type = "ohlc"
@@ -54,6 +57,7 @@ averages) are drawn on the main panel. Indicators with their own scale
 (e.g., RSI, MACD) are drawn in sub-panels below.
 
 ``` r
+
 {
   talib::chart(talib::BTC)
   talib::indicator(talib::SMA, n = 7)
@@ -66,6 +70,7 @@ Multiple sub-panel indicators stack vertically. The main chart occupies
 70% of the height by default (controlled by `talib.chart.main`).
 
 ``` r
+
 {
   talib::chart(talib::BTC)
   talib::indicator(talib::BBANDS)
@@ -82,6 +87,7 @@ panel. To merge multiple indicators onto the same panel, pass them as
 [`indicator()`](https://serkor1.github.io/ta-lib-R/reference/indicator.md):
 
 ``` r
+
 {
   talib::chart(talib::BTC)
   talib::indicator(
@@ -97,6 +103,7 @@ from the active theme’s color palette. This works with any number of
 indicators—and they don’t have to be the same type:
 
 ``` r
+
 {
   talib::chart(talib::BTC)
   talib::indicator(
@@ -110,6 +117,7 @@ Combined panels and regular panels can be freely mixed in the same
 chart:
 
 ``` r
+
 {
   talib::chart(talib::BTC)
   talib::indicator(talib::BBANDS)
@@ -137,6 +145,7 @@ can plot an indicator on its own—but you must supply the `data` argument
 explicitly.
 
 ``` r
+
 {
   ## clear any existing chart
   talib::chart()
@@ -159,6 +168,7 @@ indicator after a previous
 [`chart()`](https://serkor1.github.io/ta-lib-R/reference/chart.md) call.
 
 ``` r
+
 {
   ## first chart
   talib::chart(talib::NVDA)
@@ -167,6 +177,7 @@ indicator after a previous
 ```
 
 ``` r
+
 {
   ## reset and start fresh
   talib::chart()
@@ -187,6 +198,7 @@ Pass a vector to the `idx` argument to display custom labels (e.g.,
 dates).
 
 ``` r
+
 {
   talib::chart(
     x   = talib::BTC,
@@ -202,6 +214,7 @@ the data without subsetting the data itself. This is useful for
 comparing different indicators across different time windows.
 
 ``` r
+
 {
   talib::chart(
     x   = talib::BTC,
@@ -236,6 +249,7 @@ Use the `$` accessor on `set_theme` for tab-completion, or pass the
 theme name as a string.
 
 ``` r
+
 ## equivalent ways to set a theme
 talib::set_theme$payout
 talib::set_theme("payout")
@@ -253,6 +267,7 @@ calling
 The default theme uses a dark background with cyan and blue candles.
 
 ``` r
+
 {
   talib::chart(talib::BTC)
   talib::indicator(talib::SMA, n = 7)
@@ -269,6 +284,7 @@ The default theme uses a dark background with cyan and blue candles.
 A light theme with neutral grays.
 
 ``` r
+
 {
   talib::set_theme$hawks_and_doves
   talib::chart(talib::BTC)
@@ -286,6 +302,7 @@ A light theme with neutral grays.
 A dark theme with teal and orange accents.
 
 ``` r
+
 {
   talib::set_theme$payout
   talib::chart(talib::BTC)
@@ -303,6 +320,7 @@ A dark theme with teal and orange accents.
 A bright theme with teal and red candles on a light background.
 
 ``` r
+
 {
   talib::set_theme$tp_slapped
   talib::chart(talib::BTC)
@@ -320,6 +338,7 @@ A bright theme with teal and red candles on a light background.
 A light, muted theme with earthy tones.
 
 ``` r
+
 {
   talib::set_theme$trust_the_process
   talib::chart(talib::BTC)
@@ -340,6 +359,7 @@ orange/gray pair separates cleanly under deuteranopia, protanopia, and
 tritanopia. The colorway is the Okabe-Ito qualitative palette.
 
 ``` r
+
 {
   talib::set_theme$bloomberg_terminal
   talib::chart(talib::BTC)
@@ -360,6 +380,7 @@ is large enough to remain unambiguous under all three CVD types and even
 under full achromatopsia.
 
 ``` r
+
 {
   talib::set_theme$limit_up
   talib::chart(talib::BTC)
@@ -380,6 +401,7 @@ and protanopia (the most common CVD forms, affecting roughly 8% of
 males); separation under tritanopia is weaker but still readable.
 
 ``` r
+
 {
   talib::set_theme$bid_n_ask
   talib::chart(talib::BTC)
@@ -399,6 +421,7 @@ Pass named color arguments to
 to override individual theme properties on top of a base theme.
 
 ``` r
+
 {
   talib::set_theme(
     "payout",
@@ -423,17 +446,18 @@ Global options control layout and display behavior. Set them with
 [`options()`](https://rdrr.io/r/base/options.html) before calling
 [`chart()`](https://serkor1.github.io/ta-lib-R/reference/chart.md).
 
-| Option                    | Default    | Description                                                                  |
-|:--------------------------|:-----------|:-----------------------------------------------------------------------------|
-| `talib.chart.backend`     | `"plotly"` | Charting backend: `"plotly"` or `"ggplot2"`                                  |
-| `talib.chart.slider`      | `FALSE`    | Add a range slider below the x-axis (plotly only)                            |
-| `talib.chart.slider.size` | `0.05`     | Height proportion of the range slider                                        |
-| `talib.chart.legend`      | `TRUE`     | Show the legend                                                              |
-| `talib.chart.scale`       | `1`        | Font scale multiplier                                                        |
-| `talib.chart.main`        | `0.7`      | Main chart height as a proportion of the total (when sub-panels are present) |
-| `talib.chart.modebar`     | `NULL`     | Show the plotly modebar (`TRUE`/`FALSE`/`NULL` for auto)                     |
+| Option | Default | Description |
+|:---|:---|:---|
+| `talib.chart.backend` | `"plotly"` | Charting backend: `"plotly"` or `"ggplot2"` |
+| `talib.chart.slider` | `FALSE` | Add a range slider below the x-axis (plotly only) |
+| `talib.chart.slider.size` | `0.05` | Height proportion of the range slider |
+| `talib.chart.legend` | `TRUE` | Show the legend |
+| `talib.chart.scale` | `1` | Font scale multiplier |
+| `talib.chart.main` | `0.7` | Main chart height as a proportion of the total (when sub-panels are present) |
+| `talib.chart.modebar` | `NULL` | Show the plotly modebar (`TRUE`/`FALSE`/`NULL` for auto) |
 
 ``` r
+
 {
   options(
     talib.chart.slider = TRUE,
@@ -457,6 +481,7 @@ and
 work the same way.
 
 ``` r
+
 {
   options(talib.chart.backend = "ggplot2")
   talib::set_theme$hawks_and_doves

@@ -13,6 +13,7 @@ according to OHLC-V conventions. The package ships with several built-in
 datasets:
 
 ``` r
+
 str(talib::BTC)
 #> 'data.frame':    366 obs. of  5 variables:
 #>  $ open  : num  42274 44185 44966 42863 44191 ...
@@ -31,6 +32,7 @@ rename the columns, or remap them with the `cols` argument (see [Column
 selection with `cols`](#column-selection-with-cols)).
 
 ``` r
+
 ## rename columns to uppercase;
 ## this will fail
 x <- talib::BTC
@@ -46,13 +48,13 @@ talib::RSI(x)
 Different indicators use different subsets of the OHLC-V columns. The
 table below gives a rough guide:
 
-| Indicator type    | Default columns             | Example                                                                                                                                                                                                                                                     |
-|:------------------|:----------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Univariate (most) | `close`                     | [`RSI()`](https://serkor1.github.io/ta-lib-R/reference/relative_strength_index.md), [`SMA()`](https://serkor1.github.io/ta-lib-R/reference/simple_moving_average.md), [`EMA()`](https://serkor1.github.io/ta-lib-R/reference/exponential_moving_average.md) |
-| High-Low based    | `high + low`                | [`SAR()`](https://serkor1.github.io/ta-lib-R/reference/parabolic_stop_and_reverse.md), [`AROON()`](https://serkor1.github.io/ta-lib-R/reference/aroon.md)                                                                                                   |
-| High-Low-Close    | `high + low + close`        | [`STOCH()`](https://serkor1.github.io/ta-lib-R/reference/stochastic.md), [`CCI()`](https://serkor1.github.io/ta-lib-R/reference/commodity_channel_index.md), [`ATR()`](https://serkor1.github.io/ta-lib-R/reference/average_true_range.md)                  |
-| Full OHLC         | `open + high + low + close` | All candlestick patterns                                                                                                                                                                                                                                    |
-| Volume-based      | `volume` (+ price columns)  | [`OBV()`](https://serkor1.github.io/ta-lib-R/reference/on_balance_volume.md), [`AD()`](https://serkor1.github.io/ta-lib-R/reference/chaikin_accumulation_distribution_line.md), [`MFI()`](https://serkor1.github.io/ta-lib-R/reference/money_flow_index.md) |
+| Indicator type | Default columns | Example |
+|:---|:---|:---|
+| Univariate (most) | `close` | [`RSI()`](https://serkor1.github.io/ta-lib-R/reference/relative_strength_index.md), [`SMA()`](https://serkor1.github.io/ta-lib-R/reference/simple_moving_average.md), [`EMA()`](https://serkor1.github.io/ta-lib-R/reference/exponential_moving_average.md) |
+| High-Low based | `high + low` | [`SAR()`](https://serkor1.github.io/ta-lib-R/reference/parabolic_stop_and_reverse.md), [`AROON()`](https://serkor1.github.io/ta-lib-R/reference/aroon.md) |
+| High-Low-Close | `high + low + close` | [`STOCH()`](https://serkor1.github.io/ta-lib-R/reference/stochastic.md), [`CCI()`](https://serkor1.github.io/ta-lib-R/reference/commodity_channel_index.md), [`ATR()`](https://serkor1.github.io/ta-lib-R/reference/average_true_range.md) |
+| Full OHLC | `open + high + low + close` | All candlestick patterns |
+| Volume-based | `volume` (+ price columns) | [`OBV()`](https://serkor1.github.io/ta-lib-R/reference/on_balance_volume.md), [`AD()`](https://serkor1.github.io/ta-lib-R/reference/chaikin_accumulation_distribution_line.md), [`MFI()`](https://serkor1.github.io/ta-lib-R/reference/money_flow_index.md) |
 
 A `data.frame` that only contains `high`, `low`, and `close` is
 perfectly valid input for
@@ -68,6 +70,7 @@ that are not needed are simply ignored.
 Pass an OHLC-V object directly to any indicator function:
 
 ``` r
+
 tail(
     talib::bollinger_bands(talib::BTC)
 )
@@ -85,6 +88,7 @@ methods for `data.frame`, `matrix`, `numeric`, and `plotly`. The return
 type matches the input type:
 
 ``` r
+
 ## data.frame in -> data.frame out
 class(
     talib::RSI(talib::BTC)
@@ -93,6 +97,7 @@ class(
 ```
 
 ``` r
+
 ## matrix in -> matrix out
 class(
     talib::RSI(talib::SPY)
@@ -101,6 +106,7 @@ class(
 ```
 
 ``` r
+
 ## numeric vector in -> numeric vector out
 is.double(
     talib::RSI(talib::BTC$close)
@@ -114,6 +120,7 @@ Every indicator has a descriptive snake_case name and an uppercase alias
 that mirrors the TA-Lib C function name. Both are interchangeable:
 
 ``` r
+
 ## these are equivalent
 identical(
     talib::relative_strength_index(talib::BTC, n = 14),
@@ -129,6 +136,7 @@ produce a value. This is called the **lookback period**. The first
 `lookback` rows of the result will be `NA`:
 
 ``` r
+
 ## SMA with n = 5 has a lookback of 4
 head(
     talib::SMA(talib::BTC, n = 5),
@@ -147,6 +155,7 @@ head(
 The lookback is stored as an attribute on the result:
 
 ``` r
+
 x <- talib::SMA(talib::BTC, n = 20)
 attr(x, "lookback")
 #> [1] 19
@@ -165,6 +174,7 @@ default is `~close`. Pass a different column to calculate the indicator
 on that series instead:
 
 ``` r
+
 ## RSI on 'high' instead of 'close'
 tail(
     talib::RSI(talib::BTC, cols = ~high)
@@ -185,6 +195,7 @@ columns are used. The order in the formula must match the order expected
 by the indicator:
 
 ``` r
+
 ## Stochastic defaults to ~high + low + close;
 ## here we swap 'close' for 'open'
 tail(
@@ -209,6 +220,7 @@ Additional arguments are forwarded to
 useful for computing an indicator on a subset of the data:
 
 ``` r
+
 ## Bollinger Bands on the first 100 rows only
 tail(
     talib::BBANDS(
@@ -236,12 +248,14 @@ the indicator on the clean data, and then re-inserts `NA`s at their
 original positions:
 
 ``` r
+
 ## inject some NAs
 x <- talib::BTC
 x$close[c(10, 50, 100)] <- NA
 ```
 
 ``` r
+
 ## default: NAs propagate
 sum(is.na(
     talib::RSI(x)
@@ -250,6 +264,7 @@ sum(is.na(
 ```
 
 ``` r
+
 ## na.bridge = TRUE: NAs are skipped
 sum(is.na(
     talib::RSI(x, na.bridge = TRUE)
@@ -261,6 +276,7 @@ The stripped rows are restored in the output, so the result always has
 the same number of rows as the input:
 
 ``` r
+
 nrow(talib::RSI(x, na.bridge = TRUE)) == nrow(x)
 #> [1] TRUE
 ```
@@ -285,6 +301,7 @@ serve a dual purpose:
   indicators use internally.
 
 ``` r
+
 ## SMA as a specification
 str(
     talib::SMA(n = 20)
@@ -301,6 +318,7 @@ or
 to control the type of smoothing:
 
 ``` r
+
 ## Bollinger Bands with an EMA(20) middle band
 tail(
     talib::bollinger_bands(
@@ -318,6 +336,7 @@ tail(
 ```
 
 ``` r
+
 ## Stochastic with WMA smoothing
 tail(
     talib::stochastic(
@@ -343,6 +362,7 @@ changed via `options(talib.normalize = FALSE)` to use `100`/`-100`
 instead.
 
 ``` r
+
 x <- talib::harami(talib::BTC)
 tail(x)
 #>                     CDLHARAMI
@@ -355,6 +375,7 @@ tail(x)
 ```
 
 ``` r
+
 ## find all bullish occurrences
 talib::BTC[which(x == 1), ]
 #>                         open     high      low    close    volume
@@ -384,6 +405,7 @@ which work like [`plot()`](https://rdrr.io/r/graphics/plot.default.html)
 and [`lines()`](https://rdrr.io/r/graphics/lines.html):
 
 ``` r
+
 {
     ## main candlestick chart
     talib::chart(talib::BTC)

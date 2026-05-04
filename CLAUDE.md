@@ -64,6 +64,7 @@ counters.
 Every indicator follows this pattern:
 
 ``` r
+
 indicator <- function(x, cols, ...) UseMethod("indicator")
 indicator.default    # Handles matrix/data input, calls .Call()
 indicator.data.frame # Extracts columns via series(), delegates, re-wraps via map_dfr()

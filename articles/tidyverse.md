@@ -11,6 +11,7 @@ This article builds a thin wrapper called `tidy_ta()` that bridges that
 gap, then puts it to work in increasingly realistic scenarios.
 
 ``` r
+
 library(talib)
 #> Loading {talib} v0.9.2
 library(dplyr)
@@ -31,6 +32,7 @@ Piping into a [talib](https://serkor1.github.io/ta-lib-R/) indicator
 works—`x` is the first argument:
 
 ``` r
+
 BTC %>%
     RSI(n = 14) %>%
     tail()
@@ -53,6 +55,7 @@ The simplest version takes a data frame, passes it to an indicator, and
 column-binds the result:
 
 ``` r
+
 tidy_ta <- function(.data, .f, ...) {
     dplyr::bind_cols(.data, .f(.data, ...))
 }
@@ -62,6 +65,7 @@ Three lines, and every indicator in
 [talib](https://serkor1.github.io/ta-lib-R/) is now pipe-friendly:
 
 ``` r
+
 BTC %>%
     tidy_ta(RSI, n = 14) %>%
     tail()
@@ -78,6 +82,7 @@ Multi-column indicators work the same way—Bollinger Bands returns three
 columns, and all three get bound:
 
 ``` r
+
 BTC %>%
     tidy_ta(bollinger_bands) %>%
     tail()
@@ -100,6 +105,7 @@ BTC %>%
 Chaining multiple indicators composes naturally:
 
 ``` r
+
 BTC %>%
     tidy_ta(RSI, n = 14) %>%
     tidy_ta(bollinger_bands) %>%
@@ -137,6 +143,7 @@ disambiguates with ugly suffixes like `SMA...6`. A `.suffix` parameter
 fixes this:
 
 ``` r
+
 tidy_ta <- function(.data, .f, ..., .suffix = NULL) {
     result <- .f(.data, ...)
 
@@ -151,6 +158,7 @@ tidy_ta <- function(.data, .f, ..., .suffix = NULL) {
 Now each indicator gets a clear name:
 
 ``` r
+
 BTC %>%
     tidy_ta(SMA, n = 10, .suffix = "10") %>%
     tidy_ta(SMA, n = 20, .suffix = "20") %>%
@@ -175,6 +183,7 @@ The `cols` argument is forwarded through `...`, so column remapping
 still works:
 
 ``` r
+
 BTC %>%
     tidy_ta(RSI, cols = ~high, n = 14) %>%
     tail()
@@ -198,6 +207,7 @@ apply `tidy_ta()` inside each group, and
 [`unnest()`](https://tidyr.tidyverse.org/reference/unnest.html):
 
 ``` r
+
 assets <- bind_rows(
     BTC  %>% as_tibble(rownames = "date") %>% mutate(ticker = "BTC"),
     SPY  %>% as_tibble(rownames = "date") %>% mutate(ticker = "SPY"),
@@ -231,6 +241,7 @@ everything in one step. This scales to multiple indicators by chaining
 inside the [`lapply()`](https://rdrr.io/r/base/lapply.html):
 
 ``` r
+
 assets %>%
     nest(.by = ticker) %>%
     mutate(data = lapply(data, function(d) {
@@ -262,6 +273,7 @@ A complete pipeline: enrich a multi-asset dataset, flag RSI signals, and
 find the most recent event per asset.
 
 ``` r
+
 assets %>%
     nest(.by = ticker) %>%
     mutate(data = lapply(data, tidy_ta, RSI, n = 14)) %>%
@@ -293,6 +305,7 @@ assets %>%
 The entire wrapper is six lines:
 
 ``` r
+
 tidy_ta <- function(.data, .f, ..., .suffix = NULL) {
     result <- .f(.data, ...)
     if (!is.null(.suffix)) {

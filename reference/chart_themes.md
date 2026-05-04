@@ -6,7 +6,7 @@ candle colors, background, text, grid lines, and a 10-color palette
 (colorway) used to distinguish indicator lines.
 
 Use
-[`ggplot2::set_theme()`](https://ggplot2.tidyverse.org/reference/get_theme.html)
+[`set_theme()`](https://ggplot2.tidyverse.org/reference/get_theme.html)
 to apply or list themes.
 
 ## Details
@@ -122,7 +122,7 @@ Each theme sets the following color properties:
 
 Any of these properties can be individually overridden via the `...`
 argument to
-[`ggplot2::set_theme()`](https://ggplot2.tidyverse.org/reference/get_theme.html).
+[`set_theme()`](https://ggplot2.tidyverse.org/reference/get_theme.html).
 
 ## References
 

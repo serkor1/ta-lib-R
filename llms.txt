@@ -17,6 +17,7 @@ recognition and interactive charts to the R technical analysis
 ecosystem.
 
 ``` r
+
 {
     ## create a candlestick chart
     talib::chart(BTC, title = "Bitcoin (BTC)")
@@ -45,6 +46,7 @@ or `matrix` and get the same type back. The return type always matches
 the input.
 
 ``` r
+
 ## compute Bollinger Bands
 ## on BTC OHLCV data
 tail(
@@ -67,6 +69,7 @@ Three White Soldiers. Each pattern returns a normalized score: `1`
 (bullish), `-1` (bearish), or `0` (no pattern).
 
 ``` r
+
 ## detect Engulfing patterns:
 ## 1 = bullish, -1 = bearish, 0 = none
 tail(
@@ -92,6 +95,7 @@ Bollinger Bands) draw on the price panel; oscillators (RSI, MACD) get
 their own sub-panels.
 
 ``` r
+
 {
     ## price chart with two moving
     ## averages and MACD below
@@ -107,6 +111,7 @@ their own sub-panels.
 Multiple indicators can share a sub-panel by passing them as calls:
 
 ``` r
+
 {
     talib::chart(BTC)
     talib::indicator(talib::BBANDS)
@@ -133,6 +138,7 @@ default) and [{ggplot2}](https://ggplot2.tidyverse.org/) (static)
 backends are supported:
 
 ``` r
+
 {
     ## switch to ggplot2 backend with
     ## the "Hawks and Doves" theme
@@ -152,6 +158,7 @@ Indicators use the columns they need automatically. When your data has
 non-standard column names, remap them with formula syntax:
 
 ``` r
+
 ## remap 'price' to the close column
 talib::RSI(x, cols = ~price)
 
@@ -165,17 +172,18 @@ Functions use descriptive snake_case names, but every function is
 aliased to its TA-Lib shorthand for compatibility with the broader
 ecosystem:
 
-| Category              | TA-Lib (C)           | {talib}                                                                                                | {talib} alias                                                                      |
-|:----------------------|:---------------------|:-------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------|
-| Overlap Studies       | `TA_BBANDS()`        | [`bollinger_bands()`](https://serkor1.github.io/ta-lib-R/reference/bollinger_bands.md)                 | [`BBANDS()`](https://serkor1.github.io/ta-lib-R/reference/bollinger_bands.md)      |
-| Momentum Indicators   | `TA_CCI()`           | [`commodity_channel_index()`](https://serkor1.github.io/ta-lib-R/reference/commodity_channel_index.md) | [`CCI()`](https://serkor1.github.io/ta-lib-R/reference/commodity_channel_index.md) |
-| Volume Indicators     | `TA_OBV()`           | [`on_balance_volume()`](https://serkor1.github.io/ta-lib-R/reference/on_balance_volume.md)             | [`OBV()`](https://serkor1.github.io/ta-lib-R/reference/on_balance_volume.md)       |
-| Volatility Indicators | `TA_ATR()`           | [`average_true_range()`](https://serkor1.github.io/ta-lib-R/reference/average_true_range.md)           | [`ATR()`](https://serkor1.github.io/ta-lib-R/reference/average_true_range.md)      |
-| Price Transform       | `TA_AVGPRICE()`      | [`average_price()`](https://serkor1.github.io/ta-lib-R/reference/average_price.md)                     | [`AVGPRICE()`](https://serkor1.github.io/ta-lib-R/reference/average_price.md)      |
-| Cycle Indicators      | `TA_HT_SINE()`       | [`sine_wave()`](https://serkor1.github.io/ta-lib-R/reference/sine_wave.md)                             | [`HT_SINE()`](https://serkor1.github.io/ta-lib-R/reference/sine_wave.md)           |
-| Pattern Recognition   | `TA_CDLHANGINGMAN()` | [`hanging_man()`](https://serkor1.github.io/ta-lib-R/reference/hanging_man.md)                         | [`CDLHANGINGMAN()`](https://serkor1.github.io/ta-lib-R/reference/hanging_man.md)   |
+| Category | TA-Lib (C) | {talib} | {talib} alias |
+|:---|:---|:---|:---|
+| Overlap Studies | `TA_BBANDS()` | [`bollinger_bands()`](https://serkor1.github.io/ta-lib-R/reference/bollinger_bands.md) | [`BBANDS()`](https://serkor1.github.io/ta-lib-R/reference/bollinger_bands.md) |
+| Momentum Indicators | `TA_CCI()` | [`commodity_channel_index()`](https://serkor1.github.io/ta-lib-R/reference/commodity_channel_index.md) | [`CCI()`](https://serkor1.github.io/ta-lib-R/reference/commodity_channel_index.md) |
+| Volume Indicators | `TA_OBV()` | [`on_balance_volume()`](https://serkor1.github.io/ta-lib-R/reference/on_balance_volume.md) | [`OBV()`](https://serkor1.github.io/ta-lib-R/reference/on_balance_volume.md) |
+| Volatility Indicators | `TA_ATR()` | [`average_true_range()`](https://serkor1.github.io/ta-lib-R/reference/average_true_range.md) | [`ATR()`](https://serkor1.github.io/ta-lib-R/reference/average_true_range.md) |
+| Price Transform | `TA_AVGPRICE()` | [`average_price()`](https://serkor1.github.io/ta-lib-R/reference/average_price.md) | [`AVGPRICE()`](https://serkor1.github.io/ta-lib-R/reference/average_price.md) |
+| Cycle Indicators | `TA_HT_SINE()` | [`sine_wave()`](https://serkor1.github.io/ta-lib-R/reference/sine_wave.md) | [`HT_SINE()`](https://serkor1.github.io/ta-lib-R/reference/sine_wave.md) |
+| Pattern Recognition | `TA_CDLHANGINGMAN()` | [`hanging_man()`](https://serkor1.github.io/ta-lib-R/reference/hanging_man.md) | [`CDLHANGINGMAN()`](https://serkor1.github.io/ta-lib-R/reference/hanging_man.md) |
 
 ``` r
+
 ## snake_case and TA-Lib aliases
 ## are identical
 all.equal(
@@ -185,17 +193,19 @@ all.equal(
 #> [1] TRUE
 ```
 
-## Installation[¹](#fn1)
+## Installation[^1]
 
 Install the release version from CRAN:
 
 ``` r
+
 install.packages("talib")
 ```
 
 Install the development version from GitHub:
 
 ``` r
+
 pak::pak("serkor1/ta-lib-R")
 ```
 
@@ -206,6 +216,7 @@ CMake build of the vendored TA-Lib and the R wrapper compile step.
 Rebuild from source with any compiler flags you like:
 
 ``` r
+
 install.packages(
     "talib",
     type = "source",
@@ -228,11 +239,10 @@ released with a [Contributor Code of
 Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html).
 By contributing to this project, you agree to abide by its terms.
 
-------------------------------------------------------------------------
-
-1.  [TA-Lib](https://github.com/TA-Lib/ta-lib) is vendored via `CMake`,
-    so a pre-installed TA-Lib is not required. Some systems (Windows in
-    particular) may require `CMake` to be explicitly installed.
+[^1]: [TA-Lib](https://github.com/TA-Lib/ta-lib) is vendored via
+    `CMake`, so a pre-installed TA-Lib is not required. Some systems
+    (Windows in particular) may require `CMake` to be explicitly
+    installed.
 
 # Package index
 
