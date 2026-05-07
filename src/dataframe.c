@@ -63,8 +63,21 @@ static SEXP map_dfr_impl(
 
   // dimension names
   SEXP dimnames = getAttrib(x, R_DimNamesSymbol);
-  SEXP row_names = VECTOR_ELT(dimnames, 0);
-  SEXP col_names = VECTOR_ELT(dimnames, 1);
+  SEXP row_names =
+    (dimnames == R_NilValue) ? R_NilValue : VECTOR_ELT(dimnames, 0);
+  SEXP col_names =
+    (dimnames == R_NilValue) ? R_NilValue : VECTOR_ELT(dimnames, 1);
+
+  // a data.frame requires non-NULL row.names. Use the compact form
+  // c(NA_integer_, -nrows) - same representation base R uses for
+  // automatic row names - when the matrix carries no row dimnames.
+  if (row_names == R_NilValue) {
+    row_names = PROTECT(allocVector(INTSXP, 2));
+    ++protection_counter;
+    INTEGER(row_names)[0] = NA_INTEGER;
+    INTEGER(row_names)[1] = -nrows;
+  }
+
   setAttrib(data_frame, R_RowNamesSymbol, row_names);
   setAttrib(data_frame, R_NamesSymbol, col_names);
 
