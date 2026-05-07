@@ -49,7 +49,7 @@ dominant_cycle_period.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default = ~close,
+		default_formula = ~close,
 		data = x,
 		...
 	)
@@ -186,7 +186,7 @@ dominant_cycle_period.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~close,
+		default_formula = ~close,
 		...
 	)
 
@@ -285,7 +285,7 @@ dominant_cycle_period.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~close,
+		default_formula = ~close,
 		...
 	)
 

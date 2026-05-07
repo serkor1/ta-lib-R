@@ -49,7 +49,7 @@ phasor_components.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default = ~close,
+		default_formula = ~close,
 		data = x,
 		...
 	)
@@ -186,7 +186,7 @@ phasor_components.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~close,
+		default_formula = ~close,
 		...
 	)
 
@@ -293,7 +293,7 @@ phasor_components.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~close,
+		default_formula = ~close,
 		...
 	)
 

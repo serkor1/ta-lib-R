@@ -49,7 +49,7 @@ on_balance_volume.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default = ~ close + volume,
+		default_formula = ~ close + volume,
 		data = x,
 		...
 	)
@@ -143,7 +143,7 @@ on_balance_volume.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ close + volume,
+		default_formula = ~ close + volume,
 		...
 	)
 
@@ -230,7 +230,7 @@ on_balance_volume.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ close + volume,
+		default_formula = ~ close + volume,
 		...
 	)
 

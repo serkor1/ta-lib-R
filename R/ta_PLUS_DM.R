@@ -51,7 +51,7 @@ plus_directional_movement.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default = ~ high + low,
+		default_formula = ~ high + low,
 		data = x,
 		...
 	)
@@ -151,7 +151,7 @@ plus_directional_movement.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ high + low,
+		default_formula = ~ high + low,
 		...
 	)
 
@@ -243,7 +243,7 @@ plus_directional_movement.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ high + low,
+		default_formula = ~ high + low,
 		...
 	)
 

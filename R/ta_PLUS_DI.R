@@ -51,7 +51,7 @@ plus_directional_indicator.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default = ~ high + low + close,
+		default_formula = ~ high + low + close,
 		data = x,
 		...
 	)
@@ -152,7 +152,7 @@ plus_directional_indicator.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ high + low + close,
+		default_formula = ~ high + low + close,
 		...
 	)
 
@@ -244,7 +244,7 @@ plus_directional_indicator.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ high + low + close,
+		default_formula = ~ high + low + close,
 		...
 	)
 

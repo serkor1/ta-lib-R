@@ -51,7 +51,7 @@ intraday_movement_index.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default = ~ open + close,
+		default_formula = ~ open + close,
 		data = x,
 		...
 	)
@@ -151,7 +151,7 @@ intraday_movement_index.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ open + close,
+		default_formula = ~ open + close,
 		...
 	)
 
@@ -248,7 +248,7 @@ intraday_movement_index.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ open + close,
+		default_formula = ~ open + close,
 		...
 	)
 

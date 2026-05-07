@@ -73,7 +73,7 @@ extended_parabolic_stop_and_reverse.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default = ~ high + low,
+		default_formula = ~ high + low,
 		data = x,
 		...
 	)
@@ -214,7 +214,7 @@ extended_parabolic_stop_and_reverse.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ high + low,
+		default_formula = ~ high + low,
 		...
 	)
 
@@ -332,7 +332,7 @@ extended_parabolic_stop_and_reverse.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ high + low,
+		default_formula = ~ high + low,
 		...
 	)
 

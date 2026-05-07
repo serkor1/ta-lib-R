@@ -51,7 +51,7 @@ aroon_oscillator.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default = ~ high + low,
+		default_formula = ~ high + low,
 		data = x,
 		...
 	)
@@ -151,7 +151,7 @@ aroon_oscillator.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ high + low,
+		default_formula = ~ high + low,
 		...
 	)
 
@@ -248,7 +248,7 @@ aroon_oscillator.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ high + low,
+		default_formula = ~ high + low,
 		...
 	)
 

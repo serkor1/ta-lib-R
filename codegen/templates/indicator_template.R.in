@@ -48,7 +48,7 @@ ${FUN}.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default = ${FORMULA},
+		default_formula = ${FORMULA},
 		data = x,
 		...
 	)

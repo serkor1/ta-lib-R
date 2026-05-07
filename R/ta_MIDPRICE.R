@@ -51,7 +51,7 @@ midpoint_price.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default = ~ high + low,
+		default_formula = ~ high + low,
 		data = x,
 		...
 	)
