@@ -49,7 +49,7 @@ true_range.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default = ~ high + low + close,
+		default_formula = ~ high + low + close,
 		data = x,
 		...
 	)
@@ -144,7 +144,7 @@ true_range.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ high + low + close,
+		default_formula = ~ high + low + close,
 		...
 	)
 
@@ -234,7 +234,7 @@ true_range.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ high + low + close,
+		default_formula = ~ high + low + close,
 		...
 	)
 

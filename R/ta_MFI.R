@@ -51,7 +51,7 @@ money_flow_index.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default = ~ high + low + close + volume,
+		default_formula = ~ high + low + close + volume,
 		data = x,
 		...
 	)
@@ -155,7 +155,7 @@ money_flow_index.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ high + low + close + volume,
+		default_formula = ~ high + low + close + volume,
 		...
 	)
 
@@ -252,7 +252,7 @@ money_flow_index.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ high + low + close + volume,
+		default_formula = ~ high + low + close + volume,
 		...
 	)
 

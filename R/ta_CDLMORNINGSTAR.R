@@ -73,7 +73,7 @@ morning_star.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default = ~ open + high + low + close,
+		default_formula = ~ open + high + low + close,
 		data = x,
 		...
 	)
@@ -163,7 +163,7 @@ morning_star.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ open + high + low + close,
+		default_formula = ~ open + high + low + close,
 		...
 	)
 
@@ -223,7 +223,7 @@ morning_star.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ open + high + low + close,
+		default_formula = ~ open + high + low + close,
 		...
 	)
 

@@ -55,7 +55,7 @@ chaikin_accumulation_distribution_oscillator.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default = ~ high + low + close + volume,
+		default_formula = ~ high + low + close + volume,
 		data = x,
 		...
 	)
@@ -163,7 +163,7 @@ chaikin_accumulation_distribution_oscillator.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ high + low + close + volume,
+		default_formula = ~ high + low + close + volume,
 		...
 	)
 
@@ -257,7 +257,7 @@ chaikin_accumulation_distribution_oscillator.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ high + low + close + volume,
+		default_formula = ~ high + low + close + volume,
 		...
 	)
 

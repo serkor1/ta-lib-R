@@ -71,7 +71,7 @@ thrusting.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default = ~ open + high + low + close,
+		default_formula = ~ open + high + low + close,
 		data = x,
 		...
 	)
@@ -157,7 +157,7 @@ thrusting.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ open + high + low + close,
+		default_formula = ~ open + high + low + close,
 		...
 	)
 
@@ -215,7 +215,7 @@ thrusting.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ open + high + low + close,
+		default_formula = ~ open + high + low + close,
 		...
 	)
 

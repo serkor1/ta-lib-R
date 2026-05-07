@@ -22,7 +22,7 @@ $FUN.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~close,
+		default_formula = ~close,
 		...
 	)
 

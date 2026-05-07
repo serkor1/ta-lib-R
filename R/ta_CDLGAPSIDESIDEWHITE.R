@@ -71,7 +71,7 @@ gaps_side_white.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default = ~ open + high + low + close,
+		default_formula = ~ open + high + low + close,
 		data = x,
 		...
 	)
@@ -157,7 +157,7 @@ gaps_side_white.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ open + high + low + close,
+		default_formula = ~ open + high + low + close,
 		...
 	)
 
@@ -215,7 +215,7 @@ gaps_side_white.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ open + high + low + close,
+		default_formula = ~ open + high + low + close,
 		...
 	)
 

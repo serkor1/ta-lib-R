@@ -55,7 +55,7 @@ fast_stochastic.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default = ~ high + low + close,
+		default_formula = ~ high + low + close,
 		data = x,
 		...
 	)
@@ -165,7 +165,7 @@ fast_stochastic.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ high + low + close,
+		default_formula = ~ high + low + close,
 		...
 	)
 
@@ -267,7 +267,7 @@ fast_stochastic.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ high + low + close,
+		default_formula = ~ high + low + close,
 		...
 	)
 

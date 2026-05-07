@@ -71,7 +71,7 @@ hanging_man.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default = ~ open + high + low + close,
+		default_formula = ~ open + high + low + close,
 		data = x,
 		...
 	)
@@ -157,7 +157,7 @@ hanging_man.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ open + high + low + close,
+		default_formula = ~ open + high + low + close,
 		...
 	)
 
@@ -215,7 +215,7 @@ hanging_man.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ open + high + low + close,
+		default_formula = ~ open + high + low + close,
 		...
 	)
 

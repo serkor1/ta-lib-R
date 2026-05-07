@@ -58,7 +58,7 @@ extended_moving_average_convergence_divergence.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default = ~close,
+		default_formula = ~close,
 		data = x,
 		...
 	)
@@ -225,7 +225,7 @@ extended_moving_average_convergence_divergence.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~close,
+		default_formula = ~close,
 		...
 	)
 
@@ -359,7 +359,7 @@ extended_moving_average_convergence_divergence.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~close,
+		default_formula = ~close,
 		...
 	)
 

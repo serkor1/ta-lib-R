@@ -58,7 +58,7 @@ absolute_price_oscillator.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default = ~close,
+		default_formula = ~close,
 		data = x,
 		...
 	)
@@ -219,7 +219,7 @@ absolute_price_oscillator.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~close,
+		default_formula = ~close,
 		...
 	)
 
@@ -322,7 +322,7 @@ absolute_price_oscillator.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~close,
+		default_formula = ~close,
 		...
 	)
 

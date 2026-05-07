@@ -49,7 +49,7 @@ weighted_close_price.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default = ~ high + low + close,
+		default_formula = ~ high + low + close,
 		data = x,
 		...
 	)

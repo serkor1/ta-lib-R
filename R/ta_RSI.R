@@ -51,7 +51,7 @@ relative_strength_index.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default = ~close,
+		default_formula = ~close,
 		data = x,
 		...
 	)
@@ -198,7 +198,7 @@ relative_strength_index.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~close,
+		default_formula = ~close,
 		...
 	)
 
@@ -299,7 +299,7 @@ relative_strength_index.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~close,
+		default_formula = ~close,
 		...
 	)
 

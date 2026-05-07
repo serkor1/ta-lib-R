@@ -51,7 +51,7 @@ williams_oscillator.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default = ~ high + low + close,
+		default_formula = ~ high + low + close,
 		data = x,
 		...
 	)
@@ -154,7 +154,7 @@ williams_oscillator.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ high + low + close,
+		default_formula = ~ high + low + close,
 		...
 	)
 
@@ -252,7 +252,7 @@ williams_oscillator.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default = ~ high + low + close,
+		default_formula = ~ high + low + close,
 		...
 	)
 
