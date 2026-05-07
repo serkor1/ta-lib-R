@@ -36,7 +36,7 @@ check-full: fmt document build parity-prepare ## Check the R package with valgri
 	 R CMD check --as-cran --use-valgrind $(tarball_location)
 
 test: fmt parity-prepare ## Run tests (incl. parity)
-	@TALIB_PARITY_SNAPSHOT_DIR=$$(pwd)/tests/parity/snapshot
+	@TALIB_PARITY_SNAPSHOT_DIR=$$(pwd)/tests/parity/snapshot \
 	 Rscript --verbose -e "library(talib); testthat::test_dir('tests/testthat', stop_on_failure = TRUE)"
 
 clean: ## Remove artifacts
@@ -123,7 +123,7 @@ parity-prepare: parity-gen
 	@cp codegen/parity/test_parity_template.R tests/testthat/test-parity.R
 
 parity: parity-prepare ## Regenerate the upstream snapshot and run the parity test only
-	@TALIB_PARITY_SNAPSHOT_DIR=$$(pwd)/tests/parity/snapshot
+	@TALIB_PARITY_SNAPSHOT_DIR=$$(pwd)/tests/parity/snapshot \
 	 Rscript -e "library(talib); testthat::test_file('tests/testthat/test-parity.R', stop_on_failure = TRUE)"
 
 parity-clean: ## Remove parity build artifacts and the generated test file
