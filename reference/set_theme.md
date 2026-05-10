@@ -1,8 +1,7 @@
 # Set or List Chart Themes
 
 Apply a named color theme to the charting system, override individual
-theme properties, or list all available theme names. The themes are
-inspired by [chartthemes.com](https://chartthemes.com/).
+theme properties, or list all available theme names.
 
 Theme changes take effect immediately and apply to all subsequent
 [`chart()`](https://serkor1.github.io/ta-lib-R/reference/chart.md) and

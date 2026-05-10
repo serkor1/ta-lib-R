@@ -128,8 +128,7 @@ Multiple indicators can share a sub-panel by passing them as calls:
 
 ![](reference/figures/README-combined-1.png)
 
-The charting system ships with 5 built-in themes inspired by
-[chartthemes.com](https://chartthemes.com/): `default`,
+The charting system ships with 5 built-in themes: `default`,
 `hawks_and_doves`, `payout`, `tp_slapped`, and `trust_the_process`.
 Switch themes with
 [`set_theme()`](https://serkor1.github.io/ta-lib-R/reference/set_theme.md).

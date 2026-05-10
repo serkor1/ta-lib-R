@@ -1,9 +1,8 @@
 # Chart Themes
 
-The charting system ships with a set of built-in color themes inspired
-by [chartthemes.com](https://chartthemes.com/). Each theme controls
-candle colors, background, text, grid lines, and a 10-color palette
-(colorway) used to distinguish indicator lines.
+The charting system ships with a set of built-in color themes. Each
+theme controls candle colors, background, text, grid lines, and a
+10-color palette (colorway) used to distinguish indicator lines.
 
 Use
 [`set_theme()`](https://ggplot2.tidyverse.org/reference/get_theme.html)
