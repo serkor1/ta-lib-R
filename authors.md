@@ -11,16 +11,16 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/serkor1/ta-lib-R/blob/v0.9-2/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/serkor1/ta-lib-R/blob/devel/DESCRIPTION)
 
 Korkmaz S (2026). *talib: Interface to 'TA-Lib' for Technical Analysis
-and Candlestick Patterns*. R package version 0.9-2,
+and Candlestick Patterns*. R package version 0.9-3,
 <https://serkor1.github.io/ta-lib-R/>.
 
     @Manual{,
       title = {talib: Interface to 'TA-Lib' for Technical Analysis and Candlestick Patterns},
       author = {Serkan Korkmaz},
       year = {2026},
-      note = {R package version 0.9-2},
+      note = {R package version 0.9-3},
       url = {https://serkor1.github.io/ta-lib-R/},
     }

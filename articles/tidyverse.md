@@ -13,7 +13,7 @@ gap, then puts it to work in increasingly realistic scenarios.
 ``` r
 
 library(talib)
-#> Loading {talib} v0.9.2
+#> Loading {talib} v0.9.3
 library(dplyr)
 #> 
 #> Attaching package: 'dplyr'
