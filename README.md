@@ -134,8 +134,7 @@ Multiple indicators can share a sub-panel by passing them as calls:
 
 <img src="man/figures/README-combined-1.png" alt="" style="display: block; margin: auto;" />
 
-The charting system ships with 5 built-in themes inspired by
-[chartthemes.com](https://chartthemes.com/): `default`,
+The charting system ships with 5 built-in themes: `default`,
 `hawks_and_doves`, `payout`, `tp_slapped`, and `trust_the_process`.
 Switch themes with `set_theme()`. Both
 [{plotly}](https://github.com/plotly/plotly.R) (interactive, default)
