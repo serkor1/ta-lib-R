@@ -85,7 +85,7 @@ total chart height allocated to the main price panel when subcharts
 are present.}
 }
 
-Colors are controlled via \code{\link[ggplot2:get_theme]{ggplot2::set_theme()}}. See \code{\link[ggplot2:get_theme]{ggplot2::set_theme()}} for available
+Colors are controlled via \code{\link[=set_theme]{set_theme()}}. See \code{\link[=set_theme]{set_theme()}} for available
 themes and color customization.
 }
 
@@ -132,13 +132,13 @@ talib::chart(BTC, title = "Bitcoin / USD")
 talib::chart()
 }
 \seealso{
-\code{\link[=indicator]{indicator()}} to attach technical indicators, \code{\link[ggplot2:get_theme]{ggplot2::set_theme()}} to
+\code{\link[=indicator]{indicator()}} to attach technical indicators, \code{\link[=set_theme]{set_theme()}} to
 customize chart colors.
 
-Other Charting: 
+Other Charting:
 \code{\link{chart_themes}},
-\code{\link{indicator}()},
-\code{\link{set_theme}()}
+\code{\link[=indicator]{indicator()}},
+\code{\link[=set_theme]{set_theme()}}
 }
 \author{
 Serkan Korkmaz

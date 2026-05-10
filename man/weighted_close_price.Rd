@@ -87,11 +87,11 @@ output <- talib::weighted_close_price(BTC)
 utils::tail(output)
 }
 \seealso{
-Other Price Transform: 
-\code{\link{average_price}()},
-\code{\link{median_price}()},
-\code{\link{midpoint_price}()},
-\code{\link{typical_price}()}
+Other Price Transform:
+\code{\link[=average_price]{average_price()}},
+\code{\link[=median_price]{median_price()}},
+\code{\link[=midpoint_price]{midpoint_price()}},
+\code{\link[=typical_price]{typical_price()}}
 }
 \author{
 Serkan Korkmaz

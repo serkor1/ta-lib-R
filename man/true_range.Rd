@@ -104,9 +104,9 @@ utils::tail(output)
 }
 }
 \seealso{
-Other Volatility Indicator: 
-\code{\link{average_true_range}()},
-\code{\link{normalized_average_true_range}()}
+Other Volatility Indicator:
+\code{\link[=average_true_range]{average_true_range()}},
+\code{\link[=normalized_average_true_range]{normalized_average_true_range()}}
 }
 \author{
 Serkan Korkmaz

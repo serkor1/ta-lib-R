@@ -107,11 +107,11 @@ utils::tail(output)
 }
 }
 \seealso{
-Other Cycle Indicator: 
-\code{\link{dominant_cycle_period}()},
-\code{\link{dominant_cycle_phase}()},
-\code{\link{phasor_components}()},
-\code{\link{sine_wave}()}
+Other Cycle Indicator:
+\code{\link[=dominant_cycle_period]{dominant_cycle_period()}},
+\code{\link[=dominant_cycle_phase]{dominant_cycle_phase()}},
+\code{\link[=phasor_components]{phasor_components()}},
+\code{\link[=sine_wave]{sine_wave()}}
 }
 \author{
 Serkan Korkmaz

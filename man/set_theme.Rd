@@ -25,8 +25,7 @@ side effect to the internal chart-variables state.
 }
 \description{
 Apply a named color theme to the charting system, override individual
-theme properties, or list all available theme names. The themes are
-inspired by \href{https://chartthemes.com/}{chartthemes.com}.
+theme properties, or list all available theme names.
 
 Theme changes take effect immediately and apply to all subsequent
 \code{\link[=chart]{chart()}} and \code{\link[=indicator]{indicator()}} calls.
@@ -86,9 +85,9 @@ talib::set_theme("default")
 \link{chart_themes} for descriptions of each theme, \code{\link[=chart]{chart()}} for
 creating charts.
 
-Other Charting: 
-\code{\link{chart}()},
+Other Charting:
+\code{\link[=chart]{chart()}},
 \code{\link{chart_themes}},
-\code{\link{indicator}()}
+\code{\link[=indicator]{indicator()}}
 }
 \concept{Charting}

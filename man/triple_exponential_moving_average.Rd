@@ -116,20 +116,20 @@ utils::tail(output)
 }
 }
 \seealso{
-Other Overlap Study: 
-\code{\link{acceleration_bands}()},
-\code{\link{bollinger_bands}()},
-\code{\link{double_exponential_moving_average}()},
-\code{\link{exponential_moving_average}()},
-\code{\link{extended_parabolic_stop_and_reverse}()},
-\code{\link{kaufman_adaptive_moving_average}()},
-\code{\link{mesa_adaptive_moving_average}()},
-\code{\link{parabolic_stop_and_reverse}()},
-\code{\link{simple_moving_average}()},
-\code{\link{t3_exponential_moving_average}()},
-\code{\link{trendline}()},
-\code{\link{triangular_moving_average}()},
-\code{\link{weighted_moving_average}()}
+Other Overlap Study:
+\code{\link[=acceleration_bands]{acceleration_bands()}},
+\code{\link[=bollinger_bands]{bollinger_bands()}},
+\code{\link[=double_exponential_moving_average]{double_exponential_moving_average()}},
+\code{\link[=exponential_moving_average]{exponential_moving_average()}},
+\code{\link[=extended_parabolic_stop_and_reverse]{extended_parabolic_stop_and_reverse()}},
+\code{\link[=kaufman_adaptive_moving_average]{kaufman_adaptive_moving_average()}},
+\code{\link[=mesa_adaptive_moving_average]{mesa_adaptive_moving_average()}},
+\code{\link[=parabolic_stop_and_reverse]{parabolic_stop_and_reverse()}},
+\code{\link[=simple_moving_average]{simple_moving_average()}},
+\code{\link[=t3_exponential_moving_average]{t3_exponential_moving_average()}},
+\code{\link[=trendline]{trendline()}},
+\code{\link[=triangular_moving_average]{triangular_moving_average()}},
+\code{\link[=weighted_moving_average]{weighted_moving_average()}}
 }
 \author{
 Serkan Korkmaz

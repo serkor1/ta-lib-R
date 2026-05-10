@@ -62,13 +62,13 @@ utils::tail(output)
 
 }
 \seealso{
-Other Rolling Statistic: 
-\code{\link{rolling_beta}()},
-\code{\link{rolling_max}()},
-\code{\link{rolling_min}()},
-\code{\link{rolling_standard_deviation}()},
-\code{\link{rolling_sum}()},
-\code{\link{rolling_variance}()}
+Other Rolling Statistic:
+\code{\link[=rolling_beta]{rolling_beta()}},
+\code{\link[=rolling_max]{rolling_max()}},
+\code{\link[=rolling_min]{rolling_min()}},
+\code{\link[=rolling_standard_deviation]{rolling_standard_deviation()}},
+\code{\link[=rolling_sum]{rolling_sum()}},
+\code{\link[=rolling_variance]{rolling_variance()}}
 }
 \author{
 Serkan Korkmaz

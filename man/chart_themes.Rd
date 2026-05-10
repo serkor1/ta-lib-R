@@ -4,12 +4,11 @@
 \alias{chart_themes}
 \title{Chart Themes}
 \description{
-The charting system ships with a set of built-in color themes inspired by
-\href{https://chartthemes.com/}{chartthemes.com}. Each theme controls candle
-colors, background, text, grid lines, and a 10-color palette (colorway)
-used to distinguish indicator lines.
+The charting system ships with a set of built-in color themes. Each
+theme controls candle colors, background, text, grid lines, and a
+10-color palette (colorway) used to distinguish indicator lines.
 
-Use \code{\link[ggplot2:get_theme]{ggplot2::set_theme()}} to apply or list themes.
+Use \code{\link[=set_theme]{set_theme()}} to apply or list themes.
 }
 \details{
 \subsection{Available Themes}{
@@ -91,7 +90,7 @@ lines and legends}
 }
 
 Any of these properties can be individually overridden via the \code{...}
-argument to \code{\link[ggplot2:get_theme]{ggplot2::set_theme()}}.
+argument to \code{\link[=set_theme]{set_theme()}}.
 }
 }
 \examples{
@@ -123,9 +122,9 @@ figures and presentations that are friendly to colorblind people.}
 \url{https://jfly.uni-koeln.de/color/}
 }
 \seealso{
-Other Charting: 
-\code{\link{chart}()},
-\code{\link{indicator}()},
-\code{\link{set_theme}()}
+Other Charting:
+\code{\link[=chart]{chart()}},
+\code{\link[=indicator]{indicator()}},
+\code{\link[=set_theme]{set_theme()}}
 }
 \concept{Charting}

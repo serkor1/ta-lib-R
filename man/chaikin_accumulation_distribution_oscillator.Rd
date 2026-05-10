@@ -115,10 +115,10 @@ utils::tail(output)
 }
 }
 \seealso{
-Other Volume Indicator: 
-\code{\link{chaikin_accumulation_distribution_line}()},
-\code{\link{on_balance_volume}()},
-\code{\link{trading_volume}()}
+Other Volume Indicator:
+\code{\link[=chaikin_accumulation_distribution_line]{chaikin_accumulation_distribution_line()}},
+\code{\link[=on_balance_volume]{on_balance_volume()}},
+\code{\link[=trading_volume]{trading_volume()}}
 }
 \author{
 Serkan Korkmaz

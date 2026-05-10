@@ -114,13 +114,13 @@ talib::indicator(
 talib::chart()
 }
 \seealso{
-\code{\link[=chart]{chart()}} to create the main price chart, \code{\link[ggplot2:get_theme]{ggplot2::set_theme()}} to
+\code{\link[=chart]{chart()}} to create the main price chart, \code{\link[=set_theme]{set_theme()}} to
 customize chart colors.
 
-Other Charting: 
-\code{\link{chart}()},
+Other Charting:
+\code{\link[=chart]{chart()}},
 \code{\link{chart_themes}},
-\code{\link{set_theme}()}
+\code{\link[=set_theme]{set_theme()}}
 }
 \author{
 Serkan Korkmaz
