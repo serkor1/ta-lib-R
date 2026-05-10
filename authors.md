@@ -11,7 +11,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/serkor1/ta-lib-R/blob/devel/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/serkor1/ta-lib-R/blob/v0.9-2/DESCRIPTION)
 
 Korkmaz S (2026). *talib: Interface to 'TA-Lib' for Technical Analysis
 and Candlestick Patterns*. R package version 0.9-2,

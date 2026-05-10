@@ -2,6 +2,8 @@
 
 ## version 0.9-2
 
+CRAN release: 2026-05-10
+
 ### improvements
 
 - The `configure` for UNIX have been improved and follows ‘Writing R
