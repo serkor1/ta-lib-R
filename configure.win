@@ -86,6 +86,25 @@ R_CXXFLAGS=$("$R_BIN" CMD config CXXFLAGS)
 R_CPPFLAGS=$("$R_BIN" CMD config CPPFLAGS)
 R_LDFLAGS=$("$R_BIN" CMD config LDFLAGS)
 
+## Detect a compiler launcher (ccache/sccache/distcc) baked into
+## R's CC/CXX by ~/.R/Makevars and hand it to CMake via
+## CMAKE_<LANG>_COMPILER_LAUNCHER. Without this CMake invokes
+## "ccache -Dfoo ..." directly and ccache misreads -D as its own
+## debug-level flag (#57).
+LAUNCHER_ARGS=""
+case "$(basename "${R_CC_FULL%% *}")" in
+    ccache|sccache|distcc)
+        LAUNCHER_ARGS="$LAUNCHER_ARGS -DCMAKE_C_COMPILER_LAUNCHER=${R_CC_FULL%% *}"
+        R_CC_FULL="${R_CC_FULL#* }"
+        ;;
+esac
+case "$(basename "${R_CXX_FULL%% *}")" in
+    ccache|sccache|distcc)
+        LAUNCHER_ARGS="$LAUNCHER_ARGS -DCMAKE_CXX_COMPILER_LAUNCHER=${R_CXX_FULL%% *}"
+        R_CXX_FULL="${R_CXX_FULL#* }"
+        ;;
+esac
+
 R_CC=$(echo "$R_CC_FULL" | awk '{print $1}')
 R_CC_EXTRA=$(echo "$R_CC_FULL" | cut -s -d' ' -f2-)
 R_CXX=$(echo "$R_CXX_FULL" | awk '{print $1}')
@@ -265,6 +284,7 @@ if ! cmake -S "$TALIB" -B "$BUILDROOT/cmake" -G "$GEN" \
   -DCMAKE_CXX_FLAGS="$R_CXX_EXTRA $R_CXXFLAGS $R_CPPFLAGS -w ${OPTFLAGS}" \
   -DCMAKE_EXE_LINKER_FLAGS="$R_LDFLAGS" \
   -DCMAKE_SHARED_LINKER_FLAGS="$R_LDFLAGS" \
+  $LAUNCHER_ARGS \
   -DBUILD_DEV_TOOLS=OFF
 then
   rm -rf "$BUILDROOT/cmake"
@@ -281,6 +301,7 @@ then
     -DCMAKE_CXX_FLAGS="$R_CXX_EXTRA $R_CXXFLAGS $R_CPPFLAGS -w ${OPTFLAGS}" \
     -DCMAKE_EXE_LINKER_FLAGS="$R_LDFLAGS" \
     -DCMAKE_SHARED_LINKER_FLAGS="$R_LDFLAGS" \
+    $LAUNCHER_ARGS \
     -DBUILD_DEV_TOOLS=OFF
   then
     echo
