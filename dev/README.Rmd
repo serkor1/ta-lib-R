@@ -23,17 +23,11 @@ knitr::opts_chunk$set(
 	echo = FALSE
 )
 
-# indicator counts from codegen metadata
-source(file.path(knitr::opts_knit$get("base.dir"), "codegen", "gen_code", "indicators.R"))
-families <- vapply(indicators, function(x) x$family, character(1))
-n_patterns <- sum(families == "Pattern Recognition")
-n_indicators <- sum(families != "Pattern Recognition")
-
 # subset BTC to last 150 rows for cleaner charts
 BTC <- tail(talib::BTC, 150)
 ```
 
-# {talib}: A Technical Analysis and Candlestick Pattern Library in R <img src="man/figures/logo.png" align="right" height="170" alt="" />
+# {talib}: Candlestick Pattern Recognition and Technical Analysis in R <img src="man/figures/logo.png" align="right" height="170" alt="" />
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/serkor1/ta-lib-R/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/serkor1/ta-lib-R/actions/workflows/R-CMD-check.yaml)
@@ -43,47 +37,33 @@ BTC <- tail(talib::BTC, 150)
 [![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/last-month/talib?color=blue)](https://r-pkg.org/pkg/talib)
 <!-- badges: end -->
 
-[{talib}](https://serkor1.github.io/ta-lib-R/) is an R package for technical analysis, candlestick pattern recognition, and interactive financial charting---built on the [TA-Lib](https://github.com/TA-Lib/ta-lib) C library. It provides `r n_indicators` technical indicators, `r n_patterns` candlestick patterns, and a composable charting system powered by [{plotly}](https://github.com/plotly/plotly.R) and [{ggplot2}](https://ggplot2.tidyverse.org/). All indicator computations are implemented in C via `.Call()` for minimal overhead.
+[{talib}](https://serkor1.github.io/ta-lib-R/) is an R package for technical analysis, candlestick pattern recognition, and interactive financial charting---built on the [TA-Lib](https://github.com/TA-Lib/ta-lib) C library, with minimal dependencies for long-term stability. When it comes to technical analysis [{TTR}](https://github.com/joshuaulrich/TTR) has been the primary tool available in R with many different libraries wrapping it in some form or the other. [{TTR}](https://github.com/joshuaulrich/TTR) is missing Japanese Candlestick Patterns, and this gap have been attempted to be filled by [Ko Chiu Yu](https://github.com/kochiuyu/CandleStickPattern/)---A library which I have also attempted to contributed to. 
+Instead of reinventing the wheel I decided to wrap [TA-Lib](https://github.com/TA-Lib/ta-lib) which has been around for more than two decades.
 
-Alongside [{TTR}](https://github.com/joshuaulrich/TTR), [{talib}](https://serkor1.github.io/ta-lib-R/) adds candlestick pattern recognition and interactive charts to the R technical analysis ecosystem.
+## Quick Introduction
 
-```{r hero, fig.align = 'center', echo = TRUE}
-{
-	## create a candlestick chart
-	talib::chart(BTC, title = "Bitcoin (BTC)")
+All functions are based on `S3`-classes with dispatches on `<data.frame>`, `<matrix>` and---where applicable---`<vector>`. The rule(s) are simple: `<class>` in, `<class>` out.
 
-	## overlay Bollinger Bands on
-	## the price panel
-	talib::indicator(talib::bollinger_bands)
+Below are simple uses based on the built-in `<data.frame>` BTC.
 
-	## mark Engulfing candlestick
-	## patterns on the chart
-	talib::indicator(talib::engulfing, data = BTC)
-
-	## add RSI and volume as
-	## separate sub-panels
-	talib::indicator(talib::RSI)
-	talib::indicator(talib::trading_volume)
-}
-```
-
-## Indicators
-
-Every indicator follows the same interface: pass an OHLCV `data.frame` or `matrix` and get the same type back. The return type always matches the input.
-
-```{r indicators, echo = TRUE}
-## compute Bollinger Bands
-## on BTC OHLCV data
-tail(
-	talib::bollinger_bands(BTC)
+```{r, echo=TRUE}
+head(
+	BTC
 )
 ```
 
-## Candlestick Patterns
+**Techincal Indicator---** below is an example on calculating acceleration bands:
 
-{talib} recognizes `r n_patterns` candlestick patterns---from single-candle formations like Doji and Hammer to multi-candle patterns like Morning Star and Three White Soldiers. Each pattern returns a normalized score: `1` (bullish), `-1` (bearish), or `0` (no pattern).
+```{r, echo = TRUE}
+## caclulate 
+tail(
+	talib::acceleration_bands(BTC)
+)
+```
 
-```{r patterns, echo = TRUE}
+**Candlestick Pattern---** below is an example on identifying engulfing patterns:
+
+```{r, echo = TRUE}
 ## detect Engulfing patterns:
 ## 1 = bullish, -1 = bearish, 0 = none
 tail(
@@ -91,39 +71,10 @@ tail(
 )
 ```
 
-## Charts
+Internally the when passing `BTC` the function(s) looks for the default input columns via the `cols`-argument which can be empty. 
+This is true for all functions in {talib}.
 
-Charts are built in two steps: `chart()` creates the price chart, then `indicator()` layers on technical indicators. Overlap indicators (moving averages, Bollinger Bands) draw on the price panel; oscillators (RSI, MACD) get their own sub-panels.
-
-```{r charting, fig.align = 'center', fig.height = 7, echo = TRUE}
-{
-	## price chart with two moving
-	## averages and MACD below
-	talib::chart(BTC)
-	talib::indicator(talib::SMA, n = 7)
-	talib::indicator(talib::SMA, n = 14)
-	talib::indicator(talib::MACD)
-}
-```
-
-Multiple indicators can share a sub-panel by passing them as calls:
-
-```{r combined, fig.align = 'center', fig.height = 7, echo = TRUE}
-{
-	talib::chart(BTC)
-	talib::indicator(talib::BBANDS)
-
-	## pass multiple calls to combine
-	## them on a single sub-panel
-	talib::indicator(
-		talib::RSI(n = 10),
-		talib::RSI(n = 14),
-		talib::RSI(n = 21)
-	)
-}
-```
-
-The charting system ships with 5 built-in themes: `default`, `hawks_and_doves`, `payout`, `tp_slapped`, and `trust_the_process`. Switch themes with `set_theme()`. Both [{plotly}](https://github.com/plotly/plotly.R) (interactive, default) and [{ggplot2}](https://ggplot2.tidyverse.org/) (static) backends are supported:
+**Charting---**
 
 ```{r ggplot2-setup, include = FALSE}
 options(talib.chart.backend = "ggplot2")
@@ -142,51 +93,47 @@ talib::set_theme("hawks_and_doves")
 }
 ```
 
-```{r ggplot2-teardown, include = FALSE}
-options(talib.chart.backend = "plotly")
-talib::set_theme("default")
-```
+## Benchmarks: {TTR} vs {talib}
 
-## Column selection
+```{r, echo = TRUE}
+## set seed for 
+## reproducibility
+set.seed(1903)
 
-Indicators use the columns they need automatically. When your data has non-standard column names, remap them with formula syntax:
-
-```{r cols, echo = TRUE, eval = FALSE}
-## remap 'price' to the close column
-talib::RSI(x, cols = ~price)
-
-## remap hi, lo, last to high, low, close
-talib::stochastic(x, cols = ~ hi + lo + last)
-```
-
-## Naming
-
-Functions use descriptive snake_case names, but every function is aliased to its TA-Lib shorthand for compatibility with the broader ecosystem:
-
-<div align="center">
-
-| Category              | TA-Lib (C)           | {talib}                     | {talib} alias       |
-|:----------------------|:---------------------|:----------------------------|:--------------------|
-| Overlap Studies       | `TA_BBANDS()`        | `bollinger_bands()`         | `BBANDS()`          |
-| Momentum Indicators   | `TA_CCI()`           | `commodity_channel_index()` | `CCI()`             |
-| Volume Indicators     | `TA_OBV()`           | `on_balance_volume()`       | `OBV()`             |
-| Volatility Indicators | `TA_ATR()`           | `average_true_range()`      | `ATR()`             |
-| Price Transform       | `TA_AVGPRICE()`      | `average_price()`           | `AVGPRICE()`        |
-| Cycle Indicators      | `TA_HT_SINE()`       | `sine_wave()`               | `HT_SINE()`         |
-| Pattern Recognition   | `TA_CDLHANGINGMAN()` | `hanging_man()`             | `CDLHANGINGMAN()`   |
-
-</div>
-
-```{r alias, echo = TRUE}
-## snake_case and TA-Lib aliases
-## are identical
-all.equal(
-	target = talib::bollinger_bands(BTC),
-	current = talib::BBANDS(BTC)
+## construct a large
+## vector of numbers
+x <- runif(
+	n = 1e7,
+	min = 1000,
+	max = 2000
 )
 ```
 
-## Installation[^1]
+**Exponential Moving Average (EMA)---***
+
+```{r, echo=TRUE}
+bench::mark(
+	`{talib}`= talib::EMA(x, n = 10),
+	`{TTR}`  = TTR::EMA(x, n = 10),
+	check    = FALSE,
+	relative = TRUE,
+	iterations = 1e2
+)
+```
+
+**Moving Average Convergence Divergence (MACD)---***
+
+```{r, echo=TRUE}
+bench::mark(
+	`{talib}`= talib::MACD(x),
+	`{TTR}`  = TTR::MACD(x),
+	check    = FALSE,
+	relative = TRUE,
+	iterations = 1e2
+)
+```
+
+## Installation
 
 Install the release version from CRAN:
 
@@ -214,14 +161,48 @@ install.packages(
 
 Or from a local clone:
 
+
+## Implementation: {talib} vs TA-Lib Core
+
+Functions use descriptive snake_case names, but every function is aliased to its TA-Lib shorthand for compatibility with the broader ecosystem:
+
+<div align="center">
+
+| Category              | TA-Lib (C)           | {talib}                     | {talib} alias       |
+|:----------------------|:---------------------|:----------------------------|:--------------------|
+| Overlap Studies       | `TA_BBANDS()`        | `bollinger_bands()`         | `BBANDS()`          |
+| Momentum Indicators   | `TA_CCI()`           | `commodity_channel_index()` | `CCI()`             |
+| Volume Indicators     | `TA_OBV()`           | `on_balance_volume()`       | `OBV()`             |
+| Volatility Indicators | `TA_ATR()`           | `average_true_range()`      | `ATR()`             |
+| Price Transform       | `TA_AVGPRICE()`      | `average_price()`           | `AVGPRICE()`        |
+| Cycle Indicators      | `TA_HT_SINE()`       | `sine_wave()`               | `HT_SINE()`         |
+| Pattern Recognition   | `TA_CDLHANGINGMAN()` | `hanging_man()`             | `CDLHANGINGMAN()`   |
+
+</div>
+
+```{r alias, echo = TRUE}
+## snake_case and TA-Lib aliases
+## are identical
+all.equal(
+	target  = talib::bollinger_bands(BTC),
+	current = talib::BBANDS(BTC)
+)
+```
+
+## Contributing and cloning
+
+[TA-Lib](https://github.com/TA-Lib/ta-lib) is vendored via `.gitsubmodule` and all clones should be done with `--recursive` as follows:
+
 ```shell
 git clone --recursive https://github.com/serkor1/ta-lib-R.git
 cd ta-lib-R
 R CMD INSTALL . --configure-args="-O3 -march=native"
 ```
 
+All indicators, functions and (most) unit-tests are generated automatically via BASH in the `codegen`-folder---except for the charting interface. The documentation is autogenerated via `man-roxygen` similarily. All relevant folders include a GPT-generated `README` which should give a proper description on how to use the tools.
+
+> Suggestions, objections and complaints are more than welcome. Feel free to open an issue or a PR---but it is recommended to open an issue before commencing any significant work.
+
 ## Code of Conduct
 
 Please note that [{talib}](https://serkor1.github.io/ta-lib-R/) is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
-
-[^1]: [TA-Lib](https://github.com/TA-Lib/ta-lib) is vendored via `CMake`, so a pre-installed TA-Lib is not required. Some systems (Windows in particular) may require `CMake` to be explicitly installed.
