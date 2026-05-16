@@ -40,7 +40,7 @@ through `.Call()`, while charting support is available through optional
 
 </div>
 
-## Installation
+## Installation[^1]
 
 Install the release version from CRAN:
 
@@ -80,8 +80,8 @@ tail(
 #> 2024-12-31 01:00:00 43.37358
 ```
 
-All functions follow another convention: length in, length out. This
-makes it safe to combine indicators:
+Indicator outputs preserve input length, which keeps results aligned
+with the original OHLCV rows.
 
 ``` r
 ## combine multiple
@@ -160,3 +160,7 @@ Please note that [{talib}](https://serkor1.github.io/ta-lib-R/) is
 released with a [Contributor Code of
 Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html).
 By contributing to this project, you agree to abide by its terms.
+
+[^1]: `{talib}` is a compiled package. CRAN binaries are available for
+    standard platforms when provided by CRAN. Source installation
+    requires a working compiler toolchain and CMake.
