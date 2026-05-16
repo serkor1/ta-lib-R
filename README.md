@@ -17,13 +17,15 @@ downloads](https://cranlogs.r-pkg.org/badges/last-month/talib?color=blue)](https
 <!-- badges: end -->
 
 [{talib}](https://serkor1.github.io/ta-lib-R/) provides fast R bindings
-to the TA-Lib C library for OHLCV data: technical indicators,
-candlestick pattern recognition, rolling-window utilities, and
-composable financial charts. It is designed for researchers, analysts,
-and quant developers who need technical-analysis features in R without
-building a heavy dependency stack. Core computations are executed in C
-through `.Call()`, while charting support is available through optional
-`plotly` and `ggplot2` integrations.
+to the [TA-Lib](https://github.com/TA-Lib/ta-lib) C library for OHLCV
+data: technical indicators, candlestick pattern recognition,
+rolling-window utilities, and composable financial charts. It is
+designed for researchers, analysts, and quant developers who need
+technical-analysis features in R without building a heavy dependency
+stack. Core computations are executed in C through `.Call()`, while
+charting support is available through optional
+[{plotly}](https://github.com/plotly/plotly.R) and
+[{ggplot2}](https://ggplot2.tidyverse.org/) integrations.
 
 ## Why {talib}?
 
@@ -36,7 +38,7 @@ through `.Call()`, while charting support is available through optional
 | OHLCV workflows      | Works directly with open, high, low, close, and volume columns                          |
 | Performance          | Computation delegated to C routines through `.Call()`                                   |
 | Dependencies         | Minimal required R dependencies; plotting packages are optional                         |
-| Charts               | Composable financial charts with optional `plotly` and `ggplot2` support                |
+| Charts               | Composable financial charts with optional `{plotly}` and `{ggplot2}` support            |
 
 </div>
 
@@ -102,11 +104,11 @@ tail(features)
 #> 2024-12-31 01:00:00 43.37358  95441.13   93774.23  92107.34            0
 ```
 
-## Implementation: {talib} vs TA-Lib Core
+## Implementation: {talib} vs upstream (TA-Lib Core)
 
 Functions use descriptive snake_case names, but every function is
-aliased to its TA-Lib shorthand for compatibility with the broader
-ecosystem:
+aliased to its [TA-Lib](https://github.com/TA-Lib/ta-lib) shorthand for
+compatibility with the broader ecosystem:
 
 <div align="center">
 
@@ -121,6 +123,47 @@ ecosystem:
 | Pattern Recognition   | `TA_CDLHANGINGMAN()` | `hanging_man()`             | `CDLHANGINGMAN()` |
 
 </div>
+
+### Interface: R vs Python
+
+The main difference between the `R` and `Python` implementation is how
+OHLCV series are passed into each indicator function. Below are an
+example of identifying `Doji` patterns in `R` and `Python`.
+
+In `Python` each series are passed independently:
+
+``` python
+import numpy as np
+import talib
+
+o = np.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], dtype=float)
+h = np.array([2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2], dtype=float)
+l = np.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], dtype=float)
+c = np.array([2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1], dtype=float)
+
+print(
+    talib.CDLDOJI(o, h, l, c)
+)
+```
+
+In R the series are passed as a tabular container:
+
+``` r
+ohlc <- data.frame(
+    open  = c(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+    high  = c(2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2),
+    low   = c(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+    close = c(2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1) 
+)
+
+talib::CDLDOJI(
+    ohlc
+)
+```
+
+All default series arguments are handled internally, and the `R`
+implementation can therefore be considered a higher level
+implementation.
 
 ## Contributing and cloning
 
@@ -163,4 +206,5 @@ By contributing to this project, you agree to abide by its terms.
 
 [^1]: `{talib}` is a compiled package. CRAN binaries are available for
     standard platforms when provided by CRAN. Source installation
-    requires a working compiler toolchain and CMake.
+    requires a working compiler toolchain and
+    [CMake](https://cmake.org/).
