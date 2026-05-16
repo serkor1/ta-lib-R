@@ -105,15 +105,27 @@ tail(features)
 [{talib}](https://serkor1.github.io/ta-lib-R/) comes with a composable charting API built on two core functions: `indicator()` and `chart()`---both functions are built on `model.frame` for maximum flexibility:
 
 ```{r, echo=TRUE}
-## subset data
-OHLCV <- talib::BTC[1:75, ]
+## subset data and
+## store as 'BTC'
+BTC <- talib::BTC[1:75, ]
 
-## construct charts
+## construct chart using
+## fenced (alternatively use `|>`)
 {
-    talib::chart(OHLCV)
-    talib::indicator(talib::BBANDS)
+	## initialize main chart
+    talib::chart(
+		x     = BTC,
+		title = "Bitcoin"
+	)
 
-	## pass moving averages
+	## add Bollinger Bands to
+	## the existing chart
+    talib::indicator(
+		talib::BBANDS
+	)
+
+	## add Simple Moving Averages (SMA)
+	## to the chart in a loop
 	for (n in seq(5, 15, by = 3)) {
 		talib::indicator(
 			talib::SMA,
@@ -121,13 +133,21 @@ OHLCV <- talib::BTC[1:75, ]
 		)
 	}
 
-    ## pass multiple calls to combine
-    ## them on a single sub-panel
+	## similar subchart indicators
+	## like the Relative Strength Index
+	## can be grouped to avoid repeated
+	## subpanels
     talib::indicator(
         talib::RSI(n = 10),
         talib::RSI(n = 14),
         talib::RSI(n = 21)
     )
+
+	## identify Doji patterns
+	## and add them to the chart
+	talib::indicator(
+		talib::doji
+	)
 }
 ```
 
@@ -151,10 +171,10 @@ Functions use descriptive snake_case names, but every function is aliased to its
 
 ### Interface: R vs Python
 
-The main difference between the `R` and `Python` implementation is how OHLCV series are passed into each indicator function.
-Below is an example of identifying `Doji` patterns in `R` and `Python`.
+The main difference between the R and Python interfaces is how OHLCV series are passed into each indicator function. 
+Below is an example of identifying `Doji` patterns in R and Python.
 
-In `Python` each series are passed independently:
+In Python, each series is passed independently:
 
 ```python
 import numpy as np
