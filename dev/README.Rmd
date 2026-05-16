@@ -37,7 +37,7 @@ knitr::opts_chunk$set(
 [{talib}](https://serkor1.github.io/ta-lib-R/) provides fast R bindings
 to the [TA-Lib](https://github.com/TA-Lib/ta-lib) C library for OHLCV data: technical indicators, candlestick pattern recognition, rolling-window utilities, and composable financial charts. It is designed for researchers, analysts, and quant developers who need technical-analysis features in R without building a heavy dependency stack. Core computations are executed in C through `.Call()`, while charting support is available through optional [{plotly}](https://github.com/plotly/plotly.R) and [{ggplot2}](https://ggplot2.tidyverse.org/) integrations.
 
-The API covers 150+ [TA-Lib](https://github.com/TA-Lib/ta-lib)-backed functions across momentum, overlap,volatility, volume, cycle, price-transform, rolling-statistics, and candlestick-pattern families, including 61 candlestick pattern detectors.
+The API covers 150+ [TA-Lib](https://github.com/TA-Lib/ta-lib)-backed functions across momentum, overlap, volatility, volume, cycle, price-transform, rolling-statistics, and candlestick-pattern families, including 61 candlestick pattern detectors.
 
 ## Why {talib}?
 
@@ -72,7 +72,7 @@ pak::pak("serkor1/ta-lib-R")
 
 All functions provide S3 methods for `<data.frame>`, `<matrix>`, and---where applicable---`<vector>` inputs. The general convention is simple: the output uses the same container type as the input.
 
-```{r, echo=TRUE}
+```{r quick-start, echo=TRUE}
 ## calculate the
 ## relative strength index
 relative_strength_index <- talib::RSI(
@@ -88,7 +88,7 @@ tail(
 Indicator outputs preserve input length, which keeps results aligned with the
 original OHLCV rows.
 
-```{r, echo = TRUE}
+```{r multiple-indicators, echo = TRUE}
 ## combine multiple
 ## indicators
 features <- cbind(
@@ -104,13 +104,13 @@ tail(features)
 
 [{talib}](https://serkor1.github.io/ta-lib-R/) comes with a composable charting API built on two core functions: `indicator()` and `chart()`---both functions are built on `model.frame` for maximum flexibility:
 
-```{r, echo=TRUE}
+```{r charting-example, echo=TRUE}
 ## subset data and
 ## store as 'BTC'
 BTC <- talib::BTC[1:75, ]
 
-## construct chart using
-## fenced (alternatively use `|>`)
+## construct chart in a brace block
+## alternatively use `|>`
 {
 	## initialize main chart
     talib::chart(
@@ -192,7 +192,7 @@ print(
 
 In R the series are passed as a tabular container:
 
-```{r, echo = TRUE, eval = FALSE}
+```{r r-vs-python-block, echo = TRUE, eval = FALSE}
 ohlc <- data.frame(
 	open  = c(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 	high  = c(2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2),

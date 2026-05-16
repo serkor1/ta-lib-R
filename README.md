@@ -28,7 +28,7 @@ charting support is available through optional
 [{ggplot2}](https://ggplot2.tidyverse.org/) integrations.
 
 The API covers 150+ [TA-Lib](https://github.com/TA-Lib/ta-lib)-backed
-functions across momentum, overlap,volatility, volume, cycle,
+functions across momentum, overlap, volatility, volume, cycle,
 price-transform, rolling-statistics, and candlestick-pattern families,
 including 61 candlestick pattern detectors.
 
@@ -121,8 +121,8 @@ flexibility:
 ## store as 'BTC'
 BTC <- talib::BTC[1:75, ]
 
-## construct chart using
-## fenced (alternatively use `|>`)
+## construct chart in a brace block
+## alternatively use `|>`
 {
     ## initialize main chart
     talib::chart(
@@ -163,7 +163,7 @@ BTC <- talib::BTC[1:75, ]
 }
 ```
 
-![](man/figures/README-unnamed-chunk-3-1.png)<!-- -->
+![](man/figures/README-charting-example-1.png)<!-- -->
 
 ## Implementation: {talib} vs upstream (TA-Lib Core)
 
