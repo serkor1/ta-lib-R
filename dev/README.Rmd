@@ -98,6 +98,29 @@ features <- cbind(
 tail(features)
 ```
 
+## Charting 
+
+[{talib}](https://serkor1.github.io/ta-lib-R/) comes with a composable charting API built on two core functions: `indicator()` and `chart()`---both functions are built on `model.frame` for maximum flexibility:
+
+```{r, echo=TRUE}
+## subset data
+OHLCV <- talib::BTC[1:75, ]
+
+## construct charts
+{
+    talib::chart(OHLCV)
+    talib::indicator(talib::BBANDS)
+
+    ## pass multiple calls to combine
+    ## them on a single sub-panel
+    talib::indicator(
+        talib::RSI(n = 10),
+        talib::RSI(n = 14),
+        talib::RSI(n = 21)
+    )
+}
+```
+
 ## Implementation: {talib} vs upstream (TA-Lib Core)
 
 Functions use descriptive snake_case names, but every function is aliased to its [TA-Lib](https://github.com/TA-Lib/ta-lib) shorthand for compatibility with the broader ecosystem:

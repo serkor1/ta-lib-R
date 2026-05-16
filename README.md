@@ -104,6 +104,34 @@ tail(features)
 #> 2024-12-31 01:00:00 43.37358  95441.13   93774.23  92107.34            0
 ```
 
+## Charting
+
+[{talib}](https://serkor1.github.io/ta-lib-R/) comes with a composable
+charting API built on two core functions: `indicator()` and
+`chart()`—both functions are built on `model.frame` for maximum
+flexibility:
+
+``` r
+## subset data
+OHLCV <- talib::BTC[1:75, ]
+
+## construct charts
+{
+    talib::chart(OHLCV)
+    talib::indicator(talib::BBANDS)
+
+    ## pass multiple calls to combine
+    ## them on a single sub-panel
+    talib::indicator(
+        talib::RSI(n = 10),
+        talib::RSI(n = 14),
+        talib::RSI(n = 21)
+    )
+}
+```
+
+![](man/figures/README-unnamed-chunk-3-1.png)<!-- -->
+
 ## Implementation: {talib} vs upstream (TA-Lib Core)
 
 Functions use descriptive snake_case names, but every function is
