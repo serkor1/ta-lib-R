@@ -37,6 +37,8 @@ knitr::opts_chunk$set(
 [{talib}](https://serkor1.github.io/ta-lib-R/) provides fast R bindings
 to the [TA-Lib](https://github.com/TA-Lib/ta-lib) C library for OHLCV data: technical indicators, candlestick pattern recognition, rolling-window utilities, and composable financial charts. It is designed for researchers, analysts, and quant developers who need technical-analysis features in R without building a heavy dependency stack. Core computations are executed in C through `.Call()`, while charting support is available through optional [{plotly}](https://github.com/plotly/plotly.R) and [{ggplot2}](https://ggplot2.tidyverse.org/) integrations.
 
+The API covers 150+ [TA-Lib](https://github.com/TA-Lib/ta-lib)-backed functions across momentum, overlap,volatility, volume, cycle, price-transform, rolling-statistics, and candlestick-pattern families, including 61 candlestick pattern detectors.
+
 ## Why {talib}?
 
 <div align="center">
@@ -111,6 +113,14 @@ OHLCV <- talib::BTC[1:75, ]
     talib::chart(OHLCV)
     talib::indicator(talib::BBANDS)
 
+	## pass moving averages
+	for (n in seq(5, 15, by = 3)) {
+		talib::indicator(
+			talib::SMA,
+			n = n
+		)
+	}
+
     ## pass multiple calls to combine
     ## them on a single sub-panel
     talib::indicator(
@@ -142,7 +152,7 @@ Functions use descriptive snake_case names, but every function is aliased to its
 ### Interface: R vs Python
 
 The main difference between the `R` and `Python` implementation is how OHLCV series are passed into each indicator function.
-Below are an example of identifying `Doji` patterns in `R` and `Python`.
+Below is an example of identifying `Doji` patterns in `R` and `Python`.
 
 In `Python` each series are passed independently:
 
@@ -175,7 +185,7 @@ talib::CDLDOJI(
 )
 ```
 
-All default series arguments are handled internally, and the `R` implementation can therefore be considered a higher level implementation.
+All default series arguments are handled internally, and the `R` interface is therefore higher-level: users pass one OHLC container rather than manually splitting the series.
 
 ## Contributing and cloning
 

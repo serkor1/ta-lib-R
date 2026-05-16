@@ -27,6 +27,11 @@ charting support is available through optional
 [{plotly}](https://github.com/plotly/plotly.R) and
 [{ggplot2}](https://ggplot2.tidyverse.org/) integrations.
 
+The API covers 150+ [TA-Lib](https://github.com/TA-Lib/ta-lib)-backed
+functions across momentum, overlap,volatility, volume, cycle,
+price-transform, rolling-statistics, and candlestick-pattern families,
+including 61 candlestick pattern detectors.
+
 ## Why {talib}?
 
 <div align="center">
@@ -120,6 +125,14 @@ OHLCV <- talib::BTC[1:75, ]
     talib::chart(OHLCV)
     talib::indicator(talib::BBANDS)
 
+    ## pass moving averages
+    for (n in seq(5, 15, by = 3)) {
+        talib::indicator(
+            talib::SMA,
+            n = n
+        )
+    }
+
     ## pass multiple calls to combine
     ## them on a single sub-panel
     talib::indicator(
@@ -155,7 +168,7 @@ compatibility with the broader ecosystem:
 ### Interface: R vs Python
 
 The main difference between the `R` and `Python` implementation is how
-OHLCV series are passed into each indicator function. Below are an
+OHLCV series are passed into each indicator function. Below is an
 example of identifying `Doji` patterns in `R` and `Python`.
 
 In `Python` each series are passed independently:
@@ -190,8 +203,8 @@ talib::CDLDOJI(
 ```
 
 All default series arguments are handled internally, and the `R`
-implementation can therefore be considered a higher level
-implementation.
+interface is therefore higher-level: users pass one OHLC container
+rather than manually splitting the series.
 
 ## Contributing and cloning
 
