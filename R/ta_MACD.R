@@ -172,9 +172,9 @@ moving_average_convergence_divergence.numeric <- function(
 		as.logical(na.bridge)
 	)
 
-	## convert one-column matrix outputs
-	## to a double vector for vector input
-	x <- as_numeric_output(x)
+	if (dim(x)[2] == 1L) {
+		x <- as.double(x)
+	}
 
 	x
 }

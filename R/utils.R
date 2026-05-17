@@ -152,23 +152,6 @@ assert_column_names <- function(formula, available_variables) {
 	x
 }
 
-as_numeric_output <- function(x) {
-	lookback <- attr(x, "lookback", exact = TRUE)
-
-	if (is.matrix(x)) {
-		if (ncol(x) != 1L) {
-			return(x)
-		}
-
-		x <- x[, 1L]
-	}
-
-	x <- as.double(x)
-	attr(x, "lookback") <- lookback
-
-	x
-}
-
 ## class related utility
 ## functions
 is.formula <- function(x) {
