@@ -182,15 +182,7 @@ bollinger_bands.numeric <- function(
 		as.logical(na.bridge)
 	)
 
-	## check if it has 'dims'
-	## and convert to double if
-	## not to honor the 'type-safety'-esque
-	## approach
-	##
-	## NOTE: this adds a few ns overhead but
-	##       its a robust alternative to code it
-	##       manually. Any suggestions are welcome
-	if (is.null(dim(x))) {
+	if (dim(x)[2] == 1L) {
 		x <- as.double(x)
 	}
 

@@ -240,18 +240,14 @@ testthat::test_that(desc = '<numeric> methods', code = {
 		sine_wave(BTC[[1]])
 	)
 
-	## the numeric methods returns <matrix>
-	## depending on the underlying functions
-	## so the checks for equal lengths is conditional
 	target_length <- length(BTC[[1]])
 
-	if (is.null(dim(x))) {
-		testthat::expect_true(
-			length(x) == target_length
-		)
+	if (NCOL(x) == 1L) {
+		testthat::expect_true(is.double(x))
+		testthat::expect_false(is.matrix(x))
+		testthat::expect_equal(length(x), target_length)
 	} else {
-		testthat::expect_true(
-			nrow(x) == target_length
-		)
+		testthat::expect_true(is.matrix(x))
+		testthat::expect_equal(nrow(x), target_length)
 	}
 })
