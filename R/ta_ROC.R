@@ -151,17 +151,9 @@ rate_of_change.numeric <- function(
 		as.logical(na.bridge)
 	)
 
-	## check if it has 'dims'
-	## and convert to double if
-	## not to honor the 'type-safety'-esque
-	## approach
-	##
-	## NOTE: this adds a few ns overhead but
-	##       its a robust alternative to code it
-	##       manually. Any suggestions are welcome
-	if (is.null(dim(x))) {
-		x <- as.double(x)
-	}
+	## convert one-column matrix outputs
+	## to a double vector for vector input
+	x <- as_numeric_output(x)
 
 	x
 }
