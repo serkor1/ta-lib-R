@@ -80,20 +80,21 @@ pkgdown-preview: ## Preview {pkgdown} documetation
 	@Rscript -e "pkgdown::preview_site()"
 
 bench: ## Run benchmark(s)
-	@echo -e "Running benchmark..."
+	@echo -e "Running full benchmark suite (overhead + TTR comparison)..."
 	@echo -e ""
-	@Rscript ./benchmark/benchmark-overhead.R
+	@Rscript ./benchmark/run-all.R
 	@echo -e ""
-	@echo -e "Benchmark information:"
-	@echo -e " -baseline: no R overhead"
-	@echo -e " -data.frame: data.frame methods"
-	@echo -e " -baseline: matrix methods"
+	@echo -e "Rendering benchmark/README.Rmd..."
 	@cd benchmark && Rscript -e "rmarkdown::render('README.Rmd', output_format = rmarkdown::github_document(html_preview = FALSE), clean = TRUE)"
-	
 
-n ?= 1e6
-bench-data: ## Generate data for benchmark(s) 
-	@Rscript ./benchmark/benchmark-data.R $(n)
+bench-overhead: ## Run only the overhead benchmark
+	@Rscript ./benchmark/benchmark-overhead.R
+
+bench-ttr: ## Run only the talib-vs-TTR benchmark
+	@Rscript ./benchmark/benchmark-ttr.R
+
+bench-plots: ## Regenerate plots from existing RDS results
+	@Rscript ./benchmark/benchmark-plots.R
 
 validate: ## Validate R output against TA-Lib core
 	@PKG_CFLAGS="-Isrc/ta-lib/local/include -Isrc/ta-lib/local/include/ta-lib" \
