@@ -25,7 +25,7 @@ technical-analysis features in R without building a heavy dependency
 stack. Core computations are executed in C through `.Call()`, while
 charting support is available through optional
 [{plotly}](https://github.com/plotly/plotly.R) and
-[{ggplot2}](https://ggplot2.tidyverse.org/) integrations.
+[{ggplot2}](https://ggplot2.tidyverse.org/) integrations.[^1]
 
 The API covers 150+ [TA-Lib](https://github.com/TA-Lib/ta-lib)-backed
 functions across momentum, overlap, volatility, volume, cycle,
@@ -47,7 +47,7 @@ including 61 candlestick pattern detectors.
 
 </div>
 
-## Installation[^1]
+## Installation[^2]
 
 Install the release version from CRAN:
 
@@ -265,7 +265,10 @@ released with a [Contributor Code of
 Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html).
 By contributing to this project, you agree to abide by its terms.
 
-[^1]: `{talib}` is a compiled package. CRAN binaries are available for
+[^1]: See `benchmark/` for detailed benchmarks against [{TTR}]() and
+    general performance across multiple indicators.
+
+[^2]: `{talib}` is a compiled package. CRAN binaries are available for
     standard platforms when provided by CRAN. Source installation
     requires a working compiler toolchain and
     [CMake](https://cmake.org/).

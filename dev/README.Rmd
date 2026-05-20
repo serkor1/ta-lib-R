@@ -35,7 +35,8 @@ knitr::opts_chunk$set(
 <!-- badges: end -->
 
 [{talib}](https://serkor1.github.io/ta-lib-R/) provides fast R bindings
-to the [TA-Lib](https://github.com/TA-Lib/ta-lib) C library for OHLCV data: technical indicators, candlestick pattern recognition, rolling-window utilities, and composable financial charts. It is designed for researchers, analysts, and quant developers who need technical-analysis features in R without building a heavy dependency stack. Core computations are executed in C through `.Call()`, while charting support is available through optional [{plotly}](https://github.com/plotly/plotly.R) and [{ggplot2}](https://ggplot2.tidyverse.org/) integrations.
+to the [TA-Lib](https://github.com/TA-Lib/ta-lib) C library for OHLCV data: technical indicators, candlestick pattern recognition, rolling-window utilities, and composable financial charts. 
+It is designed for researchers, analysts, and quant developers who need technical-analysis features in R without building a heavy dependency stack. Core computations are executed in C through `.Call()`, while charting support is available through optional [{plotly}](https://github.com/plotly/plotly.R) and [{ggplot2}](https://ggplot2.tidyverse.org/) integrations.[^1]
 
 The API covers 150+ [TA-Lib](https://github.com/TA-Lib/ta-lib)-backed functions across momentum, overlap, volatility, volume, cycle, price-transform, rolling-statistics, and candlestick-pattern families, including 61 candlestick pattern detectors.
 
@@ -54,7 +55,7 @@ The API covers 150+ [TA-Lib](https://github.com/TA-Lib/ta-lib)-backed functions 
 
 </div>
 
-## Installation[^1]
+## Installation[^2]
 
 Install the release version from CRAN:
 
@@ -238,4 +239,5 @@ See CONTRIBUTING.md for the full development workflow.
 
 Please note that [{talib}](https://serkor1.github.io/ta-lib-R/) is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
 
-[^1]: `{talib}` is a compiled package. CRAN binaries are available for standard platforms when provided by CRAN. Source installation requires a working compiler toolchain and [CMake](https://cmake.org/).
+[^1]: See `benchmark/` for detailed benchmarks against [{TTR}]() and general performance across multiple indicators.
+[^2]: `{talib}` is a compiled package. CRAN binaries are available for standard platforms when provided by CRAN. Source installation requires a working compiler toolchain and [CMake](https://cmake.org/).
