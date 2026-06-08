@@ -70,3 +70,16 @@ ${FUN}.numeric <- function(
 	## return indicator
 	as.double(x)
 }
+
+#' @usage NULL
+${ALIAS}_lookback <- ${FUN}_lookback <- function(
+	x,${ARGS}
+) {
+
+	.Call(
+		C_impl_ta_${TA_FUN}_lookback,
+		## splice:lookback:start
+		## splice:lookback:end
+	)
+	
+}
