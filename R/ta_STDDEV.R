@@ -50,8 +50,13 @@ rolling_standard_deviation.default <- function(
 		as.logical(na.bridge)
 	)
 
+	## strip dimensions
+	## while preserving
+	## attributes
+	dim(x) <- NULL
+
 	## return indicator
-	as.double(x)
+	x
 }
 
 #' @usage NULL
@@ -73,8 +78,13 @@ rolling_standard_deviation.numeric <- function(
 		na.bridge = na.bridge
 	)
 
+	## strip dimensions
+	## while preserving
+	## attributes
+	dim(x) <- NULL
+
 	## return indicator
-	as.double(x)
+	x
 }
 
 #' @usage NULL

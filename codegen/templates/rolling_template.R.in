@@ -45,8 +45,13 @@ ${FUN}.default <- function(
 		as.logical(na.bridge)
 	)
 
+	## strip dimensions
+	## while preserving 
+	## attributes
+	dim(x) <- NULL
+
 	## return indicator
-	as.double(x)
+	x
 }
 
 #' @usage NULL
@@ -67,8 +72,13 @@ ${FUN}.numeric <- function(
 
 	)
 
+	## strip dimensions
+	## while preserving 
+	## attributes
+	dim(x) <- NULL
+
 	## return indicator
-	as.double(x)
+	x
 }
 
 #' @usage NULL

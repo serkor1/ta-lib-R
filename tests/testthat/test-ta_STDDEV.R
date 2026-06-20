@@ -40,6 +40,20 @@ testthat::test_that(desc = 'Output type', code = {
 	)
 
 	testthat::expect_true(
-		is.vector(output)
+		is.null(dim(output))
+	)
+})
+
+## test the output's attribute "lookback" matches
+## the lookback()
+testthat::test_that(desc = 'Lookback equivalence', code = {
+	output <- attr(
+		rolling_standard_deviation(x = SPY[, 1]),
+		"lookback"
+	)
+
+	testthat::expect_equal(
+		object = output,
+		expected = lookback(FUN = rolling_standard_deviation, x = SPY[, 1])
 	)
 })

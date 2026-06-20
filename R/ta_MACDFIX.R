@@ -183,7 +183,7 @@ fixed_moving_average_convergence_divergence.numeric <- function(
 	)
 
 	if (dim(x)[2] == 1L) {
-		x <- as.double(x)
+		dim(x) <- NULL
 	}
 
 	x

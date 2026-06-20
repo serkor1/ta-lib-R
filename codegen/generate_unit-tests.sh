@@ -70,10 +70,28 @@ testthat::expect_true(
 	)
 
 	testthat::expect_true(
-		is.vector(output)
+		is.null(dim(output))
 	)
 
 })
+
+## test the output's attribute "lookback" matches
+## the lookback()
+testthat::test_that(desc = 'Lookback equivalence', code = {
+
+output <- attr(
+	${FUN}(x = SPY[,1]${ADDITIONAL}),
+	"lookback"
+)
+
+testthat::expect_equal(
+		object = output,
+		expected = lookback(FUN = ${FUN}, x = SPY[,1]${ADDITIONAL})
+	)
+
+}
+)
+
 
 EOF
 
