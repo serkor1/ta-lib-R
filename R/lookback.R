@@ -1,3 +1,6 @@
+#' @export
+#' @family Utility
+#'
 #' Calculate lookback period
 #'
 #' @description
@@ -18,10 +21,16 @@
 #' @param FUN A [call] or [function].
 #' @param ... Additional parameters passed into the indicator function. See examples for more details.
 #'
+#' @concept finance
+#' @concept technical analysis
+#' @concept trading
+#' @concept algorithmic trading
+#'
+#'
+#' @author Serkan Korkmaz
+#'
 #' @returns
 #' An [integer] of [length] 1.
-#'
-#' @export
 lookback <- function(
 	FUN,
 	...
