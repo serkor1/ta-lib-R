@@ -26,6 +26,47 @@
 #include <Rinternals.h>
 #include <ta_libc.h>
 
+// the lookback function
+// is exported as a standalone
+// function for downstream wrappers
+// clang-format off
+SEXP impl_ta_ULTOSC_lookback(
+	SEXP inHigh,
+	SEXP inLow,
+	SEXP inClose,
+	SEXP optInTimePeriod1,
+	SEXP optInTimePeriod2,
+	SEXP optInTimePeriod3
+)
+// clang-format on
+{
+  // values
+  // get length of 'inHigh' (assumes equal length across input)
+  int n = LENGTH(inHigh);
+
+  // pointers to input arrays
+  const double *inHigh_ptr = REAL(inHigh);
+  const double *inLow_ptr = REAL(inLow);
+  const double *inClose_ptr = REAL(inClose);
+
+  // extract input values
+  const int optInTimePeriod1_value = INTEGER(optInTimePeriod1)[0];
+  const int optInTimePeriod2_value = INTEGER(optInTimePeriod2)[0];
+  const int optInTimePeriod3_value = INTEGER(optInTimePeriod3)[0];
+
+  // calculate lookback
+  const int lookback = TA_ULTOSC_Lookback(
+    optInTimePeriod1_value,
+    optInTimePeriod2_value,
+    optInTimePeriod3_value);
+
+  SEXP output = PROTECT(Rf_ScalarInteger(lookback));
+
+  // unprotect output
+  UNPROTECT(1);
+  return output;
+}
+
 // clang-format off
 SEXP impl_ta_ULTOSC(
 	SEXP inHigh,

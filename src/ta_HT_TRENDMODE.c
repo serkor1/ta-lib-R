@@ -21,6 +21,32 @@
 #include <Rinternals.h>
 #include <ta_libc.h>
 
+// the lookback function
+// is exported as a standalone
+// function for downstream wrappers
+// clang-format off
+SEXP impl_ta_HT_TRENDMODE_lookback(
+	SEXP inReal
+)
+// clang-format on
+{
+  // values
+  // get length of 'inReal' (assumes equal length across input)
+  int n = LENGTH(inReal);
+
+  // pointers to input arrays
+  const double *inReal_ptr = REAL(inReal);
+
+  // calculate lookback
+  const int lookback = TA_HT_TRENDMODE_Lookback();
+
+  SEXP output = PROTECT(Rf_ScalarInteger(lookback));
+
+  // unprotect output
+  UNPROTECT(1);
+  return output;
+}
+
 // clang-format off
 SEXP impl_ta_HT_TRENDMODE(
 	SEXP inReal,

@@ -76,3 +76,19 @@ rolling_variance.numeric <- function(
 	## return indicator
 	as.double(x)
 }
+
+#' @usage NULL
+VAR_lookback <- rolling_variance_lookback <- function(
+	x,
+	n = 5,
+	k = 1
+) {
+	.Call(
+		C_impl_ta_VAR_lookback,
+		## splice:lookback:start
+		as.double(x),
+		as.integer(n),
+		as.double(k)
+		## splice:lookback:end
+	)
+}

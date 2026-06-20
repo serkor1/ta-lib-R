@@ -121,6 +121,36 @@ fixed_moving_average_convergence_divergence.matrix <- function(
 	)
 }
 
+#' @usage NULL
+MACDFIX_lookback <- fixed_moving_average_convergence_divergence_lookback <- function(
+	x,
+	cols,
+	signal = 9,
+	...
+) {
+	## validate 'cols'-argument
+	## if explicitly passed
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series
+	## from input
+	constructed_series <- series(
+		x = cols,
+		default_formula = ~close,
+		data = x,
+		...
+	)
+
+	.Call(
+		C_impl_ta_MACDFIX_lookback,
+		## splice:lookback:start
+		constructed_series[[1]],
+		as.integer(signal)
+		## splice:lookback:end
+	)
+}
 
 #' @usage NULL
 #' @aliases fixed_moving_average_convergence_divergence

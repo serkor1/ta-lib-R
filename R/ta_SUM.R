@@ -70,3 +70,17 @@ rolling_sum.numeric <- function(
 	## return indicator
 	as.double(x)
 }
+
+#' @usage NULL
+SUM_lookback <- rolling_sum_lookback <- function(
+	x,
+	n = 30
+) {
+	.Call(
+		C_impl_ta_SUM_lookback,
+		## splice:lookback:start
+		as.double(x),
+		as.integer(n)
+		## splice:lookback:end
+	)
+}

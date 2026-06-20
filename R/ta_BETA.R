@@ -75,3 +75,19 @@ rolling_beta.numeric <- function(
 	## return indicator
 	as.double(x)
 }
+
+#' @usage NULL
+BETA_lookback <- rolling_beta_lookback <- function(
+	x,
+	y,
+	n = 5
+) {
+	.Call(
+		C_impl_ta_BETA_lookback,
+		## splice:lookback:start
+		as.double(x),
+		as.double(y),
+		as.integer(n)
+		## splice:lookback:end
+	)
+}

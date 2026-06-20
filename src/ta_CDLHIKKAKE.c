@@ -24,6 +24,35 @@
 #include "shift.h"
 #include <ta_libc.h>
 
+// the lookback function
+// is exported as a standalone
+// function for downstream wrappers
+// clang-format off
+SEXP impl_ta_CDLHIKKAKE_lookback(
+    SEXP inOpen,
+    SEXP inHigh,
+    SEXP inLow,
+    SEXP inClose
+)
+// clang-format on
+{
+  // pointers to input
+  const double *open_ptr = REAL(inOpen);
+  const double *high_ptr = REAL(inHigh);
+  const double *low_ptr = REAL(inLow);
+  const double *close_ptr = REAL(inClose);
+  int n = LENGTH(inOpen);
+
+  // calculate lookback
+  const int lookback = TA_CDLHIKKAKE_Lookback();
+  SEXP output = PROTECT(Rf_ScalarInteger(lookback));
+
+  // unprotect output
+  UNPROTECT(1);
+
+  return output;
+}
+
 // clang-format off
 SEXP impl_ta_CDLHIKKAKE(
     SEXP inOpen,

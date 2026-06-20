@@ -24,6 +24,38 @@
 #include <Rinternals.h>
 #include <ta_libc.h>
 
+// the lookback function
+// is exported as a standalone
+// function for downstream wrappers
+// clang-format off
+SEXP impl_ta_AVGPRICE_lookback(
+	SEXP inOpen,
+	SEXP inHigh,
+	SEXP inLow,
+	SEXP inClose
+)
+// clang-format on
+{
+  // values
+  // get length of 'inOpen' (assumes equal length across input)
+  int n = LENGTH(inOpen);
+
+  // pointers to input arrays
+  const double *inOpen_ptr = REAL(inOpen);
+  const double *inHigh_ptr = REAL(inHigh);
+  const double *inLow_ptr = REAL(inLow);
+  const double *inClose_ptr = REAL(inClose);
+
+  // calculate lookback
+  const int lookback = TA_AVGPRICE_Lookback();
+
+  SEXP output = PROTECT(Rf_ScalarInteger(lookback));
+
+  // unprotect output
+  UNPROTECT(1);
+  return output;
+}
+
 // clang-format off
 SEXP impl_ta_AVGPRICE(
 	SEXP inOpen,

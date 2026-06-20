@@ -178,6 +178,51 @@ extended_parabolic_stop_and_reverse.matrix <- function(
 	)
 }
 
+#' @usage NULL
+SAREXT_lookback <- extended_parabolic_stop_and_reverse_lookback <- function(
+	x,
+	cols,
+	init = 0,
+	offset = 0,
+	init_long = 0.02,
+	long = 0.02,
+	max_long = 0.2,
+	init_short = 0.02,
+	short = 0.02,
+	max_short = 0.2,
+	...
+) {
+	## validate 'cols'-argument
+	## if explicitly passed
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series
+	## from input
+	constructed_series <- series(
+		x = cols,
+		default_formula = ~ high + low,
+		data = x,
+		...
+	)
+
+	.Call(
+		C_impl_ta_SAREXT_lookback,
+		## splice:lookback:start
+		constructed_series[[1]],
+		constructed_series[[2]],
+		init,
+		offset,
+		init_long,
+		long,
+		max_long,
+		init_short,
+		short,
+		max_short
+		## splice:lookback:end
+	)
+}
 
 #' @usage NULL
 #' @aliases extended_parabolic_stop_and_reverse

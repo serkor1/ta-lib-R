@@ -133,6 +133,36 @@ rise_fall_3_methods.matrix <- function(
 }
 
 #' @usage NULL
+CDLRISEFALL3METHODS_lookback <- rise_fall_3_methods_lookback <- function(
+	x,
+	cols,
+	...
+) {
+	## validate 'cols'-argument
+	## if explicitly passed
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series
+	## from input
+	constructed_series <- series(
+		x = cols,
+		default_formula = ~ open + high + low + close,
+		data = x,
+		...
+	)
+
+	.Call(
+		C_impl_ta_CDLRISEFALL3METHODS_lookback,
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]]
+	)
+}
+
+#' @usage NULL
 #' @aliases rise_fall_3_methods
 #'
 #' @export

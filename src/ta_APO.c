@@ -24,6 +24,43 @@
 #include <Rinternals.h>
 #include <ta_libc.h>
 
+// the lookback function
+// is exported as a standalone
+// function for downstream wrappers
+// clang-format off
+SEXP impl_ta_APO_lookback(
+	SEXP inReal,
+	SEXP optInFastPeriod,
+	SEXP optInSlowPeriod,
+	SEXP optInMAType
+)
+// clang-format on
+{
+  // values
+  // get length of 'inReal' (assumes equal length across input)
+  int n = LENGTH(inReal);
+
+  // pointers to input arrays
+  const double *inReal_ptr = REAL(inReal);
+
+  // extract input values
+  const int optInFastPeriod_value = INTEGER(optInFastPeriod)[0];
+  const int optInSlowPeriod_value = INTEGER(optInSlowPeriod)[0];
+  const TA_MAType optInMAType_value = as_MAType(optInMAType);
+
+  // calculate lookback
+  const int lookback = TA_APO_Lookback(
+    optInFastPeriod_value,
+    optInSlowPeriod_value,
+    optInMAType_value);
+
+  SEXP output = PROTECT(Rf_ScalarInteger(lookback));
+
+  // unprotect output
+  UNPROTECT(1);
+  return output;
+}
+
 // clang-format off
 SEXP impl_ta_APO(
 	SEXP inReal,

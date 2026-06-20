@@ -137,6 +137,41 @@ stochastic_relative_strength_index.matrix <- function(
 	)
 }
 
+#' @usage NULL
+STOCHRSI_lookback <- stochastic_relative_strength_index_lookback <- function(
+	x,
+	cols,
+	n = 14,
+	fastk = 5,
+	fastd = SMA(n = 3),
+	...
+) {
+	## validate 'cols'-argument
+	## if explicitly passed
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series
+	## from input
+	constructed_series <- series(
+		x = cols,
+		default_formula = ~close,
+		data = x,
+		...
+	)
+
+	.Call(
+		C_impl_ta_STOCHRSI_lookback,
+		## splice:lookback:start
+		constructed_series[[1]],
+		as.integer(n),
+		as.integer(fastk),
+		as.integer(fastd$n),
+		as.integer(fastd$maType)
+		## splice:lookback:end
+	)
+}
 
 #' @usage NULL
 #' @aliases stochastic_relative_strength_index

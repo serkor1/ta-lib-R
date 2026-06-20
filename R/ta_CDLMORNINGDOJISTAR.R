@@ -138,6 +138,38 @@ morning_doji_star.matrix <- function(
 }
 
 #' @usage NULL
+CDLMORNINGDOJISTAR_lookback <- morning_doji_star_lookback <- function(
+	x,
+	cols,
+	eps = 0,
+	...
+) {
+	## validate 'cols'-argument
+	## if explicitly passed
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series
+	## from input
+	constructed_series <- series(
+		x = cols,
+		default_formula = ~ open + high + low + close,
+		data = x,
+		...
+	)
+
+	.Call(
+		C_impl_ta_CDLMORNINGDOJISTAR_lookback,
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
+		eps
+	)
+}
+
+#' @usage NULL
 #' @aliases morning_doji_star
 #'
 #' @export

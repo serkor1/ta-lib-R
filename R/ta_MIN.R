@@ -70,3 +70,17 @@ rolling_min.numeric <- function(
 	## return indicator
 	as.double(x)
 }
+
+#' @usage NULL
+MIN_lookback <- rolling_min_lookback <- function(
+	x,
+	n = 30
+) {
+	.Call(
+		C_impl_ta_MIN_lookback,
+		## splice:lookback:start
+		as.double(x),
+		as.integer(n)
+		## splice:lookback:end
+	)
+}

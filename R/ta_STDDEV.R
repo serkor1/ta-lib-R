@@ -76,3 +76,19 @@ rolling_standard_deviation.numeric <- function(
 	## return indicator
 	as.double(x)
 }
+
+#' @usage NULL
+STDDEV_lookback <- rolling_standard_deviation_lookback <- function(
+	x,
+	n = 5,
+	k = 1
+) {
+	.Call(
+		C_impl_ta_STDDEV_lookback,
+		## splice:lookback:start
+		as.double(x),
+		as.integer(n),
+		as.double(k)
+		## splice:lookback:end
+	)
+}

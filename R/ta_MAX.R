@@ -70,3 +70,17 @@ rolling_max.numeric <- function(
 	## return indicator
 	as.double(x)
 }
+
+#' @usage NULL
+MAX_lookback <- rolling_max_lookback <- function(
+	x,
+	n = 30
+) {
+	.Call(
+		C_impl_ta_MAX_lookback,
+		## splice:lookback:start
+		as.double(x),
+		as.integer(n)
+		## splice:lookback:end
+	)
+}

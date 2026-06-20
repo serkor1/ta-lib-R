@@ -132,6 +132,41 @@ fast_stochastic.matrix <- function(
 	)
 }
 
+#' @usage NULL
+STOCHF_lookback <- fast_stochastic_lookback <- function(
+	x,
+	cols,
+	fastk = 5,
+	fastd = SMA(n = 3),
+	...
+) {
+	## validate 'cols'-argument
+	## if explicitly passed
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series
+	## from input
+	constructed_series <- series(
+		x = cols,
+		default_formula = ~ high + low + close,
+		data = x,
+		...
+	)
+
+	.Call(
+		C_impl_ta_STOCHF_lookback,
+		## splice:lookback:start
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		as.integer(fastk),
+		as.integer(fastd$n),
+		as.integer(fastd$maType)
+		## splice:lookback:end
+	)
+}
 
 #' @usage NULL
 #' @aliases fast_stochastic

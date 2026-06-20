@@ -128,6 +128,43 @@ trading_volume.matrix <- function(
 	)
 }
 
+#' @usage NULL
+VOLUME_lookback <- trading_volume_lookback <- function(
+	x,
+	cols,
+	ma = list(SMA(n = 7), SMA(n = 15)),
+	...
+) {
+	## validate 'cols'-argument
+	## if explicitly passed
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series
+	## from input
+	constructed_series <- series(
+		x = cols,
+		default_formula = ~ volume + open + close,
+		data = x,
+		...
+	)
+
+	.Call(
+		C_impl_ta_VOLUME_lookback,
+		## splice:lookback:start
+		as.double(constructed_series[[1]]),
+		lapply(
+			ma,
+			function(x) {
+				as.integer(
+					unlist(x, use.names = FALSE)
+				)
+			}
+		)
+		## splice:lookback:end
+	)
+}
 
 #' @usage NULL
 #' @aliases trading_volume
