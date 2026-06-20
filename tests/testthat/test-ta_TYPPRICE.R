@@ -143,3 +143,18 @@ testthat::test_that(desc = 'Row names are respected for <matrix>', code = {
 		expected = rownames(indicator)
 	)
 })
+
+
+## test the output's attribute "lookback" matches
+## the lookback()
+testthat::test_that(desc = 'Lookback equivalence', code = {
+	output <- attr(
+		typical_price(SPY),
+		"lookback"
+	)
+
+	testthat::expect_equal(
+		object = output,
+		expected = lookback(FUN = typical_price, x = SPY)
+	)
+})

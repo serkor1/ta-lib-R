@@ -148,6 +148,24 @@ testthat::test_that(desc = 'Row names are respected for <matrix>', code = {
 })
 
 
+## test the output's attribute "lookback" matches
+## the lookback()
+testthat::test_that(desc = 'Lookback equivalence', code = {
+	output <- attr(
+		fixed_moving_average_convergence_divergence(SPY),
+		"lookback"
+	)
+
+	testthat::expect_equal(
+		object = output,
+		expected = lookback(
+			FUN = fixed_moving_average_convergence_divergence,
+			x = SPY
+		)
+	)
+})
+
+
 ## <plotly>-method checks for <data.frame>
 ## and <matrix>
 ##
