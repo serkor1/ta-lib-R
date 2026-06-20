@@ -259,6 +259,7 @@ static const R_CallMethodDef CallEntries[] = {
   CALLDEF(impl_ta_ULTOSC, 7),
   CALLDEF(impl_ta_VAR_lookback, 3),
   CALLDEF(impl_ta_VAR, 4),
+  CALLDEF(impl_ta_VOLUME_lookback, 2),
   CALLDEF(impl_ta_VOLUME, 3),
   CALLDEF(impl_ta_WCLPRICE_lookback, 3),
   CALLDEF(impl_ta_WCLPRICE, 4),

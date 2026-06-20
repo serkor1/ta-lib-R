@@ -253,6 +253,7 @@ SEXP impl_ta_ULTOSC_lookback(SEXP inHigh, SEXP inLow, SEXP inClose, SEXP optInTi
 SEXP impl_ta_ULTOSC(SEXP inHigh, SEXP inLow, SEXP inClose, SEXP optInTimePeriod1, SEXP optInTimePeriod2, SEXP optInTimePeriod3, SEXP na_bridge);
 SEXP impl_ta_VAR_lookback(SEXP inReal, SEXP optInTimePeriod, SEXP optInNbDev);
 SEXP impl_ta_VAR(SEXP inReal, SEXP optInTimePeriod, SEXP optInNbDev, SEXP na_bridge);
+SEXP impl_ta_VOLUME_lookback(SEXP inReal, SEXP maSpec);
 SEXP impl_ta_VOLUME(SEXP inReal, SEXP maSpec, SEXP na_rm);
 SEXP impl_ta_WCLPRICE_lookback(SEXP inHigh, SEXP inLow, SEXP inClose);
 SEXP impl_ta_WCLPRICE(SEXP inHigh, SEXP inLow, SEXP inClose, SEXP na_bridge);
