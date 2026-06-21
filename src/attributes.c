@@ -27,12 +27,21 @@ static inline SEXP ta_lookback(void) {
 void set_attribute(
   SEXP output_object, 
   int lookback, 
-  int *protection_count) {
-  // clang-format on
-
+  int *protection_count
+)
+// clang-format on
+{
+  // upstream returns -1 if the indicator and data pairs
+  // are invalid - -1 is handled on the R side but
+  // attributes needs to be handled here - some functions
+  // returns (weighted closing price, for one) returns lookback
+  // of zero; this has to be normalized to 1 (can't calculate values on nothing)
+  int normalized_lookback =
+    lookback < 0 ? lookback : (lookback < 1 ? 1 : lookback);
   SEXP symbolic_value = ta_lookback();
 
-  SEXP value = PROTECT(Rf_ScalarInteger(lookback));
+  SEXP value = PROTECT(Rf_ScalarInteger(normalized_lookback));
+
   if (protection_count) {
     (*protection_count)++;
   }
