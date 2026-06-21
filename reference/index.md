@@ -325,6 +325,11 @@ Price, Typical Price, and Weighted Close Price.
 - [`weighted_close_price()`](https://serkor1.github.io/ta-lib-R/reference/weighted_close_price.md)
   : Weighted Close Price
 
+## Utility Functions
+
+Utility functions used for downstream packages and wrappers that
+improves and simplifies the control-flow.
+
 ## Financial Data
 
 Built-in OHLCV datasets for examples, testing, and exploration. Includes

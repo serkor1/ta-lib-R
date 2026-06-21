@@ -1,5 +1,27 @@
 # Changelog
 
+## version 0.9-3
+
+### improvements
+
+- A new function for pre-calculating the lookback-period has been
+  implemented. It can be used as follows:
+
+``` r
+
+talib::lookback(
+  FUN = talib::SMA,
+  n   = 10,
+  x   = talib::BTC
+)
+```
+
+The function returns the minimum required lookback for calculating the
+indicator. Its use-case is customized control-flows for downstream
+wrappers and/or packages that declares dependency on {talib}.
+
+### bug-fixes
+
 ## version 0.9-2
 
 CRAN release: 2026-05-10

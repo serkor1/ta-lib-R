@@ -45,6 +45,23 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.9-3" id="version-09-3">version 0.9-3<a class="anchor" aria-label="anchor" href="#version-09-3"></a></h2>
+<div class="section level3">
+<h3 id="improvements-0-9-3">improvements<a class="anchor" aria-label="anchor" href="#improvements-0-9-3"></a></h3>
+<ul><li>A new function for pre-calculating the lookback-period has been implemented. It can be used as follows:</li>
+</ul><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">talib</span><span class="fu">::</span><span class="fu">lookback</span><span class="op">(</span></span>
+<span>  FUN <span class="op">=</span> <span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="../reference/simple_moving_average.html">SMA</a></span>,</span>
+<span>  n   <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  x   <span class="op">=</span> <span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="../reference/BTC.html">BTC</a></span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>The function returns the minimum required lookback for calculating the indicator. Its use-case is customized control-flows for downstream wrappers and/or packages that declares dependency on {talib}.</p>
+</div>
+<div class="section level3">
+<h3 id="bug-fixes-0-9-3">bug-fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-9-3"></a></h3>
+</div>
+</div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9-2" id="version-09-2">version 0.9-2<a class="anchor" aria-label="anchor" href="#version-09-2"></a></h2><p class="text-muted">CRAN release: 2026-05-10</p>
 <div class="section level3">
 <h3 id="improvements-0-9-2">improvements<a class="anchor" aria-label="anchor" href="#improvements-0-9-2"></a></h3>
