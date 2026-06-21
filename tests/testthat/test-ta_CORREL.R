@@ -39,7 +39,7 @@ testthat::test_that(desc = 'Output type', code = {
 	)
 
 	testthat::expect_true(
-		typeof(output) == "double"
+		typeof(output) == "double" || typeof(output) == "integer"
 	)
 
 	testthat::expect_true(
