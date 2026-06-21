@@ -122,6 +122,38 @@ plus_directional_indicator.matrix <- function(
 	)
 }
 
+#' @usage NULL
+PLUS_DI_lookback <- plus_directional_indicator_lookback <- function(
+	x,
+	cols,
+	n = 14,
+	...
+) {
+	## validate 'cols'-argument
+	## if explicitly passed
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series
+	## from input
+	constructed_series <- series(
+		x = cols,
+		default_formula = ~ high + low + close,
+		data = x,
+		...
+	)
+
+	.Call(
+		C_impl_ta_PLUS_DI_lookback,
+		## splice:lookback:start
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		as.integer(n)
+		## splice:lookback:end
+	)
+}
 
 #' @usage NULL
 #' @aliases plus_directional_indicator

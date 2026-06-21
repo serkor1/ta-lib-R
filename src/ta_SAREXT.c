@@ -30,6 +30,64 @@
 #include <Rinternals.h>
 #include <ta_libc.h>
 
+// the lookback function
+// is exported as a standalone
+// function for downstream wrappers
+// clang-format off
+SEXP impl_ta_SAREXT_lookback(
+	SEXP inHigh,
+	SEXP inLow,
+	SEXP optInStartValue,
+	SEXP optInOffsetOnReverse,
+	SEXP optInAccelerationInitLong,
+	SEXP optInAccelerationLong,
+	SEXP optInAccelerationMaxLong,
+	SEXP optInAccelerationInitShort,
+	SEXP optInAccelerationShort,
+	SEXP optInAccelerationMaxShort
+)
+// clang-format on
+{
+  // values
+  // get length of 'inHigh' (assumes equal length across input)
+  int n = LENGTH(inHigh);
+
+  // pointers to input arrays
+  const double *inHigh_ptr = REAL(inHigh);
+  const double *inLow_ptr = REAL(inLow);
+
+  // extract input values
+  const double optInStartValue_value = REAL(optInStartValue)[0];
+  const double optInOffsetOnReverse_value = REAL(optInOffsetOnReverse)[0];
+  const double optInAccelerationInitLong_value =
+    REAL(optInAccelerationInitLong)[0];
+  const double optInAccelerationLong_value = REAL(optInAccelerationLong)[0];
+  const double optInAccelerationMaxLong_value =
+    REAL(optInAccelerationMaxLong)[0];
+  const double optInAccelerationInitShort_value =
+    REAL(optInAccelerationInitShort)[0];
+  const double optInAccelerationShort_value = REAL(optInAccelerationShort)[0];
+  const double optInAccelerationMaxShort_value =
+    REAL(optInAccelerationMaxShort)[0];
+
+  // calculate lookback
+  const int lookback = TA_SAREXT_Lookback(
+    optInStartValue_value,
+    optInOffsetOnReverse_value,
+    optInAccelerationInitLong_value,
+    optInAccelerationLong_value,
+    optInAccelerationMaxLong_value,
+    optInAccelerationInitShort_value,
+    optInAccelerationShort_value,
+    optInAccelerationMaxShort_value);
+
+  SEXP output = PROTECT(Rf_ScalarInteger(lookback));
+
+  // unprotect output
+  UNPROTECT(1);
+  return output;
+}
+
 // clang-format off
 SEXP impl_ta_SAREXT(
 	SEXP inHigh,

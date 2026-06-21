@@ -144,7 +144,7 @@ done
 for i in "${!in_scalars_name[@]}"; do
   R_SIGNATURE+=$'\tSEXP '"${in_scalars_name[$i]}"$',\n'
 done
-R_SIGNATURE=${R_SIGNATURE%$'\n'}
+R_SIGNATURE=${R_SIGNATURE%,$'\n'}
 
 ## 6) PARAM_DOC
 ##

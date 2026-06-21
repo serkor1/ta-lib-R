@@ -183,10 +183,44 @@ mesa_adaptive_moving_average.numeric <- function(
 	)
 
 	if (dim(x)[2] == 1L) {
-		x <- as.double(x)
+		dim(x) <- NULL
 	}
 
 	x
+}
+
+#' @usage NULL
+MAMA_lookback <- mesa_adaptive_moving_average_lookback <- function(
+	x,
+	cols,
+	n = 30,
+	fast = 0.5,
+	slow = 0.05,
+	...
+) {
+	## validate 'cols'-argument
+	## if explicitly passed
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series
+	## from input
+	constructed_series <- series(
+		x = cols,
+		default_formula = ~close,
+		data = x,
+		...
+	)
+
+	.Call(
+		C_impl_ta_MAMA_lookback,
+		## splice:lookback:start
+		as.double(constructed_series[[1]]),
+		as.double(fast),
+		as.double(slow)
+		## splice:lookback:end
+	)
 }
 
 #' @usage NULL

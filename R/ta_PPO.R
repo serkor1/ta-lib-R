@@ -137,6 +137,40 @@ percentage_price_oscillator.matrix <- function(
 	)
 }
 
+#' @usage NULL
+PPO_lookback <- percentage_price_oscillator_lookback <- function(
+	x,
+	cols,
+	fast = 12,
+	slow = 26,
+	ma = SMA(n = 9),
+	...
+) {
+	## validate 'cols'-argument
+	## if explicitly passed
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series
+	## from input
+	constructed_series <- series(
+		x = cols,
+		default_formula = ~close,
+		data = x,
+		...
+	)
+
+	.Call(
+		C_impl_ta_PPO_lookback,
+		## splice:lookback:start
+		constructed_series[[1]],
+		as.integer(fast),
+		as.integer(slow),
+		ma$maType
+		## splice:lookback:end
+	)
+}
 
 #' @usage NULL
 #' @aliases percentage_price_oscillator
@@ -173,7 +207,7 @@ percentage_price_oscillator.numeric <- function(
 	)
 
 	if (dim(x)[2] == 1L) {
-		x <- as.double(x)
+		dim(x) <- NULL
 	}
 
 	x

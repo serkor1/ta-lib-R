@@ -113,3 +113,33 @@ median_price.matrix <- function(
 		...
 	)
 }
+
+#' @usage NULL
+MEDPRICE_lookback <- median_price_lookback <- function(
+	x,
+	cols,
+	...
+) {
+	## validate 'cols'-argument
+	## if explicitly passed
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series
+	## from input
+	constructed_series <- series(
+		x = cols,
+		default_formula = ~ high + low,
+		data = x,
+		...
+	)
+
+	.Call(
+		C_impl_ta_MEDPRICE_lookback,
+		## splice:lookback:start
+		constructed_series[[1]],
+		constructed_series[[2]]
+		## splice:lookback:end
+	)
+}

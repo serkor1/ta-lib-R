@@ -66,14 +66,32 @@ output <- ${FUN}(
 		)
 
 testthat::expect_true(
-		typeof(output) == "double"
+		typeof(output) == "double" || typeof(output) == "integer"
 	)
 
 	testthat::expect_true(
-		is.vector(output)
+		is.null(dim(output))
 	)
 
 })
+
+## test the output's attribute "lookback" matches
+## the lookback()
+testthat::test_that(desc = 'Lookback equivalence', code = {
+
+output <- attr(
+	${FUN}(x = SPY[,1]${ADDITIONAL}),
+	"lookback"
+)
+
+testthat::expect_equal(
+		object = output,
+		expected = lookback(FUN = ${FUN}, x = SPY[,1]${ADDITIONAL})
+	)
+
+}
+)
+
 
 EOF
 
@@ -232,6 +250,24 @@ testthat::test_that(desc = 'Row names are respected for <matrix>', code = {
 	)
 })
 
+
+## test the output's attribute "lookback" matches
+## the lookback()
+testthat::test_that(desc = 'Lookback equivalence', code = {
+
+output <- attr(
+	${FUN}(SPY),
+	"lookback"
+)
+
+testthat::expect_equal(
+		object = output,
+		expected = lookback(FUN = ${FUN}, x = SPY)
+	)
+
+}
+)
+
 EOF
 
 ## Add plotly methods
@@ -348,7 +384,7 @@ testthat::test_that(desc = '<numeric> methods', code = {
 	target_length <- length(BTC[[1]])
 
 	if (NCOL(x) == 1L) {
-		testthat::expect_true(is.double(x))
+		testthat::expect_true(is.double(x) || is.integer(x))
 		testthat::expect_false(is.matrix(x))
 		testthat::expect_equal(length(x), target_length)
 	} else {

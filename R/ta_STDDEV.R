@@ -50,8 +50,13 @@ rolling_standard_deviation.default <- function(
 		as.logical(na.bridge)
 	)
 
+	## strip dimensions
+	## while preserving
+	## attributes
+	dim(x) <- NULL
+
 	## return indicator
-	as.double(x)
+	x
 }
 
 #' @usage NULL
@@ -73,6 +78,27 @@ rolling_standard_deviation.numeric <- function(
 		na.bridge = na.bridge
 	)
 
+	## strip dimensions
+	## while preserving
+	## attributes
+	dim(x) <- NULL
+
 	## return indicator
-	as.double(x)
+	x
+}
+
+#' @usage NULL
+STDDEV_lookback <- rolling_standard_deviation_lookback <- function(
+	x,
+	n = 5,
+	k = 1
+) {
+	.Call(
+		C_impl_ta_STDDEV_lookback,
+		## splice:lookback:start
+		as.double(x),
+		as.integer(n),
+		as.double(k)
+		## splice:lookback:end
+	)
 }

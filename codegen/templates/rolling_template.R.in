@@ -45,8 +45,13 @@ ${FUN}.default <- function(
 		as.logical(na.bridge)
 	)
 
+	## strip dimensions
+	## while preserving 
+	## attributes
+	dim(x) <- NULL
+
 	## return indicator
-	as.double(x)
+	x
 }
 
 #' @usage NULL
@@ -67,6 +72,24 @@ ${FUN}.numeric <- function(
 
 	)
 
+	## strip dimensions
+	## while preserving 
+	## attributes
+	dim(x) <- NULL
+
 	## return indicator
-	as.double(x)
+	x
+}
+
+#' @usage NULL
+${ALIAS}_lookback <- ${FUN}_lookback <- function(
+	x,${ARGS}
+) {
+
+	.Call(
+		C_impl_ta_${TA_FUN}_lookback,
+		## splice:lookback:start
+		## splice:lookback:end
+	)
+	
 }

@@ -133,6 +133,36 @@ two_crows.matrix <- function(
 }
 
 #' @usage NULL
+CDL2CROWS_lookback <- two_crows_lookback <- function(
+	x,
+	cols,
+	...
+) {
+	## validate 'cols'-argument
+	## if explicitly passed
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series
+	## from input
+	constructed_series <- series(
+		x = cols,
+		default_formula = ~ open + high + low + close,
+		data = x,
+		...
+	)
+
+	.Call(
+		C_impl_ta_CDL2CROWS_lookback,
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]]
+	)
+}
+
+#' @usage NULL
 #' @aliases two_crows
 #'
 #' @export

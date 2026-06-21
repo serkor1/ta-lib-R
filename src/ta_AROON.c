@@ -23,6 +23,38 @@
 #include <Rinternals.h>
 #include <ta_libc.h>
 
+// the lookback function
+// is exported as a standalone
+// function for downstream wrappers
+// clang-format off
+SEXP impl_ta_AROON_lookback(
+	SEXP inHigh,
+	SEXP inLow,
+	SEXP optInTimePeriod
+)
+// clang-format on
+{
+  // values
+  // get length of 'inHigh' (assumes equal length across input)
+  int n = LENGTH(inHigh);
+
+  // pointers to input arrays
+  const double *inHigh_ptr = REAL(inHigh);
+  const double *inLow_ptr = REAL(inLow);
+
+  // extract input values
+  const int optInTimePeriod_value = INTEGER(optInTimePeriod)[0];
+
+  // calculate lookback
+  const int lookback = TA_AROON_Lookback(optInTimePeriod_value);
+
+  SEXP output = PROTECT(Rf_ScalarInteger(lookback));
+
+  // unprotect output
+  UNPROTECT(1);
+  return output;
+}
+
 // clang-format off
 SEXP impl_ta_AROON(
 	SEXP inHigh,

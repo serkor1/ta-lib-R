@@ -145,6 +145,21 @@ testthat::test_that(desc = 'Row names are respected for <matrix>', code = {
 })
 
 
+## test the output's attribute "lookback" matches
+## the lookback()
+testthat::test_that(desc = 'Lookback equivalence', code = {
+	output <- attr(
+		rickshaw_man(SPY),
+		"lookback"
+	)
+
+	testthat::expect_equal(
+		object = output,
+		expected = lookback(FUN = rickshaw_man, x = SPY)
+	)
+})
+
+
 ## <plotly>-method checks for <data.frame>
 ## and <matrix>
 ##

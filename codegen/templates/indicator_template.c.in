@@ -20,8 +20,29 @@
 #include <Rinternals.h>
 #include <ta_libc.h>
 
+// the lookback function 
+// is exported as a standalone
+// function for downstream wrappers
 // clang-format off
-SEXP impl_ta_${NAME}($R_SIGNATURE
+SEXP impl_ta_${NAME}_lookback($R_SIGNATURE
+)
+// clang-format on
+{
+    // values
+    $VALUES
+    
+    // calculate lookback
+    const int lookback = TA_${NAME}_Lookback($LOOKBACK_ARGS);
+
+    SEXP output = PROTECT(Rf_ScalarInteger(lookback));
+
+    // unprotect output
+    UNPROTECT(1);
+    return output;
+}
+
+// clang-format off
+SEXP impl_ta_${NAME}($R_SIGNATURE,
 	SEXP na_bridge
 )
 // clang-format on

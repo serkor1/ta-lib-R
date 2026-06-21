@@ -133,6 +133,36 @@ upside_gap_2_crows.matrix <- function(
 }
 
 #' @usage NULL
+CDLUPSIDEGAP2CROWS_lookback <- upside_gap_2_crows_lookback <- function(
+	x,
+	cols,
+	...
+) {
+	## validate 'cols'-argument
+	## if explicitly passed
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series
+	## from input
+	constructed_series <- series(
+		x = cols,
+		default_formula = ~ open + high + low + close,
+		data = x,
+		...
+	)
+
+	.Call(
+		C_impl_ta_CDLUPSIDEGAP2CROWS_lookback,
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]]
+	)
+}
+
+#' @usage NULL
 #' @aliases upside_gap_2_crows
 #'
 #' @export

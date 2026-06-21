@@ -76,6 +76,11 @@ reference:
     Transform raw OHLC prices into derived series. Average Price,
     Median Price, Typical Price, and Weighted Close Price.
 - contents: has_concept('Price Transform')
+- title: Utility Functions
+  desc: >
+    Utility functions used for downstream packages and wrappers that 
+    improves and simplifies the control-flow.
+- contents: has_concept('Utility')
 - title: Financial Data
   desc: >
     Built-in OHLCV datasets for examples, testing, and exploration.

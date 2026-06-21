@@ -27,6 +27,52 @@
 #include <Rinternals.h>
 #include <ta_libc.h>
 
+// the lookback function
+// is exported as a standalone
+// function for downstream wrappers
+// clang-format off
+SEXP impl_ta_MACDEXT_lookback(
+	SEXP inReal,
+	SEXP optInFastPeriod,
+	SEXP optInFastMAType,
+	SEXP optInSlowPeriod,
+	SEXP optInSlowMAType,
+	SEXP optInSignalPeriod,
+	SEXP optInSignalMAType
+)
+// clang-format on
+{
+  // values
+  // get length of 'inReal' (assumes equal length across input)
+  int n = LENGTH(inReal);
+
+  // pointers to input arrays
+  const double *inReal_ptr = REAL(inReal);
+
+  // extract input values
+  const int optInFastPeriod_value = INTEGER(optInFastPeriod)[0];
+  const TA_MAType optInFastMAType_value = as_MAType(optInFastMAType);
+  const int optInSlowPeriod_value = INTEGER(optInSlowPeriod)[0];
+  const TA_MAType optInSlowMAType_value = as_MAType(optInSlowMAType);
+  const int optInSignalPeriod_value = INTEGER(optInSignalPeriod)[0];
+  const TA_MAType optInSignalMAType_value = as_MAType(optInSignalMAType);
+
+  // calculate lookback
+  const int lookback = TA_MACDEXT_Lookback(
+    optInFastPeriod_value,
+    optInFastMAType_value,
+    optInSlowPeriod_value,
+    optInSlowMAType_value,
+    optInSignalPeriod_value,
+    optInSignalMAType_value);
+
+  SEXP output = PROTECT(Rf_ScalarInteger(lookback));
+
+  // unprotect output
+  UNPROTECT(1);
+  return output;
+}
+
 // clang-format off
 SEXP impl_ta_MACDEXT(
 	SEXP inReal,

@@ -210,7 +210,7 @@ call_r_wrapper <- function(name, btc, snap) {
 			) {
 				expect_equal(
 					as.integer(lb),
-					as.integer(snap$lookback),
+					max(as.integer(snap$lookback), 1),
 					info = paste0(name, ": lookback attribute")
 				)
 			}

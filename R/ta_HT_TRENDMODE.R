@@ -113,6 +113,34 @@ trend_cycle_mode.matrix <- function(
 	)
 }
 
+#' @usage NULL
+HT_TRENDMODE_lookback <- trend_cycle_mode_lookback <- function(
+	x,
+	cols,
+	...
+) {
+	## validate 'cols'-argument
+	## if explicitly passed
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series
+	## from input
+	constructed_series <- series(
+		x = cols,
+		default_formula = ~close,
+		data = x,
+		...
+	)
+
+	.Call(
+		C_impl_ta_HT_TRENDMODE_lookback,
+		## splice:lookback:start
+		constructed_series[[1]]
+		## splice:lookback:end
+	)
+}
 
 #' @usage NULL
 #' @aliases trend_cycle_mode
@@ -143,7 +171,7 @@ trend_cycle_mode.numeric <- function(
 	)
 
 	if (dim(x)[2] == 1L) {
-		x <- as.double(x)
+		dim(x) <- NULL
 	}
 
 	x

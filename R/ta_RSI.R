@@ -120,6 +120,36 @@ relative_strength_index.matrix <- function(
 	)
 }
 
+#' @usage NULL
+RSI_lookback <- relative_strength_index_lookback <- function(
+	x,
+	cols,
+	n = 14,
+	...
+) {
+	## validate 'cols'-argument
+	## if explicitly passed
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series
+	## from input
+	constructed_series <- series(
+		x = cols,
+		default_formula = ~close,
+		data = x,
+		...
+	)
+
+	.Call(
+		C_impl_ta_RSI_lookback,
+		## splice:lookback:start
+		constructed_series[[1]],
+		as.integer(n)
+		## splice:lookback:end
+	)
+}
 
 #' @usage NULL
 #' @aliases relative_strength_index
@@ -152,7 +182,7 @@ relative_strength_index.numeric <- function(
 	)
 
 	if (dim(x)[2] == 1L) {
-		x <- as.double(x)
+		dim(x) <- NULL
 	}
 
 	x

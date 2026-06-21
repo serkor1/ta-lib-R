@@ -46,8 +46,13 @@ rolling_sum.default <- function(
 		as.logical(na.bridge)
 	)
 
+	## strip dimensions
+	## while preserving
+	## attributes
+	dim(x) <- NULL
+
 	## return indicator
-	as.double(x)
+	x
 }
 
 #' @usage NULL
@@ -67,6 +72,25 @@ rolling_sum.numeric <- function(
 		na.bridge = na.bridge
 	)
 
+	## strip dimensions
+	## while preserving
+	## attributes
+	dim(x) <- NULL
+
 	## return indicator
-	as.double(x)
+	x
+}
+
+#' @usage NULL
+SUM_lookback <- rolling_sum_lookback <- function(
+	x,
+	n = 30
+) {
+	.Call(
+		C_impl_ta_SUM_lookback,
+		## splice:lookback:start
+		as.double(x),
+		as.integer(n)
+		## splice:lookback:end
+	)
 }

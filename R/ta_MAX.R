@@ -46,8 +46,13 @@ rolling_max.default <- function(
 		as.logical(na.bridge)
 	)
 
+	## strip dimensions
+	## while preserving
+	## attributes
+	dim(x) <- NULL
+
 	## return indicator
-	as.double(x)
+	x
 }
 
 #' @usage NULL
@@ -67,6 +72,25 @@ rolling_max.numeric <- function(
 		na.bridge = na.bridge
 	)
 
+	## strip dimensions
+	## while preserving
+	## attributes
+	dim(x) <- NULL
+
 	## return indicator
-	as.double(x)
+	x
+}
+
+#' @usage NULL
+MAX_lookback <- rolling_max_lookback <- function(
+	x,
+	n = 30
+) {
+	.Call(
+		C_impl_ta_MAX_lookback,
+		## splice:lookback:start
+		as.double(x),
+		as.integer(n)
+		## splice:lookback:end
+	)
 }

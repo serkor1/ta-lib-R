@@ -133,6 +133,36 @@ three_line_strike.matrix <- function(
 }
 
 #' @usage NULL
+CDL3LINESTRIKE_lookback <- three_line_strike_lookback <- function(
+	x,
+	cols,
+	...
+) {
+	## validate 'cols'-argument
+	## if explicitly passed
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series
+	## from input
+	constructed_series <- series(
+		x = cols,
+		default_formula = ~ open + high + low + close,
+		data = x,
+		...
+	)
+
+	.Call(
+		C_impl_ta_CDL3LINESTRIKE_lookback,
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]]
+	)
+}
+
+#' @usage NULL
 #' @aliases three_line_strike
 #'
 #' @export

@@ -145,6 +145,42 @@ bollinger_bands.matrix <- function(
 	)
 }
 
+#' @usage NULL
+BBANDS_lookback <- bollinger_bands_lookback <- function(
+	x,
+	cols,
+	ma = SMA(n = 5),
+	sd = 2,
+	sd_down,
+	sd_up,
+	...
+) {
+	## validate 'cols'-argument
+	## if explicitly passed
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series
+	## from input
+	constructed_series <- series(
+		x = cols,
+		default_formula = ~close,
+		data = x,
+		...
+	)
+
+	.Call(
+		C_impl_ta_BBANDS_lookback,
+		## splice:lookback:start
+		constructed_series[[1]],
+		ma$n,
+		as.double(sd_up %or% sd),
+		as.double(sd_down %or% sd),
+		ma$maType
+		## splice:lookback:end
+	)
+}
 
 #' @usage NULL
 #' @aliases bollinger_bands
@@ -183,7 +219,7 @@ bollinger_bands.numeric <- function(
 	)
 
 	if (dim(x)[2] == 1L) {
-		x <- as.double(x)
+		dim(x) <- NULL
 	}
 
 	x

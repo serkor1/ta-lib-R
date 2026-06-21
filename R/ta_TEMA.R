@@ -164,10 +164,41 @@ triple_exponential_moving_average.numeric <- function(
 	)
 
 	if (dim(x)[2] == 1L) {
-		x <- as.double(x)
+		dim(x) <- NULL
 	}
 
 	x
+}
+
+#' @usage NULL
+TEMA_lookback <- triple_exponential_moving_average_lookback <- function(
+	x,
+	cols,
+	n = 30,
+	...
+) {
+	## validate 'cols'-argument
+	## if explicitly passed
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series
+	## from input
+	constructed_series <- series(
+		x = cols,
+		default_formula = ~close,
+		data = x,
+		...
+	)
+
+	.Call(
+		C_impl_ta_TEMA_lookback,
+		## splice:lookback:start
+		as.double(constructed_series[[1]]),
+		as.integer(n)
+		## splice:lookback:end
+	)
 }
 
 #' @usage NULL

@@ -140,6 +140,43 @@ extended_moving_average_convergence_divergence.matrix <- function(
 	)
 }
 
+#' @usage NULL
+MACDEXT_lookback <- extended_moving_average_convergence_divergence_lookback <- function(
+	x,
+	cols,
+	fast = SMA(n = 12),
+	slow = SMA(n = 26),
+	signal = SMA(n = 9),
+	...
+) {
+	## validate 'cols'-argument
+	## if explicitly passed
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series
+	## from input
+	constructed_series <- series(
+		x = cols,
+		default_formula = ~close,
+		data = x,
+		...
+	)
+
+	.Call(
+		C_impl_ta_MACDEXT_lookback,
+		## splice:lookback:start
+		constructed_series[[1]],
+		fast$n,
+		fast$maType,
+		slow$n,
+		slow$maType,
+		signal$n,
+		signal$maType
+		## splice:lookback:end
+	)
+}
 
 #' @usage NULL
 #' @aliases extended_moving_average_convergence_divergence
@@ -179,7 +216,7 @@ extended_moving_average_convergence_divergence.numeric <- function(
 	)
 
 	if (dim(x)[2] == 1L) {
-		x <- as.double(x)
+		dim(x) <- NULL
 	}
 
 	x

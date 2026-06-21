@@ -23,6 +23,39 @@
 #include <Rinternals.h>
 #include <ta_libc.h>
 
+// the lookback function
+// is exported as a standalone
+// function for downstream wrappers
+// clang-format off
+SEXP impl_ta_MAMA_lookback(
+	SEXP inReal,
+	SEXP optInFastLimit,
+	SEXP optInSlowLimit
+)
+// clang-format on
+{
+  // values
+  // get length of 'inReal' (assumes equal length across input)
+  int n = LENGTH(inReal);
+
+  // pointers to input arrays
+  const double *inReal_ptr = REAL(inReal);
+
+  // extract input values
+  const double optInFastLimit_value = REAL(optInFastLimit)[0];
+  const double optInSlowLimit_value = REAL(optInSlowLimit)[0];
+
+  // calculate lookback
+  const int lookback =
+    TA_MAMA_Lookback(optInFastLimit_value, optInSlowLimit_value);
+
+  SEXP output = PROTECT(Rf_ScalarInteger(lookback));
+
+  // unprotect output
+  UNPROTECT(1);
+  return output;
+}
+
 // clang-format off
 SEXP impl_ta_MAMA(
 	SEXP inReal,
