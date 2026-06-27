@@ -22,7 +22,7 @@
 ##   univariate  - Force univariate numeric method? (default: NULL)
 ##   c_generator - C generation strategy:
 ##                 NULL      = standard (generate_indicator_core.sh → stdout)
-##                 "candlestick" = generate_core_candlestick.sh
+##                 "candlestick" = generate_indicator_core.sh with CANDLESTICK=1
 ##                 "skip"        = do not generate C
 
 ## -----------------------------------------------------------

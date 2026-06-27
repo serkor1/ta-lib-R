@@ -29,8 +29,8 @@ generate.R              Loops over indicators, calls:
       |        |
       |        +---> generate_unit-tests.sh  (heredoc test files)
       |
-      +---> generate_indicator_core.sh       (parses ta_func.h, envsubst on C template)
-      +---> generate_core_candlestick.sh     (candlestick-specific C generation)
+      +---> generate_indicator_core.sh       (parses ta_func.h, envsubst on C template;
+                                              candlesticks pass CANDLESTICK=1)
 ```
 
 After generation, `make fmt` runs `air format` (R) and `clang-format` (C) to
@@ -48,7 +48,6 @@ codegen/
     indicator_template.R.in         Standard R wrapper (most indicators)
     indicator_template.c.in         Standard C wrapper (most indicators)
     candlestick_template.R.in       Candlestick pattern R wrapper
-    candlestick_template.c.in       Candlestick pattern C wrapper
     moving_average_template.R.in    Moving average R wrapper (includes numeric + plotly)
     rolling_template.R.in           Rolling statistic R wrapper (simplified)
     numeric_template.R.in           Appended for univariate .numeric method
@@ -59,8 +58,8 @@ codegen/
     candlestick_ggplot_template.R.in  ggplot2 method for candlesticks
     moving_average_ggplot_template.R.in  ggplot2 method for moving averages
   generate_indicator.sh         R template assembler (envsubst + splice)
-  generate_indicator_core.sh    C code generator (parses ta_func.h headers)
-  generate_core_candlestick.sh  C code generator for candlestick patterns
+  generate_indicator_core.sh    C code generator (parses ta_func.h headers;
+                                candlesticks via CANDLESTICK=1)
   generate_unit-tests.sh        Test file generator
   generate_API.sh               Extracts SEXP prototypes → src/api.h
   generate_FFI.sh               Builds R_CallMethodDef table → src/init.c
@@ -159,17 +158,26 @@ This 420-line bash script:
    - Input scalars (`int`, `double`, `TA_MAType`) → `INTEGER()[0]` / `REAL()[0]`
    - Output arrays (`double outArray[]`) → allocated in output container
    - Skip: `startIdx`, `endIdx`, `outBegIdx`, `outNBElement` (TA-Lib internals)
-4. **Extracts the lookback function** `TA_<NAME>_Lookback(...)` parameters.
+4. **Extracts the lookback function** `TA_<NAME>_Lookback(...)` parameters and
+   emits `$LOOKBACK_VALUES` — declarations for *only* the scalars that lookback
+   consumes (a subset of the main signature). The standalone
+   `impl_ta_<NAME>_lookback` therefore declares nothing it does not use, so it
+   compiles clean under `-Wall`/`-Wextra` (the unused input-array SEXP arguments
+   are tolerated by `-Wno-unused-parameter`).
 5. **Exports 16+ environment variables** and runs `envsubst` on
    `indicator_template.c.in`.
 6. **Writes to stdout** — the caller redirects to `src/ta_<NAME>.c`.
 
-### Candlestick patterns — `generate_core_candlestick.sh`
+### Candlestick patterns — `CANDLESTICK=1`
 
-Simpler variant that:
-1. Checks if the pattern has an `optInPenetration` parameter.
-2. Uses `sed` to convert `{{VAR}}` → `${VAR}` in the candlestick C template.
-3. Runs `envsubst` and writes directly to `src/ta_<NAME>.c`.
+Candlestick patterns (`TA_CDL*`) share the same generator and template. They
+are ordinary indicators — four `double` OHLC inputs, an `int` output, an
+optional `optInPenetration` scalar — plus two extras gated on the `CANDLESTICK`
+env var (set by `generate.R` for entries whose `c_generator` is `"candlestick"`):
+
+1. a `flag` SEXP argument appended to the main signature, and
+2. a post-processing block that normalizes the `[-200, 200]` integer output to
+   real values divided by `100` when `flag` is `TRUE` (`normalize_int_to_real`).
 
 ### Moving averages
 

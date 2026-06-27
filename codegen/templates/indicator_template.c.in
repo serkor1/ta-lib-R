@@ -16,7 +16,7 @@
 #include "names.h"
 #include "shift.h"
 #include "attributes.h"
-#include <R.h>
+${NORMALIZE_INCLUDE}#include <R.h>
 #include <Rinternals.h>
 #include <ta_libc.h>
 
@@ -29,8 +29,8 @@ SEXP impl_ta_${NAME}_lookback($R_SIGNATURE
 // clang-format on
 {
     // values
-    $VALUES
-    
+    $LOOKBACK_VALUES
+
     // calculate lookback
     const int lookback = TA_${NAME}_Lookback($LOOKBACK_ARGS);
 
@@ -42,7 +42,7 @@ SEXP impl_ta_${NAME}_lookback($R_SIGNATURE
 }
 
 // clang-format off
-SEXP impl_ta_${NAME}($R_SIGNATURE,
+SEXP impl_ta_${NAME}(${R_SIGNATURE}${FLAG_ARG},
 	SEXP na_bridge
 )
 // clang-format on
@@ -134,6 +134,8 @@ SEXP impl_ta_${NAME}($R_SIGNATURE,
     if (na_mask != NULL) {
         output = reexpand_matrix(output, output_ptr, na_mask, n_original, &protection_count);
     }
+
+    ${NORMALIZE_BLOCK}
 
     UNPROTECT(protection_count);
     return output;
