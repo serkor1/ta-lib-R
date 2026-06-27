@@ -1,45 +1,27 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-## 1) environment variables
-##    and templates passed downstream
-##
-## 1.1) common variables and templates
+## 1) inputs (env vars set by the R caller) and template selection
 FAMILY=${FAMILY:-}
 TITLE=${TITLE:-}
 FUN=${FUN:?}
 TA_FUN=${TA_FUN:?}
-ALIAS=${ALIAS:-$TA_FUN}
+ALIAS=$TA_FUN
 FORMULA=${FORMULA:-"~close"}
 PLOTLY=${PLOTLY:-0}
 SUBCHART=${SUBCHART:-0}
 NUMERIC=${NUMERIC:-1}
-OUTPUTFILE=${OUTPUTFILE:-"R/ta_${TA_FUN}.R"}
-
-## 1.1) conditional templates
-##      passed downstream
-TEMPLATE_MAIN=${TEMPLATE_MAIN:-codegen/templates/indicator_template.R.in}
-TEMPLATE_NUMERIC=${NUMERIC_TEMPLATE:-codegen/templates/numeric_template.R.in}
-
-## 1.2) candlestick specific variables
-##      passed downstream
 AGNOSTIC=${AGNOSTIC:-"TRUE"}
 CANDLESTICK=${CANDLESTICK:-0}
-if [[ $CANDLESTICK -eq 1 ]]; then
-  TEMPLATE_MAIN="codegen/templates/candlestick_template.R.in"
-fi
-
-## 1.3) moving average specific
-##      variables
-maType=${maType:--1} # NOTE: -1 is NO MA
-if [[ "$maType" != "-1" ]]; then
-  TEMPLATE_MAIN="codegen/templates/moving_average_template.R.in"
-fi
-
-## 1.4) rolling statistics
+maType=${maType:--1}   # -1 == not a moving average
 ROLLING=${ROLLING:-0}
-if [[ "$ROLLING" != "0" ]]; then
-  TEMPLATE_MAIN="codegen/templates/rolling_template.R.in"
+OUTPUTFILE="R/ta_${TA_FUN}.R"
+
+## main template — one per indicator family (mutually exclusive)
+TEMPLATE_MAIN="codegen/templates/indicator_template.R.in"
+if   [[ $CANDLESTICK -eq 1 ]]; then TEMPLATE_MAIN="codegen/templates/candlestick_template.R.in"
+elif [[ "$maType" != "-1" ]];  then TEMPLATE_MAIN="codegen/templates/moving_average_template.R.in"
+elif [[ "$ROLLING" != "0" ]];  then TEMPLATE_MAIN="codegen/templates/rolling_template.R.in"
 fi
 
 ## 2) arguments passed into
@@ -124,81 +106,45 @@ for ((_i=0; _i<${#SPEC_FIELDS_ARR[@]}; _i++)); do
   fi
 done
 
-## 3) export environment variables
-##    to replace in templates
-REPLACE=''
-export FUN;      REPLACE+='${FUN}'
-export TITLE;    REPLACE+='${TITLE}'
-export TA_FUN;   REPLACE+='${TA_FUN}'
-export ALIAS;    REPLACE+='${ALIAS}'
-export FAMILY;   REPLACE+='${FAMILY}'
-export FORMULA;  REPLACE+='${FORMULA}'
-export ARGS;     REPLACE+='${ARGS}'
-export PARGS;    REPLACE+='${PARGS}'
-export CARGS;    REPLACE+='${CARGS}'
-export CARGS_TYPED; REPLACE+='${CARGS_TYPED}'
-export PPARGS;   REPLACE+='${PPARGS}'
-export AGNOSTIC; REPLACE+='${AGNOSTIC}'
-export maType;   REPLACE+='${maType}'
-export N_DEFAULT; REPLACE+='${N_DEFAULT}'
-export SPEC_FIELDS; REPLACE+='${SPEC_FIELDS}'
+## 3) export placeholders and restrict envsubst to exactly these names, so the
+##    templates' own '$' usage (e.g. `state$sub`, `x$n`) is left untouched.
+export FUN TITLE TA_FUN ALIAS FAMILY FORMULA ARGS PARGS CARGS CARGS_TYPED PPARGS AGNOSTIC maType SPEC_FIELDS
+REPLACE='${FUN}${TITLE}${TA_FUN}${ALIAS}${FAMILY}${FORMULA}${ARGS}${PARGS}${CARGS}${CARGS_TYPED}${PPARGS}${AGNOSTIC}${maType}${SPEC_FIELDS}'
 
-## 4) construct R files
-##    in temporary locations
-##    to avoid breaking existing code
-tmp_render="$(mktemp)"; tmp_plotly="$(mktemp)"; tmp_numeric="$(mktemp)"; tmp_ggplot="$(mktemp)"; tmp_splice="$(mktemp)"
-trap 'rm -f "$tmp_render" "$tmp_plotly" "$tmp_numeric" "$tmp_ggplot" "$tmp_splice"' EXIT
+## 4) render the templates onto one accumulator, then splice (section 5).
+##    Optional methods are appended with a blank-line separator; envsubst
+##    writes straight onto the accumulator, so no per-template temp files.
+tmp_render="$(mktemp)"; tmp_splice="$(mktemp)"
+trap 'rm -f "$tmp_render" "$tmp_splice"' EXIT
 
 ## 4.1) main template
 envsubst "$REPLACE" < "$TEMPLATE_MAIN" > "$tmp_render"
 
-## 4.2) optional templates
-##      pre-appended with double linebreak
-##      to avoid broken code
+## 4.2) .numeric method — univariate, non-rolling indicators
 if [[ $NUMERIC -eq 1 && $ROLLING -ne 1 ]]; then
-  envsubst "$REPLACE" < "$TEMPLATE_NUMERIC" > "$tmp_numeric"
   printf '\n\n' >> "$tmp_render"
-  cat "$tmp_numeric" >> "$tmp_render"
+  envsubst "$REPLACE" < codegen/templates/numeric_template.R.in >> "$tmp_render"
 fi
 
+## 4.3) .plotly method — standard indicators only
+##      (candlestick/MA bake their plotly into the main template)
 if [[ $PLOTLY -eq 1 ]]; then
-  if [[ $SUBCHART -eq 1 ]]; then
-  TEMPLATE_PLOTLY=${TEMPLATE_PLOTLY:-codegen/templates/plotly_subchart_template.R.in}
-  envsubst "$REPLACE" < "$TEMPLATE_PLOTLY" > "$tmp_plotly"
+  if [[ $SUBCHART -eq 1 ]]; then plotly=plotly_subchart_template.R.in
+  else                          plotly=plotly_main_template.R.in; fi
   printf '\n\n' >> "$tmp_render"
-  cat "$tmp_plotly" >> "$tmp_render"
-  else
-  TEMPLATE_PLOTLY=${TEMPLATE_PLOTLY:-codegen/templates/plotly_main_template.R.in}
-  envsubst "$REPLACE" < "$TEMPLATE_PLOTLY" > "$tmp_plotly"
-  printf '\n\n' >> "$tmp_render"
-  cat "$tmp_plotly" >> "$tmp_render"
-  fi
+  envsubst "$REPLACE" < "codegen/templates/$plotly" >> "$tmp_render"
 fi
 
-## 4.4) ggplot2 templates
-##      for candlestick and moving average templates
-##      the ggplot method is appended separately since
-##      their plotly methods are baked into the main template
-if [[ $CANDLESTICK -eq 1 ]]; then
-  envsubst "$REPLACE" < "codegen/templates/candlestick_ggplot_template.R.in" > "$tmp_ggplot"
+## 4.4) .ggplot method — appended for each charted family
+ggplot=
+if   [[ $CANDLESTICK -eq 1 ]];               then ggplot=candlestick_ggplot_template.R.in
+elif [[ "$maType" != "-1" ]];                then ggplot=moving_average_ggplot_template.R.in
+elif [[ $PLOTLY -eq 1 && $SUBCHART -eq 1 ]]; then ggplot=ggplot_subchart_template.R.in
+elif [[ $PLOTLY -eq 1 ]];                    then ggplot=ggplot_main_template.R.in
+fi
+if [[ -n "$ggplot" ]]; then
   printf '\n\n' >> "$tmp_render"
-  cat "$tmp_ggplot" >> "$tmp_render"
-elif [[ "$maType" != "-1" ]]; then
-  envsubst "$REPLACE" < "codegen/templates/moving_average_ggplot_template.R.in" > "$tmp_ggplot"
-  printf '\n\n' >> "$tmp_render"
-  cat "$tmp_ggplot" >> "$tmp_render"
-elif [[ $PLOTLY -eq 1 ]]; then
-  if [[ $SUBCHART -eq 1 ]]; then
-  TEMPLATE_GGPLOT=${TEMPLATE_GGPLOT:-codegen/templates/ggplot_subchart_template.R.in}
-  envsubst "$REPLACE" < "$TEMPLATE_GGPLOT" > "$tmp_ggplot"
-  printf '\n\n' >> "$tmp_render"
-  cat "$tmp_ggplot" >> "$tmp_render"
-  else
-  TEMPLATE_GGPLOT=${TEMPLATE_GGPLOT:-codegen/templates/ggplot_main_template.R.in}
-  envsubst "$REPLACE" < "$TEMPLATE_GGPLOT" > "$tmp_ggplot"
-  printf '\n\n' >> "$tmp_render"
-  cat "$tmp_ggplot" >> "$tmp_render"
-  fi
+  envsubst "$REPLACE" < "codegen/templates/$ggplot" >> "$tmp_render"
 fi
 
 
