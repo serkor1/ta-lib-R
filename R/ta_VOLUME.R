@@ -303,7 +303,7 @@ trading_volume.plotly <- function(
 	## modify the first trace
 	## assuming its volume
 	traces[[1]]$color <- ~direction
-	traces[[1]]$colors = c(
+	traces[[1]]$colors <- c(
 		.chart_variables$bullish_body,
 		.chart_variables$bearish_body
 	)
