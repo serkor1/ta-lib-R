@@ -35,13 +35,6 @@ SEXP impl_ta_MAMA_lookback(
 // clang-format on
 {
   // values
-  // get length of 'inReal' (assumes equal length across input)
-  int n = LENGTH(inReal);
-
-  // pointers to input arrays
-  const double *inReal_ptr = REAL(inReal);
-
-  // extract input values
   const double optInFastLimit_value = REAL(optInFastLimit)[0];
   const double optInSlowLimit_value = REAL(optInSlowLimit)[0];
 

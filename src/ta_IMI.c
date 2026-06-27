@@ -35,14 +35,6 @@ SEXP impl_ta_IMI_lookback(
 // clang-format on
 {
   // values
-  // get length of 'inOpen' (assumes equal length across input)
-  int n = LENGTH(inOpen);
-
-  // pointers to input arrays
-  const double *inOpen_ptr = REAL(inOpen);
-  const double *inClose_ptr = REAL(inClose);
-
-  // extract input values
   const int optInTimePeriod_value = INTEGER(optInTimePeriod)[0];
 
   // calculate lookback

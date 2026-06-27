@@ -39,13 +39,6 @@ SEXP impl_ta_STOCHRSI_lookback(
 // clang-format on
 {
   // values
-  // get length of 'inReal' (assumes equal length across input)
-  int n = LENGTH(inReal);
-
-  // pointers to input arrays
-  const double *inReal_ptr = REAL(inReal);
-
-  // extract input values
   const int optInTimePeriod_value = INTEGER(optInTimePeriod)[0];
   const int optInFastK_Period_value = INTEGER(optInFastK_Period)[0];
   const int optInFastD_Period_value = INTEGER(optInFastD_Period)[0];

@@ -37,14 +37,6 @@ SEXP impl_ta_SAR_lookback(
 // clang-format on
 {
   // values
-  // get length of 'inHigh' (assumes equal length across input)
-  int n = LENGTH(inHigh);
-
-  // pointers to input arrays
-  const double *inHigh_ptr = REAL(inHigh);
-  const double *inLow_ptr = REAL(inLow);
-
-  // extract input values
   const double optInAcceleration_value = REAL(optInAcceleration)[0];
   const double optInMaximum_value = REAL(optInMaximum)[0];
 

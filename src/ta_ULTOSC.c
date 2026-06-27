@@ -41,15 +41,6 @@ SEXP impl_ta_ULTOSC_lookback(
 // clang-format on
 {
   // values
-  // get length of 'inHigh' (assumes equal length across input)
-  int n = LENGTH(inHigh);
-
-  // pointers to input arrays
-  const double *inHigh_ptr = REAL(inHigh);
-  const double *inLow_ptr = REAL(inLow);
-  const double *inClose_ptr = REAL(inClose);
-
-  // extract input values
   const int optInTimePeriod1_value = INTEGER(optInTimePeriod1)[0];
   const int optInTimePeriod2_value = INTEGER(optInTimePeriod2)[0];
   const int optInTimePeriod3_value = INTEGER(optInTimePeriod3)[0];

@@ -45,15 +45,6 @@ SEXP impl_ta_STOCH_lookback(
 // clang-format on
 {
   // values
-  // get length of 'inHigh' (assumes equal length across input)
-  int n = LENGTH(inHigh);
-
-  // pointers to input arrays
-  const double *inHigh_ptr = REAL(inHigh);
-  const double *inLow_ptr = REAL(inLow);
-  const double *inClose_ptr = REAL(inClose);
-
-  // extract input values
   const int optInFastK_Period_value = INTEGER(optInFastK_Period)[0];
   const int optInSlowK_Period_value = INTEGER(optInSlowK_Period)[0];
   const TA_MAType optInSlowK_MAType_value = as_MAType(optInSlowK_MAType);

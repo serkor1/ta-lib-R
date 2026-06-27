@@ -33,12 +33,6 @@ SEXP impl_ta_OBV_lookback(
 // clang-format on
 {
   // values
-  // get length of 'inReal' (assumes equal length across input)
-  int n = LENGTH(inReal);
-
-  // pointers to input arrays
-  const double *inReal_ptr = REAL(inReal);
-  const double *inVolume_ptr = REAL(inVolume);
 
   // calculate lookback
   const int lookback = TA_OBV_Lookback();
