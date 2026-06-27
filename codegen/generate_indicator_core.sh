@@ -251,6 +251,7 @@ done
 ##  );
 ##
 LOOKBACK_ARGS=""
+LOOKBACK_VALUES=""
 IFS=',' read -r -a lbps <<<"$lb_params"
 for raw in "${lbps[@]}"; do
   # strip /* ... */ and trim
@@ -276,6 +277,19 @@ for raw in "${lbps[@]}"; do
     break
   done
   [ -z "$name" ] && continue
+
+  # declare only the scalar(s) the lookback consumes. The lookback
+  # prototype is a subset of the main signature (e.g. TA_BBANDS_Lookback
+  # takes period + maType, not the deviations), so extracting exactly
+  # these keeps impl_ta_<NAME>_lookback free of unused-variable warnings.
+  if [[ "$p" == *TA_MAType* ]]; then
+    LOOKBACK_VALUES+=$'const TA_MAType '"${name}"$'_value = as_MAType('"${name}"$');\n'
+  elif [[ "$p" == *double* ]]; then
+    LOOKBACK_VALUES+=$'const double '"${name}"$'_value = REAL('"${name}"$')[0];\n'
+  else
+    LOOKBACK_VALUES+=$'const int '"${name}"$'_value = INTEGER('"${name}"$')[0];\n'
+  fi
+
   LOOKBACK_ARGS+="${name}_value, "
 done
 
@@ -397,12 +411,40 @@ for i in "${!in_arrays_name[@]}"; do
   fi
 done
 
+## 11.5) candlestick mode
+##
+## TA-Lib candlestick patterns (TA_CDL*) fit the standard machinery — four
+## double inputs, an INTSXP output, an optional optInPenetration scalar — but
+## additionally take a `flag` SEXP and, when it is set, normalize the
+## [-200, 200] integer output to real values divided by 100. These extras are
+## gated on the CANDLESTICK env var so one template serves both families.
+CANDLESTICK="${CANDLESTICK:-0}"
+if [ "$CANDLESTICK" = "1" ]; then
+  FLAG_ARG=$',\n\tSEXP flag'
+  NORMALIZE_INCLUDE=$'#include "normalize.h"\n'
+  NORMALIZE_BLOCK=$'// ta_'"${NAME}"$' returns values in the range [-200, 200]\n'
+  NORMALIZE_BLOCK+=$'// if flag is TRUE the output is converted from INTSXP\n'
+  NORMALIZE_BLOCK+=$'// to REALSXP and divided by 100, preserving pattern strength\n'
+  NORMALIZE_BLOCK+=$'// see normalize.h for more details\n'
+  NORMALIZE_BLOCK+=$'if (LOGICAL_ELT(flag, 0)) {\n'
+  NORMALIZE_BLOCK+=$'output = normalize_int_to_real(output, 100.0, (na_mask != NULL), &protection_count);\n'
+  NORMALIZE_BLOCK+=$'}'
+else
+  FLAG_ARG=""
+  NORMALIZE_INCLUDE=""
+  NORMALIZE_BLOCK=""
+fi
+
 # 12) export and run envsubst
 export NAME
 export R_SIGNATURE
 export PARAM_DOC
 export VALUES
+export LOOKBACK_VALUES
 export LOOKBACK_ARGS
+export FLAG_ARG
+export NORMALIZE_INCLUDE
+export NORMALIZE_BLOCK
 export OUT_COLS
 export OUTPUT_COLS
 export VALUE_POINTERS

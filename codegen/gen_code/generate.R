@@ -42,25 +42,18 @@ generate_C <- function(x) {
 		return(invisible(NULL))
 	}
 
-	if (type == "candlestick") {
-		system2(
-			command = "bash",
-			args = c(
-				"codegen/generate_core_candlestick.sh",
-				shQuote(x$alias),
-				shQuote(x$signature %||% "")
-			)
-		)
-		return(invisible(NULL))
-	}
+	## Candlestick patterns share generate_indicator_core.sh with every other
+	## indicator; the CANDLESTICK flag adds the `flag` SEXP argument and the
+	## [-200, 200] -> real output normalization on top of the standard wrapper.
+	env <- if (type == "candlestick") "CANDLESTICK=1" else character()
 
-	## standard
 	system2(
 		command = "bash",
 		args = c(
 			"codegen/generate_indicator_core.sh",
 			paste0(x$alias, " > src/ta_", x$alias, ".c")
-		)
+		),
+		env = env
 	)
 }
 
