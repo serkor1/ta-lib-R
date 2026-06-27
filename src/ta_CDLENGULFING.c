@@ -1,11 +1,10 @@
 // interface to ta_CDLENGULFING.c
 //
 // Parameters
-//      double  inOpen
-//      double  inClose
-//      double  inLow
-//      double  inClose
-//      bool    flag
+// 		double  inOpen
+// 		double  inHigh
+// 		double  inLow
+// 		double  inClose
 //
 // Returns
 //      matrix (n x 1) with colum:
@@ -14,7 +13,7 @@
 // Source
 //      https://github.com/TA-Lib/ta-lib/blob/main/src/ta_func/ta_CDLENGULFING.c
 //
-#include "Rinternals.h"
+#include "MAType.h"
 #include "attributes.h"
 #include "container.h"
 #include "lib.h"
@@ -22,6 +21,8 @@
 #include "names.h"
 #include "normalize.h"
 #include "shift.h"
+#include <R.h>
+#include <Rinternals.h>
 #include <ta_libc.h>
 
 // the lookback function
@@ -29,50 +30,47 @@
 // function for downstream wrappers
 // clang-format off
 SEXP impl_ta_CDLENGULFING_lookback(
-    SEXP inOpen,
-    SEXP inHigh,
-    SEXP inLow,
-    SEXP inClose
+	SEXP inOpen,
+	SEXP inHigh,
+	SEXP inLow,
+	SEXP inClose
 )
 // clang-format on
 {
-  // pointers to input
-  const double *open_ptr = REAL(inOpen);
-  const double *high_ptr = REAL(inHigh);
-  const double *low_ptr = REAL(inLow);
-  const double *close_ptr = REAL(inClose);
-  int n = LENGTH(inOpen);
+  // values
 
   // calculate lookback
   const int lookback = TA_CDLENGULFING_Lookback();
+
   SEXP output = PROTECT(Rf_ScalarInteger(lookback));
 
   // unprotect output
   UNPROTECT(1);
-
   return output;
 }
 
 // clang-format off
 SEXP impl_ta_CDLENGULFING(
-    SEXP inOpen,
-    SEXP inHigh,
-    SEXP inLow,
-    SEXP inClose,
-    SEXP flag,
-    SEXP na_bridge
+	SEXP inOpen,
+	SEXP inHigh,
+	SEXP inLow,
+	SEXP inClose,
+	SEXP flag,
+	SEXP na_bridge
 )
 // clang-format on
 {
   // protection counter
   int protection_count = 0;
 
-  // pointers to input
-  const double *open_ptr = REAL(inOpen);
-  const double *high_ptr = REAL(inHigh);
-  const double *low_ptr = REAL(inLow);
-  const double *close_ptr = REAL(inClose);
+  // get length of 'inOpen' (assumes equal length across input)
   int n = LENGTH(inOpen);
+
+  // pointers to input arrays
+  const double *inOpen_ptr = REAL(inOpen);
+  const double *inHigh_ptr = REAL(inHigh);
+  const double *inLow_ptr = REAL(inLow);
+  const double *inClose_ptr = REAL(inClose);
 
   // NA handling
   // see na.h for more details
@@ -81,19 +79,22 @@ SEXP impl_ta_CDLENGULFING(
 
   if (LOGICAL(na_bridge)[0]) {
     na_mask = (int *)R_alloc(n, sizeof(int));
-    const double *na_arrays[] = {open_ptr, high_ptr, low_ptr, close_ptr};
+    const double *na_arrays[] =
+      {inOpen_ptr, inHigh_ptr, inLow_ptr, inClose_ptr};
     n = build_na_mask(na_mask, n, 4, na_arrays);
     if (n < n_original) {
       compact_arrays(na_arrays, 4, na_mask, n_original, n);
-      open_ptr = na_arrays[0];
-      high_ptr = na_arrays[1];
-      low_ptr = na_arrays[2];
-      close_ptr = na_arrays[3];
+      inOpen_ptr = na_arrays[0];
+      inHigh_ptr = na_arrays[1];
+      inLow_ptr = na_arrays[2];
+      inClose_ptr = na_arrays[3];
+
     } else {
       na_mask = NULL;
     }
   }
 
+  // output
   SEXP output;
   int *output_ptr;
 
@@ -115,6 +116,8 @@ SEXP impl_ta_CDLENGULFING(
     int start_idx = 0;
     int end_idx = 0;
 
+    int *integer = output_ptr;
+
     // TA_CDLENGULFING returns an TA_RetCode
     // which is TA_SUCCESS if it succeeds
     // values in output_ptr gets populated
@@ -122,13 +125,13 @@ SEXP impl_ta_CDLENGULFING(
     TA_RetCode return_code = TA_CDLENGULFING(
       0,
       n - 1,
-      open_ptr,
-      high_ptr,
-      low_ptr,
-      close_ptr,
+      inOpen_ptr,
+      inHigh_ptr,
+      inLow_ptr,
+      inClose_ptr,
       &start_idx,
       &end_idx,
-      output_ptr);
+      integer);
 
     // check if the output is valid
     // and stop function with the TA_RetCode
@@ -139,7 +142,7 @@ SEXP impl_ta_CDLENGULFING(
     // of rows as 'n' - shifted values is replaced
     // with <NA>
     // see shift.h for more details
-    shift_array(output_ptr, n, start_idx);
+    shift_array(integer, n, start_idx);
   }
 
   // set the column names and lookback attribute

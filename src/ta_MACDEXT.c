@@ -43,13 +43,6 @@ SEXP impl_ta_MACDEXT_lookback(
 // clang-format on
 {
   // values
-  // get length of 'inReal' (assumes equal length across input)
-  int n = LENGTH(inReal);
-
-  // pointers to input arrays
-  const double *inReal_ptr = REAL(inReal);
-
-  // extract input values
   const int optInFastPeriod_value = INTEGER(optInFastPeriod)[0];
   const TA_MAType optInFastMAType_value = as_MAType(optInFastMAType);
   const int optInSlowPeriod_value = INTEGER(optInSlowPeriod)[0];

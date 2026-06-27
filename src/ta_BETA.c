@@ -35,14 +35,6 @@ SEXP impl_ta_BETA_lookback(
 // clang-format on
 {
   // values
-  // get length of 'inReal0' (assumes equal length across input)
-  int n = LENGTH(inReal0);
-
-  // pointers to input arrays
-  const double *inReal0_ptr = REAL(inReal0);
-  const double *inReal1_ptr = REAL(inReal1);
-
-  // extract input values
   const int optInTimePeriod_value = INTEGER(optInTimePeriod)[0];
 
   // calculate lookback

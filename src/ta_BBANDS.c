@@ -39,13 +39,6 @@ SEXP impl_ta_BBANDS_lookback(
 // clang-format on
 {
   // values
-  // get length of 'inReal' (assumes equal length across input)
-  int n = LENGTH(inReal);
-
-  // pointers to input arrays
-  const double *inReal_ptr = REAL(inReal);
-
-  // extract input values
   const int optInTimePeriod_value = INTEGER(optInTimePeriod)[0];
   const double optInNbDevUp_value = REAL(optInNbDevUp)[0];
   const double optInNbDevDn_value = REAL(optInNbDevDn)[0];

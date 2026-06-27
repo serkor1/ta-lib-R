@@ -31,11 +31,6 @@ SEXP impl_ta_HT_TRENDLINE_lookback(
 // clang-format on
 {
   // values
-  // get length of 'inReal' (assumes equal length across input)
-  int n = LENGTH(inReal);
-
-  // pointers to input arrays
-  const double *inReal_ptr = REAL(inReal);
 
   // calculate lookback
   const int lookback = TA_HT_TRENDLINE_Lookback();

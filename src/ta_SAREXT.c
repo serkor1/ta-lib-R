@@ -49,14 +49,6 @@ SEXP impl_ta_SAREXT_lookback(
 // clang-format on
 {
   // values
-  // get length of 'inHigh' (assumes equal length across input)
-  int n = LENGTH(inHigh);
-
-  // pointers to input arrays
-  const double *inHigh_ptr = REAL(inHigh);
-  const double *inLow_ptr = REAL(inLow);
-
-  // extract input values
   const double optInStartValue_value = REAL(optInStartValue)[0];
   const double optInOffsetOnReverse_value = REAL(optInOffsetOnReverse)[0];
   const double optInAccelerationInitLong_value =

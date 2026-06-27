@@ -37,14 +37,6 @@ SEXP impl_ta_AVGPRICE_lookback(
 // clang-format on
 {
   // values
-  // get length of 'inOpen' (assumes equal length across input)
-  int n = LENGTH(inOpen);
-
-  // pointers to input arrays
-  const double *inOpen_ptr = REAL(inOpen);
-  const double *inHigh_ptr = REAL(inHigh);
-  const double *inLow_ptr = REAL(inLow);
-  const double *inClose_ptr = REAL(inClose);
 
   // calculate lookback
   const int lookback = TA_AVGPRICE_Lookback();
