@@ -1,7 +1,7 @@
 #' @export
 #' @family Utility
 #'
-#' Calculate lookback period
+#' @title Calculate lookback period
 #'
 #' @description
 #' The function calculates the lookback period for a given
