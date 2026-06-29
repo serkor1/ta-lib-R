@@ -14,7 +14,6 @@
 #' ## for the bollinger bands
 #' talib::lookback(
 #' 	talib::bollinger_bands,
-#'  n = 20,
 #'  x = talib::BTC
 #' )
 #'
@@ -54,6 +53,39 @@ lookback <- function(
 	## 	foo -> function
 	if (is.call(FUN)) {
 		FUN <- FUN[[length(FUN)]]
+	}
+
+	## validate input arguments
+	## to avoid downstream shenanigans
+	## 	talib::BBANDS with non-existing arguments
+	##  like 'n' will break stuff
+	passed_arguments <- names(c(
+		as.list(
+			environment()
+		),
+		list(...)
+	))[-c(1:2)]
+
+	actual_arguments <- names(
+		formals(
+			as.character(FUN)
+		)
+	)
+
+	## stop the function early instead
+	## of silently modifying the underlying
+	## call - this seems to be the optimal choice
+	## as the lookback function is a development function
+	## more than a "regular user"-function, so it is
+	## expected that the developer knows what its doing.
+	if (!all(passed_arguments %in% actual_arguments)) {
+		stop(
+			sprintf(
+				"The `lookback()` is strictly typed.
+				\rArguments passed into ... has to match that of `%s()` with no additional phantom variables.",
+				as.character(FUN)
+			)
+		)
 	}
 
 	## all exported indicators has
