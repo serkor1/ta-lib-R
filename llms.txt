@@ -591,6 +591,9 @@ Price, Typical Price, and Weighted Close Price.
 Utility functions used for downstream packages and wrappers that
 improves and simplifies the control-flow.
 
+- [`lookback()`](https://serkor1.github.io/ta-lib-R/reference/lookback.md)
+  : Calculate lookback period
+
 ## Financial Data
 
 Built-in OHLCV datasets for examples, testing, and exploration. Includes
