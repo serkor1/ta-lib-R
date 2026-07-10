@@ -22,7 +22,7 @@
 #define OPTIONAL_DOUBLE(n) (double, Rf_asReal, n, )
 #define OPTIONAL_MATYPE(n) (int, Rf_asInteger, n, (TA_MAType))
 
-/* ---- output element type tag (TA_DOUBLE|TA_INTEGER) -> R type/accessor/pad
+/* ---- output element type tag (TA_DOUBLE|TA_INTEGER) -> R type/accessor
  * --------
  */
 #define TA_SXP(RT) TA_CAT(TA_SXP_, RT)
@@ -31,9 +31,6 @@
 #define TA_ACC(RT) TA_CAT(TA_ACC_, RT)
 #define TA_ACC_TA_DOUBLE REAL
 #define TA_ACC_TA_INTEGER INTEGER
-#define TA_PAD(RT) TA_CAT(TA_PAD_, RT)
-#define TA_PAD_TA_DOUBLE shift_array
-#define TA_PAD_TA_INTEGER shift_array
 
 /* ---- per-input workers -----------------------------------------------------
  */
@@ -75,14 +72,14 @@
     TA_ACC(RT)(out) + 2 * ta_n
 
 #define TA_OUT_PAD(RT, OUTS_) TA_CAT(TA_OUT_PAD_, TA_COUNT_ARGUMENTS OUTS_)(RT)
-#define TA_OUT_PAD_1(RT) TA_PAD(RT)(TA_ACC(RT)(out), ta_n, begIdx, nbElement);
+#define TA_OUT_PAD_1(RT) shift_array(TA_ACC(RT)(out), ta_n, begIdx, nbElement);
 #define TA_OUT_PAD_2(RT)                                                       \
-  TA_PAD(RT)(TA_ACC(RT)(out) + 0 * ta_n, ta_n, begIdx, nbElement);             \
-  TA_PAD(RT)(TA_ACC(RT)(out) + 1 * ta_n, ta_n, begIdx, nbElement);
+  shift_array(TA_ACC(RT)(out) + 0 * ta_n, ta_n, begIdx, nbElement);            \
+  shift_array(TA_ACC(RT)(out) + 1 * ta_n, ta_n, begIdx, nbElement);
 #define TA_OUT_PAD_3(RT)                                                       \
-  TA_PAD(RT)(TA_ACC(RT)(out) + 0 * ta_n, ta_n, begIdx, nbElement);             \
-  TA_PAD(RT)(TA_ACC(RT)(out) + 1 * ta_n, ta_n, begIdx, nbElement);             \
-  TA_PAD(RT)(TA_ACC(RT)(out) + 2 * ta_n, ta_n, begIdx, nbElement);
+  shift_array(TA_ACC(RT)(out) + 0 * ta_n, ta_n, begIdx, nbElement);            \
+  shift_array(TA_ACC(RT)(out) + 1 * ta_n, ta_n, begIdx, nbElement);            \
+  shift_array(TA_ACC(RT)(out) + 2 * ta_n, ta_n, begIdx, nbElement);
 
 /* na.bridge counterpart of TA_OUT_PAD: expand each dense output column back
  * to full length, scattering NA into dropped rows and lookback slots. */
