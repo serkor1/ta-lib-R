@@ -24,8 +24,12 @@ static const R_CallMethodDef CallEntries[] = {
   {"ta_restore_candle_defaults", (DL_FUNC)&C_ta_restore_candle_defaults, 1},
   {NULL, NULL, 0}};
 
-/* Package name is `talib`. Rename R_init_talib / R_unload_talib to match the
-   R package's DLL name if it differs. */
+/* Initialize/Unload {talib}
+ *
+ * This section corresponds to zzz.R regarding load()/library()
+ * and unload() and it will initialize/shutdown TA-Lib when needed
+ *
+ */
 void R_init_talib(DllInfo *dll) {
 
   if (TA_Initialize() != TA_SUCCESS) {

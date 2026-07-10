@@ -92,7 +92,7 @@
 /* Function body. INS_ has >= 1 input: emit the first param, then the remaining
    inputs and the opts with leading commas -> no trailing comma in the list. */
 #define TA_BODY(NAME, RT, INS_, OPTS_, OUTS_, TA_OUTPUT_NAME_)                 \
-  SEXP C_##NAME(                                                               \
+  SEXP C_impl_##NAME(                                                          \
     SEXP TA_CAT(s_, TA_HEAD INS_) TA_APPLY(TA_IN_ARG_LEAD, (TA_TAIL INS_))     \
       TA_APPLY(TA_OPT_ARG_LEAD, OPTS_)) {                                      \
     int nprot = 0;                                                             \
@@ -121,14 +121,17 @@
 
 /* Forward declaration (same parameter list as the body). */
 #define TA_DECL(NAME, RT, INS_, OPTS_, OUTS_, TA_OUTPUT_NAME_)                 \
-  extern SEXP C_##NAME(                                                        \
+  extern SEXP C_impl_##NAME(                                                   \
     SEXP TA_CAT(s_, TA_HEAD INS_) TA_APPLY(TA_IN_ARG_LEAD, (TA_TAIL INS_))     \
       TA_APPLY(TA_OPT_ARG_LEAD, OPTS_));
 
 /* R_CallMethodDef row: arity = #inputs + #opts.
-   Register the bare name; NAMESPACE's useDynLib(.fixes = "C_") adds the C_
-   prefix. */
+   The registration STRING (not the C symbol) is what R names the routine.
+   With useDynLib(.fixes = "C_"), R exposes C_ + this string, so register
+   "impl_ta_" #NAME to match the generated .Call(C_impl_ta_<NAME>, ...). */
 #define TA_REG(NAME, RT, INS_, OPTS_, OUTS_, TA_OUTPUT_NAME_)                  \
-  {#NAME, (DL_FUNC) & C_##NAME, (TA_NARG INS_) + (TA_NARG OPTS_)},
+  {"impl_ta_" #NAME,                                                           \
+   (DL_FUNC) & C_impl_##NAME,                                                  \
+   (TA_NARG INS_) + (TA_NARG OPTS_)},
 
 #endif /* TALIB_WRAP_H */
