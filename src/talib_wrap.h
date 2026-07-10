@@ -71,59 +71,22 @@
   TA_ACC(RT)(out) + 0 * ta_n, TA_ACC(RT)(out) + 1 * ta_n,                      \
     TA_ACC(RT)(out) + 2 * ta_n
 
-#define TA_OUT_PAD(RT, OUTS_) TA_CAT(TA_OUT_PAD_, TA_COUNT_ARGUMENTS OUTS_)(RT)
-#define TA_OUT_PAD_1(RT) shift_array(TA_ACC(RT)(out), ta_n, begIdx, nbElement);
-#define TA_OUT_PAD_2(RT)                                                       \
-  shift_array(TA_ACC(RT)(out) + 0 * ta_n, ta_n, begIdx, nbElement);            \
-  shift_array(TA_ACC(RT)(out) + 1 * ta_n, ta_n, begIdx, nbElement);
-#define TA_OUT_PAD_3(RT)                                                       \
-  shift_array(TA_ACC(RT)(out) + 0 * ta_n, ta_n, begIdx, nbElement);            \
-  shift_array(TA_ACC(RT)(out) + 1 * ta_n, ta_n, begIdx, nbElement);            \
-  shift_array(TA_ACC(RT)(out) + 2 * ta_n, ta_n, begIdx, nbElement);
+/* One shift per output column; column count is a compile-time literal. */
+#define TA_OUT_PAD(RT, OUTS_)                                                  \
+  for (int ta_col = 0; ta_col < (TA_COUNT_ARGUMENTS OUTS_); ta_col++)          \
+    shift_array(TA_ACC(RT)(out) + ta_col * ta_n, ta_n, begIdx, nbElement);
 
 /* na.bridge counterpart of TA_OUT_PAD: expand each dense output column back
  * to full length, scattering NA into dropped rows and lookback slots. */
 #define TA_OUT_SCATTER(RT, OUTS_)                                              \
-  TA_CAT(TA_OUT_SCATTER_, TA_COUNT_ARGUMENTS OUTS_)(RT)
-#define TA_OUT_SCATTER_1(RT)                                                   \
-  scatter_array(TA_ACC(RT)(out), ta_n, ta_mask, ta_calc, begIdx, nbElement);
-#define TA_OUT_SCATTER_2(RT)                                                   \
-  scatter_array(                                                               \
-    TA_ACC(RT)(out) + 0 * ta_n,                                                \
-    ta_n,                                                                      \
-    ta_mask,                                                                   \
-    ta_calc,                                                                   \
-    begIdx,                                                                    \
-    nbElement);                                                                \
-  scatter_array(                                                               \
-    TA_ACC(RT)(out) + 1 * ta_n,                                                \
-    ta_n,                                                                      \
-    ta_mask,                                                                   \
-    ta_calc,                                                                   \
-    begIdx,                                                                    \
-    nbElement);
-#define TA_OUT_SCATTER_3(RT)                                                   \
-  scatter_array(                                                               \
-    TA_ACC(RT)(out) + 0 * ta_n,                                                \
-    ta_n,                                                                      \
-    ta_mask,                                                                   \
-    ta_calc,                                                                   \
-    begIdx,                                                                    \
-    nbElement);                                                                \
-  scatter_array(                                                               \
-    TA_ACC(RT)(out) + 1 * ta_n,                                                \
-    ta_n,                                                                      \
-    ta_mask,                                                                   \
-    ta_calc,                                                                   \
-    begIdx,                                                                    \
-    nbElement);                                                                \
-  scatter_array(                                                               \
-    TA_ACC(RT)(out) + 2 * ta_n,                                                \
-    ta_n,                                                                      \
-    ta_mask,                                                                   \
-    ta_calc,                                                                   \
-    begIdx,                                                                    \
-    nbElement);
+  for (int ta_col = 0; ta_col < (TA_COUNT_ARGUMENTS OUTS_); ta_col++)          \
+    scatter_array(                                                             \
+      TA_ACC(RT)(out) + ta_col * ta_n,                                         \
+      ta_n,                                                                    \
+      ta_mask,                                                                 \
+      ta_calc,                                                                 \
+      begIdx,                                                                  \
+      nbElement);
 
 /* colnames only for a matrix (>1 output); dispatcher juxtaposes the group. */
 #define TA_OUT_COLNAMES(TA_OUTPUT_NAME_)                                       \
