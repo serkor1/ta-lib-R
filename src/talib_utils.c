@@ -42,6 +42,8 @@ const double *ta_real(SEXP s, R_xlen_t n, int *nprot, const char *name) {
 // See:
 // https://stackoverflow.com/questions/479207/how-to-achieve-function-overloading-in-c/25026358#25026358
 // clang-format off
+#define MAX(x, y) (((x) < (y)) ? (y) : (x))
+#define MIN(x, y) (((x) < (y)) ? (x) : (y)) 
 void shift_double_array(
   double *col, 
   R_xlen_t n, 
@@ -50,15 +52,17 @@ void shift_double_array(
 )
 // clang-format on
 {
-  if (begIdx < 0)
-    begIdx = 0;
-  if (begIdx > n)
-    begIdx = (int)n;
-  if (nbElement < 0)
-    nbElement = 0;
+  // clip begIdx between 0 and n
+  begIdx = MIN(MAX(begIdx, 0), (int)n);
 
-  if ((R_xlen_t)begIdx + nbElement > n)
-    nbElement = (int)(n - begIdx);
+  // clip nbElement between 0 and n - begIdx
+  // clang-format off
+  nbElement = MAX(nbElement, 0);
+  nbElement = (int) MIN(
+    (R_xlen_t) nbElement, 
+    n - (R_xlen_t) begIdx
+  );
+  // clang-format on
 
   // clang-format off
   memmove(
@@ -87,14 +91,18 @@ void shift_integer_array(
 )
 // clang-format on
 {
-  if (begIdx < 0)
-    begIdx = 0;
-  if (begIdx > n)
-    begIdx = (int)n;
-  if (nbElement < 0)
-    nbElement = 0;
-  if ((R_xlen_t)begIdx + nbElement > n)
-    nbElement = (int)(n - begIdx);
+
+  // clip begIdx between 0 and n
+  begIdx = MIN(MAX(begIdx, 0), (int)n);
+
+  // clip nbElement between 0 and n - begIdx
+  // clang-format off
+  nbElement = MAX(nbElement, 0);
+  nbElement = (int) MIN(
+    (R_xlen_t) nbElement, 
+    n - (R_xlen_t) begIdx
+  );
+  // clang-format on
 
   // clang-format off
   memmove(
@@ -112,6 +120,8 @@ void shift_integer_array(
     col[i] = NA_INTEGER;
   }
 }
+#undef MAX
+#undef MIN
 // shift array end
 
 void ta_check(TA_RetCode rc, const char *fn) {
