@@ -1,20 +1,23 @@
+// R-Wrapper.h
+//
+// Description:
+//  This header file extracts and parses
+//  all arguments from each TA_INDICATOR located
+//  in TA-Lib.h using X-Macros
 #ifndef TALIB_WRAP_H
 #define TALIB_WRAP_H
 
 #include "talib_map.h"
 
-/* ---- list wrappers used inside the generated TA_FUNC rows.
-   They PARENTHESISE their contents so the groups survive the
-   TA_FUNC -> TA_WRAPPER forwarding hop intact.
-   ----------------------------------
- */
+// Extract nested expressions from each
+// TA_INDICATOR(...)
 #define TA_INPUT(...) (__VA_ARGS__)
 #define TA_OPTIONS(...) (__VA_ARGS__)
 #define TA_OUTPUT(...) (__VA_ARGS__)
 #define TA_OUTPUT_NAME(...) (__VA_ARGS__)
 
-/* ---- optional-param tags -> (ctype, reader, name, call-cast) tuple ---------
- */
+// Optional paramater(s) mapped to
+// their R counterpart
 #define OPTIONAL_INTEGER(n) (int, Rf_asInteger, n, )
 #define OPTIONAL_DOUBLE(n) (double, Rf_asReal, n, )
 #define OPTIONAL_MATYPE(n) (int, Rf_asInteger, n, (TA_MAType))
@@ -29,8 +32,8 @@
 #define TA_ACC_TA_DOUBLE REAL
 #define TA_ACC_TA_INTEGER INTEGER
 #define TA_PAD(RT) TA_CAT(TA_PAD_, RT)
-#define TA_PAD_TA_DOUBLE shift_array  // ta_pad_real
-#define TA_PAD_TA_INTEGER shift_array // ta_pad_int
+#define TA_PAD_TA_DOUBLE shift_array
+#define TA_PAD_TA_INTEGER shift_array
 
 /* ---- per-input workers -----------------------------------------------------
  */
@@ -58,19 +61,20 @@
 
 /* ---- outputs: alloc / call pointers / pad (dispatch on group size) ---------
  */
-#define TA_ALLOC(RT, OUTS_) TA_CAT(TA_ALLOC_, TA_NARG OUTS_)(RT)
+#define TA_ALLOC(RT, OUTS_) TA_CAT(TA_ALLOC_, TA_COUNT_ARGUMENTS OUTS_)(RT)
 #define TA_ALLOC_1(RT) Rf_allocVector(TA_SXP(RT), ta_n)
 #define TA_ALLOC_2(RT) Rf_allocMatrix(TA_SXP(RT), (int)ta_n, 2)
 #define TA_ALLOC_3(RT) Rf_allocMatrix(TA_SXP(RT), (int)ta_n, 3)
 
-#define TA_OUT_PTRS(RT, OUTS_) TA_CAT(TA_OUT_PTRS_, TA_NARG OUTS_)(RT)
+#define TA_OUT_PTRS(RT, OUTS_)                                                 \
+  TA_CAT(TA_OUT_PTRS_, TA_COUNT_ARGUMENTS OUTS_)(RT)
 #define TA_OUT_PTRS_1(RT) TA_ACC(RT)(out)
 #define TA_OUT_PTRS_2(RT) TA_ACC(RT)(out) + 0 * ta_n, TA_ACC(RT)(out) + 1 * ta_n
 #define TA_OUT_PTRS_3(RT)                                                      \
   TA_ACC(RT)(out) + 0 * ta_n, TA_ACC(RT)(out) + 1 * ta_n,                      \
     TA_ACC(RT)(out) + 2 * ta_n
 
-#define TA_OUT_PAD(RT, OUTS_) TA_CAT(TA_OUT_PAD_, TA_NARG OUTS_)(RT)
+#define TA_OUT_PAD(RT, OUTS_) TA_CAT(TA_OUT_PAD_, TA_COUNT_ARGUMENTS OUTS_)(RT)
 #define TA_OUT_PAD_1(RT) TA_PAD(RT)(TA_ACC(RT)(out), ta_n, begIdx, nbElement);
 #define TA_OUT_PAD_2(RT)                                                       \
   TA_PAD(RT)(TA_ACC(RT)(out) + 0 * ta_n, ta_n, begIdx, nbElement);             \
@@ -82,7 +86,8 @@
 
 /* na.bridge counterpart of TA_OUT_PAD: expand each dense output column back
  * to full length, scattering NA into dropped rows and lookback slots. */
-#define TA_OUT_SCATTER(RT, OUTS_) TA_CAT(TA_OUT_SCATTER_, TA_NARG OUTS_)(RT)
+#define TA_OUT_SCATTER(RT, OUTS_)                                              \
+  TA_CAT(TA_OUT_SCATTER_, TA_COUNT_ARGUMENTS OUTS_)(RT)
 #define TA_OUT_SCATTER_1(RT)                                                   \
   scatter_array(TA_ACC(RT)(out), ta_n, ta_mask, ta_calc, begIdx, nbElement);
 #define TA_OUT_SCATTER_2(RT)                                                   \
@@ -125,7 +130,7 @@
 
 /* colnames only for a matrix (>1 output); dispatcher juxtaposes the group. */
 #define TA_OUT_COLNAMES(TA_OUTPUT_NAME_)                                       \
-  TA_CAT(TA_OUT_COLNAMES_, TA_NARG TA_OUTPUT_NAME_) TA_OUTPUT_NAME_
+  TA_CAT(TA_OUT_COLNAMES_, TA_COUNT_ARGUMENTS TA_OUTPUT_NAME_) TA_OUTPUT_NAME_
 #define TA_OUT_COLNAMES_1(a)
 #define TA_OUT_COLNAMES_2(a, b)                                                \
   {                                                                            \
@@ -171,9 +176,9 @@
     unsigned char *ta_mask = NULL;                                             \
     if (ta_bridge && ta_n > 0) {                                              \
       const double *ta_ins[] = {TA_APPLY(TA_IN_PTR, INS_)};                    \
-      ta_calc = ta_na_prepare(ta_ins, (int)(TA_NARG INS_), ta_n, &ta_mask);    \
+      ta_calc = ta_na_prepare(ta_ins, (int)(TA_COUNT_ARGUMENTS INS_), ta_n, &ta_mask);    \
       if (ta_calc > 0) {                                                       \
-        double *ta_dense = ta_dense_alloc(ta_calc, (int)(TA_NARG INS_));       \
+        double *ta_dense = ta_dense_alloc(ta_calc, (int)(TA_COUNT_ARGUMENTS INS_));       \
         int ta_dcol = 0;                                                       \
         TA_APPLY(TA_IN_COMPACT, INS_)                                          \
       }                                                                        \
@@ -216,6 +221,6 @@
 #define TA_REG(NAME, RT, INS_, OPTS_, OUTS_, TA_OUTPUT_NAME_)                  \
   {"impl_TA_" #NAME,                                                           \
    (DL_FUNC) & impl_TA_##NAME,                                                 \
-   (TA_NARG INS_) + (TA_NARG OPTS_) + 1},
+   (TA_COUNT_ARGUMENTS INS_) + (TA_COUNT_ARGUMENTS OPTS_) + 1},
 
 #endif /* TALIB_WRAP_H */
