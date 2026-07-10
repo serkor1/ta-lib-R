@@ -19,13 +19,13 @@
 #undef TA_INDICATOR
 
 // construct TA-Lib wrappers
-#define TA_INDICATOR(...) TA_BODY(__VA_ARGS__)
+#define TA_INDICATOR(...) TA_WRAPPER(__VA_ARGS__)
 #include "TA-Lib.h"
 #undef TA_INDICATOR
 
 /* global-setter wrappers (talib_globals.c) */
-extern SEXP C_ta_set_unstable_period(SEXP, SEXP);
-extern SEXP C_ta_set_compatibility(SEXP);
+extern SEXP ta_set_unstable_period(SEXP, SEXP);
+extern SEXP ta_set_compatibility(SEXP);
 extern SEXP set_candle_setting(SEXP, SEXP, SEXP, SEXP);
 extern SEXP reset_candle_setting(SEXP);
 
@@ -33,8 +33,8 @@ static const R_CallMethodDef CallEntries[] = {
 #define TA_INDICATOR(...) TA_REG(__VA_ARGS__)
 #include "TA-Lib.h"
 #undef TA_INDICATOR
-  {"ta_set_unstable_period", (DL_FUNC)&C_ta_set_unstable_period, 2},
-  {"ta_set_compatibility", (DL_FUNC)&C_ta_set_compatibility, 1},
+  {"ta_set_unstable_period", (DL_FUNC)&ta_set_unstable_period, 2},
+  {"ta_set_compatibility", (DL_FUNC)&ta_set_compatibility, 1},
   {"set_candle_setting", (DL_FUNC)&set_candle_setting, 4},
   {"reset_candle_setting", (DL_FUNC)&reset_candle_setting, 1},
   {NULL, NULL, 0}};

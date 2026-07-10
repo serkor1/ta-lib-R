@@ -75,7 +75,7 @@ SEXP reset_candle_setting(void) {
 }
 // Candle settings end
 
-SEXP C_ta_set_unstable_period(SEXP s_id, SEXP s_period) {
+SEXP ta_set_unstable_period(SEXP s_id, SEXP s_period) {
   ta_check(
     TA_SetUnstablePeriod(
       (TA_FuncUnstId)Rf_asInteger(s_id),
@@ -84,7 +84,7 @@ SEXP C_ta_set_unstable_period(SEXP s_id, SEXP s_period) {
   return R_NilValue;
 }
 
-SEXP C_ta_set_compatibility(SEXP s_value) {
+SEXP ta_set_compatibility(SEXP s_value) {
   ta_check(
     TA_SetCompatibility((TA_Compatibility)Rf_asInteger(s_value)),
     "TA_SetCompatibility");
