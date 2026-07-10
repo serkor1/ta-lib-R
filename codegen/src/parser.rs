@@ -127,7 +127,7 @@ pub fn extract_signature(indicator: &str, header: &str) -> TA_Lib {
 
     let mut f = TA_Lib {
         indicator: indicator.to_string(),
-        argument_type: "TA_DBL",
+        argument_type: "TA_DOUBLE",
         ..Default::default()
     };
 
