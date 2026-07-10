@@ -1,7 +1,7 @@
 // init.c
 //
 // Description:
-//    This is where TA-Lib.h is being ported to 
+//    This is where TA-Lib.h is being ported to
 //    R, and is the workhorse of the R package.
 //
 // Author: Serkan Korkmaz
@@ -26,8 +26,8 @@
 /* global-setter wrappers (talib_globals.c) */
 extern SEXP C_ta_set_unstable_period(SEXP, SEXP);
 extern SEXP C_ta_set_compatibility(SEXP);
-extern SEXP C_ta_set_candle_settings(SEXP, SEXP, SEXP, SEXP);
-extern SEXP C_ta_restore_candle_defaults(SEXP);
+extern SEXP set_candle_setting(SEXP, SEXP, SEXP, SEXP);
+extern SEXP reset_candle_setting(SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
 #define TA_INDICATOR(...) TA_REG(__VA_ARGS__)
@@ -35,8 +35,8 @@ static const R_CallMethodDef CallEntries[] = {
 #undef TA_INDICATOR
   {"ta_set_unstable_period", (DL_FUNC)&C_ta_set_unstable_period, 2},
   {"ta_set_compatibility", (DL_FUNC)&C_ta_set_compatibility, 1},
-  {"ta_set_candle_settings", (DL_FUNC)&C_ta_set_candle_settings, 4},
-  {"ta_restore_candle_defaults", (DL_FUNC)&C_ta_restore_candle_defaults, 1},
+  {"set_candle_setting", (DL_FUNC)&set_candle_setting, 4},
+  {"reset_candle_setting", (DL_FUNC)&reset_candle_setting, 1},
   {NULL, NULL, 0}};
 
 // Initialize/Unload {talib}
