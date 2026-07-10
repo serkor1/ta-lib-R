@@ -13,14 +13,12 @@
 #define TA_CAT_(a, b) a##b
 
 // Strip paranthesis from an expression -
-// can be used as follows: TA_STRIP_PARANTHESIS (a,b) -> a, b
-#define TA_STRIP_PARANTHESIS(...) __VA_ARGS__
+// can be used as follows: TA_STRIP_PARENTHESIS (a,b) -> a, b
+#define TA_STRIP_PARENTHESIS(...) __VA_ARGS__
 
-/* HEAD/TAIL, used via juxtaposition against a parenthesised group:
-     TA_HEAD (a,b,c) -> a        TA_TAIL (a,b,c) -> b, c
-     TA_HEAD (a)     -> a        TA_TAIL (a)     -> <empty> */
+/* HEAD, used via juxtaposition against a parenthesised group to pull the
+   first element: TA_HEAD (a,b,c) -> a ; TA_HEAD (a) -> a */
 #define TA_HEAD(a, ...) a
-#define TA_TAIL(a, ...) __VA_ARGS__
 
 // Count the number of arguments given
 // an expression - can be used as follows:
@@ -31,10 +29,10 @@
 
 /* Apply worker m(x) to each element of a PARENTHESISED group (0..8 elements),
    results space-separated. The two indirections (TA_APPLY_D/_D_) let
-   TA_COUNT_ARGUMENTS and TA_STRIP_PARANTHESIS of the group expand — revealing
+   TA_COUNT_ARGUMENTS and TA_STRIP_PARENTHESIS of the group expand — revealing
    the element commas — before the TA_APPLY_<n> dispatcher enumerates them. */
 #define TA_APPLY(m, group)                                                     \
-  TA_APPLY_D(m, TA_COUNT_ARGUMENTS group, TA_STRIP_PARANTHESIS group)
+  TA_APPLY_D(m, TA_COUNT_ARGUMENTS group, TA_STRIP_PARENTHESIS group)
 #define TA_APPLY_D(m, n, ...) TA_APPLY_D_(m, n, __VA_ARGS__)
 #define TA_APPLY_D_(m, n, ...) TA_CAT(TA_APPLY_, n)(m, __VA_ARGS__)
 #define TA_APPLY_0(m, ...)

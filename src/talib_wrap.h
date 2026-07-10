@@ -33,8 +33,10 @@
 #define TA_ACC_TA_INTEGER INTEGER
 
 /* ---- per-input workers -----------------------------------------------------
- */
-#define TA_IN_ARG_LEAD(name) , SEXP s_##name
+   TA_IN_ARG / TA_OPT_ARG emit trailing-comma parameters; the fixed final
+   s_na_bridge parameter absorbs the last comma, so no first-argument special
+   case is needed (same trick as the TA_IN_PASS call list below). */
+#define TA_IN_ARG(name) SEXP s_##name,
 #define TA_IN_COERCE(name)                                                     \
   const double *name = ta_real(s_##name, ta_n, &nprot, #name);
 #define TA_IN_PASS(name) name,
@@ -49,8 +51,8 @@
 
 /* ---- per-opt workers (consume the tuple) -----------------------------------
  */
-#define TA_OPT_ARG_LEAD(t) TA_OPT_ARG_LEAD_ t
-#define TA_OPT_ARG_LEAD_(c, r, n, k) , SEXP s_##n
+#define TA_OPT_ARG(t) TA_OPT_ARG_ t
+#define TA_OPT_ARG_(c, r, n, k) SEXP s_##n,
 #define TA_OPT_READ(t) TA_OPT_READ_ t
 #define TA_OPT_READ_(c, r, n, k) c n = r(s_##n);
 #define TA_OPT_PASS(t) TA_OPT_PASS_ t
@@ -58,10 +60,12 @@
 
 /* ---- outputs: alloc / call pointers / pad (dispatch on group size) ---------
  */
-#define TA_ALLOC(RT, OUTS_) TA_CAT(TA_ALLOC_, TA_COUNT_ARGUMENTS OUTS_)(RT)
-#define TA_ALLOC_1(RT) Rf_allocVector(TA_SXP(RT), ta_n)
-#define TA_ALLOC_2(RT) Rf_allocMatrix(TA_SXP(RT), (int)ta_n, 2)
-#define TA_ALLOC_3(RT) Rf_allocMatrix(TA_SXP(RT), (int)ta_n, 3)
+/* Single output -> vector; multiple -> matrix with one column per output.
+   The count is a compile-time literal, so the branch folds away. */
+#define TA_ALLOC(RT, OUTS_)                                                    \
+  ((TA_COUNT_ARGUMENTS OUTS_) > 1                                              \
+     ? Rf_allocMatrix(TA_SXP(RT), (int)ta_n, (TA_COUNT_ARGUMENTS OUTS_))       \
+     : Rf_allocVector(TA_SXP(RT), ta_n))
 
 #define TA_OUT_PTRS(RT, OUTS_)                                                 \
   TA_CAT(TA_OUT_PTRS_, TA_COUNT_ARGUMENTS OUTS_)(RT)
@@ -88,19 +92,18 @@
       begIdx,                                                                  \
       nbElement);
 
-/* colnames only for a matrix (>1 output); dispatcher juxtaposes the group. */
-#define TA_OUT_COLNAMES(TA_OUTPUT_NAME_)                                       \
-  TA_CAT(TA_OUT_COLNAMES_, TA_COUNT_ARGUMENTS TA_OUTPUT_NAME_) TA_OUTPUT_NAME_
-#define TA_OUT_COLNAMES_1(a)
-#define TA_OUT_COLNAMES_2(a, b)                                                \
+/* colnames only for a matrix (>1 output). Single output -> no-op; otherwise
+   stringize every name into the array and label the matrix. */
+#define TA_OUT_COLNAME(a) #a,
+#define TA_OUT_COLNAMES(NAMES_)                                                \
+  TA_CAT(TA_OUT_COLNAMES_, TA_COUNT_ARGUMENTS NAMES_)(NAMES_)
+#define TA_OUT_COLNAMES_1(NAMES_)
+#define TA_OUT_COLNAMES_2(NAMES_) TA_OUT_COLNAMES_MANY(NAMES_)
+#define TA_OUT_COLNAMES_3(NAMES_) TA_OUT_COLNAMES_MANY(NAMES_)
+#define TA_OUT_COLNAMES_MANY(NAMES_)                                           \
   {                                                                            \
-    static const char *ta_cn[] = {#a, #b};                                     \
-    set_colnames(out, ta_cn, 2);                                               \
-  }
-#define TA_OUT_COLNAMES_3(a, b, c)                                             \
-  {                                                                            \
-    static const char *ta_cn[] = {#a, #b, #c};                                 \
-    set_colnames(out, ta_cn, 3);                                               \
+    static const char *ta_cn[] = {TA_APPLY(TA_OUT_COLNAME, NAMES_)};           \
+    set_colnames(out, ta_cn, TA_COUNT_ARGUMENTS NAMES_);                       \
   }
 
 // TA-Lib <indicator> wrapper
@@ -114,10 +117,8 @@
 #define TA_WRAPPER(NAME, RT, INS_, OPTS_, OUTS_, TA_OUTPUT_NAME_)              \
   /* signature start */                                                        \
   SEXP impl_TA_##NAME(                                                         \
-    SEXP                                                                       \
-    TA_CAT(s_, TA_HEAD INS_)                                                   \
-    TA_APPLY(TA_IN_ARG_LEAD, (TA_TAIL INS_))                                   \
-    TA_APPLY(TA_OPT_ARG_LEAD, OPTS_),                                          \
+    TA_APPLY(TA_IN_ARG, INS_)                                                  \
+    TA_APPLY(TA_OPT_ARG, OPTS_)                                                \
     SEXP s_na_bridge                                                           \
   )                                                                            \
   /* signature end*/                                                           \
@@ -169,10 +170,8 @@
 
 /* Forward declaration (same parameter list as the body). */
 #define TA_DECL(NAME, RT, INS_, OPTS_, OUTS_, TA_OUTPUT_NAME_)                 \
-  extern SEXP impl_TA_##NAME(                                                  \
-    SEXP TA_CAT(s_, TA_HEAD INS_) TA_APPLY(TA_IN_ARG_LEAD, (TA_TAIL INS_))     \
-      TA_APPLY(TA_OPT_ARG_LEAD, OPTS_),                                        \
-    SEXP s_na_bridge);
+  extern SEXP impl_TA_##NAME(TA_APPLY(TA_IN_ARG, INS_)                         \
+                               TA_APPLY(TA_OPT_ARG, OPTS_) SEXP s_na_bridge);
 
 /* R_CallMethodDef row: arity = #inputs + #opts.
    The registration STRING (not the C symbol) is what R names the routine.
