@@ -38,6 +38,14 @@
 #define TA_IN_COERCE(name)                                                     \
   const double *name = ta_real(s_##name, ta_n, &nprot, #name);
 #define TA_IN_PASS(name) name,
+/* na.bridge workers: TA_IN_PTR builds the input-pointer array for mask
+   construction; TA_IN_COMPACT gathers each input into its dense column and
+   repoints the local pointer at it so the TA-Lib call below sees the dense
+   series unchanged. */
+#define TA_IN_PTR(name) name,
+#define TA_IN_COMPACT(name)                                                    \
+  name = ta_compact(ta_dense + ta_dcol * ta_calc, name, ta_mask, ta_n);        \
+  ta_dcol++;
 
 /* ---- per-opt workers (consume the tuple) -----------------------------------
  */
@@ -72,6 +80,49 @@
   TA_PAD(RT)(TA_ACC(RT)(out) + 1 * ta_n, ta_n, begIdx, nbElement);             \
   TA_PAD(RT)(TA_ACC(RT)(out) + 2 * ta_n, ta_n, begIdx, nbElement);
 
+/* na.bridge counterpart of TA_OUT_PAD: expand each dense output column back
+ * to full length, scattering NA into dropped rows and lookback slots. */
+#define TA_OUT_SCATTER(RT, OUTS_) TA_CAT(TA_OUT_SCATTER_, TA_NARG OUTS_)(RT)
+#define TA_OUT_SCATTER_1(RT)                                                   \
+  scatter_array(TA_ACC(RT)(out), ta_n, ta_mask, ta_calc, begIdx, nbElement);
+#define TA_OUT_SCATTER_2(RT)                                                   \
+  scatter_array(                                                               \
+    TA_ACC(RT)(out) + 0 * ta_n,                                                \
+    ta_n,                                                                      \
+    ta_mask,                                                                   \
+    ta_calc,                                                                   \
+    begIdx,                                                                    \
+    nbElement);                                                                \
+  scatter_array(                                                               \
+    TA_ACC(RT)(out) + 1 * ta_n,                                                \
+    ta_n,                                                                      \
+    ta_mask,                                                                   \
+    ta_calc,                                                                   \
+    begIdx,                                                                    \
+    nbElement);
+#define TA_OUT_SCATTER_3(RT)                                                   \
+  scatter_array(                                                               \
+    TA_ACC(RT)(out) + 0 * ta_n,                                                \
+    ta_n,                                                                      \
+    ta_mask,                                                                   \
+    ta_calc,                                                                   \
+    begIdx,                                                                    \
+    nbElement);                                                                \
+  scatter_array(                                                               \
+    TA_ACC(RT)(out) + 1 * ta_n,                                                \
+    ta_n,                                                                      \
+    ta_mask,                                                                   \
+    ta_calc,                                                                   \
+    begIdx,                                                                    \
+    nbElement);                                                                \
+  scatter_array(                                                               \
+    TA_ACC(RT)(out) + 2 * ta_n,                                                \
+    ta_n,                                                                      \
+    ta_mask,                                                                   \
+    ta_calc,                                                                   \
+    begIdx,                                                                    \
+    nbElement);
+
 /* colnames only for a matrix (>1 output); dispatcher juxtaposes the group. */
 #define TA_OUT_COLNAMES(TA_OUTPUT_NAME_)                                       \
   TA_CAT(TA_OUT_COLNAMES_, TA_NARG TA_OUTPUT_NAME_) TA_OUTPUT_NAME_
@@ -101,7 +152,8 @@
     SEXP                                                                       \
     TA_CAT(s_, TA_HEAD INS_)                                                   \
     TA_APPLY(TA_IN_ARG_LEAD, (TA_TAIL INS_))                                   \
-    TA_APPLY(TA_OPT_ARG_LEAD, OPTS_)                                           \
+    TA_APPLY(TA_OPT_ARG_LEAD, OPTS_),                                          \
+    SEXP s_na_bridge                                                           \
   )                                                                            \
   /* signature end*/                                                           \
   /* logic start*/                                                             \
@@ -113,17 +165,34 @@
       Rf_error("TA_" #NAME ": series length exceeds INT_MAX");                 \
     TA_APPLY(TA_IN_COERCE, INS_)                                               \
     TA_APPLY(TA_OPT_READ, OPTS_)                                               \
+    /* na.bridge: drop NA rows, compute on the dense series, scatter back. */  \
+    int ta_bridge = (Rf_asLogical(s_na_bridge) == TRUE);                       \
+    R_xlen_t ta_calc = ta_n;                                                   \
+    unsigned char *ta_mask = NULL;                                             \
+    if (ta_bridge && ta_n > 0) {                                              \
+      const double *ta_ins[] = {TA_APPLY(TA_IN_PTR, INS_)};                    \
+      ta_calc = ta_na_prepare(ta_ins, (int)(TA_NARG INS_), ta_n, &ta_mask);    \
+      if (ta_calc > 0) {                                                       \
+        double *ta_dense = ta_dense_alloc(ta_calc, (int)(TA_NARG INS_));       \
+        int ta_dcol = 0;                                                       \
+        TA_APPLY(TA_IN_COMPACT, INS_)                                          \
+      }                                                                        \
+    }                                                                          \
     SEXP out = PROTECT(TA_ALLOC(RT, OUTS_));                                   \
     nprot++;                                                                   \
-    if (ta_n > 0) {                                                            \
-      int begIdx = 0, nbElement = 0;                                           \
+    int begIdx = 0, nbElement = 0;                                            \
+    if (ta_calc > 0) {                                                         \
       TA_RetCode rc = TA_##NAME(                                               \
         0,                                                                     \
-        (int)ta_n - 1,                                                         \
+        (int)ta_calc - 1,                                                      \
         TA_APPLY(TA_IN_PASS, INS_) TA_APPLY(TA_OPT_PASS, OPTS_) & begIdx,      \
         &nbElement,                                                            \
         TA_OUT_PTRS(RT, OUTS_));                                               \
       ta_check(rc, "TA_" #NAME);                                               \
+    }                                                                          \
+    if (ta_bridge) {                                                           \
+      TA_OUT_SCATTER(RT, OUTS_)                                                \
+    } else if (ta_calc > 0) {                                                  \
       TA_OUT_PAD(RT, OUTS_)                                                    \
     }                                                                          \
     TA_OUT_COLNAMES(TA_OUTPUT_NAME_)                                           \
@@ -137,7 +206,8 @@
 #define TA_DECL(NAME, RT, INS_, OPTS_, OUTS_, TA_OUTPUT_NAME_)                 \
   extern SEXP impl_TA_##NAME(                                                  \
     SEXP TA_CAT(s_, TA_HEAD INS_) TA_APPLY(TA_IN_ARG_LEAD, (TA_TAIL INS_))     \
-      TA_APPLY(TA_OPT_ARG_LEAD, OPTS_));
+      TA_APPLY(TA_OPT_ARG_LEAD, OPTS_),                                        \
+    SEXP s_na_bridge);
 
 /* R_CallMethodDef row: arity = #inputs + #opts.
    The registration STRING (not the C symbol) is what R names the routine.
@@ -146,6 +216,6 @@
 #define TA_REG(NAME, RT, INS_, OPTS_, OUTS_, TA_OUTPUT_NAME_)                  \
   {"impl_TA_" #NAME,                                                           \
    (DL_FUNC) & impl_TA_##NAME,                                                 \
-   (TA_NARG INS_) + (TA_NARG OPTS_)},
+   (TA_NARG INS_) + (TA_NARG OPTS_) + 1},
 
 #endif /* TALIB_WRAP_H */
