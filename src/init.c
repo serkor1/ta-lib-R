@@ -1,10 +1,25 @@
+// init.c
+//
+// Description:
+//    This is where TA-Lib.h is being ported to 
+//    R, and is the workhorse of the R package.
+//
+// Author: Serkan Korkmaz
 #include "ta_libc.h"
+#include "talib_utils.h"
 #include "talib_wrap.h"
 #include <R_ext/Rdynload.h>
-#include <Rinternals.h> /* SEXP API; NOT R.h (Random.h Int32 clashes with TA-Lib) */
+#include <Rinternals.h>
+#include <limits.h>
 
-/* forward-declare every indicator wrapper */
+// forward declaration of all
+// mined TA-Lib functions
 #define TA_INDICATOR(...) TA_DECL(__VA_ARGS__)
+#include "TA-Lib.h"
+#undef TA_INDICATOR
+
+// construct TA-Lib wrappers
+#define TA_INDICATOR(...) TA_BODY(__VA_ARGS__)
 #include "TA-Lib.h"
 #undef TA_INDICATOR
 
@@ -24,12 +39,12 @@ static const R_CallMethodDef CallEntries[] = {
   {"ta_restore_candle_defaults", (DL_FUNC)&C_ta_restore_candle_defaults, 1},
   {NULL, NULL, 0}};
 
-/* Initialize/Unload {talib}
- *
- * This section corresponds to zzz.R regarding load()/library()
- * and unload() and it will initialize/shutdown TA-Lib when needed
- *
- */
+// Initialize/Unload {talib}
+//
+// This section corresponds to zzz.R regarding load()/library()
+// and unload() and it will initialize/shutdown TA-Lib when needed
+//
+//
 void R_init_talib(DllInfo *dll) {
 
   if (TA_Initialize() != TA_SUCCESS) {
