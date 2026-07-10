@@ -25,8 +25,8 @@ void shift_integer_array(int *col, R_xlen_t n, int begIdx, int nbElement);
 //    Works similar to S3 functions in R
 //    _Generic( (x), type: dispatch ) ( signature )
 #define shift_array(col, n, begIdx, nbElement)                            \
-   Generic((col), double*: shift_double_array, int*: shift_integer_array) \
-   (col, n, begIdx, nbElement)                                           
+   _Generic((col), double*: shift_double_array, int*: shift_integer_array) \
+   ((col), (n), (begIdx), (nbElement))
 // clang-format on
 // shift array end
 
