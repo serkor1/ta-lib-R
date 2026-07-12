@@ -80,5 +80,7 @@ void scatter_integer_array(
 void ta_check(TA_RetCode rc, const char *fn);
 
 void set_colnames(SEXP x, const char *const *names, int k);
+void rownames_data_frame(SEXP x, SEXP rownames);
+void rownames_matrix(SEXP x, SEXP rownames, SEXP colnames);
 
 #endif /* TALIB_UTILS_H */

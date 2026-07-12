@@ -37,6 +37,8 @@ static const R_CallMethodDef CallEntries[] = {
   {"ta_set_compatibility", (DL_FUNC)&ta_set_compatibility, 1},
   {"set_candle_setting", (DL_FUNC)&set_candle_setting, 4},
   {"reset_candle_setting", (DL_FUNC)&reset_candle_setting, 1},
+  {"rownames_data_frame", (DL_FUNC)&rownames_data_frame, 2},
+  {"rownames_matrix", (DL_FUNC)&rownames_matrix, 3},
   {NULL, NULL, 0}};
 
 // Initialize/Unload {talib}
