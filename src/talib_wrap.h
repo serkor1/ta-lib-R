@@ -7,6 +7,7 @@
 #ifndef TALIB_WRAP_H
 #define TALIB_WRAP_H
 
+#include "NA-handling.h"
 #include "talib_map.h"
 
 // Extract nested expressions from each
@@ -46,7 +47,7 @@
    series unchanged. */
 #define TA_IN_PTR(name) name,
 #define TA_IN_COMPACT(name)                                                    \
-  name = ta_compact(ta_dense + ta_dcol * ta_calc, name, ta_mask, ta_n);        \
+  name = compact_array(ta_dense + ta_dcol * ta_calc, name, ta_mask, ta_n);     \
   ta_dcol++;
 
 /* ---- per-opt workers (consume the tuple) -----------------------------------
@@ -137,9 +138,9 @@
     unsigned char *ta_mask = NULL;                                             \
     if (ta_bridge && ta_n > 0) {                                              \
       const double *ta_ins[] = {TA_APPLY(TA_IN_PTR, INS_)};                    \
-      ta_calc = ta_na_prepare(ta_ins, (int)(TA_COUNT_ARGUMENTS INS_), ta_n, &ta_mask);    \
+      ta_calc = build_presence_mask(ta_ins, (int)(TA_COUNT_ARGUMENTS INS_), ta_n, &ta_mask); \
       if (ta_calc > 0) {                                                       \
-        double *ta_dense = ta_dense_alloc(ta_calc, (int)(TA_COUNT_ARGUMENTS INS_));       \
+        double *ta_dense = dense_array(ta_calc, (int)(TA_COUNT_ARGUMENTS INS_));          \
         int ta_dcol = 0;                                                       \
         TA_APPLY(TA_IN_COMPACT, INS_)                                          \
       }                                                                        \
