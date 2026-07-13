@@ -8,6 +8,7 @@
 #define TALIB_WRAP_H
 
 #include "NA-handling.h"
+#include "attributes.h"
 #include "talib_map.h"
 
 // Extract nested expressions from each
@@ -58,6 +59,10 @@
 #define TA_OPT_READ_(c, r, n, k) c n = r(s_##n);
 #define TA_OPT_PASS(t) TA_OPT_PASS_ t
 #define TA_OPT_PASS_(c, r, n, k) k n,
+/* lookback-arg variant of TA_OPT_PASS: same casted value but WITHOUT a trailing
+   comma, so TA_JOIN can build the TA_<NAME>_Lookback(...) call list. */
+#define TA_LB_PASS(t) TA_LB_PASS_ t
+#define TA_LB_PASS_(c, r, n, k) k n
 
 //
 #define TA_ALLOC(RT, OUTS_)                                                    \
@@ -159,6 +164,9 @@
       TA_OUT_PAD(RT, OUTS_)                                                    \
     }                                                                          \
     TA_OUT_COLNAMES(TA_OUTPUT_NAME_)                                           \
+    /* attach the indicator's inherent lookback to the output matrix */        \
+    int ta_lb = TA_##NAME##_Lookback(TA_JOIN(TA_LB_PASS, OPTS_));              \
+    set_attribute(out, TA_ATTR_LOOKBACK, Rf_ScalarInteger(ta_lb), &nprot);     \
     UNPROTECT(nprot);                                                          \
     return out;                                                                \
   }                                                                            \

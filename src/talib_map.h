@@ -45,4 +45,22 @@
 #define TA_APPLY_7(m, a, ...) m(a) TA_APPLY_6(m, __VA_ARGS__)
 #define TA_APPLY_8(m, a, ...) m(a) TA_APPLY_7(m, __VA_ARGS__)
 
+/* Like TA_APPLY, but the worker results are separated by commas (not
+   juxtaposed) and there is no trailing comma - i.e. a valid function-call
+   argument list. Used to synthesise TA_<NAME>_Lookback(<opts>) in talib_wrap.h.
+   An empty group expands to nothing (the (void) lookbacks). */
+#define TA_JOIN(m, group)                                                      \
+  TA_JOIN_D(m, TA_COUNT_ARGUMENTS group, TA_STRIP_PARENTHESIS group)
+#define TA_JOIN_D(m, n, ...) TA_JOIN_D_(m, n, __VA_ARGS__)
+#define TA_JOIN_D_(m, n, ...) TA_CAT(TA_JOIN_, n)(m, __VA_ARGS__)
+#define TA_JOIN_0(m, ...)
+#define TA_JOIN_1(m, a) m(a)
+#define TA_JOIN_2(m, a, ...) m(a), TA_JOIN_1(m, __VA_ARGS__)
+#define TA_JOIN_3(m, a, ...) m(a), TA_JOIN_2(m, __VA_ARGS__)
+#define TA_JOIN_4(m, a, ...) m(a), TA_JOIN_3(m, __VA_ARGS__)
+#define TA_JOIN_5(m, a, ...) m(a), TA_JOIN_4(m, __VA_ARGS__)
+#define TA_JOIN_6(m, a, ...) m(a), TA_JOIN_5(m, __VA_ARGS__)
+#define TA_JOIN_7(m, a, ...) m(a), TA_JOIN_6(m, __VA_ARGS__)
+#define TA_JOIN_8(m, a, ...) m(a), TA_JOIN_7(m, __VA_ARGS__)
+
 #endif /* TALIB_MAP_H */

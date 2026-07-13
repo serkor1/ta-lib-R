@@ -12,6 +12,10 @@
 #include <Rinternals.h>
 #include <limits.h>
 
+/* The generated TA-Lib.h also emits TA_LOOKBACK(...) lines. They are consumed
+   elsewhere; expand them to nothing while we walk the file for TA_INDICATOR. */
+#define TA_LOOKBACK(...)
+
 // forward declaration of all
 // mined TA-Lib functions
 #define TA_INDICATOR(...) TA_DECL(__VA_ARGS__)
