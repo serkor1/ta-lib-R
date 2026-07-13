@@ -12,20 +12,20 @@
 #include <Rinternals.h>
 #include <limits.h>
 
-/* The generated TA-Lib.h also emits TA_LOOKBACK(...) lines. They are consumed
-   elsewhere; expand them to nothing while we walk the file for TA_INDICATOR. */
-#define TA_LOOKBACK(...)
-
 // forward declaration of all
-// mined TA-Lib functions
+// mined TA-Lib functions (indicator + lookback)
 #define TA_INDICATOR(...) TA_DECL(__VA_ARGS__)
+#define TA_LOOKBACK(...) TA_LB_DECL(__VA_ARGS__)
 #include "TA-Lib.h"
 #undef TA_INDICATOR
+#undef TA_LOOKBACK
 
-// construct TA-Lib wrappers
+// construct TA-Lib wrappers (indicator + lookback)
 #define TA_INDICATOR(...) TA_WRAPPER(__VA_ARGS__)
+#define TA_LOOKBACK(...) TA_LB_WRAPPER(__VA_ARGS__)
 #include "TA-Lib.h"
 #undef TA_INDICATOR
+#undef TA_LOOKBACK
 
 /* global-setter wrappers (talib_globals.c) */
 extern SEXP ta_set_unstable_period(SEXP, SEXP);
@@ -37,8 +37,10 @@ extern SEXP map_dfr_integer(SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
 #define TA_INDICATOR(...) TA_REG(__VA_ARGS__)
+#define TA_LOOKBACK(...) TA_LB_REG(__VA_ARGS__)
 #include "TA-Lib.h"
 #undef TA_INDICATOR
+#undef TA_LOOKBACK
   {"ta_set_unstable_period", (DL_FUNC)&ta_set_unstable_period, 2},
   {"ta_set_compatibility", (DL_FUNC)&ta_set_compatibility, 1},
   {"set_candle_setting", (DL_FUNC)&set_candle_setting, 4},

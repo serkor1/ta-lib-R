@@ -64,6 +64,25 @@
 #define TA_LB_PASS(t) TA_LB_PASS_ t
 #define TA_LB_PASS_(c, r, n, k) k n
 
+/* no-comma sibling of TA_OPT_ARG: one SEXP parameter per opt, comma-joined via
+   TA_JOIN to form the impl_ta_<NAME>_lookback(...) signature. */
+#define TA_LB_ARG(t) TA_LB_ARG_ t
+#define TA_LB_ARG_(c, r, n, k) SEXP s_##n
+
+/* parameter list for impl_ta_<NAME>_lookback: (void) when the indicator takes
+   no options (keeps -Wstrict-prototypes happy), otherwise the joined opts. */
+#define TA_LB_PARAMS(OPTS_)                                                    \
+  TA_CAT(TA_LB_PARAMS_, TA_COUNT_ARGUMENTS OPTS_)(OPTS_)
+#define TA_LB_PARAMS_0(OPTS_) void
+#define TA_LB_PARAMS_1(OPTS_) TA_JOIN(TA_LB_ARG, OPTS_)
+#define TA_LB_PARAMS_2(OPTS_) TA_JOIN(TA_LB_ARG, OPTS_)
+#define TA_LB_PARAMS_3(OPTS_) TA_JOIN(TA_LB_ARG, OPTS_)
+#define TA_LB_PARAMS_4(OPTS_) TA_JOIN(TA_LB_ARG, OPTS_)
+#define TA_LB_PARAMS_5(OPTS_) TA_JOIN(TA_LB_ARG, OPTS_)
+#define TA_LB_PARAMS_6(OPTS_) TA_JOIN(TA_LB_ARG, OPTS_)
+#define TA_LB_PARAMS_7(OPTS_) TA_JOIN(TA_LB_ARG, OPTS_)
+#define TA_LB_PARAMS_8(OPTS_) TA_JOIN(TA_LB_ARG, OPTS_)
+
 //
 #define TA_ALLOC(RT, OUTS_)                                                    \
   Rf_allocMatrix(TA_SXP(RT), (int)ta_n, (TA_COUNT_ARGUMENTS OUTS_))
@@ -195,5 +214,30 @@
   {"impl_ta_" #NAME,                                                           \
    (DL_FUNC) & impl_ta_##NAME,                                                 \
    (TA_COUNT_ARGUMENTS INS_) + (TA_COUNT_ARGUMENTS OPTS_) + 1},
+
+/* ---- TA_<NAME>_Lookback wrappers -------------------------------------------
+   Driven by the TA_LOOKBACK(NAME, TA_OPTIONS(...)) lines in TA-Lib.h. The
+   R-callable impl_ta_<NAME>_lookback(<opts>) reads the optional inputs from
+   their SEXPs, calls the pure TA_<NAME>_Lookback(), and returns the
+   (normalized) lookback - the same value set_attribute() attaches to the
+   indicator output. */
+
+/* forward declaration */
+#define TA_LB_DECL(NAME, OPTS_)                                                \
+  extern SEXP impl_ta_##NAME##_lookback(TA_LB_PARAMS(OPTS_));
+
+/* definition */
+#define TA_LB_WRAPPER(NAME, OPTS_)                                             \
+  SEXP impl_ta_##NAME##_lookback(TA_LB_PARAMS(OPTS_)) {                        \
+    TA_APPLY(TA_OPT_READ, OPTS_)                                               \
+    return Rf_ScalarInteger(ta_normalize_lookback(                             \
+      TA_##NAME##_Lookback(TA_JOIN(TA_LB_PASS, OPTS_))));                      \
+  }
+
+/* R_CallMethodDef row: arity = #opts (no inputs, no na_bridge). */
+#define TA_LB_REG(NAME, OPTS_)                                                 \
+  {"impl_ta_" #NAME "_lookback",                                               \
+   (DL_FUNC) & impl_ta_##NAME##_lookback,                                      \
+   TA_COUNT_ARGUMENTS OPTS_},
 
 #endif /* TALIB_WRAP_H */
