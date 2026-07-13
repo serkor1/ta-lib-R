@@ -9,7 +9,7 @@
 //  index, and then reinserts them once the indicator is returned,
 //  if (bool) na.bridge is passed as TRUE from the R-side.
 //
-#include <Rinternals.h>
+#include "NA-handling.h"
 #include <R_ext/Arith.h>
 #include <R_ext/RS.h>
 #include <string.h>
@@ -21,21 +21,12 @@
     ((bitmask)[(R_xlen_t)(bit_index) >> 3] |= (unsigned char) (1u << ((bit_index) & 7)))
 // clang-format on
 
-// Build presence mask
-//
-// Description
-//    A row is "present" iff every input column holds a finite value
-//    (non-NA/NaN) at that index -- TA-Lib cannot consume either. Bit i of
-//    `presence_mask` is set for every present row; dropped rows stay 0.
-//    Returns the number of present rows, i.e. the dense length the
-//    indicator is computed on.
-//
 // clang-format off
 R_xlen_t build_presence_mask(
-    const double *const *input_columns, // the k input columns, each n_rows long
+    const double *const *input_columns,
     int k_columns,
     R_xlen_t n_rows,
-    unsigned char **presence_mask       // out: allocated bitmask, one bit per row
+    unsigned char **presence_mask
 )
 // clang-format on
 {
@@ -64,12 +55,6 @@ R_xlen_t build_presence_mask(
   return num_present;
 }
 
-// Dense array
-//
-// Description
-//    Allocates the dense (num_present_rows x k_columns) buffer that the
-//    compacted inputs are gathered into before the indicator runs.
-//
 // clang-format off
 double *dense_array(
     R_xlen_t num_present_rows,
@@ -78,19 +63,14 @@ double *dense_array(
 // clang-format on
 {
   return (double *)R_alloc(
-    (size_t)num_present_rows * (size_t)k_columns, sizeof(double));
+    (size_t)num_present_rows * (size_t)k_columns,
+    sizeof(double));
 }
 
-// Compact array
-//
-// Description
-//    Gathers the present rows of one full-length input column into the
-//    front of `dense_column`, skipping the NA rows via `presence_mask`.
-//
 // clang-format off
 double *compact_array(
-    double *dense_column,               // out: present values, packed to the front
-    const double *full_column,          // one full-length (n_rows) input column
+    double *dense_column,
+    const double *full_column,
     const unsigned char *presence_mask,
     R_xlen_t n_rows
 )
@@ -105,28 +85,14 @@ double *compact_array(
   return dense_column;
 }
 
-// Scatter array
-//
-// Description
-//    Inverse of compact_array for a single output column. The dense TA-Lib
-//    output occupies column[0 .. nbElement-1]; dense index d in
-//    [0, num_present_rows) maps to the d-th present (set) row of
-//    `presence_mask`. We walk original rows from the top down: because a
-//    present row's original position is always >= its dense index, the raw
-//    values can be expanded up into place without a second buffer.
-//
-//       d in [begIdx, num_present_rows)  -> raw value column[d - begIdx]
-//       d in [0, begIdx)                 -> NA (lookback)
-//       dropped rows                     -> NA
-//
 // clang-format off
 void scatter_double_array(
     double *column,
     R_xlen_t n_rows,
     const unsigned char *presence_mask,
     R_xlen_t num_present_rows,
-    int begIdx,    // TA-Lib lookback: leading dense rows with no output
-    int nbElement  // TA-Lib output count: number of raw values produced
+    int begIdx,
+    int nbElement
 )
 // clang-format on
 {
@@ -176,12 +142,3 @@ void scatter_integer_array(
 }
 #undef TA_BIT_GET
 #undef TA_BIT_SET
-
-// Generic scatter_array
-// clang-format off
-#define scatter_array(column, n_rows, presence_mask, num_present_rows, begIdx, nbElement) \
-   _Generic((column),                                                                     \
-     double *: scatter_double_array,                                                      \
-     int *:    scatter_integer_array                                                      \
-   )((column), (n_rows), (presence_mask), (num_present_rows), (begIdx), (nbElement))
-// clang-format on
