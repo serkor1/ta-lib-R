@@ -59,14 +59,9 @@
 #define TA_OPT_PASS(t) TA_OPT_PASS_ t
 #define TA_OPT_PASS_(c, r, n, k) k n,
 
-/* ---- outputs: alloc / call pointers / pad (dispatch on group size) ---------
- */
-/* Single output -> vector; multiple -> matrix with one column per output.
-   The count is a compile-time literal, so the branch folds away. */
+//
 #define TA_ALLOC(RT, OUTS_)                                                    \
-  ((TA_COUNT_ARGUMENTS OUTS_) > 1                                              \
-     ? Rf_allocMatrix(TA_SXP(RT), (int)ta_n, (TA_COUNT_ARGUMENTS OUTS_))       \
-     : Rf_allocVector(TA_SXP(RT), ta_n))
+  Rf_allocMatrix(TA_SXP(RT), (int)ta_n, (TA_COUNT_ARGUMENTS OUTS_))
 
 #define TA_OUT_PTRS(RT, OUTS_)                                                 \
   TA_CAT(TA_OUT_PTRS_, TA_COUNT_ARGUMENTS OUTS_)(RT)
@@ -93,12 +88,13 @@
       begIdx,                                                                  \
       nbElement);
 
-/* colnames only for a matrix (>1 output). Single output -> no-op; otherwise
-   stringize every name into the array and label the matrix. */
+/* colnames for the output matrix. Every indicator returns a matrix (single
+   output included), so stringize every name into the array and label the
+   matrix regardless of column count. */
 #define TA_OUT_COLNAME(a) #a,
 #define TA_OUT_COLNAMES(NAMES_)                                                \
   TA_CAT(TA_OUT_COLNAMES_, TA_COUNT_ARGUMENTS NAMES_)(NAMES_)
-#define TA_OUT_COLNAMES_1(NAMES_)
+#define TA_OUT_COLNAMES_1(NAMES_) TA_OUT_COLNAMES_MANY(NAMES_)
 #define TA_OUT_COLNAMES_2(NAMES_) TA_OUT_COLNAMES_MANY(NAMES_)
 #define TA_OUT_COLNAMES_3(NAMES_) TA_OUT_COLNAMES_MANY(NAMES_)
 #define TA_OUT_COLNAMES_MANY(NAMES_)                                           \
@@ -169,10 +165,19 @@
   /* logic end*/
 // clang-format on
 
-/* Forward declaration (same parameter list as the body). */
-#define TA_DECL(NAME, RT, INS_, OPTS_, OUTS_, TA_OUTPUT_NAME_)                 \
-  extern SEXP impl_ta_##NAME(TA_APPLY(TA_IN_ARG, INS_)                         \
-                               TA_APPLY(TA_OPT_ARG, OPTS_) SEXP s_na_bridge);
+// clang-format off
+// TA_DECL
+// 
+// Description
+//  Forward declaration of the TA_<indicator>-functions
+//  
+#define TA_DECL(NAME, RT, INS_, OPTS_, OUTS_, TA_OUTPUT_NAME_)  \
+      extern SEXP impl_ta_##NAME(                               \
+        TA_APPLY(TA_IN_ARG, INS_)                               \
+        TA_APPLY(TA_OPT_ARG, OPTS_)                             \
+        SEXP s_na_bridge                                        \
+      );
+// clang-format on
 
 /* R_CallMethodDef row: arity = #inputs + #opts.
    The registration STRING (not the C symbol) is what R names the routine.
