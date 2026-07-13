@@ -117,7 +117,7 @@
 // clang-format off
 #define TA_WRAPPER(NAME, RT, INS_, OPTS_, OUTS_, TA_OUTPUT_NAME_)              \
   /* signature start */                                                        \
-  SEXP impl_TA_##NAME(                                                         \
+  SEXP impl_ta_##NAME(                                                         \
     TA_APPLY(TA_IN_ARG, INS_)                                                  \
     TA_APPLY(TA_OPT_ARG, OPTS_)                                                \
     SEXP s_na_bridge                                                           \
@@ -171,7 +171,7 @@
 
 /* Forward declaration (same parameter list as the body). */
 #define TA_DECL(NAME, RT, INS_, OPTS_, OUTS_, TA_OUTPUT_NAME_)                 \
-  extern SEXP impl_TA_##NAME(TA_APPLY(TA_IN_ARG, INS_)                         \
+  extern SEXP impl_ta_##NAME(TA_APPLY(TA_IN_ARG, INS_)                         \
                                TA_APPLY(TA_OPT_ARG, OPTS_) SEXP s_na_bridge);
 
 /* R_CallMethodDef row: arity = #inputs + #opts.
@@ -179,8 +179,8 @@
    With useDynLib(.fixes = "C_"), R exposes C_ + this string, so register
    "impl_ta_" #NAME to match the generated .Call(C_impl_ta_<NAME>, ...). */
 #define TA_REG(NAME, RT, INS_, OPTS_, OUTS_, TA_OUTPUT_NAME_)                  \
-  {"impl_TA_" #NAME,                                                           \
-   (DL_FUNC) & impl_TA_##NAME,                                                 \
+  {"impl_ta_" #NAME,                                                           \
+   (DL_FUNC) & impl_ta_##NAME,                                                 \
    (TA_COUNT_ARGUMENTS INS_) + (TA_COUNT_ARGUMENTS OPTS_) + 1},
 
 #endif /* TALIB_WRAP_H */

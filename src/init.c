@@ -28,6 +28,8 @@ extern SEXP ta_set_unstable_period(SEXP, SEXP);
 extern SEXP ta_set_compatibility(SEXP);
 extern SEXP set_candle_setting(SEXP, SEXP, SEXP, SEXP);
 extern SEXP reset_candle_setting(SEXP);
+extern SEXP map_dfr_double(SEXP);
+extern SEXP map_dfr_integer(SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
 #define TA_INDICATOR(...) TA_REG(__VA_ARGS__)
@@ -39,6 +41,9 @@ static const R_CallMethodDef CallEntries[] = {
   {"reset_candle_setting", (DL_FUNC)&reset_candle_setting, 1},
   {"rownames_data_frame", (DL_FUNC)&rownames_data_frame, 2},
   {"rownames_matrix", (DL_FUNC)&rownames_matrix, 3},
+  {"map_dfr_double", (DL_FUNC)&map_dfr_double, 1},
+  {"map_dfr_integer", (DL_FUNC)&map_dfr_integer, 1},
+  {},
   {NULL, NULL, 0}};
 
 // Initialize/Unload {talib}
