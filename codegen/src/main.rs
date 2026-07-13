@@ -5,7 +5,7 @@ use std::fs;
 
 use crate::parser::{TA_Lib, extract_signature};
 
-/// C_MACRO
+/// BATCH_INDICATOR_MACRO
 /// 
 /// TA_INDICATOR: The indicator function of TA-Lib, e.g. TA_SMA() and its type
 /// TA_INPUT: The input to the TA-Lib indicator, e.g. inReal
@@ -13,7 +13,7 @@ use crate::parser::{TA_Lib, extract_signature};
 /// TA_OUTPUT: The output from the TA-Lib indicator, e.g. outReal
 /// TA_OUTPUT_NAME: The output names from the TA-Lib indicator, e.g. outReal, outRealMiddleBand etc.
 #[allow(non_snake_case)]
-fn C_MACRO(function: &TA_Lib) -> String {
+fn BATCH_INDICATOR_MACRO(function: &TA_Lib) -> String {
     format!(
         "TA_INDICATOR({}, {}, TA_INPUT({}), TA_OPTIONS({}), TA_OUTPUT({}), TA_OUTPUT_NAME({}))",
         function.indicator,
@@ -22,6 +22,20 @@ fn C_MACRO(function: &TA_Lib) -> String {
         function.optional_input.join(", "),
         function.output_indicators.join(", "),
         function.output_names.join(", "),
+    )
+}
+
+/// LOOKBACK_MACRO
+///
+/// The TA_<indicator>_Lookback() companion of each indicator takes exactly the
+/// indicator's optional inputs, so its macro only needs the name and TA_OPTIONS.
+/// Void lookbacks (e.g. TA_ACOS_Lookback) yield an empty TA_OPTIONS().
+#[allow(non_snake_case)]
+fn LOOKBACK_MACRO(function: &TA_Lib) -> String {
+    format!(
+        "TA_LOOKBACK({}, TA_OPTIONS({}))",
+        function.indicator,
+        function.optional_input.join(", "),
     )
 }
 
@@ -51,12 +65,20 @@ fn main() {
     output.push_str("// \t\tTA_INPUT: Indicator input.\n");
     output.push_str("// \t\tTA_OPTIONS: Indicator input.\n");
     output.push_str("// \t\tTA_OUTPUT: Indicator input.\n");
-    output.push_str("// \t\tTA_OUTPUT_NAMES: Indicator input.\n");  
-    output.push_str("//\n");  
+    output.push_str("// \t\tTA_OUTPUT_NAMES: Indicator input.\n");
+    output.push_str("// \t\tTA_LOOKBACK: Indicator lookback (name + optional inputs).\n");
+    output.push_str("//\n");
     output.push_str("// clang-format off\n");
 
     for f in &funcs {
-        output.push_str(&C_MACRO(f));
+        output.push_str(&BATCH_INDICATOR_MACRO(f));
+        output.push('\n');
+    }
+
+    output.push('\n');
+    output.push_str("// Lookback\n");
+    for f in &funcs {
+        output.push_str(&LOOKBACK_MACRO(f));
         output.push('\n');
     }
 
