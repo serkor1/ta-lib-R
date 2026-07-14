@@ -53,7 +53,7 @@ SEXP impl_ta_VOLUME_lookback(
 // clang-format on
 {
 
-  const int n_ma = isNull(maSpec) ? 0 : LENGTH(maSpec);
+  const int n_ma = Rf_isNull(maSpec) ? 0 : LENGTH(maSpec);
   int lookback = 0;
 
   if (n_ma > 0) {
@@ -106,7 +106,7 @@ SEXP impl_ta_VOLUME(
   // get number of moving averages
   // with the number of columns
   //  NOTE: There is always one column (volume column)
-  const int n_ma = isNull(maSpec) ? 0 : LENGTH(maSpec);
+  const int n_ma = Rf_isNull(maSpec) ? 0 : LENGTH(maSpec);
   const int n_cols = 1 + n_ma;
 
   // identify and extract missing values

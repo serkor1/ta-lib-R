@@ -1,4 +1,4 @@
-// normalize
+// normalize.h
 //
 // Parameters
 // arr: The array to be normalized. Double or int pointer
@@ -11,7 +11,7 @@
 // This function modifies the array in-place by scaling with
 // a factor. The shifting parameter sets the starting point
 // of the iterator.
-// Its necesseary because the ta_CDL*.c programs returns -100, 0, 100
+// Its necessary because the ta_CDL*.c programs returns -100, 0, 100
 // which is not R agnostic.
 //
 // Note

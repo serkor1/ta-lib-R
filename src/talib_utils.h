@@ -1,7 +1,7 @@
-// TA-Lib-Utils.h
+// talib_utils.h
 //
 // Description
-//    All functions are implemented in TA-Lib-Utils.c, and includes
+//    All functions are implemented in talib_utils.c, and includes
 //    helper functions that ease the process in porting indicators
 //    to R.
 //

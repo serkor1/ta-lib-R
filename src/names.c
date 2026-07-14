@@ -68,7 +68,7 @@ void rownames_data_frame(
 )
 // clang-format on
 {
-  setAttrib(x, R_RowNamesSymbol, rownames);
+  Rf_setAttrib(x, R_RowNamesSymbol, rownames);
 
   return;
 }
@@ -83,14 +83,14 @@ void rownames_matrix(
 {
   // clang-format off
   SEXP container = PROTECT(
-    allocVector(VECSXP, 2)
+    Rf_allocVector(VECSXP, 2)
   );
   // clang-format on
 
   SET_VECTOR_ELT(container, 0, rownames);
   SET_VECTOR_ELT(container, 1, colnames);
 
-  setAttrib(x, R_DimNamesSymbol, container);
+  Rf_setAttrib(x, R_DimNamesSymbol, container);
 
   UNPROTECT(1);
 

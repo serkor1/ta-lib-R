@@ -3,7 +3,7 @@
 // Description:
 //  This C-routine converts a <matrix> to a <data.frame>
 //  on the R-side. It is implemented specifically for {talib}
-//  and its portablility across other packages are, at best, zero to none.
+//  and its portability across other packages are, at best, zero to none.
 //  The only reason it has been written is to reduce the time taken to convert
 //  a <matrix> to <data.frame> (see benchmarks below)
 //
@@ -41,7 +41,7 @@ static SEXP impl_map_dfr(
   int protection_counter = 0;
 
   // input dimensions
-  SEXP dim = getAttrib(x, R_DimSymbol);
+  SEXP dim = Rf_getAttrib(x, R_DimSymbol);
   const int nrows = INTEGER(dim)[0];
   const int ncols = INTEGER(dim)[1];
 
@@ -50,7 +50,7 @@ static SEXP impl_map_dfr(
 
   // clang-format off
   SEXP data_frame = PROTECT(
-    allocVector(VECSXP, ncols)
+    Rf_allocVector(VECSXP, ncols)
   );
   // clang-format on
   ++protection_counter;
@@ -67,7 +67,7 @@ static SEXP impl_map_dfr(
     const size_t col_bytes = nrow_len * sizeof(double);
 
     for (int j = 0; j < ncols; ++j) {
-      SEXP column = allocVector(REALSXP, nrows);
+      SEXP column = Rf_allocVector(REALSXP, nrows);
       SET_VECTOR_ELT(data_frame, j, column);
 
       double *restrict column_ptr = REAL(column);
@@ -80,7 +80,7 @@ static SEXP impl_map_dfr(
     const size_t col_bytes = nrow_len * sizeof(int);
 
     for (int j = 0; j < ncols; ++j) {
-      SEXP column = allocVector(INTSXP, nrows);
+      SEXP column = Rf_allocVector(INTSXP, nrows);
       SET_VECTOR_ELT(data_frame, j, column);
 
       int *restrict column_ptr = INTEGER(column);
@@ -90,7 +90,7 @@ static SEXP impl_map_dfr(
   }
 
   // dimension names
-  SEXP dimnames = getAttrib(x, R_DimNamesSymbol);
+  SEXP dimnames = Rf_getAttrib(x, R_DimNamesSymbol);
   SEXP row_names =
     (dimnames == R_NilValue) ? R_NilValue : VECTOR_ELT(dimnames, 0);
   SEXP col_names =
@@ -100,22 +100,22 @@ static SEXP impl_map_dfr(
   // c(NA_integer_, -nrows) - same representation base R uses for
   // automatic row names - when the matrix carries no row dimnames.
   if (row_names == R_NilValue) {
-    row_names = PROTECT(allocVector(INTSXP, 2));
+    row_names = PROTECT(Rf_allocVector(INTSXP, 2));
     ++protection_counter;
     INTEGER(row_names)[0] = NA_INTEGER;
     INTEGER(row_names)[1] = -nrows;
   }
 
-  setAttrib(data_frame, R_RowNamesSymbol, row_names);
-  setAttrib(data_frame, R_NamesSymbol, col_names);
+  Rf_setAttrib(data_frame, R_RowNamesSymbol, row_names);
+  Rf_setAttrib(data_frame, R_NamesSymbol, col_names);
 
   // clang-format off
   SEXP class = PROTECT(
-    mkString("data.frame")
+    Rf_mkString("data.frame")
   );
   // clang-format on
   ++protection_counter;
-  setAttrib(data_frame, R_ClassSymbol, class);
+  Rf_setAttrib(data_frame, R_ClassSymbol, class);
 
   UNPROTECT(protection_counter);
   return data_frame;

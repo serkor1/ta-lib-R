@@ -7,7 +7,7 @@
 //
 #include <Rinternals.h>
 
-// Extensible attribute identifers
+// Extensible attribute identifiers
 //
 // Description
 //  Add new attribute(s) here and process it in attribute_symbol()

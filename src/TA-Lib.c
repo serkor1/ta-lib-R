@@ -93,7 +93,7 @@ SEXP ta_set_compatibility(SEXP s_value) {
 
 // initialize TA-Lib
 //
-// NOTE: Only kept for backwards compatibilit
+// NOTE: Only kept for backwards compatibility
 //       will be deleted after merge
 SEXP initialize_ta_lib(void) {
   TA_RetCode return_code = TA_Initialize();
@@ -102,7 +102,7 @@ SEXP initialize_ta_lib(void) {
     Rf_error("TA_Initialize failed (code %d)", return_code);
   }
 
-  return ScalarLogical(1);
+  return Rf_ScalarLogical(1);
 }
 
 // shutdown TA-Lib
@@ -113,5 +113,5 @@ SEXP shutdown_ta_lib(void) {
     Rf_error("TA_Shutdown failed (code %d)", return_code);
   }
 
-  return ScalarLogical(1);
+  return Rf_ScalarLogical(1);
 }

@@ -5,7 +5,7 @@
 //  TA_<indicator>()-function—it returns all <NA> if a
 //  single <NA> is passed via in*-arrays.
 //
-//  This C-routine strips all <NA> while recording their postional
+//  This C-routine strips all <NA> while recording their positional
 //  index, and then reinserts them once the indicator is returned,
 //  if (bool) na.bridge is passed as TRUE from the R-side.
 //
