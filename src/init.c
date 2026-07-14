@@ -35,6 +35,7 @@ extern SEXP reset_candle_setting(SEXP);
 extern SEXP initialize_ta_lib(void);
 extern SEXP map_dfr_double(SEXP);
 extern SEXP map_dfr_integer(SEXP);
+extern SEXP shutdown_ta_lib(void);
 
 static const R_CallMethodDef CallEntries[] = {
 #define TA_INDICATOR(...) TA_REG(__VA_ARGS__)
@@ -51,6 +52,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"map_dfr_double", (DL_FUNC)&map_dfr_double, 1},
   {"map_dfr_integer", (DL_FUNC)&map_dfr_integer, 1},
   {"initialize_ta_lib", (DL_FUNC)&initialize_ta_lib, 0},
+  {"shutdown_ta_lib", (DL_FUNC)&shutdown_ta_lib, 0},
   {NULL, NULL, 0}};
 
 // Initialize/Unload {talib}

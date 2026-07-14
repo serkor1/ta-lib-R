@@ -104,3 +104,14 @@ SEXP initialize_ta_lib(void) {
 
   return ScalarLogical(1);
 }
+
+// shutdown TA-Lib
+SEXP shutdown_ta_lib(void) {
+  TA_RetCode return_code = TA_Shutdown();
+
+  if (return_code != TA_SUCCESS) {
+    Rf_error("TA_Shutdown failed (code %d)", return_code);
+  }
+
+  return ScalarLogical(1);
+}
