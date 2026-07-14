@@ -19,7 +19,6 @@ document: ## Build R documentation
 	@Rscript --verbose -e "devtools::document()"
 
 build: clean fmt ## Build the R package
-	@codegen/generate_API.sh src/ src/api.h && codegen/generate_FFI.sh src/api.h src/init.c && $(MAKE) fmt
 	@$(MAKE) document
 	@R CMD build . --no-build-vignettes && R CMD INSTALL $(tarball_location)
 	@rm -rf README.md
@@ -69,6 +68,7 @@ fmt: ## Format code
 	@air format R
 	@air format tests/testthat
 	@rm -rf ./.clang-format
+	@cargo fmt --manifest-path codegen/Cargo.toml
 
 pkgdown-build: ## Build {pkgdown} documentation
 	@$(MAKE) document
@@ -133,5 +133,6 @@ parity-clean: ## Remove parity build artifacts and the generated test file
 	@rm -rf tests/parity/snapshot
 
 gen-code: ## Generate R wrappers and unit-tests
+	@cargo run --manifest-path codegen/Cargo.toml 
 	@Rscript --verbose ./codegen/gen_code/generate.R
 	$(MAKE) fmt
