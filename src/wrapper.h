@@ -1,11 +1,11 @@
-// talib_wrap.h
+// wrapper.h
 //
 // Description:
 //  This header file extracts and parses
 //  all arguments from each TA_INDICATOR located
 //  in TA-Lib.h using X-Macros
-#ifndef TALIB_WRAP_H
-#define TALIB_WRAP_H
+#ifndef WRAPPER_H
+#define WRAPPER_H
 
 #include "NA-handling.h"
 #include "attributes.h"
@@ -239,43 +239,12 @@
   /* logic end*/
 // clang-format on
 
-// clang-format off
-// TA_DECL
-// 
-// Description
-//  Forward declaration of the TA_<indicator>-functions
-//  
-#define TA_DECL(NAME, RT, INS_, OPTS_, OUTS_, TA_OUTPUT_NAME_, KIND)  \
-      extern SEXP impl_ta_##NAME(                                     \
-        TA_APPLY(TA_IN_ARG, INS_)                                     \
-        TA_APPLY(TA_OPT_ARG, OPTS_)                                   \
-        SEXP s_na_bridge                                              \
-        TA_CAT(TA_NORM_ARG_, KIND)                                    \
-      );
-// clang-format on
-
-// R_CallMethodDef row: arity = #inputs + #opts.
-// The registration STRING (not the C symbol) is what R names the routine.
-// With useDynLib(.fixes = "C_"), R exposes C_ + this string, so register
-// "impl_ta_" #NAME to match the generated .Call(C_impl_ta_<NAME>, ...).
-#define TA_REG(NAME, RT, INS_, OPTS_, OUTS_, TA_OUTPUT_NAME_, KIND)            \
-  {"impl_ta_" #NAME,                                                           \
-   (DL_FUNC) & impl_ta_##NAME,                                                 \
-   (TA_COUNT_ARGUMENTS INS_) + (TA_COUNT_ARGUMENTS OPTS_) + 1 +                \
-     TA_CAT(TA_NORM_ARITY_, KIND)},
-
-// TA_<NAME>_Lookback wrappers
+// TA_<NAME>_Lookback wrapper
 //   Driven by the TA_LOOKBACK(NAME, TA_OPTIONS(...)) lines in TA-Lib.h. The
 //   R-callable impl_ta_<NAME>_lookback(<opts>) reads the optional inputs from
 //   their SEXPs, calls the pure TA_<NAME>_Lookback(), and returns the
 //   (normalized) lookback - the same value set_attribute() attaches to the
 //   indicator output.
-
-// forward declaration
-#define TA_LB_DECL(NAME, OPTS_)                                                \
-  extern SEXP impl_ta_##NAME##_lookback(TA_LB_PARAMS(OPTS_));
-
-// definition
 #define TA_LB_WRAPPER(NAME, OPTS_)                                             \
   SEXP impl_ta_##NAME##_lookback(TA_LB_PARAMS(OPTS_)) {                        \
     TA_APPLY(TA_OPT_READ, OPTS_)                                               \
@@ -283,10 +252,4 @@
       normalize_lookback(TA_##NAME##_Lookback(TA_JOIN(TA_LB_PASS, OPTS_))));   \
   }
 
-// R_CallMethodDef row: arity = #opts (no inputs, no na_bridge).
-#define TA_LB_REG(NAME, OPTS_)                                                 \
-  {"impl_ta_" #NAME "_lookback",                                               \
-   (DL_FUNC) & impl_ta_##NAME##_lookback,                                      \
-   TA_COUNT_ARGUMENTS OPTS_},
-
-#endif /* TALIB_WRAP_H */
+#endif /* WRAPPER_H */

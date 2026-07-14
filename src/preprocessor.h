@@ -45,7 +45,7 @@
 
 // Like TA_APPLY, but the worker results are separated by commas (not
 // juxtaposed) and there is no trailing comma - i.e. a valid function-call
-// argument list. Used to synthesise TA_<NAME>_Lookback(<opts>) in talib_wrap.h.
+// argument list. Used to synthesise TA_<NAME>_Lookback(<opts>) in wrapper.h.
 // An empty group expands to nothing (the (void) lookbacks).
 #define TA_JOIN(m, group)                                                      \
   TA_JOIN_D(m, TA_COUNT_ARGUMENTS group, TA_STRIP_PARENTHESIS group)
