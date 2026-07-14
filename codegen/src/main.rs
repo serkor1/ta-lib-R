@@ -1,7 +1,7 @@
 // load the parser
 mod parser;
 use parser::purge_comments;
-use std::fs;
+use std::{fs};
 
 use crate::parser::{TA_Lib, extract_signature};
 
@@ -15,13 +15,14 @@ use crate::parser::{TA_Lib, extract_signature};
 #[allow(non_snake_case)]
 fn BATCH_INDICATOR_MACRO(function: &TA_Lib) -> String {
     format!(
-        "TA_INDICATOR({}, {}, TA_INPUT({}), TA_OPTIONS({}), TA_OUTPUT({}), TA_OUTPUT_NAME({}))",
+        "TA_INDICATOR({}, {}, TA_INPUT({}), TA_OPTIONS({}), TA_OUTPUT({}), TA_OUTPUT_NAME({}), {})",
         function.indicator,
         function.argument_type,
         function.input.join(", "),
         function.optional_input.join(", "),
         function.output_indicators.join(", "),
         function.output_names.join(", "),
+        if function.indicator.starts_with("CDL") { "CANDLESTICK" } else {"NOT_CANDLESTICK"}
     )
 }
 
