@@ -1,12 +1,12 @@
 // load the parser
 mod parser;
 use parser::purge_comments;
-use std::{fs};
+use std::fs;
 
 use crate::parser::{TA_Lib, extract_signature};
 
 /// BATCH_INDICATOR_MACRO
-/// 
+///
 /// TA_INDICATOR: The indicator function of TA-Lib, e.g. TA_SMA() and its type
 /// TA_INPUT: The input to the TA-Lib indicator, e.g. inReal
 /// TA_OPTIONS: The optional input in the TA-Lib indicator, e.g. optInWindow
@@ -22,7 +22,11 @@ fn BATCH_INDICATOR_MACRO(function: &TA_Lib) -> String {
         function.optional_input.join(", "),
         function.output_indicators.join(", "),
         function.output_names.join(", "),
-        if function.indicator.starts_with("CDL") { "CANDLESTICK" } else {"NOT_CANDLESTICK"}
+        if function.indicator.starts_with("CDL") {
+            "CANDLESTICK"
+        } else {
+            "NOT_CANDLESTICK"
+        }
     )
 }
 
@@ -40,7 +44,7 @@ fn LOOKBACK_MACRO(function: &TA_Lib) -> String {
     )
 }
 
-/// 
+///
 fn main() {
     // The goal is to write two files (I think)
     let list = fs::read_to_string("src/ta-lib/ta_func_list.txt").expect("read ta_func_list.txt");
@@ -54,7 +58,10 @@ fn main() {
         .map(str::to_string)
         .collect();
 
-    let funcs: Vec<TA_Lib> = names.iter().map(|n| extract_signature(n, &header)).collect();
+    let funcs: Vec<TA_Lib> = names
+        .iter()
+        .map(|n| extract_signature(n, &header))
+        .collect();
 
     // populate the src/TA-Lib.h file
     // with decorative headers that only
