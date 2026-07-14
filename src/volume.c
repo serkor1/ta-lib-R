@@ -23,7 +23,7 @@
 #include "attributes.h"
 #include "names.h"
 #include "shift.h"
-#include "talib_utils.h"
+#include "utils.h"
 #include <R_ext/RS.h>
 #include <Rinternals.h>
 #include <limits.h>

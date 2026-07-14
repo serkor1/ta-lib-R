@@ -6,7 +6,7 @@
 //
 // Author: Serkan Korkmaz
 #include "ta_libc.h"
-#include "talib_utils.h"
+#include "utils.h"
 #include "wrapper.h"
 #include <R_ext/Rdynload.h>
 #include <Rinternals.h>
@@ -42,11 +42,11 @@
 #undef TA_INDICATOR
 #undef TA_LOOKBACK
 
-/* trading-volume wrappers (volume.c) */
+// trading-volume wrappers (volume.c)
 extern SEXP impl_ta_VOLUME(SEXP, SEXP, SEXP);
 extern SEXP impl_ta_VOLUME_lookback(SEXP, SEXP);
 
-/* global-setter wrappers (talib_globals.c) */
+// global-setter wrappers (TA-Lib.c)
 extern SEXP ta_set_unstable_period(SEXP, SEXP);
 extern SEXP ta_set_compatibility(SEXP);
 extern SEXP set_candle_setting(SEXP, SEXP, SEXP, SEXP);

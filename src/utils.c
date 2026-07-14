@@ -1,4 +1,4 @@
-#include "talib_utils.h"
+#include "utils.h"
 #include <R_ext/Arith.h> // ISNAN, NA_REAL, NA_INTEGER
 #include <R_ext/RS.h>    // R_alloc
 #include <limits.h>

@@ -13,6 +13,7 @@
 #include "normalize.h"
 #include "preprocessor.h"
 #include "shift.h"
+#include "utils.h"
 
 // Extract nested expressions from each
 // TA_INDICATOR(...)

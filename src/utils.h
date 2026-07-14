@@ -1,12 +1,12 @@
-// talib_utils.h
+// utils.h
 //
 // Description
-//    All functions are implemented in talib_utils.c, and includes
+//    All functions are implemented in utils.c, and includes
 //    helper functions that ease the process in porting indicators
 //    to R.
 //
-#ifndef TALIB_UTILS_H
-#define TALIB_UTILS_H
+#ifndef UTILS_H
+#define UTILS_H
 
 #include "ta_libc.h"
 #include <Rinternals.h>
@@ -19,4 +19,4 @@ const double *ta_real(SEXP s, R_xlen_t n, int *nprot, const char *name);
 /* rc != TA_SUCCESS -> Rf_error("<fn>: <message> (<enum>)"). */
 void ta_check(TA_RetCode rc, const char *fn);
 
-#endif /* TALIB_UTILS_H */
+#endif /* UTILS_H */
