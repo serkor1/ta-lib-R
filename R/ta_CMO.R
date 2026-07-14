@@ -120,36 +120,6 @@ chande_momentum_oscillator.matrix <- function(
 	)
 }
 
-#' @usage NULL
-CMO_lookback <- chande_momentum_oscillator_lookback <- function(
-	x,
-	cols,
-	n = 14,
-	...
-) {
-	## validate 'cols'-argument
-	## if explicitly passed
-	if (!missing(cols)) {
-		assert_formula(cols)
-	}
-
-	## construct series
-	## from input
-	constructed_series <- series(
-		x = cols,
-		default_formula = ~close,
-		data = x,
-		...
-	)
-
-	.Call(
-		C_impl_ta_CMO_lookback,
-		## splice:lookback:start
-		constructed_series[[1]],
-		as.integer(n)
-		## splice:lookback:end
-	)
-}
 
 #' @usage NULL
 #' @aliases chande_momentum_oscillator

@@ -133,36 +133,6 @@ counter_attack.matrix <- function(
 }
 
 #' @usage NULL
-CDLCOUNTERATTACK_lookback <- counter_attack_lookback <- function(
-	x,
-	cols,
-	...
-) {
-	## validate 'cols'-argument
-	## if explicitly passed
-	if (!missing(cols)) {
-		assert_formula(cols)
-	}
-
-	## construct series
-	## from input
-	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
-		...
-	)
-
-	.Call(
-		C_impl_ta_CDLCOUNTERATTACK_lookback,
-		constructed_series[[1]],
-		constructed_series[[2]],
-		constructed_series[[3]],
-		constructed_series[[4]]
-	)
-}
-
-#' @usage NULL
 #' @aliases counter_attack
 #'
 #' @export

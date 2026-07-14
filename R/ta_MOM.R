@@ -120,36 +120,6 @@ momentum.matrix <- function(
 	)
 }
 
-#' @usage NULL
-MOM_lookback <- momentum_lookback <- function(
-	x,
-	cols,
-	n = 10,
-	...
-) {
-	## validate 'cols'-argument
-	## if explicitly passed
-	if (!missing(cols)) {
-		assert_formula(cols)
-	}
-
-	## construct series
-	## from input
-	constructed_series <- series(
-		x = cols,
-		default_formula = ~close,
-		data = x,
-		...
-	)
-
-	.Call(
-		C_impl_ta_MOM_lookback,
-		## splice:lookback:start
-		constructed_series[[1]],
-		as.integer(n)
-		## splice:lookback:end
-	)
-}
 
 #' @usage NULL
 #' @aliases momentum

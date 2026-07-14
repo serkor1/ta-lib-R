@@ -122,38 +122,6 @@ acceleration_bands.matrix <- function(
 	)
 }
 
-#' @usage NULL
-ACCBANDS_lookback <- acceleration_bands_lookback <- function(
-	x,
-	cols,
-	n = 20,
-	...
-) {
-	## validate 'cols'-argument
-	## if explicitly passed
-	if (!missing(cols)) {
-		assert_formula(cols)
-	}
-
-	## construct series
-	## from input
-	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low + close,
-		data = x,
-		...
-	)
-
-	.Call(
-		C_impl_ta_ACCBANDS_lookback,
-		## splice:lookback:start
-		constructed_series[[1]],
-		constructed_series[[2]],
-		constructed_series[[3]],
-		as.integer(n)
-		## splice:lookback:end
-	)
-}
 
 #' @usage NULL
 #' @aliases acceleration_bands

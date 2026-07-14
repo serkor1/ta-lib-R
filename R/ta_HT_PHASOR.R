@@ -113,34 +113,6 @@ phasor_components.matrix <- function(
 	)
 }
 
-#' @usage NULL
-HT_PHASOR_lookback <- phasor_components_lookback <- function(
-	x,
-	cols,
-	...
-) {
-	## validate 'cols'-argument
-	## if explicitly passed
-	if (!missing(cols)) {
-		assert_formula(cols)
-	}
-
-	## construct series
-	## from input
-	constructed_series <- series(
-		x = cols,
-		default_formula = ~close,
-		data = x,
-		...
-	)
-
-	.Call(
-		C_impl_ta_HT_PHASOR_lookback,
-		## splice:lookback:start
-		constructed_series[[1]]
-		## splice:lookback:end
-	)
-}
 
 #' @usage NULL
 #' @aliases phasor_components

@@ -120,36 +120,6 @@ rate_of_change.matrix <- function(
 	)
 }
 
-#' @usage NULL
-ROC_lookback <- rate_of_change_lookback <- function(
-	x,
-	cols,
-	n = 10,
-	...
-) {
-	## validate 'cols'-argument
-	## if explicitly passed
-	if (!missing(cols)) {
-		assert_formula(cols)
-	}
-
-	## construct series
-	## from input
-	constructed_series <- series(
-		x = cols,
-		default_formula = ~close,
-		data = x,
-		...
-	)
-
-	.Call(
-		C_impl_ta_ROC_lookback,
-		## splice:lookback:start
-		constructed_series[[1]],
-		as.integer(n)
-		## splice:lookback:end
-	)
-}
 
 #' @usage NULL
 #' @aliases rate_of_change

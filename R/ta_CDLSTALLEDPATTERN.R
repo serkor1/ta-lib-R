@@ -133,36 +133,6 @@ stalled_pattern.matrix <- function(
 }
 
 #' @usage NULL
-CDLSTALLEDPATTERN_lookback <- stalled_pattern_lookback <- function(
-	x,
-	cols,
-	...
-) {
-	## validate 'cols'-argument
-	## if explicitly passed
-	if (!missing(cols)) {
-		assert_formula(cols)
-	}
-
-	## construct series
-	## from input
-	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
-		...
-	)
-
-	.Call(
-		C_impl_ta_CDLSTALLEDPATTERN_lookback,
-		constructed_series[[1]],
-		constructed_series[[2]],
-		constructed_series[[3]],
-		constructed_series[[4]]
-	)
-}
-
-#' @usage NULL
 #' @aliases stalled_pattern
 #'
 #' @export

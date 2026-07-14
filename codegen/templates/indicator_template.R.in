@@ -110,31 +110,3 @@ ${FUN}.matrix <- function(
 			...
 		)
 }
-
-#' @usage NULL
-${ALIAS}_lookback <- ${FUN}_lookback <- function(
-	x,
-	cols,${ARGS}
-	...
-) {
-	## validate 'cols'-argument
-	## if explicitly passed
-	if (!missing(cols)) {
-		assert_formula(cols)
-	}
-
-	## construct series
-	## from input
-	constructed_series <- series(
-		x = cols,
-		default_formula = ${FORMULA},
-		data = x,
-		...
-	)
-
-	.Call(
-		C_impl_ta_${TA_FUN}_lookback,
-		## splice:lookback:start
-		## splice:lookback:end
-	)
-}

@@ -133,36 +133,6 @@ three_inside.matrix <- function(
 }
 
 #' @usage NULL
-CDL3INSIDE_lookback <- three_inside_lookback <- function(
-	x,
-	cols,
-	...
-) {
-	## validate 'cols'-argument
-	## if explicitly passed
-	if (!missing(cols)) {
-		assert_formula(cols)
-	}
-
-	## construct series
-	## from input
-	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
-		...
-	)
-
-	.Call(
-		C_impl_ta_CDL3INSIDE_lookback,
-		constructed_series[[1]],
-		constructed_series[[2]],
-		constructed_series[[3]],
-		constructed_series[[4]]
-	)
-}
-
-#' @usage NULL
 #' @aliases three_inside
 #'
 #' @export

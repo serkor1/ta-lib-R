@@ -46,21 +46,3 @@ testthat::test_that(desc = 'Output type', code = {
 		is.null(dim(output))
 	)
 })
-
-## test the output's attribute "lookback" matches
-## the lookback()
-testthat::test_that(desc = 'Lookback equivalence', code = {
-	output <- attr(
-		rolling_correlation(x = SPY[, 1], y = SPY[, 2]),
-		"lookback"
-	)
-
-	testthat::expect_equal(
-		object = output,
-		expected = lookback(
-			FUN = rolling_correlation,
-			x = SPY[, 1],
-			y = SPY[, 2]
-		)
-	)
-})

@@ -85,19 +85,3 @@ rolling_correlation.numeric <- function(
 	## return indicator
 	x
 }
-
-#' @usage NULL
-CORREL_lookback <- rolling_correlation_lookback <- function(
-	x,
-	y,
-	n = 30
-) {
-	.Call(
-		C_impl_ta_CORREL_lookback,
-		## splice:lookback:start
-		as.double(x),
-		as.double(y),
-		as.integer(n)
-		## splice:lookback:end
-	)
-}
