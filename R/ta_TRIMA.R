@@ -171,37 +171,6 @@ triangular_moving_average.numeric <- function(
 }
 
 #' @usage NULL
-TRIMA_lookback <- triangular_moving_average_lookback <- function(
-	x,
-	cols,
-	n = 30,
-	...
-) {
-	## validate 'cols'-argument
-	## if explicitly passed
-	if (!missing(cols)) {
-		assert_formula(cols)
-	}
-
-	## construct series
-	## from input
-	constructed_series <- series(
-		x = cols,
-		default_formula = ~close,
-		data = x,
-		...
-	)
-
-	.Call(
-		C_impl_ta_TRIMA_lookback,
-		## splice:lookback:start
-		as.double(constructed_series[[1]]),
-		as.integer(n)
-		## splice:lookback:end
-	)
-}
-
-#' @usage NULL
 #' @aliases triangular_moving_average
 #'
 #' @export

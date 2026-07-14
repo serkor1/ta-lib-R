@@ -121,37 +121,6 @@ aroon_oscillator.matrix <- function(
 	)
 }
 
-#' @usage NULL
-AROONOSC_lookback <- aroon_oscillator_lookback <- function(
-	x,
-	cols,
-	n = 14,
-	...
-) {
-	## validate 'cols'-argument
-	## if explicitly passed
-	if (!missing(cols)) {
-		assert_formula(cols)
-	}
-
-	## construct series
-	## from input
-	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low,
-		data = x,
-		...
-	)
-
-	.Call(
-		C_impl_ta_AROONOSC_lookback,
-		## splice:lookback:start
-		constructed_series[[1]],
-		constructed_series[[2]],
-		as.integer(n)
-		## splice:lookback:end
-	)
-}
 
 #' @usage NULL
 #' @aliases aroon_oscillator

@@ -137,40 +137,6 @@ moving_average_convergence_divergence.matrix <- function(
 	)
 }
 
-#' @usage NULL
-MACD_lookback <- moving_average_convergence_divergence_lookback <- function(
-	x,
-	cols,
-	fast = 12,
-	slow = 26,
-	signal = 9,
-	...
-) {
-	## validate 'cols'-argument
-	## if explicitly passed
-	if (!missing(cols)) {
-		assert_formula(cols)
-	}
-
-	## construct series
-	## from input
-	constructed_series <- series(
-		x = cols,
-		default_formula = ~close,
-		data = x,
-		...
-	)
-
-	.Call(
-		C_impl_ta_MACD_lookback,
-		## splice:lookback:start
-		constructed_series[[1]],
-		as.integer(fast),
-		as.integer(slow),
-		as.integer(signal)
-		## splice:lookback:end
-	)
-}
 
 #' @usage NULL
 #' @aliases moving_average_convergence_divergence
