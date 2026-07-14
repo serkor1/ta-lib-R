@@ -27,6 +27,10 @@
 #undef TA_INDICATOR
 #undef TA_LOOKBACK
 
+/* trading-volume wrappers (volume.c) */
+extern SEXP impl_ta_VOLUME(SEXP, SEXP, SEXP);
+extern SEXP impl_ta_VOLUME_lookback(SEXP, SEXP);
+
 /* global-setter wrappers (talib_globals.c) */
 extern SEXP ta_set_unstable_period(SEXP, SEXP);
 extern SEXP ta_set_compatibility(SEXP);
@@ -43,6 +47,8 @@ static const R_CallMethodDef CallEntries[] = {
 #include "TA-Lib.h"
 #undef TA_INDICATOR
 #undef TA_LOOKBACK
+  {"impl_ta_VOLUME", (DL_FUNC)&impl_ta_VOLUME, 3},
+  {"impl_ta_VOLUME_lookback", (DL_FUNC)&impl_ta_VOLUME_lookback, 2},
   {"ta_set_unstable_period", (DL_FUNC)&ta_set_unstable_period, 2},
   {"ta_set_compatibility", (DL_FUNC)&ta_set_compatibility, 1},
   {"set_candle_setting", (DL_FUNC)&set_candle_setting, 4},
