@@ -1,5 +1,5 @@
 // data-frame.c
-// 
+//
 // Description:
 //  This C-routine converts a <matrix> to a <data.frame>
 //  on the R-side. It is implemented specifically for {talib}
@@ -16,11 +16,11 @@
 // `{talib}` = talib:::map_dfr(x),
 // `{base}` = as.data.frame(x)
 // )
-// 
+//
 // #> # A tibble: 2 × 6
 // #>   expression      min   median `itr/sec` mem_alloc `gc/sec`
 // #>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-// #> 1 {talib}      1.72µs   2.56µs   372826.    1.88MB      0  
+// #> 1 {talib}      1.72µs   2.56µs   372826.    1.88MB      0
 // #> 2 {base}      16.04µs   19.4µs    49028.   13.36KB     29.4
 // ```
 //
@@ -30,7 +30,7 @@
 #include <string.h>
 
 // clang-format off
-static SEXP map_dfr_impl(
+static SEXP impl_map_dfr(
   SEXP x, 
   SEXPTYPE type
 )
@@ -55,20 +55,23 @@ static SEXP map_dfr_impl(
   ++protection_counter;
 
   // construct columns
+  //
+  // Each column is stored straight into data_frame with SET_VECTOR_ELT and
+  // then filled. allocVector() returns the vector before SET_VECTOR_ELT runs,
+  // and SET_VECTOR_ELT itself does not allocate, so the fresh column is rooted
+  // in the already-protected data_frame with no intervening GC - no per-column
+  // PROTECT is needed, and the protection stack stays at constant depth.
   if (type == REALSXP) {
     const double *restrict x_ptr = REAL(x);
     const size_t col_bytes = nrow_len * sizeof(double);
 
     for (int j = 0; j < ncols; ++j) {
-      SEXP column = PROTECT(allocVector(REALSXP, nrows));
-      ++protection_counter;
+      SEXP column = allocVector(REALSXP, nrows);
+      SET_VECTOR_ELT(data_frame, j, column);
 
       double *restrict column_ptr = REAL(column);
-
       const double *restrict src = x_ptr + (size_t)j * nrows;
       memcpy(column_ptr, src, col_bytes);
-
-      SET_VECTOR_ELT(data_frame, j, column);
     }
 
   } else {
@@ -76,14 +79,12 @@ static SEXP map_dfr_impl(
     const size_t col_bytes = nrow_len * sizeof(int);
 
     for (int j = 0; j < ncols; ++j) {
-      SEXP column = PROTECT(allocVector(INTSXP, nrows));
-      ++protection_counter;
+      SEXP column = allocVector(INTSXP, nrows);
+      SET_VECTOR_ELT(data_frame, j, column);
 
       int *restrict column_ptr = INTEGER(column);
       const int *restrict src = x_ptr + (size_t)j * nrows;
       memcpy(column_ptr, src, col_bytes);
-
-      SET_VECTOR_ELT(data_frame, j, column);
     }
   }
 
@@ -119,16 +120,21 @@ static SEXP map_dfr_impl(
   return data_frame;
 }
 
+// Map <matrix> to <data.frame>
+//
+// Description:
+//  Exported functions that converts <matrix> to <data.frame>.
+//  Integers and doubles are handled on the R-side via utils.R
 // clang-format off
 SEXP map_dfr_double(SEXP x)
 // clang-format on
 {
-  return map_dfr_impl(x, REALSXP);
+  return impl_map_dfr(x, REALSXP);
 }
 
 // clang-format off
 SEXP map_dfr_integer(SEXP x)
 // clang-format on
 {
-  return map_dfr_impl(x, INTSXP);
+  return impl_map_dfr(x, INTSXP);
 }
