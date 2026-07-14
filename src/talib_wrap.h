@@ -185,7 +185,7 @@
     TA_OUT_COLNAMES(TA_OUTPUT_NAME_)                                           \
     /* attach the indicator's inherent lookback to the output matrix */        \
     int ta_lb = TA_##NAME##_Lookback(TA_JOIN(TA_LB_PASS, OPTS_));              \
-    set_attribute(out, TA_ATTR_LOOKBACK, Rf_ScalarInteger(ta_lb), &nprot);     \
+    set_attribute(out, LOOKBACK, Rf_ScalarInteger(ta_lb), &nprot);     \
     UNPROTECT(nprot);                                                          \
     return out;                                                                \
   }                                                                            \
@@ -230,8 +230,8 @@
 #define TA_LB_WRAPPER(NAME, OPTS_)                                             \
   SEXP impl_ta_##NAME##_lookback(TA_LB_PARAMS(OPTS_)) {                        \
     TA_APPLY(TA_OPT_READ, OPTS_)                                               \
-    return Rf_ScalarInteger(ta_normalize_lookback(                             \
-      TA_##NAME##_Lookback(TA_JOIN(TA_LB_PASS, OPTS_))));                      \
+    return Rf_ScalarInteger(                                                   \
+      normalize_lookback(TA_##NAME##_Lookback(TA_JOIN(TA_LB_PASS, OPTS_))));   \
   }
 
 /* R_CallMethodDef row: arity = #opts (no inputs, no na_bridge). */
