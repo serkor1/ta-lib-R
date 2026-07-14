@@ -1,10 +1,10 @@
 /// TA-Lib header parser
-/// 
+///
 /// Functions are parsed from 'src/ta-lib/include/ta_func.h'
 /// deterministically - All functions follows the same structure
 /// TA_foo(InputIdx, Input, OptionalArguments, OutputIdx, Output)
 /// which means that the entire header can just be mined directly.
-/// 
+///
 /// Prior to this Rust parser, a BASH script were used to achieve the
 /// same thing - however, it introduced a significant overhead when new
 /// arguments were introduced on the R side and the BASH script kept
@@ -17,7 +17,7 @@ pub struct TA_Lib {
     pub input: Vec<String>,
     pub optional_input: Vec<String>,
     pub output_indicators: Vec<String>,
-    pub output_names: Vec<String>
+    pub output_names: Vec<String>,
 }
 
 /// Each TA_Lib function defined in the header
@@ -25,18 +25,18 @@ pub struct TA_Lib {
 ///
 /// /*
 ///  * TA_ACCBANDS - Acceleration Bands
-///  * 
+///  *
 ///  * Input  = High, Low, Close
 ///  * Output = double, double, double
-///  * 
+///  *
 ///  * Optional Parameters
 ///  * -------------------
 ///  * optInTimePeriod:(From 2 to 100000)
 ///  *    Number of period
-///  * 
-///  * 
+///  *
+///  *
 ///  */
-/// 
+///
 /// TA_LIB_API TA_RetCode TA_ACCBANDS(
 ///    int startIdx,
 ///    int endIdx,
@@ -53,7 +53,7 @@ pub struct TA_Lib {
 ///
 /// So each function can be easily identified
 /// and parsed accordingly
-/// 
+///
 /// The goal is to build a X-Macro on the C-side
 /// that is variadic to reduce the amount of code
 /// in the wrapper
@@ -65,9 +65,7 @@ pub fn purge_comments(TA: &str) -> String {
 
     // the function outputs
     // a string
-    let mut output = String::with_capacity(
-        TA.len()
-    );
+    let mut output = String::with_capacity(TA.len());
 
     // strip all comments
     let mut i = 0;
@@ -156,7 +154,11 @@ pub fn extract_signature(indicator: &str, header: &str) -> TA_Lib {
                 // determine the type of the array
                 // if its an output arrays and set
                 // output indicator arrays (e.g outReal)
-                f.argument_type = if p.contains("double") { "TA_DOUBLE" } else { "TA_INTEGER" };
+                f.argument_type = if p.contains("double") {
+                    "TA_DOUBLE"
+                } else {
+                    "TA_INTEGER"
+                };
                 f.output_indicators.push(nm);
             }
         } else {
@@ -182,7 +184,6 @@ pub fn extract_signature(indicator: &str, header: &str) -> TA_Lib {
     // from the outputs the indicator name is replaced so
     // outReal becomes SMA for TA_SMA()
     for output in &f.output_indicators {
-
         // strip the following strings
         // from the output: 'out', 'Real' and 'Integer'
         let bare = output.strip_prefix("out").unwrap_or(output);
@@ -265,7 +266,10 @@ mod tests {
                 "OPT_MA(optInMAType)"
             ]
         );
-        assert_eq!(f.output_indicators, ["outRealUpperBand", "outRealMiddleBand", "outRealLowerBand"]);
+        assert_eq!(
+            f.output_indicators,
+            ["outRealUpperBand", "outRealMiddleBand", "outRealLowerBand"]
+        );
         assert_eq!(f.output_names, ["UpperBand", "MiddleBand", "LowerBand"]);
     }
 
