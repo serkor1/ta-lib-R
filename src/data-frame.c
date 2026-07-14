@@ -24,7 +24,8 @@
 // #> 2 {base}      16.04µs   19.4µs    49028.   13.36KB     29.4
 // ```
 //
-// <sup>Created on 2026-07-13 with [reprex v2.1.1](https://reprex.tidyverse.org)</sup>
+// <sup>Created on 2026-07-13 with [reprex
+// v2.1.1](https://reprex.tidyverse.org)</sup>
 #include <R.h>
 #include <Rinternals.h>
 #include <string.h>

@@ -90,3 +90,17 @@ SEXP ta_set_compatibility(SEXP s_value) {
     "TA_SetCompatibility");
   return R_NilValue;
 }
+
+// initialize TA-Lib
+//
+// NOTE: Only kept for backwards compatibilit
+//       will be deleted after merge
+SEXP initialize_ta_lib(void) {
+  TA_RetCode return_code = TA_Initialize();
+
+  if (return_code != TA_SUCCESS) {
+    Rf_error("TA_Initialize failed (code %d)", return_code);
+  }
+
+  return ScalarLogical(1);
+}

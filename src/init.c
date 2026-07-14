@@ -32,6 +32,7 @@ extern SEXP ta_set_unstable_period(SEXP, SEXP);
 extern SEXP ta_set_compatibility(SEXP);
 extern SEXP set_candle_setting(SEXP, SEXP, SEXP, SEXP);
 extern SEXP reset_candle_setting(SEXP);
+extern SEXP initialize_ta_lib(void);
 extern SEXP map_dfr_double(SEXP);
 extern SEXP map_dfr_integer(SEXP);
 
@@ -49,7 +50,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"rownames_matrix", (DL_FUNC)&rownames_matrix, 3},
   {"map_dfr_double", (DL_FUNC)&map_dfr_double, 1},
   {"map_dfr_integer", (DL_FUNC)&map_dfr_integer, 1},
-  {},
+  {"initialize_ta_lib", (DL_FUNC)&initialize_ta_lib, 0},
   {NULL, NULL, 0}};
 
 // Initialize/Unload {talib}

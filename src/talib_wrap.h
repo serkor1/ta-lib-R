@@ -9,6 +9,8 @@
 
 #include "NA-handling.h"
 #include "attributes.h"
+#include "names.h"
+#include "shift.h"
 #include "talib_map.h"
 
 // Extract nested expressions from each
