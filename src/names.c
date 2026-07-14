@@ -1,3 +1,46 @@
+#include "names.h"
+
+// Column Names
+//
+// Description:
+//    Set the column names of the <matrix>-object
+// clang-format off
+void set_colnames(
+  SEXP x, // assumed to be a matrix
+  const char *const *names, 
+  int k // columns
+)
+// clang-format on
+{
+  // protection counter
+  int protection_counter = 0;
+
+  // clang-format off
+  SEXP dimensions = PROTECT(
+    Rf_allocVector(VECSXP, 2)
+  );
+  protection_counter++;
+
+  SEXP colnames = PROTECT(
+    Rf_allocVector(STRSXP, k)
+  );
+  protection_counter++;
+  // clang-format on
+
+  for (int j = 0; j < k; j++) {
+    SET_STRING_ELT(colnames, j, Rf_mkChar(names[j]));
+  }
+
+  SET_VECTOR_ELT(dimensions, 0, R_NilValue);
+  SET_VECTOR_ELT(dimensions, 1, colnames);
+
+  // set attributes of
+  // the underlying <matrix>
+  Rf_setAttrib(x, R_DimNamesSymbol, dimensions);
+
+  UNPROTECT(protection_counter);
+}
+
 // names.c
 //
 // When using rownames(x) <- x_names from R
@@ -17,23 +60,21 @@
 //
 // NOTE: If colnames is NOT passed in matrix methods
 //       it will crash.
-#include <R.h>
-#include <R_ext/Rdynload.h>
-#include <Rinternals.h>
 
 // clang-format off
-SEXP rownames_data_frame(
+void rownames_data_frame(
   SEXP x, 
   SEXP rownames
 )
 // clang-format on
 {
-  setAttrib(x, R_RowNamesSymbol, rownames);
-  return R_NilValue;
+  Rf_setAttrib(x, R_RowNamesSymbol, rownames);
+
+  return;
 }
 
 // clang-format off
-SEXP rownames_matrix(
+void rownames_matrix(
   SEXP x, 
   SEXP rownames, 
   SEXP colnames
@@ -42,15 +83,16 @@ SEXP rownames_matrix(
 {
   // clang-format off
   SEXP container = PROTECT(
-    allocVector(VECSXP, 2)
+    Rf_allocVector(VECSXP, 2)
   );
   // clang-format on
 
   SET_VECTOR_ELT(container, 0, rownames);
   SET_VECTOR_ELT(container, 1, colnames);
 
-  setAttrib(x, R_DimNamesSymbol, container);
+  Rf_setAttrib(x, R_DimNamesSymbol, container);
 
   UNPROTECT(1);
-  return R_NilValue;
+
+  return;
 }
