@@ -4,7 +4,7 @@
 #' @title Average Deviation
 #' @templateVar .title Average Deviation
 #' @templateVar .author Serkan Korkmaz
-#' @templateVar .fun AVGDEV
+#' @templateVar .fun average_deviation
 #' @templateVar .family Price Transform
 #' @templateVar .formula ~close
 #'
@@ -14,28 +14,28 @@
 #' @template description
 #'
 #' @template returns
-AVGDEV <- function(
+average_deviation <- function(
 	x,
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
-	UseMethod("AVGDEV")
+	UseMethod("average_deviation")
 }
 
 #' @export
 #' @usage NULL
-#' @rdname AVGDEV
+#' @rdname average_deviation
 #'
-#' @aliases AVGDEV
-AVGDEV <- AVGDEV
+#' @aliases average_deviation
+AVGDEV <- average_deviation
 
 #' @usage NULL
-#' @aliases AVGDEV
+#' @aliases average_deviation
 #'
 #' @export
-AVGDEV.default <- function(
+average_deviation.default <- function(
 	x,
 	cols,
 	timePeriod = 14,
@@ -78,10 +78,10 @@ AVGDEV.default <- function(
 }
 
 #' @usage NULL
-#' @aliases AVGDEV
+#' @aliases average_deviation
 #'
 #' @export
-AVGDEV.data.frame <- function(
+average_deviation.data.frame <- function(
 	x,
 	cols,
 	timePeriod = 14,
@@ -89,7 +89,7 @@ AVGDEV.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		AVGDEV.default(
+		average_deviation.default(
 			x = x,
 			cols = cols,
 			timePeriod = timePeriod,
@@ -100,17 +100,17 @@ AVGDEV.data.frame <- function(
 }
 
 #' @usage NULL
-#' @aliases AVGDEV
+#' @aliases average_deviation
 #'
 #' @export
-AVGDEV.matrix <- function(
+average_deviation.matrix <- function(
 	x,
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
-	AVGDEV.default(
+	average_deviation.default(
 		x = x,
 		cols = cols,
 		timePeriod = timePeriod,
@@ -120,7 +120,7 @@ AVGDEV.matrix <- function(
 }
 
 #' @usage NULL
-AVGDEV_lookback <- function(
+average_deviation_lookback <- function(
 	x,
 	cols,
 	timePeriod = 14,
@@ -133,10 +133,10 @@ AVGDEV_lookback <- function(
 	)
 }
 #' @usage NULL
-#' @aliases AVGDEV
+#' @aliases average_deviation
 #'
 #' @export
-AVGDEV.numeric <- function(
+average_deviation.numeric <- function(
 	x,
 	cols,
 	timePeriod = 14,

@@ -6,11 +6,11 @@
 
 ## alias and function similarity
 ## checks this ensures that
-## MAVP and MAVP produces the same results
+## variable_moving_average_period and MAVP produces the same results
 testthat::test_that(desc = 'Alias and function similarity', code = {
 	## 1) test that the alias and
 	##    function returns the same values
-	output <- MAVP(SPY)
+	output <- variable_moving_average_period(SPY)
 	alias <- MAVP(SPY)
 
 	## 1.1) check if the values
@@ -29,7 +29,7 @@ testthat::test_that(desc = 'Class in, class out (<matrix>)', code = {
 	## 1) check that the output class
 	##    matches the input class
 	testthat::expect_true(
-		inherits(MAVP(SPY), class(SPY))
+		inherits(variable_moving_average_period(SPY), class(SPY))
 	)
 })
 
@@ -38,7 +38,7 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 	## 1) check that the output class
 	##    matches the input class
 	testthat::expect_true(
-		inherits(MAVP(BTC), class(BTC))
+		inherits(variable_moving_average_period(BTC), class(BTC))
 	)
 })
 
@@ -50,10 +50,10 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 ##       series() function
 testthat::test_that(desc = 'Default calls', code = {
 	testthat::expect_equal(
-		object = MAVP(
+		object = variable_moving_average_period(
 			BTC
 		),
-		expected = MAVP(
+		expected = variable_moving_average_period(
 			BTC,
 			cols = ~ close + periods
 		)
@@ -66,7 +66,7 @@ testthat::test_that(desc = 'Default calls', code = {
 ## <data.frame> object
 testthat::test_that(desc = 'Equal length of input and output for <data.frame> with na.bridge = TRUE', code = {
 	testthat::expect_equal(
-		object = nrow(MAVP(
+		object = nrow(variable_moving_average_period(
 			ATOM,
 			na.bridge = TRUE
 		)),
@@ -81,7 +81,7 @@ testthat::test_that(desc = 'Row names are respected for <data.frame>, na.bridge 
 	x_names <- row.names(ATOM)
 
 	## calculate indicator
-	indicator <- MAVP(ATOM, na.bridge = TRUE)
+	indicator <- variable_moving_average_period(ATOM, na.bridge = TRUE)
 
 	testthat::expect_equal(
 		object = x_names,
@@ -95,7 +95,7 @@ testthat::test_that(desc = 'Row names are respected for <data.frame>, na.bridge 
 ## <data.frame> object
 testthat::test_that(desc = 'Equal length of input and output for <data.frame>', code = {
 	testthat::expect_equal(
-		object = nrow(MAVP(
+		object = nrow(variable_moving_average_period(
 			BTC
 		)),
 		expected = nrow(BTC)
@@ -109,7 +109,7 @@ testthat::test_that(desc = 'Row names are respected for <data.frame>', code = {
 	x_names <- row.names(BTC)
 
 	## calculate indicator
-	indicator <- MAVP(BTC)
+	indicator <- variable_moving_average_period(BTC)
 
 	testthat::expect_equal(
 		object = x_names,
@@ -120,7 +120,7 @@ testthat::test_that(desc = 'Row names are respected for <data.frame>', code = {
 ## <matrix> object
 testthat::test_that(desc = 'Equal length of input and output for <matrix>', code = {
 	testthat::expect_equal(
-		object = nrow(MAVP(
+		object = nrow(variable_moving_average_period(
 			SPY
 		)),
 		expected = nrow(SPY)
@@ -136,7 +136,7 @@ testthat::test_that(desc = 'Row names are respected for <matrix>', code = {
 	rownames(SPY) <- paste0("row", 1:nrow(SPY))
 
 	## calculate indicator
-	indicator <- MAVP(SPY)
+	indicator <- variable_moving_average_period(SPY)
 
 	testthat::expect_equal(
 		object = paste0("row", 1:nrow(SPY)),

@@ -4,7 +4,7 @@
 #' @title Moving average with variable period
 #' @templateVar .title Moving average with variable period
 #' @templateVar .author Serkan Korkmaz
-#' @templateVar .fun MAVP
+#' @templateVar .fun variable_moving_average_period
 #' @templateVar .family Overlap Studies
 #' @templateVar .formula ~close + periods
 #'
@@ -16,7 +16,7 @@
 #' @param maximumPeriod ([integer]). Value higher than maximum will be changed to Maximum period. Defaults to `30`.
 #' @param maType ([integer]). Type of Moving Average. Defaults to `0` ([SMA]). Can also be passed as talib::SMA.
 #' @template returns
-MAVP <- function(
+variable_moving_average_period <- function(
 	x,
 	cols,
 	minimumPeriod = 2,
@@ -25,21 +25,21 @@ MAVP <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	UseMethod("MAVP")
+	UseMethod("variable_moving_average_period")
 }
 
 #' @export
 #' @usage NULL
-#' @rdname MAVP
+#' @rdname variable_moving_average_period
 #'
-#' @aliases MAVP
-MAVP <- MAVP
+#' @aliases variable_moving_average_period
+MAVP <- variable_moving_average_period
 
 #' @usage NULL
-#' @aliases MAVP
+#' @aliases variable_moving_average_period
 #'
 #' @export
-MAVP.default <- function(
+variable_moving_average_period.default <- function(
 	x,
 	cols,
 	minimumPeriod = 2,
@@ -87,10 +87,10 @@ MAVP.default <- function(
 }
 
 #' @usage NULL
-#' @aliases MAVP
+#' @aliases variable_moving_average_period
 #'
 #' @export
-MAVP.data.frame <- function(
+variable_moving_average_period.data.frame <- function(
 	x,
 	cols,
 	minimumPeriod = 2,
@@ -100,7 +100,7 @@ MAVP.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		MAVP.default(
+		variable_moving_average_period.default(
 			x = x,
 			cols = cols,
 			minimumPeriod = minimumPeriod,
@@ -113,10 +113,10 @@ MAVP.data.frame <- function(
 }
 
 #' @usage NULL
-#' @aliases MAVP
+#' @aliases variable_moving_average_period
 #'
 #' @export
-MAVP.matrix <- function(
+variable_moving_average_period.matrix <- function(
 	x,
 	cols,
 	minimumPeriod = 2,
@@ -125,7 +125,7 @@ MAVP.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	MAVP.default(
+	variable_moving_average_period.default(
 		x = x,
 		cols = cols,
 		minimumPeriod = minimumPeriod,
@@ -137,7 +137,7 @@ MAVP.matrix <- function(
 }
 
 #' @usage NULL
-MAVP_lookback <- function(
+variable_moving_average_period_lookback <- function(
 	x,
 	cols,
 	minimumPeriod = 2,
