@@ -74,7 +74,7 @@ absolute_price_oscillator.default <- function(
 		constructed_series[[1]],
 		as.integer(fastPeriod),
 		as.integer(slowPeriod),
-		as.integer(maType),
+		as.maType(maType),
 		as.logical(na.bridge)
 	)
 
@@ -149,7 +149,7 @@ absolute_price_oscillator_lookback <- function(
 		C_impl_ta_APO_lookback,
 		as.integer(fastPeriod),
 		as.integer(slowPeriod),
-		as.integer(maType)
+		as.maType(maType)
 	)
 }
 #' @usage NULL
@@ -180,7 +180,7 @@ absolute_price_oscillator.numeric <- function(
 		as.double(x),
 		as.integer(fastPeriod),
 		as.integer(slowPeriod),
-		as.integer(maType),
+		as.maType(maType),
 		as.logical(na.bridge)
 	)
 

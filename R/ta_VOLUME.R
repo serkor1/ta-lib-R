@@ -71,7 +71,7 @@ trading_volume.default <- function(
 			maType,
 			function(x) {
 				as.integer(
-					unlist(x, use.names = FALSE)
+					x
 				)
 			}
 		),

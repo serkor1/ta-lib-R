@@ -76,7 +76,7 @@ fast_stochastic.default <- function(
 		constructed_series[[3]],
 		as.integer(fastKPeriod),
 		as.integer(fastDPeriod),
-		as.integer(fastDMa),
+		as.maType(fastDMa),
 		as.logical(na.bridge)
 	)
 
@@ -151,7 +151,7 @@ fast_stochastic_lookback <- function(
 		C_impl_ta_STOCHF_lookback,
 		as.integer(fastKPeriod),
 		as.integer(fastDPeriod),
-		as.integer(fastDMa)
+		as.maType(fastDMa)
 	)
 }
 #' @usage NULL

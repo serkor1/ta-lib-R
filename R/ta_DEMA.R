@@ -40,7 +40,8 @@ double_exponential_moving_average <- function(
 					as.integer(timePeriod)
 				},
 				maType = 3L
-			)
+			),
+			class = "maType"
 		)
 
 		return(x)

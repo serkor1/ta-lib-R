@@ -268,6 +268,7 @@ pub fn render_indicator(f: &MetaData, t: &Templates) -> String {
         .iter()
         .map(|a| match a.kind {
             OptionalType::Double => format!("as.double({})", a.name),
+            OptionalType::MAType => format!("as.maType({})", a.name),
             _ => format!("as.integer({})", a.name),
         })
         .collect();
@@ -637,7 +638,7 @@ tail
         // coerced optional inputs to C
         assert!(rendered.contains("bollinger_bands_lookback <- function("));
         assert!(rendered.contains(
-            "C_impl_ta_BBANDS_lookback,\n\t\tas.integer(timePeriod),\n\t\tas.double(deviationsUp),\n\t\tas.integer(maType)\n\t)"
+            "C_impl_ta_BBANDS_lookback,\n\t\tas.integer(timePeriod),\n\t\tas.double(deviationsUp),\n\t\tas.maType(maType)\n\t)"
         ));
 
         // BBANDS is a Main chart indicator: the plotly and ggplot

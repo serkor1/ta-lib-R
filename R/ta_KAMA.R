@@ -40,7 +40,8 @@ kaufman_adaptive_moving_average <- function(
 					as.integer(timePeriod)
 				},
 				maType = 6L
-			)
+			),
+			class = "maType"
 		)
 
 		return(x)

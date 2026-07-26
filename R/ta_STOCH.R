@@ -82,9 +82,9 @@ stochastic.default <- function(
 		constructed_series[[3]],
 		as.integer(fastKPeriod),
 		as.integer(slowKPeriod),
-		as.integer(slowKMa),
+		as.maType(slowKMa),
 		as.integer(slowDPeriod),
-		as.integer(slowDMa),
+		as.maType(slowDMa),
 		as.logical(na.bridge)
 	)
 
@@ -169,9 +169,9 @@ stochastic_lookback <- function(
 		C_impl_ta_STOCH_lookback,
 		as.integer(fastKPeriod),
 		as.integer(slowKPeriod),
-		as.integer(slowKMa),
+		as.maType(slowKMa),
 		as.integer(slowDPeriod),
-		as.integer(slowDMa)
+		as.maType(slowDMa)
 	)
 }
 #' @usage NULL

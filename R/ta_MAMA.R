@@ -53,7 +53,8 @@ mesa_adaptive_moving_average <- function(
 					as.double(slowLimit)
 				},
 				maType = 7L
-			)
+			),
+			class = "maType"
 		)
 
 		return(x)

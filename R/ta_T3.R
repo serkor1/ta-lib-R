@@ -46,7 +46,8 @@ t3_exponential_moving_average <- function(
 					as.double(volumeFactor)
 				},
 				maType = 8L
-			)
+			),
+			class = "maType"
 		)
 
 		return(x)

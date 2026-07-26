@@ -40,7 +40,8 @@ exponential_moving_average <- function(
 					as.integer(timePeriod)
 				},
 				maType = 1L
-			)
+			),
+			class = "maType"
 		)
 
 		return(x)
