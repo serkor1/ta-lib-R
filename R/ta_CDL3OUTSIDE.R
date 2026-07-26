@@ -1,8 +1,8 @@
 #' @export
 #' @family Pattern Recognition
 #'
-#' @title Three Outside
-#' @templateVar .title Three Outside
+#' @title Three Outside Up/Down
+#' @templateVar .title Three Outside Up/Down
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun three_outside
 #' @templateVar .family Pattern Recognition
@@ -115,7 +115,12 @@ three_outside.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		three_outside.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ three_outside.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	three_outside.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ three_outside.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ three_outside.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases three_outside
@@ -225,7 +235,8 @@ three_outside.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

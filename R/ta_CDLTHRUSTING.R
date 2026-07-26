@@ -1,8 +1,8 @@
 #' @export
 #' @family Pattern Recognition
 #'
-#' @title Thrusting
-#' @templateVar .title Thrusting
+#' @title Thrusting Pattern
+#' @templateVar .title Thrusting Pattern
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun thrusting
 #' @templateVar .family Pattern Recognition
@@ -115,7 +115,12 @@ thrusting.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		thrusting.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ thrusting.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	thrusting.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ thrusting.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ thrusting.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases thrusting
@@ -225,7 +235,8 @@ thrusting.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

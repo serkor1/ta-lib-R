@@ -26,7 +26,7 @@
 dark_cloud_cover <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.5,
 	na.bridge = FALSE,
 	...
 ) {
@@ -47,7 +47,7 @@ CDLDARKCLOUDCOVER <- dark_cloud_cover
 dark_cloud_cover.default <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.5,
 	na.bridge = FALSE,
 	...
 ) {
@@ -91,7 +91,7 @@ dark_cloud_cover.default <- function(
 			constructed_series[[2]],
 			constructed_series[[3]],
 			constructed_series[[4]],
-			eps,
+			as.double(penetration),
 			normalize,
 			as.logical(na.bridge)
 		)
@@ -114,12 +114,18 @@ dark_cloud_cover.default <- function(
 dark_cloud_cover.data.frame <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.5,
 	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		dark_cloud_cover.default(
+			x = x,
+			cols = cols,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -130,11 +136,17 @@ dark_cloud_cover.data.frame <- function(
 dark_cloud_cover.matrix <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.5,
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	dark_cloud_cover.default(
+		x = x,
+		cols = cols,
+		penetration = penetration,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -144,7 +156,7 @@ dark_cloud_cover.matrix <- function(
 dark_cloud_cover.plotly <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.5,
 	na.bridge = FALSE,
 	...
 ) {
@@ -174,7 +186,8 @@ dark_cloud_cover.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		eps = eps
+		penetration = penetration,
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -197,7 +210,6 @@ dark_cloud_cover.plotly <- function(
 	plotly_object
 }
 
-
 #' @usage NULL
 #' @aliases dark_cloud_cover
 #'
@@ -205,7 +217,7 @@ dark_cloud_cover.plotly <- function(
 dark_cloud_cover.ggplot <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.5,
 	na.bridge = FALSE,
 	...
 ) {
@@ -234,7 +246,8 @@ dark_cloud_cover.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		eps = eps
+		penetration = penetration,
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

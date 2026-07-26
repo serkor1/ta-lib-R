@@ -1,11 +1,11 @@
 #' @export
-#' @family Cycle Indicator
+#' @family Cycle Indicators
 #'
 #' @title Hilbert Transform - SineWave
 #' @templateVar .title Hilbert Transform - SineWave
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun sine_wave
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Cycle Indicators
 #' @templateVar .formula ~close
 #'
 ## splice:documentation:start
@@ -62,9 +62,7 @@ sine_wave.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_HT_SINE,
-		## splice:call:start
 		constructed_series[[1]],
-		## splice:call:end
 		as.logical(na.bridge)
 	)
 
@@ -113,7 +111,17 @@ sine_wave.matrix <- function(
 	)
 }
 
-
+#' @usage NULL
+sine_wave_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_HT_SINE_lookback
+	)
+}
 #' @usage NULL
 #' @aliases sine_wave
 #'
@@ -136,9 +144,7 @@ sine_wave.numeric <- function(
 	## to 'C'
 	x <- .Call(
 		C_impl_ta_HT_SINE,
-		## splice:numeric:start
 		as.double(x),
-		## splice:numeric:end
 		as.logical(na.bridge)
 	)
 
@@ -148,7 +154,6 @@ sine_wave.numeric <- function(
 
 	x
 }
-
 
 #' @usage NULL
 #' @aliases sine_wave
@@ -264,9 +269,9 @@ sine_wave.ggplot <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability

@@ -1,8 +1,8 @@
 #' @export
 #' @family Pattern Recognition
 #'
-#' @title Tristar
-#' @templateVar .title Tristar
+#' @title Tristar Pattern
+#' @templateVar .title Tristar Pattern
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun tristar
 #' @templateVar .family Pattern Recognition
@@ -115,7 +115,12 @@ tristar.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		tristar.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ tristar.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	tristar.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ tristar.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ tristar.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases tristar
@@ -225,7 +235,8 @@ tristar.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

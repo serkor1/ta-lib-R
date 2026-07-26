@@ -26,7 +26,7 @@
 mat_hold <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.5,
 	na.bridge = FALSE,
 	...
 ) {
@@ -47,7 +47,7 @@ CDLMATHOLD <- mat_hold
 mat_hold.default <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.5,
 	na.bridge = FALSE,
 	...
 ) {
@@ -91,7 +91,7 @@ mat_hold.default <- function(
 			constructed_series[[2]],
 			constructed_series[[3]],
 			constructed_series[[4]],
-			eps,
+			as.double(penetration),
 			normalize,
 			as.logical(na.bridge)
 		)
@@ -114,12 +114,18 @@ mat_hold.default <- function(
 mat_hold.data.frame <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.5,
 	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		mat_hold.default(
+			x = x,
+			cols = cols,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -130,11 +136,17 @@ mat_hold.data.frame <- function(
 mat_hold.matrix <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.5,
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	mat_hold.default(
+		x = x,
+		cols = cols,
+		penetration = penetration,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -144,7 +156,7 @@ mat_hold.matrix <- function(
 mat_hold.plotly <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.5,
 	na.bridge = FALSE,
 	...
 ) {
@@ -174,7 +186,8 @@ mat_hold.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		eps = eps
+		penetration = penetration,
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -197,7 +210,6 @@ mat_hold.plotly <- function(
 	plotly_object
 }
 
-
 #' @usage NULL
 #' @aliases mat_hold
 #'
@@ -205,7 +217,7 @@ mat_hold.plotly <- function(
 mat_hold.ggplot <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.5,
 	na.bridge = FALSE,
 	...
 ) {
@@ -234,7 +246,8 @@ mat_hold.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		eps = eps
+		penetration = penetration,
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

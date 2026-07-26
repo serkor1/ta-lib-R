@@ -1,11 +1,11 @@
 #' @export
-#' @family Momentum Indicator
+#' @family Momentum Indicators
 #'
 #' @title Minus Directional Movement
 #' @templateVar .title Minus Directional Movement
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun minus_directional_movement
-#' @templateVar .family Momentum Indicator
+#' @templateVar .family Momentum Indicators
 #' @templateVar .formula ~high + low
 #'
 ## splice:documentation:start
@@ -16,7 +16,7 @@
 minus_directional_movement <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -37,7 +37,7 @@ MINUS_DM <- minus_directional_movement
 minus_directional_movement.default <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -64,11 +64,9 @@ minus_directional_movement.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_MINUS_DM,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
-		as.integer(n),
-		## splice:call:end
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
@@ -86,7 +84,7 @@ minus_directional_movement.default <- function(
 minus_directional_movement.data.frame <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -94,7 +92,7 @@ minus_directional_movement.data.frame <- function(
 		minus_directional_movement.default(
 			x = x,
 			cols = cols,
-			n = n,
+			timePeriod = timePeriod,
 			na.bridge = na.bridge,
 			...
 		)
@@ -108,20 +106,32 @@ minus_directional_movement.data.frame <- function(
 minus_directional_movement.matrix <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
 	minus_directional_movement.default(
 		x = x,
 		cols = cols,
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = na.bridge,
 		...
 	)
 }
 
-
+#' @usage NULL
+minus_directional_movement_lookback <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_MINUS_DM_lookback,
+		as.integer(timePeriod)
+	)
+}
 #' @usage NULL
 #' @aliases minus_directional_movement
 #'
@@ -129,7 +139,7 @@ minus_directional_movement.matrix <- function(
 minus_directional_movement.plotly <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -162,7 +172,7 @@ minus_directional_movement.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -179,7 +189,7 @@ minus_directional_movement.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	name <- sprintf("-DM(%d)", n)
+	name <- sprintf("-DM(%d)", timePeriod)
 
 	traces <- list(
 		list(y = ~MINUS_DM)
@@ -222,11 +232,11 @@ minus_directional_movement.plotly <- function(
 minus_directional_movement.ggplot <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -254,7 +264,7 @@ minus_directional_movement.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -275,7 +285,7 @@ minus_directional_movement.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- sprintf("-DM(%d)", n)
+	name <- sprintf("-DM(%d)", timePeriod)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

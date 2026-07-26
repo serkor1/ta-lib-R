@@ -115,7 +115,12 @@ rickshaw_man.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		rickshaw_man.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ rickshaw_man.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	rickshaw_man.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ rickshaw_man.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ rickshaw_man.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases rickshaw_man
@@ -225,7 +235,8 @@ rickshaw_man.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

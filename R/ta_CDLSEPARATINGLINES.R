@@ -115,7 +115,12 @@ separating_lines.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		separating_lines.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ separating_lines.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	separating_lines.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ separating_lines.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ separating_lines.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases separating_lines
@@ -225,7 +235,8 @@ separating_lines.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

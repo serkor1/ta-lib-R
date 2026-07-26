@@ -1,8 +1,8 @@
 #' @export
 #' @family Pattern Recognition
 #'
-#' @title High Wave
-#' @templateVar .title High Wave
+#' @title High-Wave Candle
+#' @templateVar .title High-Wave Candle
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun high_wave
 #' @templateVar .family Pattern Recognition
@@ -115,7 +115,12 @@ high_wave.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		high_wave.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ high_wave.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	high_wave.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ high_wave.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ high_wave.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases high_wave
@@ -225,7 +235,8 @@ high_wave.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

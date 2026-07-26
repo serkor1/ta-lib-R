@@ -115,7 +115,12 @@ stalled_pattern.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		stalled_pattern.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ stalled_pattern.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	stalled_pattern.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ stalled_pattern.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ stalled_pattern.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases stalled_pattern
@@ -225,7 +235,8 @@ stalled_pattern.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

@@ -115,7 +115,12 @@ three_line_strike.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		three_line_strike.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ three_line_strike.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	three_line_strike.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ three_line_strike.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ three_line_strike.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases three_line_strike
@@ -225,7 +235,8 @@ three_line_strike.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

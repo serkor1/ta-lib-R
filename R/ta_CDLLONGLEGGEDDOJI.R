@@ -115,7 +115,12 @@ long_legged_doji.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		long_legged_doji.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ long_legged_doji.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	long_legged_doji.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ long_legged_doji.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ long_legged_doji.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases long_legged_doji
@@ -225,7 +235,8 @@ long_legged_doji.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

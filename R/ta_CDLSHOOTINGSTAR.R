@@ -115,7 +115,12 @@ shooting_star.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		shooting_star.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ shooting_star.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	shooting_star.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ shooting_star.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ shooting_star.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases shooting_star
@@ -225,7 +235,8 @@ shooting_star.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

@@ -115,7 +115,12 @@ two_crows.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		two_crows.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ two_crows.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	two_crows.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ two_crows.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ two_crows.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases two_crows
@@ -225,7 +235,8 @@ two_crows.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

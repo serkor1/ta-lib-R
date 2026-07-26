@@ -62,11 +62,9 @@ typical_price.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_TYPPRICE,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		## splice:call:end
 		as.logical(na.bridge)
 	)
 
@@ -112,5 +110,17 @@ typical_price.matrix <- function(
 		cols = cols,
 		na.bridge = na.bridge,
 		...
+	)
+}
+
+#' @usage NULL
+typical_price_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_TYPPRICE_lookback
 	)
 }

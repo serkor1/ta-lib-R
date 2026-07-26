@@ -26,7 +26,7 @@
 morning_star <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
@@ -47,7 +47,7 @@ CDLMORNINGSTAR <- morning_star
 morning_star.default <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
@@ -91,7 +91,7 @@ morning_star.default <- function(
 			constructed_series[[2]],
 			constructed_series[[3]],
 			constructed_series[[4]],
-			eps,
+			as.double(penetration),
 			normalize,
 			as.logical(na.bridge)
 		)
@@ -114,12 +114,18 @@ morning_star.default <- function(
 morning_star.data.frame <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		morning_star.default(
+			x = x,
+			cols = cols,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -130,11 +136,17 @@ morning_star.data.frame <- function(
 morning_star.matrix <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	morning_star.default(
+		x = x,
+		cols = cols,
+		penetration = penetration,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -144,7 +156,7 @@ morning_star.matrix <- function(
 morning_star.plotly <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
@@ -174,7 +186,8 @@ morning_star.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		eps = eps
+		penetration = penetration,
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -197,7 +210,6 @@ morning_star.plotly <- function(
 	plotly_object
 }
 
-
 #' @usage NULL
 #' @aliases morning_star
 #'
@@ -205,7 +217,7 @@ morning_star.plotly <- function(
 morning_star.ggplot <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
@@ -234,7 +246,8 @@ morning_star.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		eps = eps
+		penetration = penetration,
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

@@ -1,8 +1,8 @@
 #' @export
 #' @family Pattern Recognition
 #'
-#' @title On-Neck
-#' @templateVar .title On-Neck
+#' @title On-Neck Pattern
+#' @templateVar .title On-Neck Pattern
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun on_neck
 #' @templateVar .family Pattern Recognition
@@ -115,7 +115,12 @@ on_neck.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		on_neck.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ on_neck.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	on_neck.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ on_neck.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ on_neck.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases on_neck
@@ -225,7 +235,8 @@ on_neck.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

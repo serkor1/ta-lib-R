@@ -115,7 +115,12 @@ upside_gap_2_crows.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		upside_gap_2_crows.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ upside_gap_2_crows.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	upside_gap_2_crows.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ upside_gap_2_crows.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ upside_gap_2_crows.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases upside_gap_2_crows
@@ -225,7 +235,8 @@ upside_gap_2_crows.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

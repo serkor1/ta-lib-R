@@ -34,31 +34,31 @@ reference:
     Measure the speed and strength of price movements. Includes
     oscillators and rate-of-change indicators such as RSI, MACD,
     Stochastic, CCI, Williams %R, and ADX.
-- contents: has_concept('Momentum Indicator')
+- contents: has_concept('Momentum Indicators')
 - title: Overlap Studies
   desc: >
     Indicators plotted directly on the price chart. Moving averages
     (SMA, EMA, WMA, DEMA, TEMA, KAMA), Bollinger Bands, Parabolic SAR,
     and other trend-following overlays.
-- contents: has_concept('Overlap Study')
+- contents: has_concept('Overlap Studies')
 - title: Cycle Indicators
   desc: >
     Detect dominant market cycles in price data using Hilbert Transform
     methods. Estimate cycle period, phase, and the in-phase /
     quadrature components of the analytic signal.
-- contents: has_concept('Cycle Indicator')
+- contents: has_concept('Cycle Indicators')
 - title: Volume Indicators
   desc: >
     Analyze trading volume to confirm price trends and spot divergences.
     Includes On-Balance Volume (OBV), Chaikin A/D Line, and
     A/D Oscillator.
-- contents: has_concept('Volume Indicator')
+- contents: has_concept('Volume Indicators')
 - title: Volatility Indicators
   desc: >
     Quantify the degree of price variation over a given period.
     Includes Average True Range (ATR), Normalized ATR (NATR), and
     True Range (TRANGE).
-- contents: has_concept('Volatility Indicator')
+- contents: has_concept('Volatility Indicators')
 - title: Financial Charts
   desc: >
     Build interactive candlestick and OHLC charts with plotly. Layer
@@ -70,7 +70,7 @@ reference:
     Compute rolling (moving-window) descriptive statistics over price
     or return series. Includes rolling variance, standard deviation,
     linear regression, and time series forecast.
-- contents: has_concept('Rolling Statistic')
+- contents: has_concept('Statistic Functions')
 - title: Price Transformations
   desc: >
     Transform raw OHLC prices into derived series. Average Price,

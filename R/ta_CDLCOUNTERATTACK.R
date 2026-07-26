@@ -1,8 +1,8 @@
 #' @export
 #' @family Pattern Recognition
 #'
-#' @title Counter Attack
-#' @templateVar .title Counter Attack
+#' @title Counterattack
+#' @templateVar .title Counterattack
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun counter_attack
 #' @templateVar .family Pattern Recognition
@@ -115,7 +115,12 @@ counter_attack.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		counter_attack.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ counter_attack.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	counter_attack.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ counter_attack.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ counter_attack.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases counter_attack
@@ -225,7 +235,8 @@ counter_attack.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

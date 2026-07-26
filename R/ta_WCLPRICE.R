@@ -62,11 +62,9 @@ weighted_close_price.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_WCLPRICE,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		## splice:call:end
 		as.logical(na.bridge)
 	)
 
@@ -112,5 +110,17 @@ weighted_close_price.matrix <- function(
 		cols = cols,
 		na.bridge = na.bridge,
 		...
+	)
+}
+
+#' @usage NULL
+weighted_close_price_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_WCLPRICE_lookback
 	)
 }

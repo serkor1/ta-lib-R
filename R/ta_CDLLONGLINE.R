@@ -1,8 +1,8 @@
 #' @export
 #' @family Pattern Recognition
 #'
-#' @title Long Line
-#' @templateVar .title Long Line
+#' @title Long Line Candle
+#' @templateVar .title Long Line Candle
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun long_line
 #' @templateVar .family Pattern Recognition
@@ -115,7 +115,12 @@ long_line.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		long_line.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ long_line.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	long_line.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ long_line.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ long_line.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases long_line
@@ -225,7 +235,8 @@ long_line.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

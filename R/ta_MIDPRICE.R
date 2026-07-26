@@ -1,11 +1,11 @@
 #' @export
-#' @family Price Transform
+#' @family Overlap Studies
 #'
-#' @title Midpoint Price
-#' @templateVar .title Midpoint Price
+#' @title Midpoint Price over period
+#' @templateVar .title Midpoint Price over period
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun midpoint_price
-#' @templateVar .family Price Transform
+#' @templateVar .family Overlap Studies
 #' @templateVar .formula ~high + low
 #'
 ## splice:documentation:start
@@ -16,7 +16,7 @@
 midpoint_price <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -37,7 +37,7 @@ MIDPRICE <- midpoint_price
 midpoint_price.default <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -64,11 +64,9 @@ midpoint_price.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_MIDPRICE,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
-		as.integer(n),
-		## splice:call:end
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
@@ -86,7 +84,7 @@ midpoint_price.default <- function(
 midpoint_price.data.frame <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -94,7 +92,7 @@ midpoint_price.data.frame <- function(
 		midpoint_price.default(
 			x = x,
 			cols = cols,
-			n = n,
+			timePeriod = timePeriod,
 			na.bridge = na.bridge,
 			...
 		)
@@ -108,15 +106,29 @@ midpoint_price.data.frame <- function(
 midpoint_price.matrix <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
 	midpoint_price.default(
 		x = x,
 		cols = cols,
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = na.bridge,
 		...
+	)
+}
+
+#' @usage NULL
+midpoint_price_lookback <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_MIDPRICE_lookback,
+		as.integer(timePeriod)
 	)
 }

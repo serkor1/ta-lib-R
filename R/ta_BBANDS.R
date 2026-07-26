@@ -1,18 +1,14 @@
 #' @export
-#' @family Overlap Study
+#' @family Overlap Studies
 #'
 #' @title Bollinger Bands
 #' @templateVar .title Bollinger Bands
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun bollinger_bands
-#' @templateVar .family Overlap Study
+#' @templateVar .family Overlap Studies
 #' @templateVar .formula ~close
 #'
 ## splice:documentation:start
-#' @param ma ([list]). The type of Moving Average (MA) used for the `MiddleBand`. [SMA] by default.
-#' @param sd ([double]). Deviation multiplier for the upper and lower band.
-#' @param sd_up ([double]). Optional. Deviation multiplier for upper band
-#' @param sd_down ([double]). Optional. Deviation multiplier for lower band
 ## splice:documentation:end
 #'
 #' @template description
@@ -20,10 +16,10 @@
 bollinger_bands <- function(
 	x,
 	cols,
-	ma = SMA(n = 5),
-	sd = 2,
-	sd_down,
-	sd_up,
+	timePeriod = 5,
+	deviationsUp = 2,
+	deviationsDown = 2,
+	maType = 0,
 	na.bridge = FALSE,
 	...
 ) {
@@ -44,10 +40,10 @@ BBANDS <- bollinger_bands
 bollinger_bands.default <- function(
 	x,
 	cols,
-	ma = SMA(n = 5),
-	sd = 2,
-	sd_down,
-	sd_up,
+	timePeriod = 5,
+	deviationsUp = 2,
+	deviationsDown = 2,
+	maType = 0,
 	na.bridge = FALSE,
 	...
 ) {
@@ -74,13 +70,11 @@ bollinger_bands.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_BBANDS,
-		## splice:call:start
 		constructed_series[[1]],
-		ma$n,
-		as.double(sd_up %or% sd),
-		as.double(sd_down %or% sd),
-		ma$maType,
-		## splice:call:end
+		as.integer(timePeriod),
+		as.double(deviationsUp),
+		as.double(deviationsDown),
+		as.integer(maType),
 		as.logical(na.bridge)
 	)
 
@@ -98,10 +92,10 @@ bollinger_bands.default <- function(
 bollinger_bands.data.frame <- function(
 	x,
 	cols,
-	ma = SMA(n = 5),
-	sd = 2,
-	sd_down,
-	sd_up,
+	timePeriod = 5,
+	deviationsUp = 2,
+	deviationsDown = 2,
+	maType = 0,
 	na.bridge = FALSE,
 	...
 ) {
@@ -109,10 +103,10 @@ bollinger_bands.data.frame <- function(
 		bollinger_bands.default(
 			x = x,
 			cols = cols,
-			ma = ma,
-			sd = sd,
-			sd_down = sd_down,
-			sd_up = sd_up,
+			timePeriod = timePeriod,
+			deviationsUp = deviationsUp,
+			deviationsDown = deviationsDown,
+			maType = maType,
 			na.bridge = na.bridge,
 			...
 		)
@@ -126,26 +120,44 @@ bollinger_bands.data.frame <- function(
 bollinger_bands.matrix <- function(
 	x,
 	cols,
-	ma = SMA(n = 5),
-	sd = 2,
-	sd_down,
-	sd_up,
+	timePeriod = 5,
+	deviationsUp = 2,
+	deviationsDown = 2,
+	maType = 0,
 	na.bridge = FALSE,
 	...
 ) {
 	bollinger_bands.default(
 		x = x,
 		cols = cols,
-		ma = ma,
-		sd = sd,
-		sd_down = sd_down,
-		sd_up = sd_up,
+		timePeriod = timePeriod,
+		deviationsUp = deviationsUp,
+		deviationsDown = deviationsDown,
+		maType = maType,
 		na.bridge = na.bridge,
 		...
 	)
 }
 
-
+#' @usage NULL
+bollinger_bands_lookback <- function(
+	x,
+	cols,
+	timePeriod = 5,
+	deviationsUp = 2,
+	deviationsDown = 2,
+	maType = 0,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_BBANDS_lookback,
+		as.integer(timePeriod),
+		as.double(deviationsUp),
+		as.double(deviationsDown),
+		as.integer(maType)
+	)
+}
 #' @usage NULL
 #' @aliases bollinger_bands
 #'
@@ -153,10 +165,10 @@ bollinger_bands.matrix <- function(
 bollinger_bands.numeric <- function(
 	x,
 	cols,
-	ma = SMA(n = 5),
-	sd = 2,
-	sd_down,
-	sd_up,
+	timePeriod = 5,
+	deviationsUp = 2,
+	deviationsDown = 2,
+	maType = 0,
 	na.bridge = FALSE,
 	...
 ) {
@@ -172,13 +184,11 @@ bollinger_bands.numeric <- function(
 	## to 'C'
 	x <- .Call(
 		C_impl_ta_BBANDS,
-		## splice:numeric:start
 		as.double(x),
-		ma$n,
-		as.double(sd_up %or% sd),
-		as.double(sd_down %or% sd),
-		ma$maType,
-		## splice:numeric:end
+		as.integer(timePeriod),
+		as.double(deviationsUp),
+		as.double(deviationsDown),
+		as.integer(maType),
 		as.logical(na.bridge)
 	)
 
@@ -189,7 +199,6 @@ bollinger_bands.numeric <- function(
 	x
 }
 
-
 #' @usage NULL
 #' @aliases bollinger_bands
 #'
@@ -197,10 +206,10 @@ bollinger_bands.numeric <- function(
 bollinger_bands.plotly <- function(
 	x,
 	cols,
-	ma = SMA(n = 5),
-	sd = 2,
-	sd_down,
-	sd_up,
+	timePeriod = 5,
+	deviationsUp = 2,
+	deviationsDown = 2,
+	maType = 0,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	color = "steelblue",
@@ -234,10 +243,10 @@ bollinger_bands.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		ma = ma,
-		sd = sd,
-		sd_down = sd_down,
-		sd_up = sd_up,
+		timePeriod = timePeriod,
+		deviationsUp = deviationsUp,
+		deviationsDown = deviationsDown,
+		maType = maType,
 		na.bridge = TRUE
 	)
 
@@ -250,19 +259,19 @@ bollinger_bands.plotly <- function(
 	## splice:plotly-assembly:start
 
 	## standard deviations
-	sd_down <- as.double(sd_down %or% sd)
-	sd_up <- as.double(sd_up %or% sd)
+	sd_down <- as.double(deviationsDown)
+	sd_up <- as.double(deviationsUp)
 
 	if (sd_down == sd_up) {
 		name <- label(
 			"Bollinger Bands",
-			ma$n,
+			timePeriod,
 			sd_up
 		)
 	} else {
 		name <- label(
 			"Bollinger Bands",
-			ma$n,
+			timePeriod,
 			sd_up,
 			sd_down
 		)
@@ -276,7 +285,17 @@ bollinger_bands.plotly <- function(
 		),
 		list(
 			y = ~MiddleBand,
-			name = sub("\\(.*$", "", input_name(substitute(ma)), perl = TRUE),
+			name = c(
+				"SMA",
+				"EMA",
+				"WMA",
+				"DEMA",
+				"TEMA",
+				"TRIMA",
+				"KAMA",
+				"MAMA",
+				"T3"
+			)[maType + 1],
 			fill = "tonexty"
 		),
 		list(
@@ -322,10 +341,10 @@ bollinger_bands.plotly <- function(
 bollinger_bands.ggplot <- function(
 	x,
 	cols,
-	ma = SMA(n = 5),
-	sd = 2,
-	sd_down,
-	sd_up,
+	timePeriod = 5,
+	deviationsUp = 2,
+	deviationsDown = 2,
+	maType = 0,
 	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
@@ -356,10 +375,10 @@ bollinger_bands.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		ma = ma,
-		sd = sd,
-		sd_down = sd_down,
-		sd_up = sd_up,
+		timePeriod = timePeriod,
+		deviationsUp = deviationsUp,
+		deviationsDown = deviationsDown,
+		maType = maType,
 		na.bridge = TRUE
 	)
 
@@ -381,7 +400,7 @@ bollinger_bands.ggplot <- function(
 			y_lower = "LowerBand"
 		)
 	)
-	name <- label("Bollinger Bands", ma$n, sd)
+	name <- label("Bollinger Bands", timePeriod, deviationsUp)
 	## splice:ggplot-assembly:end
 
 	state <- .chart_state()

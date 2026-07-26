@@ -1,11 +1,11 @@
 #' @export
-#' @family Overlap Study
+#' @family Overlap Studies
 #'
 #' @title Hilbert Transform - Instantaneous Trendline
 #' @templateVar .title Hilbert Transform - Instantaneous Trendline
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun trendline
-#' @templateVar .family Overlap Study
+#' @templateVar .family Overlap Studies
 #' @templateVar .formula ~close
 #'
 ## splice:documentation:start
@@ -62,9 +62,7 @@ trendline.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_HT_TRENDLINE,
-		## splice:call:start
 		constructed_series[[1]],
-		## splice:call:end
 		as.logical(na.bridge)
 	)
 
@@ -113,7 +111,17 @@ trendline.matrix <- function(
 	)
 }
 
-
+#' @usage NULL
+trendline_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_HT_TRENDLINE_lookback
+	)
+}
 #' @usage NULL
 #' @aliases trendline
 #'
@@ -136,9 +144,7 @@ trendline.numeric <- function(
 	## to 'C'
 	x <- .Call(
 		C_impl_ta_HT_TRENDLINE,
-		## splice:numeric:start
 		as.double(x),
-		## splice:numeric:end
 		as.logical(na.bridge)
 	)
 
@@ -148,7 +154,6 @@ trendline.numeric <- function(
 
 	x
 }
-
 
 #' @usage NULL
 #' @aliases trendline

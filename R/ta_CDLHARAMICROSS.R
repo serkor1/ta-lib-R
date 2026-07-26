@@ -1,8 +1,8 @@
 #' @export
 #' @family Pattern Recognition
 #'
-#' @title Harami Cross
-#' @templateVar .title Harami Cross
+#' @title Harami Cross Pattern
+#' @templateVar .title Harami Cross Pattern
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun harami_cross
 #' @templateVar .family Pattern Recognition
@@ -115,7 +115,12 @@ harami_cross.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		harami_cross.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ harami_cross.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	harami_cross.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ harami_cross.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ harami_cross.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases harami_cross
@@ -225,7 +235,8 @@ harami_cross.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

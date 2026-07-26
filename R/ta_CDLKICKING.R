@@ -115,7 +115,12 @@ kicking.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		kicking.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ kicking.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	kicking.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ kicking.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ kicking.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases kicking
@@ -225,7 +235,8 @@ kicking.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

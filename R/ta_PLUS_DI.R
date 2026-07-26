@@ -1,11 +1,11 @@
 #' @export
-#' @family Momentum Indicator
+#' @family Momentum Indicators
 #'
 #' @title Plus Directional Indicator
 #' @templateVar .title Plus Directional Indicator
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun plus_directional_indicator
-#' @templateVar .family Momentum Indicator
+#' @templateVar .family Momentum Indicators
 #' @templateVar .formula ~high + low + close
 #'
 ## splice:documentation:start
@@ -16,7 +16,7 @@
 plus_directional_indicator <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -37,7 +37,7 @@ PLUS_DI <- plus_directional_indicator
 plus_directional_indicator.default <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -64,12 +64,10 @@ plus_directional_indicator.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_PLUS_DI,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		as.integer(n),
-		## splice:call:end
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
@@ -87,7 +85,7 @@ plus_directional_indicator.default <- function(
 plus_directional_indicator.data.frame <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -95,7 +93,7 @@ plus_directional_indicator.data.frame <- function(
 		plus_directional_indicator.default(
 			x = x,
 			cols = cols,
-			n = n,
+			timePeriod = timePeriod,
 			na.bridge = na.bridge,
 			...
 		)
@@ -109,20 +107,32 @@ plus_directional_indicator.data.frame <- function(
 plus_directional_indicator.matrix <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
 	plus_directional_indicator.default(
 		x = x,
 		cols = cols,
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = na.bridge,
 		...
 	)
 }
 
-
+#' @usage NULL
+plus_directional_indicator_lookback <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_PLUS_DI_lookback,
+		as.integer(timePeriod)
+	)
+}
 #' @usage NULL
 #' @aliases plus_directional_indicator
 #'
@@ -130,7 +140,7 @@ plus_directional_indicator.matrix <- function(
 plus_directional_indicator.plotly <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -163,7 +173,7 @@ plus_directional_indicator.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -180,7 +190,7 @@ plus_directional_indicator.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	name <- sprintf("+DI(%d)", n)
+	name <- sprintf("+DI(%d)", timePeriod)
 
 	traces <- list(
 		list(y = ~PLUS_DI)
@@ -223,11 +233,11 @@ plus_directional_indicator.plotly <- function(
 plus_directional_indicator.ggplot <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -255,7 +265,7 @@ plus_directional_indicator.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -276,7 +286,7 @@ plus_directional_indicator.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- sprintf("+DI(%d)", n)
+	name <- sprintf("+DI(%d)", timePeriod)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

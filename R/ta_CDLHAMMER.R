@@ -115,7 +115,12 @@ hammer.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		hammer.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ hammer.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	hammer.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ hammer.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ hammer.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases hammer
@@ -225,7 +235,8 @@ hammer.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

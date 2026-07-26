@@ -62,10 +62,8 @@ median_price.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_MEDPRICE,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
-		## splice:call:end
 		as.logical(na.bridge)
 	)
 
@@ -111,5 +109,17 @@ median_price.matrix <- function(
 		cols = cols,
 		na.bridge = na.bridge,
 		...
+	)
+}
+
+#' @usage NULL
+median_price_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_MEDPRICE_lookback
 	)
 }

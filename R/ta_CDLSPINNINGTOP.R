@@ -115,7 +115,12 @@ spinning_top.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		spinning_top.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ spinning_top.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	spinning_top.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ spinning_top.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ spinning_top.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases spinning_top
@@ -225,7 +235,8 @@ spinning_top.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

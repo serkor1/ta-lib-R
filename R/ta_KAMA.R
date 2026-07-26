@@ -1,11 +1,11 @@
 #' @export
-#' @family Overlap Study
+#' @family Overlap Studies
 #'
 #' @title Kaufman Adaptive Moving Average
 #' @templateVar .title Kaufman Adaptive Moving Average
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun kaufman_adaptive_moving_average
-#' @templateVar .family Overlap Study
+#' @templateVar .family Overlap Studies
 #' @templateVar .formula ~close
 #'
 ## splice:documentation:start
@@ -22,7 +22,7 @@
 kaufman_adaptive_moving_average <- function(
 	x,
 	cols,
-	n = 30,
+	timePeriod = 30,
 	na.bridge = FALSE,
 	...
 ) {
@@ -33,13 +33,18 @@ kaufman_adaptive_moving_average <- function(
 		## from call
 		x <- structure(
 			list(
-				n = if (missing(n)) 30L else as.integer(n),
+				timePeriod = if (missing(timePeriod)) {
+					30L
+				} else {
+					as.integer(timePeriod)
+				},
 				maType = 6L
 			)
 		)
 
 		return(x)
 	}
+
 	UseMethod("kaufman_adaptive_moving_average")
 }
 
@@ -57,7 +62,7 @@ KAMA <- kaufman_adaptive_moving_average
 kaufman_adaptive_moving_average.default <- function(
 	x,
 	cols,
-	n = 30,
+	timePeriod = 30,
 	na.bridge = FALSE,
 	...
 ) {
@@ -84,8 +89,8 @@ kaufman_adaptive_moving_average.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_KAMA,
-		as.double(constructed_series[[1]]),
-		as.integer(n),
+		constructed_series[[1]],
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
@@ -103,12 +108,18 @@ kaufman_adaptive_moving_average.default <- function(
 kaufman_adaptive_moving_average.data.frame <- function(
 	x,
 	cols,
-	n = 30,
+	timePeriod = 30,
 	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		kaufman_adaptive_moving_average.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -119,17 +130,14 @@ kaufman_adaptive_moving_average.data.frame <- function(
 kaufman_adaptive_moving_average.matrix <- function(
 	x,
 	cols,
-	n = 30,
+	timePeriod = 30,
 	na.bridge = FALSE,
 	...
 ) {
-	## pass directly to
-	## kaufman_adaptive_moving_average.default to avoid
-	## shenanigans with NextMethod()
 	kaufman_adaptive_moving_average.default(
 		x = x,
 		cols = cols,
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = na.bridge,
 		...
 	)
@@ -142,7 +150,7 @@ kaufman_adaptive_moving_average.matrix <- function(
 kaufman_adaptive_moving_average.numeric <- function(
 	x,
 	cols,
-	n = 30,
+	timePeriod = 30,
 	na.bridge = FALSE,
 	...
 ) {
@@ -159,7 +167,7 @@ kaufman_adaptive_moving_average.numeric <- function(
 	x <- .Call(
 		C_impl_ta_KAMA,
 		as.double(x),
-		as.integer(n),
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
@@ -177,7 +185,7 @@ kaufman_adaptive_moving_average.numeric <- function(
 kaufman_adaptive_moving_average.plotly <- function(
 	x,
 	cols,
-	n = 30,
+	timePeriod = 30,
 	na.bridge = FALSE,
 	...
 ) {
@@ -207,7 +215,8 @@ kaufman_adaptive_moving_average.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n
+		timePeriod = timePeriod,
+		na.bridge = TRUE
 	)
 
 	## add conditional idx
@@ -230,14 +239,14 @@ kaufman_adaptive_moving_average.plotly <- function(
 				)
 			)
 		),
-		name = label("KAMA", n),
-		decorators = list()
+		name = label("KAMA", timePeriod),
+		decorators = list(),
+		data = constructed_indicator
 	)
 	state[["main"]] <- plotly_object
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases kaufman_adaptive_moving_average
@@ -246,7 +255,7 @@ kaufman_adaptive_moving_average.plotly <- function(
 kaufman_adaptive_moving_average.ggplot <- function(
 	x,
 	cols,
-	n = 30,
+	timePeriod = 30,
 	na.bridge = FALSE,
 	...
 ) {
@@ -275,7 +284,8 @@ kaufman_adaptive_moving_average.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n
+		timePeriod = timePeriod,
+		na.bridge = TRUE
 	)
 
 	## add conditional idx
@@ -292,7 +302,7 @@ kaufman_adaptive_moving_average.ggplot <- function(
 				y = "KAMA"
 			)
 		),
-		name = label("KAMA", n),
+		name = label("KAMA", timePeriod),
 		decorators = list(),
 		data = constructed_indicator
 	)

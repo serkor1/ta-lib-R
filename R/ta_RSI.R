@@ -1,11 +1,11 @@
 #' @export
-#' @family Momentum Indicator
+#' @family Momentum Indicators
 #'
 #' @title Relative Strength Index
 #' @templateVar .title Relative Strength Index
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun relative_strength_index
-#' @templateVar .family Momentum Indicator
+#' @templateVar .family Momentum Indicators
 #' @templateVar .formula ~close
 #'
 ## splice:documentation:start
@@ -16,7 +16,7 @@
 relative_strength_index <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -37,7 +37,7 @@ RSI <- relative_strength_index
 relative_strength_index.default <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -64,10 +64,8 @@ relative_strength_index.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_RSI,
-		## splice:call:start
 		constructed_series[[1]],
-		as.integer(n),
-		## splice:call:end
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
@@ -85,7 +83,7 @@ relative_strength_index.default <- function(
 relative_strength_index.data.frame <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -93,7 +91,7 @@ relative_strength_index.data.frame <- function(
 		relative_strength_index.default(
 			x = x,
 			cols = cols,
-			n = n,
+			timePeriod = timePeriod,
 			na.bridge = na.bridge,
 			...
 		)
@@ -107,20 +105,32 @@ relative_strength_index.data.frame <- function(
 relative_strength_index.matrix <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
 	relative_strength_index.default(
 		x = x,
 		cols = cols,
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = na.bridge,
 		...
 	)
 }
 
-
+#' @usage NULL
+relative_strength_index_lookback <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_RSI_lookback,
+		as.integer(timePeriod)
+	)
+}
 #' @usage NULL
 #' @aliases relative_strength_index
 #'
@@ -128,7 +138,7 @@ relative_strength_index.matrix <- function(
 relative_strength_index.numeric <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -144,10 +154,8 @@ relative_strength_index.numeric <- function(
 	## to 'C'
 	x <- .Call(
 		C_impl_ta_RSI,
-		## splice:numeric:start
 		as.double(x),
-		as.integer(n),
-		## splice:numeric:end
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
@@ -158,7 +166,6 @@ relative_strength_index.numeric <- function(
 	x
 }
 
-
 #' @usage NULL
 #' @aliases relative_strength_index
 #'
@@ -166,7 +173,7 @@ relative_strength_index.numeric <- function(
 relative_strength_index.plotly <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 20,
@@ -201,7 +208,7 @@ relative_strength_index.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -220,7 +227,7 @@ relative_strength_index.plotly <- function(
 	## splice:plotly-assembly:start
 	name <- sprintf(
 		"RSI(%d)",
-		n
+		timePeriod
 	)
 
 	decorators <- list(
@@ -270,11 +277,11 @@ relative_strength_index.plotly <- function(
 relative_strength_index.ggplot <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -302,7 +309,7 @@ relative_strength_index.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -327,7 +334,7 @@ relative_strength_index.ggplot <- function(
 		ggplot_line(80),
 		list(y = "RSI")
 	)
-	name <- sprintf("RSI(%d)", n)
+	name <- sprintf("RSI(%d)", timePeriod)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

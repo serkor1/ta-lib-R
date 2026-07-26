@@ -1,12 +1,12 @@
 #' @export
-#' @family Volume Indicator
+#' @family Volume Indicators
 #'
-#' @title On-Balance Volume
-#' @templateVar .title On-Balance Volume
+#' @title On Balance Volume
+#' @templateVar .title On Balance Volume
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun on_balance_volume
-#' @templateVar .family Volume Indicator
-#' @templateVar .formula ~close+volume
+#' @templateVar .family Volume Indicators
+#' @templateVar .formula ~close + volume
 #'
 ## splice:documentation:start
 ## splice:documentation:end
@@ -62,10 +62,8 @@ on_balance_volume.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_OBV,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
-		## splice:call:end
 		as.logical(na.bridge)
 	)
 
@@ -114,7 +112,17 @@ on_balance_volume.matrix <- function(
 	)
 }
 
-
+#' @usage NULL
+on_balance_volume_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_OBV_lookback
+	)
+}
 #' @usage NULL
 #' @aliases on_balance_volume
 #'
@@ -188,7 +196,7 @@ on_balance_volume.plotly <- function(
 			),
 			data = constructed_indicator,
 			title = if (missing(title)) {
-				"On-Balance Volume"
+				"On Balance Volume"
 			} else {
 				title
 			}
@@ -211,9 +219,9 @@ on_balance_volume.ggplot <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -278,7 +286,7 @@ on_balance_volume.ggplot <- function(
 			),
 			data = constructed_indicator,
 			title = if (missing(title)) {
-				"On-Balance Volume"
+				"On Balance Volume"
 			} else {
 				title
 			}
