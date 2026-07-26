@@ -12,6 +12,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+${PARAM_DOCS}
 #' @template returns
 ${FUN} <- function(
 	x,
