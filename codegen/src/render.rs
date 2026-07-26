@@ -281,7 +281,32 @@ pub fn render_indicator(f: &MetaData, t: &Templates) -> String {
         .collect::<Vec<String>>()
         .join(",\n\t\t");
 
-    let c_numeric = std::iter::once("as.double(x)".to_string())
+    // the raw-vector series of the numeric/rolling path: the
+    // bivariate rolling statistics (BETA, CORREL: inReal0/inReal1,
+    // mined as x/y) take a pair of vectors, everything else a
+    // single 'x'. ${SERIES}/${PSERIES} render the formals and the
+    // forwarded arguments, one per line with a trailing comma
+    let series: &[&str] = if f.input == ["x", "y"] {
+        &["x", "y"]
+    } else {
+        &["x"]
+    };
+
+    let series_args = series
+        .iter()
+        .map(|s| format!("{s},"))
+        .collect::<Vec<String>>()
+        .join("\n\t");
+
+    let pseries = series
+        .iter()
+        .map(|s| format!("{s} = {s},"))
+        .collect::<Vec<String>>()
+        .join("\n\t\t");
+
+    let c_numeric = series
+        .iter()
+        .map(|s| format!("as.double({s})"))
         .chain(coercions.iter().cloned())
         .collect::<Vec<String>>()
         .join(",\n\t\t");
@@ -309,6 +334,8 @@ pub fn render_indicator(f: &MetaData, t: &Templates) -> String {
             .replace("${C_SIGNATURE_LOOKBACK}", &c_lookback)
             .replace("${C_SIGNATURE}", &c_signature)
             .replace("${C_NUMERIC}", &c_numeric)
+            .replace("${SERIES}", &series_args)
+            .replace("${PSERIES}", &pseries)
             .replace("${SPEC_FIELDS}", &spec_fields)
             .replace("${MA_TYPE}", ma_index.unwrap_or("-1L"))
             .replace("${CARGS}", &cargs)
@@ -731,8 +758,16 @@ tail
         assert!(stddev.contains("@template rolling_returns"));
         assert!(stddev.contains("## splice:call:start"));
         assert!(stddev.contains("as.double(x),"));
+        assert!(!stddev.contains("as.double(y)"));
         assert!(!stddev.contains(".plotly"));
         assert!(!stddev.contains(".ggplot"));
+
+        // the bivariate rolling statistics (inReal0/inReal1) take
+        // the pair x/y and pass both series to the C routine
+        let correl = render("CORREL");
+        assert!(correl.contains("rolling_correlation <- function(\n\tx,\n\ty,"));
+        assert!(correl.contains("as.double(x),\n\t\tas.double(y),\n\t\tas.integer(timePeriod)"));
+        assert!(correl.contains("x = x,\n\t\ty = y,"));
 
         // candlesticks: the agnostic flag comes
         // from AGNOSTIC_PATTERNS
