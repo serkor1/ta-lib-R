@@ -12,6 +12,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#'
 #' @template returns
 true_range <- function(
 	x,

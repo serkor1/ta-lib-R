@@ -12,6 +12,11 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @param fastKPeriod ([integer]). Time period for building the Fast-K line. Defaults to `5`.
+#' @param slowKPeriod ([integer]). Smoothing for making the Slow-K line. Usually set to 3. Defaults to `3`.
+#' @param slowKMa ([integer]). Type of Moving Average for Slow-K. Defaults to `0` ([SMA]). Can also be passed as talib::SMA.
+#' @param slowDPeriod ([integer]). Smoothing for making the Slow-D line. Defaults to `3`.
+#' @param slowDMa ([integer]). Type of Moving Average for Slow-D. Defaults to `0` ([SMA]). Can also be passed as talib::SMA.
 #' @template returns
 stochastic <- function(
 	x,

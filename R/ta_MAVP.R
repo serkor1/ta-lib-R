@@ -12,6 +12,9 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @param minimumPeriod ([integer]). Value less than minimum will be changed to Minimum period. Defaults to `2`.
+#' @param maximumPeriod ([integer]). Value higher than maximum will be changed to Maximum period. Defaults to `30`.
+#' @param maType ([integer]). Type of Moving Average. Defaults to `0` ([SMA]). Can also be passed as talib::SMA.
 #' @template returns
 MAVP <- function(
 	x,

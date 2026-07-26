@@ -12,6 +12,9 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @param firstPeriod ([integer]). Number of bars for 1st period. Defaults to `7`.
+#' @param secondPeriod ([integer]). Number of bars for 2nd period. Defaults to `14`.
+#' @param thirdPeriod ([integer]). Number of bars for 3rd period. Defaults to `28`.
 #' @template returns
 ultimate_oscillator <- function(
 	x,

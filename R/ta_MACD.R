@@ -12,6 +12,9 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @param fastPeriod ([integer]). Number of period for the fast MA. Defaults to `12`.
+#' @param slowPeriod ([integer]). Number of period for the slow MA. Defaults to `26`.
+#' @param signalPeriod ([integer]). Smoothing for the signal line (nb of period). Defaults to `9`.
 #' @template returns
 moving_average_convergence_divergence <- function(
 	x,

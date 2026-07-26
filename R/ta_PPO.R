@@ -12,6 +12,9 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @param fastPeriod ([integer]). Number of period for the fast MA. Defaults to `12`.
+#' @param slowPeriod ([integer]). Number of period for the slow MA. Defaults to `26`.
+#' @param maType ([integer]). Type of Moving Average. Defaults to `0` ([SMA]). Can also be passed as talib::SMA.
 #' @template returns
 percentage_price_oscillator <- function(
 	x,

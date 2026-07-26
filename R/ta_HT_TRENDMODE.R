@@ -12,6 +12,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#'
 #' @template returns
 trend_cycle_mode <- function(
 	x,

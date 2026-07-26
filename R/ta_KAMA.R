@@ -18,6 +18,7 @@
 #' indicators that supports various Moving Average specifications.
 #'
 #' @template description
+#'
 #' @template returns
 kaufman_adaptive_moving_average <- function(
 	x,
