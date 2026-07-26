@@ -92,6 +92,7 @@
 #' @concept trading
 #' @concept algorithmic trading
 #'
+<% if (!exists(".custom_example")) { %>
 <% if (grepl(pattern = "Price Transform", x = .family)) { %>
 #' @examples
 #' ## load Bitcoin (BTC)
@@ -135,4 +136,5 @@
 #'  )
 #' }
 
+<% } %>
 <% } %>
