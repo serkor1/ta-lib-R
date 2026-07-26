@@ -14,6 +14,7 @@
 #' @template rolling_returns
 rolling_beta <- function(
 	x,
+	y,
 	timePeriod = 5,
 	na.bridge = FALSE
 ) {
@@ -33,6 +34,7 @@ BETA <- rolling_beta
 #' @export
 rolling_beta.default <- function(
 	x,
+	y,
 	timePeriod = 5,
 	na.bridge = FALSE
 ) {
@@ -42,6 +44,7 @@ rolling_beta.default <- function(
 		C_impl_ta_BETA,
 		## splice:call:start
 		as.double(x),
+		as.double(y),
 		as.integer(timePeriod),
 		## splice:call:end
 		as.logical(na.bridge)
@@ -62,6 +65,7 @@ rolling_beta.default <- function(
 #' @export
 rolling_beta.numeric <- function(
 	x,
+	y,
 	timePeriod = 5,
 	na.bridge = FALSE
 ) {
@@ -69,6 +73,7 @@ rolling_beta.numeric <- function(
 	## return as data.frame
 	x <- rolling_beta.default(
 		x = x,
+		y = y,
 		timePeriod = timePeriod,
 		na.bridge = na.bridge
 	)
