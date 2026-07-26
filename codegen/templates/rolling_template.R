@@ -13,7 +13,7 @@
 ${PARAM_DOCS}
 #' @template rolling_returns
 ${FUN} <- function(
-	x,
+	${SERIES}
 	${ARGS}
 	na.bridge = FALSE) {
   UseMethod("${FUN}")
@@ -31,7 +31,7 @@ ${ALIAS} <- ${FUN}
 #'
 #' @export
 ${FUN}.default <- function(
-	x,
+	${SERIES}
 	${ARGS}
 	na.bridge = FALSE) {
 
@@ -59,14 +59,14 @@ ${FUN}.default <- function(
 #'
 #' @export
 ${FUN}.numeric <- function(
-	x,
+	${SERIES}
 	${ARGS}
 	na.bridge = FALSE) {
 
 	## calculate indicator and
 	## return as data.frame
 	x <- ${FUN}.default(
-		x = x,
+		${PSERIES}
 		${PARGS}
 		na.bridge = na.bridge
 	)

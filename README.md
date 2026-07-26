@@ -36,14 +36,14 @@ including 61 candlestick pattern detectors.
 
 <div align="center">
 
-| Need                 | {talib}                                                                                 |
-|:---------------------|:----------------------------------------------------------------------------------------|
+| Need | {talib} |
+|:---|:---|
 | Technical indicators | TA-Lib-backed moving averages, momentum, volatility, volume, cycle, and overlap studies |
-| Candlestick patterns | Built-in Japanese candlestick pattern recognition                                       |
-| OHLCV workflows      | Works directly with open, high, low, close, and volume columns                          |
-| Performance          | Computation delegated to C routines through `.Call()`                                   |
-| Dependencies         | Minimal required R dependencies; plotting packages are optional                         |
-| Charts               | Composable financial charts with optional `{plotly}` and `{ggplot2}` support            |
+| Candlestick patterns | Built-in Japanese candlestick pattern recognition |
+| OHLCV workflows | Works directly with open, high, low, close, and volume columns |
+| Performance | Computation delegated to C routines through `.Call()` |
+| Dependencies | Minimal required R dependencies; plotting packages are optional |
+| Charts | Composable financial charts with optional `{plotly}` and `{ggplot2}` support |
 
 </div>
 
@@ -101,10 +101,10 @@ features <- cbind(
 
 tail(features)
 #>                          RSI UpperBand MiddleBand LowerBand CDLENGULFING
-#> 2024-12-26 01:00:00 46.48851 100487.38   96698.61  92909.83           -1
+#> 2024-12-26 01:00:00 46.48851 100487.38   96698.61  92909.83         -100
 #> 2024-12-27 01:00:00 43.85488 100670.65   96512.96  92355.27            0
 #> 2024-12-28 01:00:00 45.93888 100632.13   96581.91  92531.69            0
-#> 2024-12-29 01:00:00 43.12301  99628.77   95576.60  91524.43           -1
+#> 2024-12-29 01:00:00 43.12301  99628.77   95576.60  91524.43         -100
 #> 2024-12-30 01:00:00 41.47686  96403.53   94231.31  92059.09            0
 #> 2024-12-31 01:00:00 43.37358  95441.13   93774.23  92107.34            0
 ```
@@ -173,15 +173,15 @@ compatibility with the broader ecosystem:
 
 <div align="center">
 
-| Category              | TA-Lib (C)           | {talib}                     | {talib} alias     |
-|:----------------------|:---------------------|:----------------------------|:------------------|
-| Overlap Studies       | `TA_BBANDS()`        | `bollinger_bands()`         | `BBANDS()`        |
-| Momentum Indicators   | `TA_CCI()`           | `commodity_channel_index()` | `CCI()`           |
-| Volume Indicators     | `TA_OBV()`           | `on_balance_volume()`       | `OBV()`           |
-| Volatility Indicators | `TA_ATR()`           | `average_true_range()`      | `ATR()`           |
-| Price Transform       | `TA_AVGPRICE()`      | `average_price()`           | `AVGPRICE()`      |
-| Cycle Indicators      | `TA_HT_SINE()`       | `sine_wave()`               | `HT_SINE()`       |
-| Pattern Recognition   | `TA_CDLHANGINGMAN()` | `hanging_man()`             | `CDLHANGINGMAN()` |
+| Category | TA-Lib (C) | {talib} | {talib} alias |
+|:---|:---|:---|:---|
+| Overlap Studies | `TA_BBANDS()` | `bollinger_bands()` | `BBANDS()` |
+| Momentum Indicators | `TA_CCI()` | `commodity_channel_index()` | `CCI()` |
+| Volume Indicators | `TA_OBV()` | `on_balance_volume()` | `OBV()` |
+| Volatility Indicators | `TA_ATR()` | `average_true_range()` | `ATR()` |
+| Price Transform | `TA_AVGPRICE()` | `average_price()` | `AVGPRICE()` |
+| Cycle Indicators | `TA_HT_SINE()` | `sine_wave()` | `HT_SINE()` |
+| Pattern Recognition | `TA_CDLHANGINGMAN()` | `hanging_man()` | `CDLHANGINGMAN()` |
 
 </div>
 

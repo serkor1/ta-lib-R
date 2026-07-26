@@ -14,6 +14,7 @@
 #' @template rolling_returns
 rolling_correlation <- function(
 	x,
+	y,
 	timePeriod = 30,
 	na.bridge = FALSE
 ) {
@@ -33,6 +34,7 @@ CORREL <- rolling_correlation
 #' @export
 rolling_correlation.default <- function(
 	x,
+	y,
 	timePeriod = 30,
 	na.bridge = FALSE
 ) {
@@ -42,6 +44,7 @@ rolling_correlation.default <- function(
 		C_impl_ta_CORREL,
 		## splice:call:start
 		as.double(x),
+		as.double(y),
 		as.integer(timePeriod),
 		## splice:call:end
 		as.logical(na.bridge)
@@ -62,6 +65,7 @@ rolling_correlation.default <- function(
 #' @export
 rolling_correlation.numeric <- function(
 	x,
+	y,
 	timePeriod = 30,
 	na.bridge = FALSE
 ) {
@@ -69,6 +73,7 @@ rolling_correlation.numeric <- function(
 	## return as data.frame
 	x <- rolling_correlation.default(
 		x = x,
+		y = y,
 		timePeriod = timePeriod,
 		na.bridge = na.bridge
 	)
