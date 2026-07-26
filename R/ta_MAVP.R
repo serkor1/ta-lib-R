@@ -9,6 +9,7 @@
 #' @templateVar .formula ~close + periods
 #'
 ## splice:documentation:start
+#' @templateVar .custom_example TRUE
 #' @example man/examples/MAVP-example.R
 ## splice:documentation:end
 #'
