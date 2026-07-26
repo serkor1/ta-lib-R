@@ -18,6 +18,7 @@
 #' indicators that supports various Moving Average specifications.
 #'
 #' @template description
+#'
 #' @template returns
 triangular_moving_average <- function(
 	x,

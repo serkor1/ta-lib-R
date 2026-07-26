@@ -10,6 +10,7 @@
 ## splice:documentation:end
 #'
 #' @template rolling_description
+#'
 #' @template rolling_returns
 rolling_beta <- function(
 	x,

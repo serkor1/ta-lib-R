@@ -12,6 +12,9 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @param deviationsUp ([double]). Deviation multiplier for upper band. Defaults to `2`.
+#' @param deviationsDown ([double]). Deviation multiplier for lower band. Defaults to `2`.
+#' @param maType ([integer]). Type of Moving Average. Defaults to `0` ([SMA]). Can also be passed as talib::SMA.
 #' @template returns
 bollinger_bands <- function(
 	x,
