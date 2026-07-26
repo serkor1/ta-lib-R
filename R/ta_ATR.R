@@ -1,11 +1,11 @@
 #' @export
-#' @family Volatility Indicator
+#' @family Volatility Indicators
 #'
 #' @title Average True Range
 #' @templateVar .title Average True Range
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun average_true_range
-#' @templateVar .family Volatility Indicator
+#' @templateVar .family Volatility Indicators
 #' @templateVar .formula ~high + low + close
 #'
 ## splice:documentation:start
@@ -16,7 +16,7 @@
 average_true_range <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -37,7 +37,7 @@ ATR <- average_true_range
 average_true_range.default <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -64,12 +64,10 @@ average_true_range.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_ATR,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		as.integer(n),
-		## splice:call:end
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
@@ -87,7 +85,7 @@ average_true_range.default <- function(
 average_true_range.data.frame <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -95,7 +93,7 @@ average_true_range.data.frame <- function(
 		average_true_range.default(
 			x = x,
 			cols = cols,
-			n = n,
+			timePeriod = timePeriod,
 			na.bridge = na.bridge,
 			...
 		)
@@ -109,20 +107,32 @@ average_true_range.data.frame <- function(
 average_true_range.matrix <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
 	average_true_range.default(
 		x = x,
 		cols = cols,
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = na.bridge,
 		...
 	)
 }
 
-
+#' @usage NULL
+average_true_range_lookback <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_ATR_lookback,
+		as.integer(timePeriod)
+	)
+}
 #' @usage NULL
 #' @aliases average_true_range
 #'
@@ -130,7 +140,7 @@ average_true_range.matrix <- function(
 average_true_range.plotly <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -163,7 +173,7 @@ average_true_range.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -180,7 +190,7 @@ average_true_range.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	name <- sprintf("ATR(%d)", n)
+	name <- sprintf("ATR(%d)", timePeriod)
 	decorators <- list()
 	traces <- list(
 		list(y = ~ATR)
@@ -223,11 +233,11 @@ average_true_range.plotly <- function(
 average_true_range.ggplot <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -255,7 +265,7 @@ average_true_range.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -276,7 +286,7 @@ average_true_range.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- sprintf("ATR(%d)", n)
+	name <- sprintf("ATR(%d)", timePeriod)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

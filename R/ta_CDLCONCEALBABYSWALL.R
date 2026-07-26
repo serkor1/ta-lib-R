@@ -115,7 +115,12 @@ concealing_baby_swallow.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		concealing_baby_swallow.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ concealing_baby_swallow.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	concealing_baby_swallow.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ concealing_baby_swallow.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ concealing_baby_swallow.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases concealing_baby_swallow
@@ -225,7 +235,8 @@ concealing_baby_swallow.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

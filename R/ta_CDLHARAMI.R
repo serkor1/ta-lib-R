@@ -1,8 +1,8 @@
 #' @export
 #' @family Pattern Recognition
 #'
-#' @title Harami
-#' @templateVar .title Harami
+#' @title Harami Pattern
+#' @templateVar .title Harami Pattern
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun harami
 #' @templateVar .family Pattern Recognition
@@ -115,7 +115,12 @@ harami.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		harami.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ harami.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	harami.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ harami.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ harami.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases harami
@@ -225,7 +235,8 @@ harami.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

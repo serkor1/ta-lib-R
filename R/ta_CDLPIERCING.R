@@ -1,8 +1,8 @@
 #' @export
 #' @family Pattern Recognition
 #'
-#' @title Piercing
-#' @templateVar .title Piercing
+#' @title Piercing Pattern
+#' @templateVar .title Piercing Pattern
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun piercing
 #' @templateVar .family Pattern Recognition
@@ -115,7 +115,12 @@ piercing.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		piercing.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ piercing.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	piercing.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ piercing.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ piercing.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases piercing
@@ -225,7 +235,8 @@ piercing.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

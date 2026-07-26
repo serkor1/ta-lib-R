@@ -13,9 +13,8 @@
 #' @template rolling_returns
 ${FUN} <- function(
 	x,
-    ${ARGS},
-	na.bridge = FALSE
-	) {
+	${ARGS}
+	na.bridge = FALSE) {
   UseMethod("${FUN}")
 }
 
@@ -32,21 +31,21 @@ ${ALIAS} <- ${FUN}
 #' @export
 ${FUN}.default <- function(
 	x,
-    ${ARGS},
-	na.bridge = FALSE
-	) {
+	${ARGS}
+	na.bridge = FALSE) {
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		C_impl_ta_${TA_FUN},
-        ## splice:call:start
+		C_impl_ta_${ALIAS},
+		## splice:call:start
+		${C_NUMERIC},
 		## splice:call:end
 		as.logical(na.bridge)
 	)
 
 	## strip dimensions
-	## while preserving 
+	## while preserving
 	## attributes
 	dim(x) <- NULL
 
@@ -60,20 +59,19 @@ ${FUN}.default <- function(
 #' @export
 ${FUN}.numeric <- function(
 	x,
-    ${ARGS},
-	na.bridge = FALSE
-	) {
+	${ARGS}
+	na.bridge = FALSE) {
 
 	## calculate indicator and
 	## return as data.frame
 	x <- ${FUN}.default(
-			x = x ${PARGS},
-			na.bridge = na.bridge
-
+		x = x,
+		${PARGS}
+		na.bridge = na.bridge
 	)
 
 	## strip dimensions
-	## while preserving 
+	## while preserving
 	## attributes
 	dim(x) <- NULL
 

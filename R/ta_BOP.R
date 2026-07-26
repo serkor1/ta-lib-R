@@ -1,12 +1,12 @@
 #' @export
-#' @family Momentum Indicator
+#' @family Momentum Indicators
 #'
-#' @title Balance of Power
-#' @templateVar .title Balance of Power
+#' @title Balance Of Power
+#' @templateVar .title Balance Of Power
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun balance_of_power
-#' @templateVar .family Momentum Indicator
-#' @templateVar .formula ~ open + high + low + close
+#' @templateVar .family Momentum Indicators
+#' @templateVar .formula ~open + high + low + close
 #'
 ## splice:documentation:start
 ## splice:documentation:end
@@ -62,12 +62,10 @@ balance_of_power.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_BOP,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
 		constructed_series[[4]],
-		## splice:call:end
 		as.logical(na.bridge)
 	)
 
@@ -116,7 +114,17 @@ balance_of_power.matrix <- function(
 	)
 }
 
-
+#' @usage NULL
+balance_of_power_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_BOP_lookback
+	)
+}
 #' @usage NULL
 #' @aliases balance_of_power
 #'
@@ -204,7 +212,7 @@ balance_of_power.plotly <- function(
 			),
 			data = constructed_indicator,
 			title = if (missing(title)) {
-				"Balance of Power"
+				"Balance Of Power"
 			} else {
 				title
 			}
@@ -227,9 +235,9 @@ balance_of_power.ggplot <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -296,7 +304,7 @@ balance_of_power.ggplot <- function(
 			),
 			data = constructed_indicator,
 			title = if (missing(title)) {
-				"Balance of Power"
+				"Balance Of Power"
 			} else {
 				title
 			}

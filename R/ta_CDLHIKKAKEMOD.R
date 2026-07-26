@@ -1,8 +1,8 @@
 #' @export
 #' @family Pattern Recognition
 #'
-#' @title Hikkake Modified
-#' @templateVar .title Hikkake Modified
+#' @title Modified Hikkake Pattern
+#' @templateVar .title Modified Hikkake Pattern
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun hikakke_mod
 #' @templateVar .family Pattern Recognition
@@ -115,7 +115,12 @@ hikakke_mod.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		hikakke_mod.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ hikakke_mod.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	hikakke_mod.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ hikakke_mod.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ hikakke_mod.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases hikakke_mod
@@ -225,7 +235,8 @@ hikakke_mod.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

@@ -115,7 +115,12 @@ homing_pigeon.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		homing_pigeon.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ homing_pigeon.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	homing_pigeon.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ homing_pigeon.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ homing_pigeon.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases homing_pigeon
@@ -225,7 +235,8 @@ homing_pigeon.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

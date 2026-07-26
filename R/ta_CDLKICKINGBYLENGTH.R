@@ -1,8 +1,8 @@
 #' @export
 #' @family Pattern Recognition
 #'
-#' @title Kicking Baby Length
-#' @templateVar .title Kicking Baby Length
+#' @title Kicking - bull/bear determined by the longer marubozu
+#' @templateVar .title Kicking - bull/bear determined by the longer marubozu
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun kicking_baby_length
 #' @templateVar .family Pattern Recognition
@@ -115,7 +115,12 @@ kicking_baby_length.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		kicking_baby_length.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ kicking_baby_length.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	kicking_baby_length.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ kicking_baby_length.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ kicking_baby_length.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases kicking_baby_length
@@ -225,7 +235,8 @@ kicking_baby_length.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

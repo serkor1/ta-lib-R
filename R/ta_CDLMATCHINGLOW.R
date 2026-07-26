@@ -115,7 +115,12 @@ matching_low.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		matching_low.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ matching_low.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	matching_low.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ matching_low.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ matching_low.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases matching_low
@@ -225,7 +235,8 @@ matching_low.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

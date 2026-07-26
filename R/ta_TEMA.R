@@ -1,11 +1,11 @@
 #' @export
-#' @family Overlap Study
+#' @family Overlap Studies
 #'
 #' @title Triple Exponential Moving Average
 #' @templateVar .title Triple Exponential Moving Average
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun triple_exponential_moving_average
-#' @templateVar .family Overlap Study
+#' @templateVar .family Overlap Studies
 #' @templateVar .formula ~close
 #'
 ## splice:documentation:start
@@ -22,7 +22,7 @@
 triple_exponential_moving_average <- function(
 	x,
 	cols,
-	n = 30,
+	timePeriod = 30,
 	na.bridge = FALSE,
 	...
 ) {
@@ -33,13 +33,18 @@ triple_exponential_moving_average <- function(
 		## from call
 		x <- structure(
 			list(
-				n = if (missing(n)) 30L else as.integer(n),
+				timePeriod = if (missing(timePeriod)) {
+					30L
+				} else {
+					as.integer(timePeriod)
+				},
 				maType = 4L
 			)
 		)
 
 		return(x)
 	}
+
 	UseMethod("triple_exponential_moving_average")
 }
 
@@ -57,7 +62,7 @@ TEMA <- triple_exponential_moving_average
 triple_exponential_moving_average.default <- function(
 	x,
 	cols,
-	n = 30,
+	timePeriod = 30,
 	na.bridge = FALSE,
 	...
 ) {
@@ -84,8 +89,8 @@ triple_exponential_moving_average.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_TEMA,
-		as.double(constructed_series[[1]]),
-		as.integer(n),
+		constructed_series[[1]],
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
@@ -103,12 +108,18 @@ triple_exponential_moving_average.default <- function(
 triple_exponential_moving_average.data.frame <- function(
 	x,
 	cols,
-	n = 30,
+	timePeriod = 30,
 	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		triple_exponential_moving_average.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -119,17 +130,14 @@ triple_exponential_moving_average.data.frame <- function(
 triple_exponential_moving_average.matrix <- function(
 	x,
 	cols,
-	n = 30,
+	timePeriod = 30,
 	na.bridge = FALSE,
 	...
 ) {
-	## pass directly to
-	## triple_exponential_moving_average.default to avoid
-	## shenanigans with NextMethod()
 	triple_exponential_moving_average.default(
 		x = x,
 		cols = cols,
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = na.bridge,
 		...
 	)
@@ -142,7 +150,7 @@ triple_exponential_moving_average.matrix <- function(
 triple_exponential_moving_average.numeric <- function(
 	x,
 	cols,
-	n = 30,
+	timePeriod = 30,
 	na.bridge = FALSE,
 	...
 ) {
@@ -159,7 +167,7 @@ triple_exponential_moving_average.numeric <- function(
 	x <- .Call(
 		C_impl_ta_TEMA,
 		as.double(x),
-		as.integer(n),
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
@@ -177,7 +185,7 @@ triple_exponential_moving_average.numeric <- function(
 triple_exponential_moving_average.plotly <- function(
 	x,
 	cols,
-	n = 30,
+	timePeriod = 30,
 	na.bridge = FALSE,
 	...
 ) {
@@ -207,7 +215,8 @@ triple_exponential_moving_average.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n
+		timePeriod = timePeriod,
+		na.bridge = TRUE
 	)
 
 	## add conditional idx
@@ -230,14 +239,14 @@ triple_exponential_moving_average.plotly <- function(
 				)
 			)
 		),
-		name = label("TEMA", n),
-		decorators = list()
+		name = label("TEMA", timePeriod),
+		decorators = list(),
+		data = constructed_indicator
 	)
 	state[["main"]] <- plotly_object
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases triple_exponential_moving_average
@@ -246,7 +255,7 @@ triple_exponential_moving_average.plotly <- function(
 triple_exponential_moving_average.ggplot <- function(
 	x,
 	cols,
-	n = 30,
+	timePeriod = 30,
 	na.bridge = FALSE,
 	...
 ) {
@@ -275,7 +284,8 @@ triple_exponential_moving_average.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n
+		timePeriod = timePeriod,
+		na.bridge = TRUE
 	)
 
 	## add conditional idx
@@ -292,7 +302,7 @@ triple_exponential_moving_average.ggplot <- function(
 				y = "TEMA"
 			)
 		),
-		name = label("TEMA", n),
+		name = label("TEMA", timePeriod),
 		decorators = list(),
 		data = constructed_indicator
 	)

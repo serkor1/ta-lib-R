@@ -26,7 +26,7 @@
 abandoned_baby <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
@@ -47,7 +47,7 @@ CDLABANDONEDBABY <- abandoned_baby
 abandoned_baby.default <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
@@ -91,7 +91,7 @@ abandoned_baby.default <- function(
 			constructed_series[[2]],
 			constructed_series[[3]],
 			constructed_series[[4]],
-			eps,
+			as.double(penetration),
 			normalize,
 			as.logical(na.bridge)
 		)
@@ -114,12 +114,18 @@ abandoned_baby.default <- function(
 abandoned_baby.data.frame <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		abandoned_baby.default(
+			x = x,
+			cols = cols,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -130,11 +136,17 @@ abandoned_baby.data.frame <- function(
 abandoned_baby.matrix <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	abandoned_baby.default(
+		x = x,
+		cols = cols,
+		penetration = penetration,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -144,7 +156,7 @@ abandoned_baby.matrix <- function(
 abandoned_baby.plotly <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
@@ -174,7 +186,8 @@ abandoned_baby.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		eps = eps
+		penetration = penetration,
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -197,7 +210,6 @@ abandoned_baby.plotly <- function(
 	plotly_object
 }
 
-
 #' @usage NULL
 #' @aliases abandoned_baby
 #'
@@ -205,7 +217,7 @@ abandoned_baby.plotly <- function(
 abandoned_baby.ggplot <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
@@ -234,7 +246,8 @@ abandoned_baby.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		eps = eps
+		penetration = penetration,
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

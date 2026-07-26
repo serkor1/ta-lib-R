@@ -1,12 +1,12 @@
 #' @export
-#' @family Volume Indicator
+#' @family Volume Indicators
 #'
 #' @title Chaikin A/D Line
 #' @templateVar .title Chaikin A/D Line
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun chaikin_accumulation_distribution_line
-#' @templateVar .family Volume Indicator
-#' @templateVar .formula ~high+low+close+volume
+#' @templateVar .family Volume Indicators
+#' @templateVar .formula ~high + low + close + volume
 #'
 ## splice:documentation:start
 ## splice:documentation:end
@@ -62,12 +62,10 @@ chaikin_accumulation_distribution_line.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_AD,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
 		constructed_series[[4]],
-		## splice:call:end
 		as.logical(na.bridge)
 	)
 
@@ -116,7 +114,17 @@ chaikin_accumulation_distribution_line.matrix <- function(
 	)
 }
 
-
+#' @usage NULL
+chaikin_accumulation_distribution_line_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_AD_lookback
+	)
+}
 #' @usage NULL
 #' @aliases chaikin_accumulation_distribution_line
 #'
@@ -216,9 +224,9 @@ chaikin_accumulation_distribution_line.ggplot <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability

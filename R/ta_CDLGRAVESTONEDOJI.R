@@ -115,7 +115,12 @@ gravestone_doji.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		gravestone_doji.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ gravestone_doji.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	gravestone_doji.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ gravestone_doji.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ gravestone_doji.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases gravestone_doji
@@ -225,7 +235,8 @@ gravestone_doji.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

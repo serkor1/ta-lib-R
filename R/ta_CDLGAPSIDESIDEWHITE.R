@@ -115,7 +115,12 @@ gaps_side_white.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		gaps_side_white.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ gaps_side_white.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	gaps_side_white.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ gaps_side_white.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ gaps_side_white.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases gaps_side_white
@@ -225,7 +235,8 @@ gaps_side_white.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

@@ -26,7 +26,7 @@
 evening_star <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
@@ -47,7 +47,7 @@ CDLEVENINGSTAR <- evening_star
 evening_star.default <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
@@ -91,7 +91,7 @@ evening_star.default <- function(
 			constructed_series[[2]],
 			constructed_series[[3]],
 			constructed_series[[4]],
-			eps,
+			as.double(penetration),
 			normalize,
 			as.logical(na.bridge)
 		)
@@ -114,12 +114,18 @@ evening_star.default <- function(
 evening_star.data.frame <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		evening_star.default(
+			x = x,
+			cols = cols,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -130,11 +136,17 @@ evening_star.data.frame <- function(
 evening_star.matrix <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	evening_star.default(
+		x = x,
+		cols = cols,
+		penetration = penetration,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -144,7 +156,7 @@ evening_star.matrix <- function(
 evening_star.plotly <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
@@ -174,7 +186,8 @@ evening_star.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		eps = eps
+		penetration = penetration,
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -197,7 +210,6 @@ evening_star.plotly <- function(
 	plotly_object
 }
 
-
 #' @usage NULL
 #' @aliases evening_star
 #'
@@ -205,7 +217,7 @@ evening_star.plotly <- function(
 evening_star.ggplot <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
@@ -234,7 +246,8 @@ evening_star.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		eps = eps
+		penetration = penetration,
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

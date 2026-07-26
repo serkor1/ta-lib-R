@@ -1,8 +1,8 @@
 #' @export
 #' @family Pattern Recognition
 #'
-#' @title Three Inside
-#' @templateVar .title Three Inside
+#' @title Three Inside Up/Down
+#' @templateVar .title Three Inside Up/Down
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun three_inside
 #' @templateVar .family Pattern Recognition
@@ -115,7 +115,12 @@ three_inside.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		three_inside.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ three_inside.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	three_inside.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ three_inside.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ three_inside.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases three_inside
@@ -225,7 +235,8 @@ three_inside.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

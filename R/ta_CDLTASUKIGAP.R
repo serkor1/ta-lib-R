@@ -115,7 +115,12 @@ tasuki_gap.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		tasuki_gap.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ tasuki_gap.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	tasuki_gap.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ tasuki_gap.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ tasuki_gap.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases tasuki_gap
@@ -225,7 +235,8 @@ tasuki_gap.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

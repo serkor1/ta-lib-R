@@ -115,7 +115,12 @@ advance_block.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		advance_block.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ advance_block.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	advance_block.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ advance_block.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ advance_block.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases advance_block
@@ -225,7 +235,8 @@ advance_block.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

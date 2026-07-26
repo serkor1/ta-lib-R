@@ -1,12 +1,12 @@
 #' @export
-#' @family Momentum Indicator
+#' @family Momentum Indicators
 #'
 #' @title Momentum
 #' @templateVar .title Momentum
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun momentum
-#' @templateVar .family Momentum Indicator
-#' @templateVar .formula ~ close
+#' @templateVar .family Momentum Indicators
+#' @templateVar .formula ~close
 #'
 ## splice:documentation:start
 ## splice:documentation:end
@@ -16,7 +16,7 @@
 momentum <- function(
 	x,
 	cols,
-	n = 10,
+	timePeriod = 10,
 	na.bridge = FALSE,
 	...
 ) {
@@ -37,7 +37,7 @@ MOM <- momentum
 momentum.default <- function(
 	x,
 	cols,
-	n = 10,
+	timePeriod = 10,
 	na.bridge = FALSE,
 	...
 ) {
@@ -64,10 +64,8 @@ momentum.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_MOM,
-		## splice:call:start
 		constructed_series[[1]],
-		as.integer(n),
-		## splice:call:end
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
@@ -85,7 +83,7 @@ momentum.default <- function(
 momentum.data.frame <- function(
 	x,
 	cols,
-	n = 10,
+	timePeriod = 10,
 	na.bridge = FALSE,
 	...
 ) {
@@ -93,7 +91,7 @@ momentum.data.frame <- function(
 		momentum.default(
 			x = x,
 			cols = cols,
-			n = n,
+			timePeriod = timePeriod,
 			na.bridge = na.bridge,
 			...
 		)
@@ -107,20 +105,32 @@ momentum.data.frame <- function(
 momentum.matrix <- function(
 	x,
 	cols,
-	n = 10,
+	timePeriod = 10,
 	na.bridge = FALSE,
 	...
 ) {
 	momentum.default(
 		x = x,
 		cols = cols,
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = na.bridge,
 		...
 	)
 }
 
-
+#' @usage NULL
+momentum_lookback <- function(
+	x,
+	cols,
+	timePeriod = 10,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_MOM_lookback,
+		as.integer(timePeriod)
+	)
+}
 #' @usage NULL
 #' @aliases momentum
 #'
@@ -128,7 +138,7 @@ momentum.matrix <- function(
 momentum.numeric <- function(
 	x,
 	cols,
-	n = 10,
+	timePeriod = 10,
 	na.bridge = FALSE,
 	...
 ) {
@@ -144,10 +154,8 @@ momentum.numeric <- function(
 	## to 'C'
 	x <- .Call(
 		C_impl_ta_MOM,
-		## splice:numeric:start
 		as.double(x),
-		as.integer(n),
-		## splice:numeric:end
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
@@ -158,7 +166,6 @@ momentum.numeric <- function(
 	x
 }
 
-
 #' @usage NULL
 #' @aliases momentum
 #'
@@ -166,7 +173,7 @@ momentum.numeric <- function(
 momentum.plotly <- function(
 	x,
 	cols,
-	n = 10,
+	timePeriod = 10,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -199,7 +206,7 @@ momentum.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -218,7 +225,7 @@ momentum.plotly <- function(
 	## splice:plotly-assembly:start
 	name <- sprintf(
 		"MOM(%d)",
-		n
+		timePeriod
 	)
 
 	traces <- list(
@@ -262,11 +269,11 @@ momentum.plotly <- function(
 momentum.ggplot <- function(
 	x,
 	cols,
-	n = 10,
+	timePeriod = 10,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -294,7 +301,7 @@ momentum.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -315,7 +322,7 @@ momentum.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- sprintf("MOM(%d)", n)
+	name <- sprintf("MOM(%d)", timePeriod)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

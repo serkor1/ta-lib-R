@@ -115,7 +115,12 @@ rise_fall_3_methods.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		rise_fall_3_methods.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ rise_fall_3_methods.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	rise_fall_3_methods.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ rise_fall_3_methods.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ rise_fall_3_methods.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases rise_fall_3_methods
@@ -225,7 +235,8 @@ rise_fall_3_methods.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

@@ -62,12 +62,10 @@ average_price.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_AVGPRICE,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
 		constructed_series[[4]],
-		## splice:call:end
 		as.logical(na.bridge)
 	)
 
@@ -113,5 +111,17 @@ average_price.matrix <- function(
 		cols = cols,
 		na.bridge = na.bridge,
 		...
+	)
+}
+
+#' @usage NULL
+average_price_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_AVGPRICE_lookback
 	)
 }

@@ -1,11 +1,11 @@
 #' @export
-#' @family Cycle Indicator
+#' @family Cycle Indicators
 #'
 #' @title Hilbert Transform - Phasor Components
 #' @templateVar .title Hilbert Transform - Phasor Components
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun phasor_components
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Cycle Indicators
 #' @templateVar .formula ~close
 #'
 ## splice:documentation:start
@@ -62,9 +62,7 @@ phasor_components.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_HT_PHASOR,
-		## splice:call:start
 		constructed_series[[1]],
-		## splice:call:end
 		as.logical(na.bridge)
 	)
 
@@ -113,7 +111,17 @@ phasor_components.matrix <- function(
 	)
 }
 
-
+#' @usage NULL
+phasor_components_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_HT_PHASOR_lookback
+	)
+}
 #' @usage NULL
 #' @aliases phasor_components
 #'
@@ -136,9 +144,7 @@ phasor_components.numeric <- function(
 	## to 'C'
 	x <- .Call(
 		C_impl_ta_HT_PHASOR,
-		## splice:numeric:start
 		as.double(x),
-		## splice:numeric:end
 		as.logical(na.bridge)
 	)
 
@@ -148,7 +154,6 @@ phasor_components.numeric <- function(
 
 	x
 }
-
 
 #' @usage NULL
 #' @aliases phasor_components
@@ -266,9 +271,9 @@ phasor_components.ggplot <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability

@@ -1,11 +1,11 @@
 #' @export
-#' @family Momentum Indicator
+#' @family Momentum Indicators
 #'
-#' @title Triple Exponential Average
-#' @templateVar .title Triple Exponential Average
+#' @title 1-day Rate-Of-Change (ROC) of a Triple Smooth EMA
+#' @templateVar .title 1-day Rate-Of-Change (ROC) of a Triple Smooth EMA
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun triple_exponential_average
-#' @templateVar .family Momentum Indicator
+#' @templateVar .family Momentum Indicators
 #' @templateVar .formula ~close
 #'
 ## splice:documentation:start
@@ -16,7 +16,7 @@
 triple_exponential_average <- function(
 	x,
 	cols,
-	n = 30,
+	timePeriod = 30,
 	na.bridge = FALSE,
 	...
 ) {
@@ -37,7 +37,7 @@ TRIX <- triple_exponential_average
 triple_exponential_average.default <- function(
 	x,
 	cols,
-	n = 30,
+	timePeriod = 30,
 	na.bridge = FALSE,
 	...
 ) {
@@ -64,10 +64,8 @@ triple_exponential_average.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_TRIX,
-		## splice:call:start
 		constructed_series[[1]],
-		as.integer(n),
-		## splice:call:end
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
@@ -85,7 +83,7 @@ triple_exponential_average.default <- function(
 triple_exponential_average.data.frame <- function(
 	x,
 	cols,
-	n = 30,
+	timePeriod = 30,
 	na.bridge = FALSE,
 	...
 ) {
@@ -93,7 +91,7 @@ triple_exponential_average.data.frame <- function(
 		triple_exponential_average.default(
 			x = x,
 			cols = cols,
-			n = n,
+			timePeriod = timePeriod,
 			na.bridge = na.bridge,
 			...
 		)
@@ -107,20 +105,32 @@ triple_exponential_average.data.frame <- function(
 triple_exponential_average.matrix <- function(
 	x,
 	cols,
-	n = 30,
+	timePeriod = 30,
 	na.bridge = FALSE,
 	...
 ) {
 	triple_exponential_average.default(
 		x = x,
 		cols = cols,
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = na.bridge,
 		...
 	)
 }
 
-
+#' @usage NULL
+triple_exponential_average_lookback <- function(
+	x,
+	cols,
+	timePeriod = 30,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_TRIX_lookback,
+		as.integer(timePeriod)
+	)
+}
 #' @usage NULL
 #' @aliases triple_exponential_average
 #'
@@ -128,7 +138,7 @@ triple_exponential_average.matrix <- function(
 triple_exponential_average.numeric <- function(
 	x,
 	cols,
-	n = 30,
+	timePeriod = 30,
 	na.bridge = FALSE,
 	...
 ) {
@@ -144,10 +154,8 @@ triple_exponential_average.numeric <- function(
 	## to 'C'
 	x <- .Call(
 		C_impl_ta_TRIX,
-		## splice:numeric:start
 		as.double(x),
-		as.integer(n),
-		## splice:numeric:end
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
@@ -158,7 +166,6 @@ triple_exponential_average.numeric <- function(
 	x
 }
 
-
 #' @usage NULL
 #' @aliases triple_exponential_average
 #'
@@ -166,7 +173,7 @@ triple_exponential_average.numeric <- function(
 triple_exponential_average.plotly <- function(
 	x,
 	cols,
-	n = 30,
+	timePeriod = 30,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -199,7 +206,7 @@ triple_exponential_average.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -216,7 +223,7 @@ triple_exponential_average.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	name <- sprintf("TRIX(%d)", n)
+	name <- sprintf("TRIX(%d)", timePeriod)
 	decorators <- list()
 	traces <- list(
 		list(y = ~TRIX)
@@ -237,7 +244,7 @@ triple_exponential_average.plotly <- function(
 			),
 			data = constructed_indicator,
 			title = if (missing(title)) {
-				"Triple Exponential Average"
+				"1-day Rate-Of-Change (ROC) of a Triple Smooth EMA"
 			} else {
 				title
 			}
@@ -259,11 +266,11 @@ triple_exponential_average.plotly <- function(
 triple_exponential_average.ggplot <- function(
 	x,
 	cols,
-	n = 30,
+	timePeriod = 30,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -291,7 +298,7 @@ triple_exponential_average.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -312,7 +319,7 @@ triple_exponential_average.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- sprintf("TRIX(%d)", n)
+	name <- sprintf("TRIX(%d)", timePeriod)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(
@@ -329,7 +336,7 @@ triple_exponential_average.ggplot <- function(
 			),
 			data = constructed_indicator,
 			title = if (missing(title)) {
-				"Triple Exponential Average"
+				"1-day Rate-Of-Change (ROC) of a Triple Smooth EMA"
 			} else {
 				title
 			}

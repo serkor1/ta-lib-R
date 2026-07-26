@@ -1,12 +1,12 @@
 #' @export
-#' @family Momentum Indicator
+#' @family Momentum Indicators
 #'
 #' @title Average Directional Movement Index
 #' @templateVar .title Average Directional Movement Index
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun average_directional_movement_index
-#' @templateVar .family Momentum Indicator
-#' @templateVar .formula ~ high + low + close
+#' @templateVar .family Momentum Indicators
+#' @templateVar .formula ~high + low + close
 #'
 ## splice:documentation:start
 ## splice:documentation:end
@@ -16,7 +16,7 @@
 average_directional_movement_index <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -37,7 +37,7 @@ ADX <- average_directional_movement_index
 average_directional_movement_index.default <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -64,12 +64,10 @@ average_directional_movement_index.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_ADX,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		as.integer(n),
-		## splice:call:end
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
@@ -87,7 +85,7 @@ average_directional_movement_index.default <- function(
 average_directional_movement_index.data.frame <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -95,7 +93,7 @@ average_directional_movement_index.data.frame <- function(
 		average_directional_movement_index.default(
 			x = x,
 			cols = cols,
-			n = n,
+			timePeriod = timePeriod,
 			na.bridge = na.bridge,
 			...
 		)
@@ -109,20 +107,32 @@ average_directional_movement_index.data.frame <- function(
 average_directional_movement_index.matrix <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
 	average_directional_movement_index.default(
 		x = x,
 		cols = cols,
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = na.bridge,
 		...
 	)
 }
 
-
+#' @usage NULL
+average_directional_movement_index_lookback <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_ADX_lookback,
+		as.integer(timePeriod)
+	)
+}
 #' @usage NULL
 #' @aliases average_directional_movement_index
 #'
@@ -130,7 +140,7 @@ average_directional_movement_index.matrix <- function(
 average_directional_movement_index.plotly <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 25,
@@ -166,7 +176,7 @@ average_directional_movement_index.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -185,7 +195,7 @@ average_directional_movement_index.plotly <- function(
 	## splice:plotly-assembly:start
 	name <- sprintf(
 		"ADX(%d)",
-		n
+		timePeriod
 	)
 
 	decorators <- list(
@@ -236,11 +246,11 @@ average_directional_movement_index.plotly <- function(
 average_directional_movement_index.ggplot <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -268,7 +278,7 @@ average_directional_movement_index.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -294,7 +304,7 @@ average_directional_movement_index.ggplot <- function(
 		ggplot_line(75),
 		list(y = "ADX")
 	)
-	name <- sprintf("ADX(%d)", n)
+	name <- sprintf("ADX(%d)", timePeriod)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

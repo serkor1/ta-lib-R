@@ -1,11 +1,11 @@
 #' @export
-#' @family Momentum Indicator
+#' @family Momentum Indicators
 #'
 #' @title Directional Movement Index
 #' @templateVar .title Directional Movement Index
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun directional_movement_index
-#' @templateVar .family Momentum Indicator
+#' @templateVar .family Momentum Indicators
 #' @templateVar .formula ~high + low + close
 #'
 ## splice:documentation:start
@@ -16,7 +16,7 @@
 directional_movement_index <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -37,7 +37,7 @@ DX <- directional_movement_index
 directional_movement_index.default <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -64,12 +64,10 @@ directional_movement_index.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_DX,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		as.integer(n),
-		## splice:call:end
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
@@ -87,7 +85,7 @@ directional_movement_index.default <- function(
 directional_movement_index.data.frame <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -95,7 +93,7 @@ directional_movement_index.data.frame <- function(
 		directional_movement_index.default(
 			x = x,
 			cols = cols,
-			n = n,
+			timePeriod = timePeriod,
 			na.bridge = na.bridge,
 			...
 		)
@@ -109,20 +107,32 @@ directional_movement_index.data.frame <- function(
 directional_movement_index.matrix <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
 	directional_movement_index.default(
 		x = x,
 		cols = cols,
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = na.bridge,
 		...
 	)
 }
 
-
+#' @usage NULL
+directional_movement_index_lookback <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_DX_lookback,
+		as.integer(timePeriod)
+	)
+}
 #' @usage NULL
 #' @aliases directional_movement_index
 #'
@@ -130,7 +140,7 @@ directional_movement_index.matrix <- function(
 directional_movement_index.plotly <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -163,7 +173,7 @@ directional_movement_index.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -182,7 +192,7 @@ directional_movement_index.plotly <- function(
 	## splice:plotly-assembly:start
 	name <- sprintf(
 		"DX(%d)",
-		n
+		timePeriod
 	)
 
 	decorators <- list(
@@ -232,11 +242,11 @@ directional_movement_index.plotly <- function(
 directional_movement_index.ggplot <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -264,7 +274,7 @@ directional_movement_index.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -287,7 +297,7 @@ directional_movement_index.ggplot <- function(
 	layers <- list(
 		list(y = "DX")
 	)
-	name <- sprintf("DX(%d)", n)
+	name <- sprintf("DX(%d)", timePeriod)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

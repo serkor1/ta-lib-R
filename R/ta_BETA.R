@@ -1,8 +1,8 @@
 #' @export
-#' @family Rolling Statistic
+#' @family Statistic Functions
 #'
-#' @title Rolling Beta
-#' @templateVar .title Rolling Beta
+#' @title Beta
+#' @templateVar .title Beta
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun rolling_beta
 #'
@@ -13,8 +13,7 @@
 #' @template rolling_returns
 rolling_beta <- function(
 	x,
-	y,
-	n = 5,
+	timePeriod = 5,
 	na.bridge = FALSE
 ) {
 	UseMethod("rolling_beta")
@@ -33,8 +32,7 @@ BETA <- rolling_beta
 #' @export
 rolling_beta.default <- function(
 	x,
-	y,
-	n = 5,
+	timePeriod = 5,
 	na.bridge = FALSE
 ) {
 	## calculate indicator and
@@ -43,8 +41,7 @@ rolling_beta.default <- function(
 		C_impl_ta_BETA,
 		## splice:call:start
 		as.double(x),
-		as.double(y),
-		as.integer(n),
+		as.integer(timePeriod),
 		## splice:call:end
 		as.logical(na.bridge)
 	)
@@ -64,16 +61,14 @@ rolling_beta.default <- function(
 #' @export
 rolling_beta.numeric <- function(
 	x,
-	y,
-	n = 5,
+	timePeriod = 5,
 	na.bridge = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
 	x <- rolling_beta.default(
 		x = x,
-		y = y,
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = na.bridge
 	)
 

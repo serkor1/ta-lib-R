@@ -1,47 +1,47 @@
 #' @export
-#' @family Rolling Statistic
+#' @family Statistic Functions
 #'
-#' @title Rolling Min
-#' @templateVar .title Rolling Min
+#' @title Time Series Forecast
+#' @templateVar .title Time Series Forecast
 #' @templateVar .author Serkan Korkmaz
-#' @templateVar .fun rolling_min
+#' @templateVar .fun TSF
 #'
 ## splice:documentation:start
 ## splice:documentation:end
 #'
 #' @template rolling_description
 #' @template rolling_returns
-rolling_min <- function(
+TSF <- function(
 	x,
-	n = 30,
+	timePeriod = 14,
 	na.bridge = FALSE
 ) {
-	UseMethod("rolling_min")
+	UseMethod("TSF")
 }
 
 #' @export
 #' @usage NULL
-#' @rdname rolling_min
+#' @rdname TSF
 #'
-#' @aliases rolling_min
-MIN <- rolling_min
+#' @aliases TSF
+TSF <- TSF
 
 #' @usage NULL
-#' @aliases rolling_min
+#' @aliases TSF
 #'
 #' @export
-rolling_min.default <- function(
+TSF.default <- function(
 	x,
-	n = 30,
+	timePeriod = 14,
 	na.bridge = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		C_impl_ta_MIN,
+		C_impl_ta_TSF,
 		## splice:call:start
 		as.double(x),
-		as.integer(n),
+		as.integer(timePeriod),
 		## splice:call:end
 		as.logical(na.bridge)
 	)
@@ -56,19 +56,19 @@ rolling_min.default <- function(
 }
 
 #' @usage NULL
-#' @aliases rolling_min
+#' @aliases TSF
 #'
 #' @export
-rolling_min.numeric <- function(
+TSF.numeric <- function(
 	x,
-	n = 30,
+	timePeriod = 14,
 	na.bridge = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
-	x <- rolling_min.default(
+	x <- TSF.default(
 		x = x,
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = na.bridge
 	)
 

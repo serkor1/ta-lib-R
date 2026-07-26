@@ -1,8 +1,8 @@
 #' @export
 #' @family Pattern Recognition
 #'
-#' @title Break Away
-#' @templateVar .title Break Away
+#' @title Breakaway
+#' @templateVar .title Breakaway
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun break_away
 #' @templateVar .family Pattern Recognition
@@ -115,7 +115,12 @@ break_away.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		break_away.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ break_away.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	break_away.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ break_away.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ break_away.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases break_away
@@ -225,7 +235,8 @@ break_away.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

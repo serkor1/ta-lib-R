@@ -1,11 +1,11 @@
 #' @export
-#' @family Cycle Indicator
+#' @family Cycle Indicators
 #'
 #' @title Hilbert Transform - Trend vs Cycle Mode
 #' @templateVar .title Hilbert Transform - Trend vs Cycle Mode
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun trend_cycle_mode
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Cycle Indicators
 #' @templateVar .formula ~close
 #'
 ## splice:documentation:start
@@ -62,9 +62,7 @@ trend_cycle_mode.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_HT_TRENDMODE,
-		## splice:call:start
 		constructed_series[[1]],
-		## splice:call:end
 		as.logical(na.bridge)
 	)
 
@@ -113,7 +111,17 @@ trend_cycle_mode.matrix <- function(
 	)
 }
 
-
+#' @usage NULL
+trend_cycle_mode_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_HT_TRENDMODE_lookback
+	)
+}
 #' @usage NULL
 #' @aliases trend_cycle_mode
 #'
@@ -136,9 +144,7 @@ trend_cycle_mode.numeric <- function(
 	## to 'C'
 	x <- .Call(
 		C_impl_ta_HT_TRENDMODE,
-		## splice:numeric:start
 		as.double(x),
-		## splice:numeric:end
 		as.logical(na.bridge)
 	)
 
@@ -148,7 +154,6 @@ trend_cycle_mode.numeric <- function(
 
 	x
 }
-
 
 #' @usage NULL
 #' @aliases trend_cycle_mode
@@ -257,9 +262,9 @@ trend_cycle_mode.ggplot <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability

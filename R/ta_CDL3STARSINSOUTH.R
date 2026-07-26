@@ -1,8 +1,8 @@
 #' @export
 #' @family Pattern Recognition
 #'
-#' @title Three Stars in the South
-#' @templateVar .title Three Stars in the South
+#' @title Three Stars In The South
+#' @templateVar .title Three Stars In The South
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun three_stars_in_the_south
 #' @templateVar .family Pattern Recognition
@@ -115,7 +115,12 @@ three_stars_in_the_south.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		three_stars_in_the_south.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ three_stars_in_the_south.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	three_stars_in_the_south.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ three_stars_in_the_south.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ three_stars_in_the_south.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases three_stars_in_the_south
@@ -225,7 +235,8 @@ three_stars_in_the_south.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

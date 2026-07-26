@@ -1,5 +1,5 @@
 #' @export
-#' @family Volume Indicator
+#' @family Volume Indicators
 #'
 #' @title Trading Volume
 #' @templateVar .title Trading Volume

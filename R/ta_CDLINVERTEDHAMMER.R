@@ -115,7 +115,12 @@ inverted_hammer.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		inverted_hammer.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ inverted_hammer.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	inverted_hammer.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ inverted_hammer.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ inverted_hammer.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases inverted_hammer
@@ -225,7 +235,8 @@ inverted_hammer.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

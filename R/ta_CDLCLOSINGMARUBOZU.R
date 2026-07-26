@@ -115,7 +115,12 @@ closing_marubozu.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		closing_marubozu.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ closing_marubozu.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	closing_marubozu.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ closing_marubozu.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ closing_marubozu.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases closing_marubozu
@@ -225,7 +235,8 @@ closing_marubozu.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

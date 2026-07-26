@@ -1,8 +1,8 @@
 #' @export
 #' @family Pattern Recognition
 #'
-#' @title Belt Hold
-#' @templateVar .title Belt Hold
+#' @title Belt-hold
+#' @templateVar .title Belt-hold
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun belt_hold
 #' @templateVar .family Pattern Recognition
@@ -115,7 +115,12 @@ belt_hold.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		belt_hold.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ belt_hold.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	belt_hold.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ belt_hold.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ belt_hold.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases belt_hold
@@ -225,7 +235,8 @@ belt_hold.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

@@ -1,15 +1,19 @@
 #' @usage NULL
-#' @aliases $FUN
+#' @aliases ${FUN}
 #'
 #' @export
-$FUN.ggplot <- function(
+${FUN}.${METHOD} <- function(
 	x,
-	cols, ${ARGS}
+	cols,
+	${ARGS}
 	na.bridge = FALSE,
 	...) {
 
-	## check ggplot2 availability
-	assert_ggplot2()
+#plotly#	## check that input value
+#plotly#	## 'x' is <plotly>-object
+#plotly#	assert_plotly_object(x)
+#ggplot#	## check ggplot2 availability
+#ggplot#	assert_ggplot2()
 
 	## check that input value
 	## 'cols' is a <formula>-objet
@@ -18,21 +22,23 @@ $FUN.ggplot <- function(
 	}
 
 	## construct series from
-	## {ggplot}-object
+	## {${METHOD}}-object
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~open + high + low + close,
+		default_formula = ${FORMULA},
 		...
 	)
 
 	## construct indicator
 	## from the series
-	constructed_indicator <- $FUN(
+	constructed_indicator <- ${FUN}(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)${PPARGS}
+		),
+		${PARGS}
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -40,16 +46,17 @@ $FUN.ggplot <- function(
 		constructed_series
 	)
 
-	## construct {ggplot2}-object
+	## construct {${PKG}}-object
 	state <- .chart_state()
-	ggplot_object <- pattern_gg(
+	${METHOD}_object <- pattern_${SUFFIX}(
 		p = state[["main"]],
 		x = constructed_indicator,
 		high = constructed_series[[2]],
 		low = constructed_series[[3]],
-		pattern_name = "$FUN",
-		agnostic = $AGNOSTIC	)
-	state[["main"]] <- ggplot_object
+		pattern_name = "${FUN}",
+		agnostic = ${AGNOSTIC}
+	)
+	state[["main"]] <- ${METHOD}_object
 
-	ggplot_object
- }
+	${METHOD}_object
+}

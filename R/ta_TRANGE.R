@@ -1,11 +1,11 @@
 #' @export
-#' @family Volatility Indicator
+#' @family Volatility Indicators
 #'
 #' @title True Range
 #' @templateVar .title True Range
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun true_range
-#' @templateVar .family Volatility Indicator
+#' @templateVar .family Volatility Indicators
 #' @templateVar .formula ~high + low + close
 #'
 ## splice:documentation:start
@@ -62,11 +62,9 @@ true_range.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_TRANGE,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		## splice:call:end
 		as.logical(na.bridge)
 	)
 
@@ -115,7 +113,17 @@ true_range.matrix <- function(
 	)
 }
 
-
+#' @usage NULL
+true_range_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_TRANGE_lookback
+	)
+}
 #' @usage NULL
 #' @aliases true_range
 #'
@@ -215,9 +223,9 @@ true_range.ggplot <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability

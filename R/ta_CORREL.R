@@ -1,8 +1,8 @@
 #' @export
-#' @family Rolling Statistic
+#' @family Statistic Functions
 #'
-#' @title Rolling Correlation
-#' @templateVar .title Rolling Correlation
+#' @title Pearson&apos;s Correlation Coefficient (r)
+#' @templateVar .title Pearson&apos;s Correlation Coefficient (r)
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun rolling_correlation
 #'
@@ -13,8 +13,7 @@
 #' @template rolling_returns
 rolling_correlation <- function(
 	x,
-	y,
-	n = 30,
+	timePeriod = 30,
 	na.bridge = FALSE
 ) {
 	UseMethod("rolling_correlation")
@@ -33,8 +32,7 @@ CORREL <- rolling_correlation
 #' @export
 rolling_correlation.default <- function(
 	x,
-	y,
-	n = 30,
+	timePeriod = 30,
 	na.bridge = FALSE
 ) {
 	## calculate indicator and
@@ -43,8 +41,7 @@ rolling_correlation.default <- function(
 		C_impl_ta_CORREL,
 		## splice:call:start
 		as.double(x),
-		as.double(y),
-		as.integer(n),
+		as.integer(timePeriod),
 		## splice:call:end
 		as.logical(na.bridge)
 	)
@@ -64,16 +61,14 @@ rolling_correlation.default <- function(
 #' @export
 rolling_correlation.numeric <- function(
 	x,
-	y,
-	n = 30,
+	timePeriod = 30,
 	na.bridge = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
 	x <- rolling_correlation.default(
 		x = x,
-		y = y,
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = na.bridge
 	)
 

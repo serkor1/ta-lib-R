@@ -1,8 +1,8 @@
 #' @export
 #' @family Pattern Recognition
 #'
-#' @title Takuri
-#' @templateVar .title Takuri
+#' @title Takuri (Dragonfly Doji with very long lower shadow)
+#' @templateVar .title Takuri (Dragonfly Doji with very long lower shadow)
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun takuri
 #' @templateVar .family Pattern Recognition
@@ -115,7 +115,12 @@ takuri.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		takuri.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ takuri.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	takuri.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ takuri.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ takuri.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases takuri
@@ -225,7 +235,8 @@ takuri.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

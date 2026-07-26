@@ -115,7 +115,12 @@ ladder_bottom.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		ladder_bottom.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ ladder_bottom.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	ladder_bottom.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ ladder_bottom.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ ladder_bottom.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases ladder_bottom
@@ -225,7 +235,8 @@ ladder_bottom.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

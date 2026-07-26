@@ -1,11 +1,11 @@
 #' @export
-#' @family Momentum Indicator
+#' @family Momentum Indicators
 #'
 #' @title Plus Directional Movement
 #' @templateVar .title Plus Directional Movement
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun plus_directional_movement
-#' @templateVar .family Momentum Indicator
+#' @templateVar .family Momentum Indicators
 #' @templateVar .formula ~high + low
 #'
 ## splice:documentation:start
@@ -16,7 +16,7 @@
 plus_directional_movement <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -37,7 +37,7 @@ PLUS_DM <- plus_directional_movement
 plus_directional_movement.default <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -64,11 +64,9 @@ plus_directional_movement.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_PLUS_DM,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
-		as.integer(n),
-		## splice:call:end
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
@@ -86,7 +84,7 @@ plus_directional_movement.default <- function(
 plus_directional_movement.data.frame <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -94,7 +92,7 @@ plus_directional_movement.data.frame <- function(
 		plus_directional_movement.default(
 			x = x,
 			cols = cols,
-			n = n,
+			timePeriod = timePeriod,
 			na.bridge = na.bridge,
 			...
 		)
@@ -108,20 +106,32 @@ plus_directional_movement.data.frame <- function(
 plus_directional_movement.matrix <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
 	plus_directional_movement.default(
 		x = x,
 		cols = cols,
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = na.bridge,
 		...
 	)
 }
 
-
+#' @usage NULL
+plus_directional_movement_lookback <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_PLUS_DM_lookback,
+		as.integer(timePeriod)
+	)
+}
 #' @usage NULL
 #' @aliases plus_directional_movement
 #'
@@ -129,7 +139,7 @@ plus_directional_movement.matrix <- function(
 plus_directional_movement.plotly <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -162,7 +172,7 @@ plus_directional_movement.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -179,7 +189,7 @@ plus_directional_movement.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	name <- sprintf("+DM(%d)", n)
+	name <- sprintf("+DM(%d)", timePeriod)
 
 	traces <- list(
 		list(y = ~PLUS_DM)
@@ -222,11 +232,11 @@ plus_directional_movement.plotly <- function(
 plus_directional_movement.ggplot <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -254,7 +264,7 @@ plus_directional_movement.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -275,7 +285,7 @@ plus_directional_movement.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- sprintf("+DM(%d)", n)
+	name <- sprintf("+DM(%d)", timePeriod)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

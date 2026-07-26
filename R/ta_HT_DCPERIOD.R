@@ -1,11 +1,11 @@
 #' @export
-#' @family Cycle Indicator
+#' @family Cycle Indicators
 #'
 #' @title Hilbert Transform - Dominant Cycle Period
 #' @templateVar .title Hilbert Transform - Dominant Cycle Period
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun dominant_cycle_period
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Cycle Indicators
 #' @templateVar .formula ~close
 #'
 ## splice:documentation:start
@@ -62,9 +62,7 @@ dominant_cycle_period.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_HT_DCPERIOD,
-		## splice:call:start
 		constructed_series[[1]],
-		## splice:call:end
 		as.logical(na.bridge)
 	)
 
@@ -113,7 +111,17 @@ dominant_cycle_period.matrix <- function(
 	)
 }
 
-
+#' @usage NULL
+dominant_cycle_period_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_HT_DCPERIOD_lookback
+	)
+}
 #' @usage NULL
 #' @aliases dominant_cycle_period
 #'
@@ -136,9 +144,7 @@ dominant_cycle_period.numeric <- function(
 	## to 'C'
 	x <- .Call(
 		C_impl_ta_HT_DCPERIOD,
-		## splice:numeric:start
 		as.double(x),
-		## splice:numeric:end
 		as.logical(na.bridge)
 	)
 
@@ -148,7 +154,6 @@ dominant_cycle_period.numeric <- function(
 
 	x
 }
-
 
 #' @usage NULL
 #' @aliases dominant_cycle_period
@@ -258,9 +263,9 @@ dominant_cycle_period.ggplot <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability

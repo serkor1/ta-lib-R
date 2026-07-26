@@ -1,8 +1,8 @@
 #' @export
 #' @family Pattern Recognition
 #'
-#' @title Unique Three River
-#' @templateVar .title Unique Three River
+#' @title Unique 3 River
+#' @templateVar .title Unique 3 River
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun unique_3_river
 #' @templateVar .family Pattern Recognition
@@ -115,7 +115,12 @@ unique_3_river.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		unique_3_river.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ unique_3_river.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	unique_3_river.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ unique_3_river.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ unique_3_river.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases unique_3_river
@@ -225,7 +235,8 @@ unique_3_river.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

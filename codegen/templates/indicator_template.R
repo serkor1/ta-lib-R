@@ -15,7 +15,8 @@
 #' @template returns
 ${FUN} <- function(
 	x,
-	cols,${ARGS}
+	cols,
+	${ARGS}
 	na.bridge = FALSE,
 	...) {
   UseMethod("${FUN}")
@@ -34,7 +35,8 @@ ${ALIAS} <- ${FUN}
 #' @export
 ${FUN}.default <- function(
 	x,
-	cols,${ARGS}
+	cols,
+	${ARGS}
 	na.bridge = FALSE,
 	...) {
 
@@ -60,9 +62,8 @@ ${FUN}.default <- function(
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
-		C_impl_ta_${TA_FUN},
-		## splice:call:start
-		## splice:call:end
+		C_impl_ta_${ALIAS},
+		${C_SIGNATURE},		
 		as.logical(na.bridge)
 	)
 
@@ -79,13 +80,16 @@ ${FUN}.default <- function(
 #' @export
 ${FUN}.data.frame <- function(
 	x,
-	cols,${ARGS}
+	cols,
+	${ARGS}
 	na.bridge = FALSE,
-	...) {
+	...
+) {
 	map_dfr(
 		${FUN}.default(
 			x = x,
-			cols = cols ${PARGS}
+			cols = cols,
+			${PARGS}
 			na.bridge = na.bridge,
 			...
 		)
@@ -99,14 +103,31 @@ ${FUN}.data.frame <- function(
 #' @export
 ${FUN}.matrix <- function(
 	x,
-	cols,${ARGS}
+	cols,
+	${ARGS}
 	na.bridge = FALSE,
 	...) {
 
 	${FUN}.default(
 			x = x,
-			cols = cols ${PARGS}
+			cols = cols ,
+			${PARGS}
 			na.bridge = na.bridge,
 			...
 		)
+}
+
+#' @usage NULL
+${FUN}_lookback <- function(
+	x,
+	cols,
+	${ARGS}
+	na.bridge = FALSE,
+	...
+) {
+
+	.Call(
+		C_impl_ta_${ALIAS}_lookback${C_SIGNATURE_LOOKBACK}
+	)
+
 }

@@ -1,12 +1,12 @@
 #' @export
-#' @family Momentum Indicator
+#' @family Momentum Indicators
 #'
-#' @title Williams %R
-#' @templateVar .title Williams %R
+#' @title Williams&apos; %R
+#' @templateVar .title Williams&apos; %R
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun williams_oscillator
-#' @templateVar .family Momentum Indicator
-#' @templateVar .formula ~ high + low + close
+#' @templateVar .family Momentum Indicators
+#' @templateVar .formula ~high + low + close
 #'
 ## splice:documentation:start
 ## splice:documentation:end
@@ -16,7 +16,7 @@
 williams_oscillator <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -37,7 +37,7 @@ WILLR <- williams_oscillator
 williams_oscillator.default <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -64,12 +64,10 @@ williams_oscillator.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_WILLR,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		as.integer(n),
-		## splice:call:end
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
@@ -87,7 +85,7 @@ williams_oscillator.default <- function(
 williams_oscillator.data.frame <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -95,7 +93,7 @@ williams_oscillator.data.frame <- function(
 		williams_oscillator.default(
 			x = x,
 			cols = cols,
-			n = n,
+			timePeriod = timePeriod,
 			na.bridge = na.bridge,
 			...
 		)
@@ -109,20 +107,32 @@ williams_oscillator.data.frame <- function(
 williams_oscillator.matrix <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
 	williams_oscillator.default(
 		x = x,
 		cols = cols,
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = na.bridge,
 		...
 	)
 }
 
-
+#' @usage NULL
+williams_oscillator_lookback <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_WILLR_lookback,
+		as.integer(timePeriod)
+	)
+}
 #' @usage NULL
 #' @aliases williams_oscillator
 #'
@@ -130,7 +140,7 @@ williams_oscillator.matrix <- function(
 williams_oscillator.plotly <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = -20,
@@ -165,7 +175,7 @@ williams_oscillator.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -182,7 +192,7 @@ williams_oscillator.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	name <- paste0("Will %R(", n, ")")
+	name <- paste0("Will %R(", timePeriod, ")")
 
 	decorators <- list(
 		function(p) add_limit_ly(p, y_range = c(0, -100))
@@ -209,7 +219,7 @@ williams_oscillator.plotly <- function(
 			),
 			data = constructed_indicator,
 			title = if (missing(title)) {
-				"Williams %R"
+				"Williams&apos; %R"
 			} else {
 				title
 			}
@@ -231,11 +241,11 @@ williams_oscillator.plotly <- function(
 williams_oscillator.ggplot <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -263,7 +273,7 @@ williams_oscillator.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -288,7 +298,7 @@ williams_oscillator.ggplot <- function(
 		ggplot_line(-80),
 		list(y = "WILLR")
 	)
-	name <- sprintf("Will %%R(%d)", n)
+	name <- sprintf("Will %%R(%d)", timePeriod)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(
@@ -305,7 +315,7 @@ williams_oscillator.ggplot <- function(
 			),
 			data = constructed_indicator,
 			title = if (missing(title)) {
-				"Williams %R"
+				"Williams&apos; %R"
 			} else {
 				title
 			}

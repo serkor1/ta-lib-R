@@ -115,7 +115,12 @@ doji_star.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		doji_star.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ doji_star.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	doji_star.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ doji_star.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ doji_star.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases doji_star
@@ -225,7 +235,8 @@ doji_star.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

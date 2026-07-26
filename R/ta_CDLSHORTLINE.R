@@ -115,7 +115,12 @@ short_line.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		NextMethod()
+		short_line.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +134,12 @@ short_line.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	short_line.default(
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -167,7 +177,8 @@ short_line.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +200,6 @@ short_line.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases short_line
@@ -225,7 +235,8 @@ short_line.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

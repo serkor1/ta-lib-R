@@ -1,11 +1,11 @@
 #' @export
-#' @family Cycle Indicator
+#' @family Cycle Indicators
 #'
 #' @title Hilbert Transform - Dominant Cycle Phase
 #' @templateVar .title Hilbert Transform - Dominant Cycle Phase
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun dominant_cycle_phase
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Cycle Indicators
 #' @templateVar .formula ~close
 #'
 ## splice:documentation:start
@@ -62,9 +62,7 @@ dominant_cycle_phase.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_HT_DCPHASE,
-		## splice:call:start
 		constructed_series[[1]],
-		## splice:call:end
 		as.logical(na.bridge)
 	)
 
@@ -113,7 +111,17 @@ dominant_cycle_phase.matrix <- function(
 	)
 }
 
-
+#' @usage NULL
+dominant_cycle_phase_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_HT_DCPHASE_lookback
+	)
+}
 #' @usage NULL
 #' @aliases dominant_cycle_phase
 #'
@@ -136,9 +144,7 @@ dominant_cycle_phase.numeric <- function(
 	## to 'C'
 	x <- .Call(
 		C_impl_ta_HT_DCPHASE,
-		## splice:numeric:start
 		as.double(x),
-		## splice:numeric:end
 		as.logical(na.bridge)
 	)
 
@@ -148,7 +154,6 @@ dominant_cycle_phase.numeric <- function(
 
 	x
 }
-
 
 #' @usage NULL
 #' @aliases dominant_cycle_phase
@@ -205,7 +210,7 @@ dominant_cycle_phase.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	name <- sprintf("DCPeriod")
+	name <- "DCPhase"
 
 	decorators <- list()
 
@@ -258,9 +263,9 @@ dominant_cycle_phase.ggplot <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
