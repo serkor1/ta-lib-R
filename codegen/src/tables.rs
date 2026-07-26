@@ -185,6 +185,7 @@ pub const CHART_TYPES: &[(&str, ChartType)] = &[
     ("HT_TRENDLINE", ChartType::Main),
     ("HT_TRENDMODE", ChartType::Sub),
     ("IMI", ChartType::Sub),
+    ("MAVP", ChartType::Main),
     ("MACD", ChartType::Sub),
     ("MACDEXT", ChartType::Sub),
     ("MACDFIX", ChartType::Sub),
