@@ -106,3 +106,7 @@ src/ta-lib/Makefile.in
 ^codegen$
 ^CRAN-SUBMISSION$
 ^tests/testthat/test-parity.R
+
+## Claude.md
+^src/ta-lib/CLAUDE.md
+^src/ta-lib/.claude
