@@ -10,6 +10,7 @@
 ## splice:documentation:end
 #'
 #' @template rolling_description
+${PARAM_DOCS}
 #' @template rolling_returns
 ${FUN} <- function(
 	x,

@@ -18,6 +18,7 @@
 #' indicators that supports various Moving Average specifications.
 #'
 #' @template description
+${PARAM_DOCS}
 #' @template returns
 ${FUN} <- function(
 	x,
