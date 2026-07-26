@@ -55,7 +55,7 @@ testthat::test_that(desc = 'Default calls', code = {
 		),
 		expected = MAVP(
 			BTC,
-			cols = ~close
+			cols = ~ close + periods
 		)
 	)
 })
