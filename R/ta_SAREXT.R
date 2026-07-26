@@ -12,6 +12,14 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @param startValue ([double]). Start value and direction. 0 for Auto, >0 for Long, <0 for Short. Defaults to `0`.
+#' @param offsetOnReverse ([double]). Percent offset added/removed to initial stop on short/long reversal. Defaults to `0`.
+#' @param afInitLong ([double]). Acceleration Factor initial value for the Long direction. Defaults to `0.02`.
+#' @param afLong ([double]). Acceleration Factor for the Long direction. Defaults to `0.02`.
+#' @param afMaxLong ([double]). Acceleration Factor maximum value for the Long direction. Defaults to `0.2`.
+#' @param afInitShort ([double]). Acceleration Factor initial value for the Short direction. Defaults to `0.02`.
+#' @param afShort ([double]). Acceleration Factor for the Short direction. Defaults to `0.02`.
+#' @param afMaxShort ([double]). Acceleration Factor maximum value for the Short direction. Defaults to `0.2`.
 #' @template returns
 extended_parabolic_stop_and_reverse <- function(
 	x,

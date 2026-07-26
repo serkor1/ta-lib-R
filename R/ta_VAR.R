@@ -10,6 +10,7 @@
 ## splice:documentation:end
 #'
 #' @template rolling_description
+#' @param deviations ([double]). Number of deviations. Defaults to `1`.
 #' @template rolling_returns
 rolling_variance <- function(
 	x,

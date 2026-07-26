@@ -12,6 +12,8 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @param accelerationFactor ([double]). Acceleration Factor used up to the Maximum value. Defaults to `0.02`.
+#' @param afMaximum ([double]). Acceleration Factor Maximum value. Defaults to `0.2`.
 #' @template returns
 parabolic_stop_and_reverse <- function(
 	x,

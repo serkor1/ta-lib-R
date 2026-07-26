@@ -18,6 +18,7 @@
 #' indicators that supports various Moving Average specifications.
 #'
 #' @template description
+#' @param volumeFactor ([double]). Volume Factor. Defaults to `0.7`.
 #' @template returns
 t3_exponential_moving_average <- function(
 	x,

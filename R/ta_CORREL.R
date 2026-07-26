@@ -10,6 +10,7 @@
 ## splice:documentation:end
 #'
 #' @template rolling_description
+#'
 #' @template rolling_returns
 rolling_correlation <- function(
 	x,

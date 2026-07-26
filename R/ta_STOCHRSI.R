@@ -12,6 +12,9 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @param fastKPeriod ([integer]). Time period for building the Fast-K line. Defaults to `5`.
+#' @param fastDPeriod ([integer]). Smoothing for making the Fast-D line. Usually set to 3. Defaults to `3`.
+#' @param fastDMa ([integer]). Type of Moving Average for Fast-D. Defaults to `0` ([SMA]). Can also be passed as talib::SMA.
 #' @template returns
 stochastic_relative_strength_index <- function(
 	x,

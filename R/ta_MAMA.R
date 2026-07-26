@@ -18,6 +18,8 @@
 #' indicators that supports various Moving Average specifications.
 #'
 #' @template description
+#' @param fastLimit ([double]). Upper limit use in the adaptive algorithm. Defaults to `0.5`.
+#' @param slowLimit ([double]). Lower limit use in the adaptive algorithm. Defaults to `0.05`.
 #' @template returns
 mesa_adaptive_moving_average <- function(
 	x,
