@@ -172,6 +172,7 @@ both variants in one file; `render_backend()` renders it once per backend
 | `${TITLE}`                | `<ShortDescription>`                               | `Bollinger Bands`                       |
 | `${FAMILY}`               | `<GroupId>`                                        | `Overlap Studies`                       |
 | `${FORMULA}`              | Default column formula                             | `~close`                                |
+| `${PARAM_DOCS}`           | `@param` roxygen lines for the optional inputs (`timePeriod`/`penetration` excluded — the man-roxygen templates document those; MAType formals carry the TA_MAType → `[SMA]`…`[T3]` legend) | `#' @param fastPeriod ([integer]). Number of period for the fast MA. Defaults to \`12\`. Can also be passed as talib::SMA().` |
 | `${ARGS}`                 | Formals, one per line, trailing comma per entry    | `timePeriod = 5,`                       |
 | `${PARGS}`                | Named forwarding, trailing comma per entry         | `timePeriod = timePeriod,`              |
 | `${C_SIGNATURE}`          | `.Call()` args: series columns + coerced formals   | `constructed_series[[1]],\n as.integer(timePeriod), ...` |
