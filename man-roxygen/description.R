@@ -62,12 +62,12 @@
 <% } %>
 #'
 <% fun_args <- names(formals(.fun)) %>
-<% if ("n" %in% fun_args) { %>
-#' @param n ([integer]). Lookback period (window size). A positive [integer]
+<% if ("timePeriod" %in% fun_args) { %>
+#' @param timePeriod ([integer]). Lookback period (window size). A positive [integer]
 #'   of [length] 1.
 <% } %>
-<% if ("eps" %in% fun_args) { %>
-#' @param eps ([double]). Penetration threshold for candlestick pattern
+<% if ("penetration" %in% fun_args) { %>
+#' @param penetration ([double]). Penetration threshold for candlestick pattern
 #'   recognition, expressed as a fraction of the candle body. A [double] of
 #'   [length] 1.
 <% } %>
