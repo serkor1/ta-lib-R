@@ -385,16 +385,19 @@ mapMaType <- function(x) {
 ## 	A small S3 that helps mapping
 ##  maTypes to <integers> and <characters>
 ##
-#'@export
 as.maType <- function(x, ...) {
 	UseMethod("as.maType")
 }
 
-##
+#' @export
 as.maType.maType <- function(x, ...) {
 	as.integer(x$maType)
 }
 
-as.maType.double <- as.maType.integer <- function(x, ...) {
+#' @export
+as.maType.double <- function(x, ...) {
 	as.integer(x)
 }
+
+#' @export
+as.maType.integer <- as.maType.double
