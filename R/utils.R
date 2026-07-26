@@ -378,3 +378,23 @@ mapMaType <- function(x) {
 		"Unkown"
 	)
 }
+
+## maType
+##
+## Description:
+## 	A small S3 that helps mapping
+##  maTypes to <integers> and <characters>
+##
+#'@export
+as.maType <- function(x, ...) {
+	UseMethod("as.maType")
+}
+
+##
+as.maType.maType <- function(x, ...) {
+	as.integer(x$maType)
+}
+
+as.maType.double <- as.maType.integer <- function(x, ...) {
+	as.integer(x)
+}
