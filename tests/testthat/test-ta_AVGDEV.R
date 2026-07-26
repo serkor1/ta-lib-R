@@ -6,11 +6,11 @@
 
 ## alias and function similarity
 ## checks this ensures that
-## AVGDEV and AVGDEV produces the same results
+## average_deviation and AVGDEV produces the same results
 testthat::test_that(desc = 'Alias and function similarity', code = {
 	## 1) test that the alias and
 	##    function returns the same values
-	output <- AVGDEV(SPY)
+	output <- average_deviation(SPY)
 	alias <- AVGDEV(SPY)
 
 	## 1.1) check if the values
@@ -29,7 +29,7 @@ testthat::test_that(desc = 'Class in, class out (<matrix>)', code = {
 	## 1) check that the output class
 	##    matches the input class
 	testthat::expect_true(
-		inherits(AVGDEV(SPY), class(SPY))
+		inherits(average_deviation(SPY), class(SPY))
 	)
 })
 
@@ -38,7 +38,7 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 	## 1) check that the output class
 	##    matches the input class
 	testthat::expect_true(
-		inherits(AVGDEV(BTC), class(BTC))
+		inherits(average_deviation(BTC), class(BTC))
 	)
 })
 
@@ -50,10 +50,10 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 ##       series() function
 testthat::test_that(desc = 'Default calls', code = {
 	testthat::expect_equal(
-		object = AVGDEV(
+		object = average_deviation(
 			BTC
 		),
-		expected = AVGDEV(
+		expected = average_deviation(
 			BTC,
 			cols = ~close
 		)
@@ -66,7 +66,7 @@ testthat::test_that(desc = 'Default calls', code = {
 ## <data.frame> object
 testthat::test_that(desc = 'Equal length of input and output for <data.frame> with na.bridge = TRUE', code = {
 	testthat::expect_equal(
-		object = nrow(AVGDEV(
+		object = nrow(average_deviation(
 			ATOM,
 			na.bridge = TRUE
 		)),
@@ -81,7 +81,7 @@ testthat::test_that(desc = 'Row names are respected for <data.frame>, na.bridge 
 	x_names <- row.names(ATOM)
 
 	## calculate indicator
-	indicator <- AVGDEV(ATOM, na.bridge = TRUE)
+	indicator <- average_deviation(ATOM, na.bridge = TRUE)
 
 	testthat::expect_equal(
 		object = x_names,
@@ -95,7 +95,7 @@ testthat::test_that(desc = 'Row names are respected for <data.frame>, na.bridge 
 ## <data.frame> object
 testthat::test_that(desc = 'Equal length of input and output for <data.frame>', code = {
 	testthat::expect_equal(
-		object = nrow(AVGDEV(
+		object = nrow(average_deviation(
 			BTC
 		)),
 		expected = nrow(BTC)
@@ -109,7 +109,7 @@ testthat::test_that(desc = 'Row names are respected for <data.frame>', code = {
 	x_names <- row.names(BTC)
 
 	## calculate indicator
-	indicator <- AVGDEV(BTC)
+	indicator <- average_deviation(BTC)
 
 	testthat::expect_equal(
 		object = x_names,
@@ -120,7 +120,7 @@ testthat::test_that(desc = 'Row names are respected for <data.frame>', code = {
 ## <matrix> object
 testthat::test_that(desc = 'Equal length of input and output for <matrix>', code = {
 	testthat::expect_equal(
-		object = nrow(AVGDEV(
+		object = nrow(average_deviation(
 			SPY
 		)),
 		expected = nrow(SPY)
@@ -136,7 +136,7 @@ testthat::test_that(desc = 'Row names are respected for <matrix>', code = {
 	rownames(SPY) <- paste0("row", 1:nrow(SPY))
 
 	## calculate indicator
-	indicator <- AVGDEV(SPY)
+	indicator <- average_deviation(SPY)
 
 	testthat::expect_equal(
 		object = paste0("row", 1:nrow(SPY)),
@@ -150,7 +150,7 @@ testthat::test_that(desc = '<numeric> methods', code = {
 	## check that the <numeric> method
 	## runs
 	x <- testthat::expect_no_condition(
-		AVGDEV(BTC[[1]])
+		average_deviation(BTC[[1]])
 	)
 
 	target_length <- length(BTC[[1]])

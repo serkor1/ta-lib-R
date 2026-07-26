@@ -4,7 +4,7 @@
 #' @title MidPoint over period
 #' @templateVar .title MidPoint over period
 #' @templateVar .author Serkan Korkmaz
-#' @templateVar .fun MIDPOINT
+#' @templateVar .fun midpoint_period
 #' @templateVar .family Overlap Studies
 #' @templateVar .formula ~close
 #'
@@ -14,28 +14,28 @@
 #' @template description
 #'
 #' @template returns
-MIDPOINT <- function(
+midpoint_period <- function(
 	x,
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
-	UseMethod("MIDPOINT")
+	UseMethod("midpoint_period")
 }
 
 #' @export
 #' @usage NULL
-#' @rdname MIDPOINT
+#' @rdname midpoint_period
 #'
-#' @aliases MIDPOINT
-MIDPOINT <- MIDPOINT
+#' @aliases midpoint_period
+MIDPOINT <- midpoint_period
 
 #' @usage NULL
-#' @aliases MIDPOINT
+#' @aliases midpoint_period
 #'
 #' @export
-MIDPOINT.default <- function(
+midpoint_period.default <- function(
 	x,
 	cols,
 	timePeriod = 14,
@@ -78,10 +78,10 @@ MIDPOINT.default <- function(
 }
 
 #' @usage NULL
-#' @aliases MIDPOINT
+#' @aliases midpoint_period
 #'
 #' @export
-MIDPOINT.data.frame <- function(
+midpoint_period.data.frame <- function(
 	x,
 	cols,
 	timePeriod = 14,
@@ -89,7 +89,7 @@ MIDPOINT.data.frame <- function(
 	...
 ) {
 	map_dfr(
-		MIDPOINT.default(
+		midpoint_period.default(
 			x = x,
 			cols = cols,
 			timePeriod = timePeriod,
@@ -100,17 +100,17 @@ MIDPOINT.data.frame <- function(
 }
 
 #' @usage NULL
-#' @aliases MIDPOINT
+#' @aliases midpoint_period
 #'
 #' @export
-MIDPOINT.matrix <- function(
+midpoint_period.matrix <- function(
 	x,
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
-	MIDPOINT.default(
+	midpoint_period.default(
 		x = x,
 		cols = cols,
 		timePeriod = timePeriod,
@@ -120,7 +120,7 @@ MIDPOINT.matrix <- function(
 }
 
 #' @usage NULL
-MIDPOINT_lookback <- function(
+midpoint_period_lookback <- function(
 	x,
 	cols,
 	timePeriod = 14,
@@ -133,10 +133,10 @@ MIDPOINT_lookback <- function(
 	)
 }
 #' @usage NULL
-#' @aliases MIDPOINT
+#' @aliases midpoint_period
 #'
 #' @export
-MIDPOINT.numeric <- function(
+midpoint_period.numeric <- function(
 	x,
 	cols,
 	timePeriod = 14,
