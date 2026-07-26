@@ -9,7 +9,7 @@
 #' @templateVar .formula ~volume + open + close
 #'
 ## splice:documentation:start
-#' @param ma A list of MA specifications.
+#' @param maType A [list] of maType specifications on the form SMA(timePeriod = 7).
 ## splice:documentation:end
 #'
 #' @template description
