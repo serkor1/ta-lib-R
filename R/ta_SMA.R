@@ -40,7 +40,8 @@ simple_moving_average <- function(
 					as.integer(timePeriod)
 				},
 				maType = 0L
-			)
+			),
+			class = "maType"
 		)
 
 		return(x)

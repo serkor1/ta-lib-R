@@ -77,7 +77,7 @@ stochastic_relative_strength_index.default <- function(
 		as.integer(timePeriod),
 		as.integer(fastKPeriod),
 		as.integer(fastDPeriod),
-		as.integer(fastDMa),
+		as.maType(fastDMa),
 		as.logical(na.bridge)
 	)
 
@@ -158,7 +158,7 @@ stochastic_relative_strength_index_lookback <- function(
 		as.integer(timePeriod),
 		as.integer(fastKPeriod),
 		as.integer(fastDPeriod),
-		as.integer(fastDMa)
+		as.maType(fastDMa)
 	)
 }
 #' @usage NULL
@@ -191,7 +191,7 @@ stochastic_relative_strength_index.numeric <- function(
 		as.integer(timePeriod),
 		as.integer(fastKPeriod),
 		as.integer(fastDPeriod),
-		as.integer(fastDMa),
+		as.maType(fastDMa),
 		as.logical(na.bridge)
 	)
 
