@@ -190,6 +190,8 @@ pub const CHART_TYPES: &[(&str, ChartType)] = &[
     ("MACDEXT", ChartType::Sub),
     ("MACDFIX", ChartType::Sub),
     ("MFI", ChartType::Sub),
+    ("MIDPOINT", ChartType::Main),
+    ("MIDPRICE", ChartType::Main),
     ("MINUS_DI", ChartType::Sub),
     ("MINUS_DM", ChartType::Sub),
     ("MOM", ChartType::Sub),

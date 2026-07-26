@@ -143,3 +143,89 @@ testthat::test_that(desc = 'Row names are respected for <matrix>', code = {
 		expected = rownames(indicator)
 	)
 })
+
+## <plotly>-method checks for <data.frame>
+## and <matrix>
+##
+## <data.frame> checks
+testthat::test_that(desc = '<plotly>-methods for <data.frame>', code = {
+	## check that midpoint_price can
+	## use <plotly> without any issues
+	output <- testthat::expect_no_error(
+		{
+			chart(BTC)
+			indicator(midpoint_price)
+		}
+	)
+
+	## check that the output
+	## is a <plotly>-object
+	testthat::expect_true(
+		inherits(output, "plotly")
+	)
+})
+
+## <matrix> checks
+testthat::test_that(desc = '<plotly>-methods for <matrix>', code = {
+	## check that midpoint_price can
+	## use <plotly> without any issues
+	output <- testthat::expect_no_error(
+		{
+			chart(SPY)
+			indicator(midpoint_price)
+		}
+	)
+
+	## check that the output
+	## is a <plotly>-object
+	testthat::expect_true(
+		inherits(output, "plotly")
+	)
+})
+
+## <ggplot>-method checks for <data.frame>
+## and <matrix>
+##
+## <data.frame> checks
+testthat::test_that(desc = '<ggplot>-methods for <data.frame>', code = {
+	testthat::skip_if_not_installed("ggplot2")
+
+	## check that midpoint_price can
+	## use <ggplot> without any issues
+	output <- testthat::expect_no_error(
+		{
+			options(talib.chart.backend = "ggplot2")
+			on.exit(options(talib.chart.backend = "plotly"))
+			chart(BTC)
+			indicator(midpoint_price)
+		}
+	)
+
+	## check that the output
+	## is a <gg>-object or <talib_chart>
+	testthat::expect_true(
+		inherits(output, "gg") || inherits(output, "talib_chart")
+	)
+})
+
+## <matrix> checks
+testthat::test_that(desc = '<ggplot>-methods for <matrix>', code = {
+	testthat::skip_if_not_installed("ggplot2")
+
+	## check that midpoint_price can
+	## use <ggplot> without any issues
+	output <- testthat::expect_no_error(
+		{
+			options(talib.chart.backend = "ggplot2")
+			on.exit(options(talib.chart.backend = "plotly"))
+			chart(SPY)
+			indicator(midpoint_price)
+		}
+	)
+
+	## check that the output
+	## is a <gg>-object or <talib_chart>
+	testthat::expect_true(
+		inherits(output, "gg") || inherits(output, "talib_chart")
+	)
+})
