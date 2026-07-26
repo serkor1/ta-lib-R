@@ -291,6 +291,7 @@ pub const EXCLUDED_INDICATORS: &[&str] = &[
     "LINEARREG_ANGLE",
     "LINEARREG_SLOPE",
     "LINEARREG_INTERCEPT",
+    "TSF",
 ];
 
 /// GroupIds excluded from generation altogether;
