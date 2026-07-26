@@ -362,3 +362,19 @@ map_dfr.integer <- function(x) {
 
 	x
 }
+
+mapMaType <- function(x) {
+	switch(
+		as.character(x + 1),
+		`1` = "SMA",
+		`2` = "EMA",
+		`3` = "WMA",
+		`4` = "DEMA",
+		`5` = "TEMA",
+		`6` = "TRIMA",
+		`7` = "KAMA",
+		`8` = "MAMA",
+		`9` = "T3",
+		"Unkown"
+	)
+}
