@@ -139,10 +139,18 @@ pub fn parse_api(xml: &str) -> Vec<MetaData> {
             // map to their OHLCV column while plain double arrays
             // (inReal) default to the 'close' column
             for arg in tag_blocks(block, "RequiredInputArgument") {
-                let input_type = tag_text(arg, "Type").expect("input Type");
+                let input_type = tag_text(arg, "Name").expect("input Type");
 
                 f.input.push(match input_type {
-                    "Open" | "High" | "Low" | "Close" | "Volume" => input_type.to_lowercase(),
+                    "Open" | "High" | "Low" | "Close" | "Volume" => {
+                        input_type.to_lowercase().replace("in", "")
+                    }
+                    "inReal" => "close".to_string(),
+                    "inPeriods" => "periods".to_string(),
+                    // inReal0: x and inReal1: y
+                    // is affiliated with Price Transforms, Statistics Functions and Math Transforms
+                    "inReal0" => "x".to_string(),
+                    "inReal1" => "y".to_string(),
                     _ => "close".to_string(),
                 });
             }

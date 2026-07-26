@@ -6,7 +6,7 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun MAVP
 #' @templateVar .family Overlap Studies
-#' @templateVar .formula ~close
+#' @templateVar .formula ~close + periods
 #'
 ## splice:documentation:start
 ## splice:documentation:end
@@ -58,7 +58,7 @@ MAVP.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~close,
+		default_formula = ~ close + periods,
 		data = x,
 		...
 	)
