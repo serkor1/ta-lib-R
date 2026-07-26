@@ -40,7 +40,8 @@ triple_exponential_moving_average <- function(
 					as.integer(timePeriod)
 				},
 				maType = 4L
-			)
+			),
+			class = "maType"
 		)
 
 		return(x)

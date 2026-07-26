@@ -40,7 +40,8 @@ weighted_moving_average <- function(
 					as.integer(timePeriod)
 				},
 				maType = 2L
-			)
+			),
+			class = "maType"
 		)
 
 		return(x)

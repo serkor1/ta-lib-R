@@ -77,7 +77,7 @@ bollinger_bands.default <- function(
 		as.integer(timePeriod),
 		as.double(deviationsUp),
 		as.double(deviationsDown),
-		as.integer(maType),
+		as.maType(maType),
 		as.logical(na.bridge)
 	)
 
@@ -158,7 +158,7 @@ bollinger_bands_lookback <- function(
 		as.integer(timePeriod),
 		as.double(deviationsUp),
 		as.double(deviationsDown),
-		as.integer(maType)
+		as.maType(maType)
 	)
 }
 #' @usage NULL
@@ -191,7 +191,7 @@ bollinger_bands.numeric <- function(
 		as.integer(timePeriod),
 		as.double(deviationsUp),
 		as.double(deviationsDown),
-		as.integer(maType),
+		as.maType(maType),
 		as.logical(na.bridge)
 	)
 

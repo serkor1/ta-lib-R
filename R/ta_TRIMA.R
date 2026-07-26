@@ -40,7 +40,8 @@ triangular_moving_average <- function(
 					as.integer(timePeriod)
 				},
 				maType = 5L
-			)
+			),
+			class = "maType"
 		)
 
 		return(x)

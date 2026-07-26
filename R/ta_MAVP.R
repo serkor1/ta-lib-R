@@ -76,7 +76,7 @@ variable_moving_average_period.default <- function(
 		constructed_series[[2]],
 		as.integer(minimumPeriod),
 		as.integer(maximumPeriod),
-		as.integer(maType),
+		as.maType(maType),
 		as.logical(na.bridge)
 	)
 
@@ -151,7 +151,7 @@ variable_moving_average_period_lookback <- function(
 		C_impl_ta_MAVP_lookback,
 		as.integer(minimumPeriod),
 		as.integer(maximumPeriod),
-		as.integer(maType)
+		as.maType(maType)
 	)
 }
 #' @usage NULL

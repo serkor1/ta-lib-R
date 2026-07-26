@@ -36,7 +36,8 @@ ${FUN} <- function(
 			list(
 				${SPEC_FIELDS},
 				maType = ${MA_TYPE}
-			)
+			),
+			class = "maType"
 		)
 
 		return(x)

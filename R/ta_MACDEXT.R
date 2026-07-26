@@ -82,11 +82,11 @@ extended_moving_average_convergence_divergence.default <- function(
 		C_impl_ta_MACDEXT,
 		constructed_series[[1]],
 		as.integer(fastPeriod),
-		as.integer(fastMa),
+		as.maType(fastMa),
 		as.integer(slowPeriod),
-		as.integer(slowMa),
+		as.maType(slowMa),
 		as.integer(signalPeriod),
-		as.integer(signalMa),
+		as.maType(signalMa),
 		as.logical(na.bridge)
 	)
 
@@ -175,11 +175,11 @@ extended_moving_average_convergence_divergence_lookback <- function(
 	.Call(
 		C_impl_ta_MACDEXT_lookback,
 		as.integer(fastPeriod),
-		as.integer(fastMa),
+		as.maType(fastMa),
 		as.integer(slowPeriod),
-		as.integer(slowMa),
+		as.maType(slowMa),
 		as.integer(signalPeriod),
-		as.integer(signalMa)
+		as.maType(signalMa)
 	)
 }
 #' @usage NULL
@@ -212,11 +212,11 @@ extended_moving_average_convergence_divergence.numeric <- function(
 		C_impl_ta_MACDEXT,
 		as.double(x),
 		as.integer(fastPeriod),
-		as.integer(fastMa),
+		as.maType(fastMa),
 		as.integer(slowPeriod),
-		as.integer(slowMa),
+		as.maType(slowMa),
 		as.integer(signalPeriod),
-		as.integer(signalMa),
+		as.maType(signalMa),
 		as.logical(na.bridge)
 	)
 
