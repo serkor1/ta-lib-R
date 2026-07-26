@@ -17,7 +17,7 @@
 trading_volume <- function(
 	x,
 	cols,
-	ma = list(SMA(n = 7), SMA(n = 15)),
+	maType = list(SMA(timePeriod = 7), SMA(timePeriod = 15)),
 	na.bridge = FALSE,
 	...
 ) {
@@ -38,7 +38,7 @@ VOLUME <- trading_volume
 trading_volume.default <- function(
 	x,
 	cols,
-	ma = list(SMA(n = 7), SMA(n = 15)),
+	maType = list(SMA(timePeriod = 7), SMA(timePeriod = 15)),
 	na.bridge = FALSE,
 	...
 ) {
@@ -68,7 +68,7 @@ trading_volume.default <- function(
 		## splice:call:start
 		as.double(constructed_series[[1]]),
 		lapply(
-			ma,
+			maType,
 			function(x) {
 				as.integer(
 					unlist(x, use.names = FALSE)
@@ -93,7 +93,7 @@ trading_volume.default <- function(
 trading_volume.data.frame <- function(
 	x,
 	cols,
-	ma = list(SMA(n = 7), SMA(n = 15)),
+	maType = list(SMA(timePeriod = 7), SMA(timePeriod = 15)),
 	na.bridge = FALSE,
 	...
 ) {
@@ -101,7 +101,7 @@ trading_volume.data.frame <- function(
 		trading_volume.default(
 			x = x,
 			cols = cols,
-			ma = ma,
+			maType = maType,
 			na.bridge = na.bridge,
 			...
 		)
@@ -115,14 +115,14 @@ trading_volume.data.frame <- function(
 trading_volume.matrix <- function(
 	x,
 	cols,
-	ma = list(SMA(n = 7), SMA(n = 15)),
+	maType = list(SMA(timePeriod = 7), SMA(timePeriod = 15)),
 	na.bridge = FALSE,
 	...
 ) {
 	trading_volume.default(
 		x = x,
 		cols = cols,
-		ma = ma,
+		maType = maType,
 		na.bridge = na.bridge,
 		...
 	)
@@ -136,7 +136,7 @@ trading_volume.matrix <- function(
 trading_volume.numeric <- function(
 	x,
 	cols,
-	ma = list(SMA(n = 7), SMA(n = 15)),
+	maType = list(SMA(timePeriod = 7), SMA(timePeriod = 15)),
 	na.bridge = FALSE,
 	...
 ) {
@@ -154,7 +154,7 @@ trading_volume.numeric <- function(
 		C_impl_ta_VOLUME,
 		## splice:numeric:start
 		as.double(x),
-		ma,
+		maType,
 		## splice:numeric:end
 		as.logical(na.bridge)
 	)
@@ -174,7 +174,7 @@ trading_volume.numeric <- function(
 trading_volume.plotly <- function(
 	x,
 	cols,
-	ma = list(SMA(n = 7), SMA(n = 15)),
+	maType = list(SMA(timePeriod = 7), SMA(timePeriod = 15)),
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -207,7 +207,7 @@ trading_volume.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		ma = ma,
+		maType = maType,
 		na.bridge = TRUE
 	)
 
@@ -311,7 +311,7 @@ trading_volume.plotly <- function(
 trading_volume.ggplot <- function(
 	x,
 	cols,
-	ma = list(SMA(n = 7), SMA(n = 15)),
+	maType = list(SMA(timePeriod = 7), SMA(timePeriod = 15)),
 	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
@@ -343,7 +343,7 @@ trading_volume.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		ma = ma,
+		maType = maType,
 		na.bridge = TRUE
 	)
 
@@ -370,7 +370,7 @@ trading_volume.ggplot <- function(
 		list(
 			y = trace_cols[1],
 			geom = "bar",
-			direction = "direction"
+			directiotimePeriod = "direction"
 		)
 	)
 	if (length(trace_cols) > 1L) {
