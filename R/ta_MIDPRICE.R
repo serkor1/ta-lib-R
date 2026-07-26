@@ -133,3 +133,154 @@ midpoint_price_lookback <- function(
 		as.integer(timePeriod)
 	)
 }
+#' @usage NULL
+#' @aliases midpoint_price
+#'
+#' @export
+midpoint_price.plotly <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	## splice:optional-plotly:start
+	## splice:optional-plotly:end
+	...
+) {
+	## check that input value
+	## 'x' is <plotly>-object
+	assert_plotly_object(x)
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {plotly}-object
+	constructed_series <- series(
+		x = x,
+		formula = cols,
+		default_formula = ~ high + low,
+		...
+	)
+
+	## construct indicator
+	## from the series
+	constructed_indicator <- midpoint_price(
+		x = constructed_series,
+		cols = rebuild_formula(
+			names(constructed_series)
+		),
+		timePeriod = timePeriod,
+		na.bridge = TRUE
+	)
+
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
+	)
+
+	## construct {plotly}-object
+	## splice:plotly-assembly:start
+	traces <- lapply(
+		setdiff(colnames(constructed_indicator), "idx"),
+		function(col) {
+			list(
+				y = stats::as.formula(
+					paste0("~", col)
+				),
+				name = col
+			)
+		}
+	)
+	name <- "MIDPRICE"
+	## splice:plotly-assembly:end
+
+	state <- .chart_state()
+	plotly_object <- build_plotly(
+		init = state[["main"]],
+		traces = traces,
+		decorators = list(),
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
+		data = constructed_indicator
+	)
+	state[["main"]] <- plotly_object
+
+	plotly_object
+}
+
+#' @usage NULL
+#' @aliases midpoint_price
+#'
+#' @export
+midpoint_price.ggplot <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	## splice:optional-ggplot:start
+	## splice:optional-ggplot:end
+	...
+) {
+	## check ggplot2 availability
+	assert_ggplot2()
+
+	## check that input value
+	## 'cols' is a <formula>-objet
+	if (!missing(cols)) {
+		assert_formula(cols)
+	}
+
+	## construct series from
+	## {ggplot}-object
+	constructed_series <- series(
+		x = x,
+		formula = cols,
+		default_formula = ~ high + low,
+		...
+	)
+
+	## construct indicator
+	## from the series
+	constructed_indicator <- midpoint_price(
+		x = constructed_series,
+		cols = rebuild_formula(
+			names(constructed_series)
+		),
+		timePeriod = timePeriod,
+		na.bridge = TRUE
+	)
+
+	## add conditional idx
+	constructed_indicator[["idx"]] <- add_idx(
+		constructed_series
+	)
+
+	## construct {ggplot2}-object
+	## splice:ggplot-assembly:start
+	layers <- lapply(
+		setdiff(colnames(constructed_indicator), "idx"),
+		function(col) list(y = col)
+	)
+	name <- "MIDPRICE"
+	## splice:ggplot-assembly:end
+
+	state <- .chart_state()
+	ggplot_object <- build_ggplot(
+		init = state[["main"]],
+		layers = layers,
+		decorators = list(),
+		name = get0(
+			x = "name",
+			ifnotfound = NULL
+		),
+		data = constructed_indicator
+	)
+	state[["main"]] <- ggplot_object
+
+	ggplot_object
+}
