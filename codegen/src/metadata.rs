@@ -47,12 +47,14 @@ impl MetaData {
 
 /// An <OptionalInputArgument> reduced to what the
 /// R signature needs: an argument name, its type
-/// (for the .Call() coercion) and its default value
+/// (for the .Call() coercion), its default value and
+/// its one-line description (for the @param docs)
 #[derive(Clone, Debug, PartialEq)]
 pub struct OptionalArg {
     pub name: String,
     pub kind: OptionalType,
     pub default: String,
+    pub description: String,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -152,6 +154,19 @@ pub fn parse_api(xml: &str) -> Vec<MetaData> {
                 let name = camel_case(tag_text(arg, "Name").expect("optional Name"));
                 let default = tag_text(arg, "DefaultValue").expect("DefaultValue");
 
+                // the ShortDescription becomes the @param text; the
+                // XML is entity-escaped and carries a few wording
+                // slips ('fro', 'Nb of') worth fixing at the source
+                let description = tag_text(arg, "ShortDescription")
+                    .expect("optional ShortDescription")
+                    .replace("&gt;", ">")
+                    .replace("&lt;", "<")
+                    .replace("&amp;", "&")
+                    .replace(" fro ", " for ")
+                    .replace("Nb of", "Number of")
+                    .trim_end_matches('.')
+                    .to_string();
+
                 let (kind, default) = match tag_text(arg, "Type").expect("optional Type") {
                     "Integer" => (OptionalType::Integer, default.to_string()),
                     "MA Type" => (OptionalType::MAType, default.to_string()),
@@ -166,6 +181,7 @@ pub fn parse_api(xml: &str) -> Vec<MetaData> {
                     name,
                     kind,
                     default,
+                    description,
                 });
             }
 
@@ -193,6 +209,7 @@ pub(crate) const SAMPLE: &str = r#"
             <OptionalInputArguments>
                 <OptionalInputArgument>
                     <Name>Time Period</Name>
+                    <ShortDescription>Number of period</ShortDescription>
                     <Type>Integer</Type>
                     <Range>
                         <Minimum>2</Minimum>
@@ -202,11 +219,13 @@ pub(crate) const SAMPLE: &str = r#"
                 </OptionalInputArgument>
                 <OptionalInputArgument>
                     <Name>Deviations up</Name>
+                    <ShortDescription>Deviation multiplier for upper band</ShortDescription>
                     <Type>Double</Type>
                     <DefaultValue>2.000000e+0</DefaultValue>
                 </OptionalInputArgument>
                 <OptionalInputArgument>
                     <Name>MA Type</Name>
+                    <ShortDescription>Type of Moving Average</ShortDescription>
                     <Type>MA Type</Type>
                     <DefaultValue>0</DefaultValue>
                 </OptionalInputArgument>
@@ -273,17 +292,20 @@ mod tests {
                 OptionalArg {
                     name: "timePeriod".to_string(),
                     kind: OptionalType::Integer,
-                    default: "5".to_string()
+                    default: "5".to_string(),
+                    description: "Number of period".to_string()
                 },
                 OptionalArg {
                     name: "deviationsUp".to_string(),
                     kind: OptionalType::Double,
-                    default: "2".to_string()
+                    default: "2".to_string(),
+                    description: "Deviation multiplier for upper band".to_string()
                 },
                 OptionalArg {
                     name: "maType".to_string(),
                     kind: OptionalType::MAType,
-                    default: "0".to_string()
+                    default: "0".to_string(),
+                    description: "Type of Moving Average".to_string()
                 }
             ]
         );

@@ -15,7 +15,9 @@
 //! on disk are preserved by preserve_regions() (see main.rs).
 
 use crate::metadata::{MetaData, OptionalArg, OptionalType};
-use crate::tables::{ChartType, agnostic, chart_type, function_name, is_candlestick, ma_type};
+use crate::tables::{
+    ChartType, MOVING_AVERAGES, agnostic, chart_type, function_name, is_candlestick, ma_type,
+};
 
 /// The template files rendered by render_indicator(),
 /// loaded once from 'codegen/templates/'
@@ -164,9 +166,59 @@ pub fn render_indicator(f: &MetaData, t: &Templates) -> String {
                 name: "timePeriod".to_string(),
                 kind: OptionalType::Integer,
                 default: "30".to_string(),
+                description: "Number of period".to_string(),
             },
         );
     }
+
+    // the ${PARAM_DOCS} roxygen lines of the generic, one @param
+    // per optional input with its type, XML description and default,
+    // e.g. #' @param fastPeriod ([integer]). Number of period for
+    // the fast MA. Defaults to `12`. MAType formals additionally
+    // carry the index legend with the default's moving average
+    // spelled out inline.
+    //
+    // timePeriod and penetration are skipped: they are documented
+    // by the man-roxygen templates ('description.R' and
+    // 'rolling_description.R'). An empty result renders a blank
+    // roxygen line so the block stays contiguous
+    let param_docs = {
+        let docs = formals
+            .iter()
+            .filter(|a| a.name != "timePeriod" && a.name != "penetration")
+            .map(|a| match a.kind {
+                OptionalType::MAType => {
+                    let default_ma = MOVING_AVERAGES
+                        .iter()
+                        .find(|(_, index)| index.trim_end_matches('L') == a.default)
+                        .map(|(ma, _)| *ma)
+                        .unwrap_or_else(|| panic!("no moving average for TA_MAType {}", a.default));
+
+                    format!(
+                        "#' @param {} ([integer]). {}. Defaults to `{}` ([{}]). Can also be passed as talib::{}.",
+                        a.name, a.description, a.default, default_ma, default_ma
+                    )
+                }
+                _ => format!(
+                    "#' @param {} ([{}]). {}. Defaults to `{}`.",
+                    a.name,
+                    match a.kind {
+                        OptionalType::Double => "double",
+                        _ => "integer",
+                    },
+                    a.description,
+                    a.default
+                ),
+            })
+            .collect::<Vec<String>>()
+            .join("\n");
+
+        if docs.is_empty() {
+            "#'".to_string()
+        } else {
+            docs
+        }
+    };
 
     // formals and pass-through arguments,
     // e.g. 'timePeriod = 14,' and 'timePeriod = timePeriod,'
@@ -251,6 +303,7 @@ pub fn render_indicator(f: &MetaData, t: &Templates) -> String {
             .replace("${TITLE}", &f.title)
             .replace("${FAMILY}", &f.family)
             .replace("${FORMULA}", &formula)
+            .replace("${PARAM_DOCS}", &param_docs)
             .replace("${ARGS}", &args)
             .replace("${PARGS}", &pargs)
             .replace("${C_SIGNATURE_LOOKBACK}", &c_lookback)
@@ -535,6 +588,19 @@ tail
         assert!(rendered.contains("as.double(deviationsUp)"));
         assert!(!rendered.contains("${"), "unreplaced placeholder");
 
+        // the optional inputs are documented with type, description
+        // and default; timePeriod stays with the man-roxygen template
+        assert!(rendered.contains(
+            "#' @param deviationsUp ([double]). Deviation multiplier for upper band. Defaults to `2`."
+        ));
+        assert!(!rendered.contains("#' @param timePeriod"));
+
+        // MAType formals carry the TA_MAType legend with the
+        // default's moving average spelled out inline
+        assert!(rendered.contains(
+            "#' @param maType ([integer]). Type of Moving Average. Defaults to `0` ([SMA]). Can also be passed as talib::SMA."
+        ));
+
         // univariate: the numeric method is appended
         // after the matrix method with the raw vector
         assert!(rendered.contains("bollinger_bands.numeric <- function("));
@@ -642,10 +708,26 @@ tail
             "constructed_series[[1]],\n\t\tas.double(fastLimit),\n\t\tas.double(slowLimit)"
         ));
 
+        // every optional input beyond timePeriod/penetration is
+        // documented with type, description and default
+        let macd = render("MACD");
+        assert!(macd.contains(
+            "#' @param fastPeriod ([integer]). Number of period for the fast MA. Defaults to `12`."
+        ));
+        assert!(macd.contains(
+            "#' @param signalPeriod ([integer]). Smoothing for the signal line (nb of period). Defaults to `9`."
+        ));
+
         // rolling statistics: protected .Call() region,
         // no chart methods
         let stddev = render("STDDEV");
         assert!(stddev.contains("rolling_standard_deviation <- function("));
+        assert!(
+            stddev.contains(
+                "#' @param deviations ([double]). Number of deviations. Defaults to `1`."
+            )
+        );
+        assert!(!stddev.contains("#' @param timePeriod"));
         assert!(stddev.contains("@template rolling_returns"));
         assert!(stddev.contains("## splice:call:start"));
         assert!(stddev.contains("as.double(x),"));
