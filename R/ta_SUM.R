@@ -1,5 +1,5 @@
 #' @export
-#' @family Rolling Satistics
+#' @family Rolling Statistics
 #'
 #' @title Summation
 #' @templateVar .title Summation

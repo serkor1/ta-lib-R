@@ -330,7 +330,7 @@ pub fn render_indicator(f: &MetaData, t: &Templates) -> String {
             .replace(
                 "${FAMILY}",
                 &f.family
-                    .replace("Math Operators", "Rolling Satistics")
+                    .replace("Math Operators", "Rolling Statistics")
                     .replace("Statistic Functions", "Rolling Statistics"),
             )
             .replace("${FORMULA}", &formula)

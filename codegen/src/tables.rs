@@ -110,7 +110,7 @@ pub const FUNCTION_NAMES: &[(&str, &str)] = &[
     ("MFI", "money_flow_index"),
     ("MIDPRICE", "midpoint_price"),
     ("MIDPOINT", "midpoint_period"),
-    ("MIN", "rolling_mininimum"),
+    ("MIN", "rolling_minimum"),
     ("MINUS_DI", "minus_directional_indicator"),
     ("MINUS_DM", "minus_directional_movement"),
     ("MOM", "momentum"),

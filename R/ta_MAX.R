@@ -1,5 +1,5 @@
 #' @export
-#' @family Rolling Satistics
+#' @family Rolling Statistics
 #'
 #' @title Highest value over a specified period
 #' @templateVar .title Highest value over a specified period
