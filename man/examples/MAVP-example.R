@@ -5,7 +5,7 @@ data(BTC, package = "talib")
 ## define a random series
 ## of periods to evaluate
 ## each candle
-BTC$periods <- runif(
+periods <- runif(
 	n = nrow(BTC),
 	min = 5,
 	max = 10
@@ -15,7 +15,8 @@ BTC$periods <- runif(
 ## for Bitcoin (BTC)
 utils::tail(
 	talib::variable_moving_average_period(
-		BTC
+		BTC,
+		periods = periods
 	)
 )
 
@@ -32,6 +33,7 @@ utils::tail(
 	## chart indicator
 	## with default values
 	talib::indicator(
-		talib::variable_moving_average_period
+		talib::variable_moving_average_period,
+		periods = periods
 	)
 }
