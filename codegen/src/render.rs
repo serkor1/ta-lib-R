@@ -327,7 +327,12 @@ pub fn render_indicator(f: &MetaData, t: &Templates) -> String {
             .replace("${FUN}", fun)
             .replace("${ALIAS}", &f.indicator)
             .replace("${TITLE}", &f.title)
-            .replace("${FAMILY}", &f.family)
+            .replace(
+                "${FAMILY}",
+                &f.family
+                    .replace("Math Operators", "Rolling Satistics")
+                    .replace("Statistic Functions", "Rolling Statistics"),
+            )
             .replace("${FORMULA}", &formula)
             .replace("${PARAM_DOCS}", &param_docs)
             .replace("${ARGS}", &args)

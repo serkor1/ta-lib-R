@@ -1,5 +1,5 @@
 #' @export
-#' @family Math Operators
+#' @family Rolling Satistics
 #'
 #' @title Lowest value over a specified period
 #' @templateVar .title Lowest value over a specified period

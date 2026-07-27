@@ -70,7 +70,7 @@ reference:
     Compute rolling (moving-window) descriptive statistics over price
     or return series. Includes rolling variance, standard deviation,
     linear regression, and time series forecast.
-- contents: has_concept('Statistic Functions')
+- contents: has_concept('Rolling Statistics')
 - title: Price Transformations
   desc: >
     Transform raw OHLC prices into derived series. Average Price,
