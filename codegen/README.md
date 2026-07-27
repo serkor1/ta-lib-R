@@ -97,7 +97,12 @@ Each `chart_*_template.R` is **dual-backend**: one file describes both the
 - **Required inputs** become column names: price types map to their OHLCV
   column (`High` -> `high`), plain double arrays (`inReal`) default to
   `close`. The deduplicated columns form `${FORMULA}`
-  (`~high + low + close`).
+  (`~high + low + close`). Any other required input (MAVP: `inPeriods` ->
+  `periods`) is no price series and becomes a *passthrough*: a required
+  formal without a default, rendered into the `.Call()` arguments as
+  `as.double(<name>)` instead of a formula column. The generated tests
+  supply passthrough vectors at every call site via the
+  `${PASS_SPY}`/`${PASS_BTC}`/`${PASS_ATOM}` placeholders.
 - **Optional inputs** become camelCase formals (`Fast-K Period` ->
   `fastKPeriod`) with their XML defaults; doubles are reformatted from
   scientific notation (`2.000000e-2` -> `0.02`).
