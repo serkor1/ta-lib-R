@@ -6,7 +6,7 @@
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun variable_moving_average_period
 #' @templateVar .family Overlap Studies
-#' @templateVar .formula ~close + periods
+#' @templateVar .formula ~close
 #'
 ## splice:documentation:start
 #' @templateVar .custom_example TRUE
@@ -14,6 +14,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#' @param periods ([numeric]). Vector of periods, one per observation of the input series.
 #' @param minimumPeriod ([integer]). Value less than minimum will be changed to Minimum period. Defaults to `2`.
 #' @param maximumPeriod ([integer]). Value higher than maximum will be changed to Maximum period. Defaults to `30`.
 #' @param maType ([integer]). Type of Moving Average. Defaults to `0` ([SMA]). Can also be passed as talib::SMA.
@@ -21,6 +22,7 @@
 variable_moving_average_period <- function(
 	x,
 	cols,
+	periods,
 	minimumPeriod = 2,
 	maximumPeriod = 30,
 	maType = 0,
@@ -44,6 +46,7 @@ MAVP <- variable_moving_average_period
 variable_moving_average_period.default <- function(
 	x,
 	cols,
+	periods,
 	minimumPeriod = 2,
 	maximumPeriod = 30,
 	maType = 0,
@@ -60,7 +63,7 @@ variable_moving_average_period.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~ close + periods,
+		default_formula = ~close,
 		data = x,
 		...
 	)
@@ -74,7 +77,7 @@ variable_moving_average_period.default <- function(
 	x <- .Call(
 		C_impl_ta_MAVP,
 		constructed_series[[1]],
-		constructed_series[[2]],
+		as.double(periods),
 		as.integer(minimumPeriod),
 		as.integer(maximumPeriod),
 		as.maType(maType),
@@ -95,6 +98,7 @@ variable_moving_average_period.default <- function(
 variable_moving_average_period.data.frame <- function(
 	x,
 	cols,
+	periods,
 	minimumPeriod = 2,
 	maximumPeriod = 30,
 	maType = 0,
@@ -105,6 +109,7 @@ variable_moving_average_period.data.frame <- function(
 		variable_moving_average_period.default(
 			x = x,
 			cols = cols,
+			periods = periods,
 			minimumPeriod = minimumPeriod,
 			maximumPeriod = maximumPeriod,
 			maType = maType,
@@ -121,6 +126,7 @@ variable_moving_average_period.data.frame <- function(
 variable_moving_average_period.matrix <- function(
 	x,
 	cols,
+	periods,
 	minimumPeriod = 2,
 	maximumPeriod = 30,
 	maType = 0,
@@ -130,6 +136,7 @@ variable_moving_average_period.matrix <- function(
 	variable_moving_average_period.default(
 		x = x,
 		cols = cols,
+		periods = periods,
 		minimumPeriod = minimumPeriod,
 		maximumPeriod = maximumPeriod,
 		maType = maType,
@@ -142,6 +149,7 @@ variable_moving_average_period.matrix <- function(
 variable_moving_average_period_lookback <- function(
 	x,
 	cols,
+	periods,
 	minimumPeriod = 2,
 	maximumPeriod = 30,
 	maType = 0,
@@ -159,9 +167,51 @@ variable_moving_average_period_lookback <- function(
 #' @aliases variable_moving_average_period
 #'
 #' @export
+variable_moving_average_period.numeric <- function(
+	x,
+	cols,
+	periods,
+	minimumPeriod = 2,
+	maximumPeriod = 30,
+	maType = 0,
+	na.bridge = FALSE,
+	...
+) {
+	## warn if 'cols' have been
+	## passed just to make sure
+	## the user knows its not possible
+	## or relevant
+	if (!missing(cols)) {
+		warning("'cols' is passed but is unused for vectors.")
+	}
+
+	## pass the argument directly
+	## to 'C'
+	x <- .Call(
+		C_impl_ta_MAVP,
+		as.double(x),
+		as.double(periods),
+		as.integer(minimumPeriod),
+		as.integer(maximumPeriod),
+		as.maType(maType),
+		as.logical(na.bridge)
+	)
+
+	if (dim(x)[2] == 1L) {
+		dim(x) <- NULL
+	}
+
+	x
+}
+
+#' @usage NULL
+#' @aliases variable_moving_average_period
+#'
+#' @export
 variable_moving_average_period.plotly <- function(
 	x,
 	cols,
+	periods,
 	minimumPeriod = 2,
 	maximumPeriod = 30,
 	maType = 0,
@@ -185,7 +235,7 @@ variable_moving_average_period.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ close + periods,
+		default_formula = ~close,
 		...
 	)
 
@@ -196,6 +246,7 @@ variable_moving_average_period.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
+		periods = periods,
 		minimumPeriod = minimumPeriod,
 		maximumPeriod = maximumPeriod,
 		maType = maType,
@@ -251,6 +302,7 @@ variable_moving_average_period.plotly <- function(
 variable_moving_average_period.ggplot <- function(
 	x,
 	cols,
+	periods,
 	minimumPeriod = 2,
 	maximumPeriod = 30,
 	maType = 0,
@@ -273,7 +325,7 @@ variable_moving_average_period.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ close + periods,
+		default_formula = ~close,
 		...
 	)
 
@@ -284,6 +336,7 @@ variable_moving_average_period.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
+		periods = periods,
 		minimumPeriod = minimumPeriod,
 		maximumPeriod = maximumPeriod,
 		maType = maType,
