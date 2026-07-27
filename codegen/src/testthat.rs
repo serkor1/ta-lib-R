@@ -334,7 +334,7 @@ pub fn render_test(f: &MetaData) -> String {
 
     // rolling statistics fast-track: a short univariate file,
     // with the second input series of BETA/CORREL passed as 'y'
-    if f.family == "Statistic Functions" {
+    if f.family == "Statistic Functions" || f.family == "Math Operators" {
         let additional = if f.input.len() > 1 { ",y=SPY[,2]" } else { "" };
 
         return format!(

@@ -105,12 +105,12 @@ pub const FUNCTION_NAMES: &[(&str, &str)] = &[
     ("MACDEXT", "extended_moving_average_convergence_divergence"),
     ("MACDFIX", "fixed_moving_average_convergence_divergence"),
     ("MAMA", "mesa_adaptive_moving_average"),
-    ("MAX", "rolling_max"),
+    ("MAX", "rolling_maximum"),
     ("MEDPRICE", "median_price"),
     ("MFI", "money_flow_index"),
     ("MIDPRICE", "midpoint_price"),
     ("MIDPOINT", "midpoint_period"),
-    ("MIN", "rolling_min"),
+    ("MIN", "rolling_mininimum"),
     ("MINUS_DI", "minus_directional_indicator"),
     ("MINUS_DM", "minus_directional_movement"),
     ("MOM", "momentum"),
@@ -292,12 +292,21 @@ pub const EXCLUDED_INDICATORS: &[&str] = &[
     "LINEARREG_SLOPE",
     "LINEARREG_INTERCEPT",
     "TSF",
+    // Math operators
+    "ADD",
+    "DIV",
+    "MAXINDEX",
+    "MININDEX",
+    "MINMAX",
+    "MINMAXINDEX",
+    "MULT",
+    "SUB",
 ];
 
 /// GroupIds excluded from generation altogether;
 /// R already ships vectorized math (sqrt, log, sin, ...)
 /// so the Math Transform indicators are redundant
-pub const EXCLUDED_GROUPS: &[&str] = &["Math Transform", "Math Operators"];
+pub const EXCLUDED_GROUPS: &[&str] = &["Math Transform"];
 
 /// Returns true if the indicator should be
 /// skipped by the generators

@@ -361,7 +361,7 @@ pub fn render_indicator(f: &MetaData, t: &Templates) -> String {
             fill(&t.moving_average),
             chart(&t.chart_moving_average)
         )
-    } else if f.family == "Statistic Functions" {
+    } else if f.family == "Statistic Functions" || f.family == "Math Operators" {
         fill(&t.rolling)
     } else {
         let mut out = fill(&t.indicator);
