@@ -1,5 +1,5 @@
 #' @export
-#' @family Statistic Functions
+#' @family Rolling Statistics
 #'
 #' @title Pearson&apos;s Correlation Coefficient (r)
 #' @templateVar .title Pearson&apos;s Correlation Coefficient (r)

@@ -1,5 +1,5 @@
 #' @export
-#' @family Statistic Functions
+#' @family Rolling Statistics
 #'
 #' @title Standard Deviation
 #' @templateVar .title Standard Deviation
