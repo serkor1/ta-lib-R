@@ -183,7 +183,15 @@ pub fn render_indicator(f: &MetaData, t: &Templates) -> String {
     // 'rolling_description.R'). An empty result renders a blank
     // roxygen line so the block stays contiguous
     let param_docs = {
-        let docs = formals
+        let docs = f
+            .passthrough
+            .iter()
+            .map(|p| {
+                format!(
+                    "#' @param {p} ([numeric]). Vector of periods, one per observation of the input series."
+                )
+            })
+            .chain(formals
             .iter()
             .filter(|a| a.name != "timePeriod" && a.name != "penetration")
             .map(|a| match a.kind {
@@ -209,7 +217,7 @@ pub fn render_indicator(f: &MetaData, t: &Templates) -> String {
                     a.description,
                     a.default
                 ),
-            })
+            }))
             .collect::<Vec<String>>()
             .join("\n");
 
@@ -221,16 +229,26 @@ pub fn render_indicator(f: &MetaData, t: &Templates) -> String {
     };
 
     // formals and pass-through arguments,
-    // e.g. 'timePeriod = 14,' and 'timePeriod = timePeriod,'
-    let args = formals
+    // e.g. 'timePeriod = 14,' and 'timePeriod = timePeriod,'.
+    // Passthrough inputs (MAVP: periods) lead as required formals
+    // without a default
+    let args = f
+        .passthrough
         .iter()
-        .map(|a| format!("{} = {},", a.name, a.default))
+        .map(|p| format!("{p},"))
+        .chain(
+            formals
+                .iter()
+                .map(|a| format!("{} = {},", a.name, a.default)),
+        )
         .collect::<Vec<String>>()
         .join("\n\t");
 
-    let pargs = formals
+    let pargs = f
+        .passthrough
         .iter()
-        .map(|a| format!("{} = {},", a.name, a.name))
+        .chain(formals.iter().map(|a| &a.name))
+        .map(|name| format!("{name} = {name},"))
         .collect::<Vec<String>>()
         .join("\n\t\t\t");
 
@@ -273,11 +291,23 @@ pub fn render_indicator(f: &MetaData, t: &Templates) -> String {
         })
         .collect();
 
+    // the coerced passthrough formals: required inputs are always
+    // double arrays in TA-Lib, so as.double() guards the type on
+    // the R side (the C side additionally length-checks against
+    // the first input series)
+    let passthrough: Vec<String> = f
+        .passthrough
+        .iter()
+        .map(|p| format!("as.double({p})"))
+        .collect();
+
     // the .Call() arguments: one constructed_series column per
-    // required input (the raw vector for the numeric method)
-    // followed by the coerced optional inputs
+    // required input (the raw vector for the numeric method),
+    // then the coerced passthrough formals, followed by the
+    // coerced optional inputs
     let c_signature = (1..=f.input.len())
         .map(|i| format!("constructed_series[[{i}]]"))
+        .chain(passthrough.iter().cloned())
         .chain(coercions.iter().cloned())
         .collect::<Vec<String>>()
         .join(",\n\t\t");
@@ -308,6 +338,7 @@ pub fn render_indicator(f: &MetaData, t: &Templates) -> String {
     let c_numeric = series
         .iter()
         .map(|s| format!("as.double({s})"))
+        .chain(passthrough.iter().cloned())
         .chain(coercions.iter().cloned())
         .collect::<Vec<String>>()
         .join(",\n\t\t");
@@ -749,6 +780,34 @@ tail
         ));
         assert!(macd.contains(
             "#' @param signalPeriod ([integer]). Smoothing for the signal line (nb of period). Defaults to `9`."
+        ));
+
+        // MAVP: the passthrough 'periods' leads the formals as a
+        // required argument (no default) and is passed to .Call()
+        // coerced, between the series column and the coerced
+        // optional inputs
+        let mavp = render("MAVP");
+        assert!(mavp.contains(
+            "variable_moving_average_period <- function(\n\tx,\n\tcols,\n\tperiods,\n\tminimumPeriod = 2,"
+        ));
+        assert!(mavp.contains("default_formula = ~close,"));
+        assert!(mavp.contains(
+            "constructed_series[[1]],\n\t\tas.double(periods),\n\t\tas.integer(minimumPeriod)"
+        ));
+        assert!(mavp.contains("periods = periods,"));
+        assert!(mavp.contains(
+            "#' @param periods ([numeric]). Vector of periods, one per observation of the input series."
+        ));
+
+        // MAVP is univariate by series count: the numeric method
+        // passes the raw vector plus the passthrough
+        assert!(mavp.contains("variable_moving_average_period.numeric <- function("));
+        assert!(mavp.contains("as.double(x),\n\t\tas.double(periods),"));
+
+        // the lookback wrapper keeps taking only the
+        // coerced optional inputs
+        assert!(mavp.contains(
+            "C_impl_ta_MAVP_lookback,\n\t\tas.integer(minimumPeriod),\n\t\tas.integer(maximumPeriod),\n\t\tas.maType(maType)\n\t)"
         ));
 
         // rolling statistics: protected .Call() region,

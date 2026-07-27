@@ -28,6 +28,10 @@ pub struct MetaData {
     pub indicator: String,
     pub family: String,
     pub input: Vec<String>,
+    /// Required inputs that are not price series (MAVP: inPeriods).
+    /// Rendered as required formals passed straight to .Call()
+    /// instead of being routed through the column formula
+    pub passthrough: Vec<String>,
     pub optional_input: Vec<OptionalArg>,
 }
 
@@ -137,7 +141,10 @@ pub fn parse_api(xml: &str) -> Vec<MetaData> {
 
             // Required inputs become R column names; price series
             // map to their OHLCV column while plain double arrays
-            // (inReal) default to the 'close' column
+            // (inReal) default to the 'close' column. Anything else
+            // (MAVP: inPeriods -> periods) is no price series and
+            // becomes a passthrough formal passed straight to
+            // .Call() instead of a formula column
             for arg in tag_blocks(block, "RequiredInputArgument") {
                 let input_type = tag_text(arg, "Name").expect("input Type");
 
@@ -146,12 +153,21 @@ pub fn parse_api(xml: &str) -> Vec<MetaData> {
                         input_type.to_lowercase().replace("in", "")
                     }
                     "inReal" => "close".to_string(),
-                    "inPeriods" => "periods".to_string(),
                     // inReal0: x and inReal1: y
                     // is affiliated with Price Transforms, Statistics Functions and Math Transforms
                     "inReal0" => "x".to_string(),
                     "inReal1" => "y".to_string(),
-                    _ => "close".to_string(),
+                    other => {
+                        let name = other.strip_prefix("in").unwrap_or(other);
+                        let mut chars = name.chars();
+                        let name = match chars.next() {
+                            Some(c) => c.to_ascii_lowercase().to_string() + chars.as_str(),
+                            None => panic!("empty required input name"),
+                        };
+
+                        f.passthrough.push(name);
+                        continue;
+                    }
                 });
             }
 
@@ -336,12 +352,26 @@ mod tests {
         ))
         .expect("read ta_func_api.xml");
 
-        // 161 functions minus the 15 Math Transforms, the
-        // 11 Math Operators and the 9 EXCLUDED_INDICATORS
+        // 161 functions minus the 15 Math Transforms and the
+        // 18 EXCLUDED_INDICATORS
         let funcs = parse_api(&xml);
-        assert_eq!(funcs.len(), 126);
+        assert_eq!(funcs.len(), 128);
         assert!(funcs.iter().all(|f| f.family != "Math Transform"));
         assert!(!funcs.iter().any(|f| f.indicator == "ACOS"));
         assert!(!funcs.iter().any(|f| f.indicator == "MA"));
+
+        // MAVP: inPeriods is a passthrough formal, not a
+        // formula column
+        let mavp = funcs.iter().find(|f| f.indicator == "MAVP").expect("MAVP");
+        assert_eq!(mavp.input, ["close"]);
+        assert_eq!(mavp.passthrough, ["periods"]);
+        assert_eq!(mavp.default_formula(), "~close");
+
+        // every other indicator has no passthrough inputs
+        assert!(
+            funcs
+                .iter()
+                .all(|f| f.indicator == "MAVP" || f.passthrough.is_empty())
+        );
     }
 }
