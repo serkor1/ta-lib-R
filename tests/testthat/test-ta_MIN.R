@@ -9,7 +9,7 @@
 testthat::test_that(desc = 'Runs without *any* conditions', code = {
 	output <- testthat::expect_no_condition(
 		{
-			rolling_mininimum(
+			rolling_minimum(
 				x = SPY[, 1]
 			)
 		}
@@ -21,7 +21,7 @@ testthat::test_that(desc = 'Runs without *any* conditions', code = {
 testthat::test_that(desc = 'Length in, length out', code = {
 	testthat::expect_equal(
 		object = length(
-			rolling_mininimum(
+			rolling_minimum(
 				x = SPY[, 1]
 			)
 		),
@@ -31,7 +31,7 @@ testthat::test_that(desc = 'Length in, length out', code = {
 
 ## test that the output is a <double> vector
 testthat::test_that(desc = 'Output type', code = {
-	output <- rolling_mininimum(
+	output <- rolling_minimum(
 		x = SPY[, 1]
 	)
 

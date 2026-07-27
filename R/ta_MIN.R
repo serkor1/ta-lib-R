@@ -1,10 +1,10 @@
 #' @export
-#' @family Rolling Satistics
+#' @family Rolling Statistics
 #'
 #' @title Lowest value over a specified period
 #' @templateVar .title Lowest value over a specified period
 #' @templateVar .author Serkan Korkmaz
-#' @templateVar .fun rolling_mininimum
+#' @templateVar .fun rolling_minimum
 #'
 ## splice:documentation:start
 ## splice:documentation:end
@@ -12,26 +12,26 @@
 #' @template rolling_description
 #'
 #' @template rolling_returns
-rolling_mininimum <- function(
+rolling_minimum <- function(
 	x,
 	timePeriod = 30,
 	na.bridge = FALSE
 ) {
-	UseMethod("rolling_mininimum")
+	UseMethod("rolling_minimum")
 }
 
 #' @export
 #' @usage NULL
-#' @rdname rolling_mininimum
+#' @rdname rolling_minimum
 #'
-#' @aliases rolling_mininimum
-MIN <- rolling_mininimum
+#' @aliases rolling_minimum
+MIN <- rolling_minimum
 
 #' @usage NULL
-#' @aliases rolling_mininimum
+#' @aliases rolling_minimum
 #'
 #' @export
-rolling_mininimum.default <- function(
+rolling_minimum.default <- function(
 	x,
 	timePeriod = 30,
 	na.bridge = FALSE
@@ -57,17 +57,17 @@ rolling_mininimum.default <- function(
 }
 
 #' @usage NULL
-#' @aliases rolling_mininimum
+#' @aliases rolling_minimum
 #'
 #' @export
-rolling_mininimum.numeric <- function(
+rolling_minimum.numeric <- function(
 	x,
 	timePeriod = 30,
 	na.bridge = FALSE
 ) {
 	## calculate indicator and
 	## return as data.frame
-	x <- rolling_mininimum.default(
+	x <- rolling_minimum.default(
 		x = x,
 		timePeriod = timePeriod,
 		na.bridge = na.bridge
