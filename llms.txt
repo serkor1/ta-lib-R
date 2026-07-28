@@ -86,10 +86,10 @@ features <- cbind(
 
 tail(features)
 #>                          RSI UpperBand MiddleBand LowerBand CDLENGULFING
-#> 2024-12-26 01:00:00 46.48851 100487.38   96698.61  92909.83           -1
+#> 2024-12-26 01:00:00 46.48851 100487.38   96698.61  92909.83         -100
 #> 2024-12-27 01:00:00 43.85488 100670.65   96512.96  92355.27            0
 #> 2024-12-28 01:00:00 45.93888 100632.13   96581.91  92531.69            0
-#> 2024-12-29 01:00:00 43.12301  99628.77   95576.60  91524.43           -1
+#> 2024-12-29 01:00:00 43.12301  99628.77   95576.60  91524.43         -100
 #> 2024-12-30 01:00:00 41.47686  96403.53   94231.31  92059.09            0
 #> 2024-12-31 01:00:00 43.37358  95441.13   93774.23  92107.34            0
 ```
@@ -272,15 +272,15 @@ Morning Star, and many more — 61 patterns in total.
 - [`advance_block()`](https://serkor1.github.io/ta-lib-R/reference/advance_block.md)
   : Advance Block
 - [`belt_hold()`](https://serkor1.github.io/ta-lib-R/reference/belt_hold.md)
-  : Belt Hold
+  : Belt-hold
 - [`break_away()`](https://serkor1.github.io/ta-lib-R/reference/break_away.md)
-  : Break Away
+  : Breakaway
 - [`closing_marubozu()`](https://serkor1.github.io/ta-lib-R/reference/closing_marubozu.md)
   : Closing Marubozu
 - [`concealing_baby_swallow()`](https://serkor1.github.io/ta-lib-R/reference/concealing_baby_swallow.md)
   : Concealing Baby Swallow
 - [`counter_attack()`](https://serkor1.github.io/ta-lib-R/reference/counter_attack.md)
-  : Counter Attack
+  : Counterattack
 - [`dark_cloud_cover()`](https://serkor1.github.io/ta-lib-R/reference/dark_cloud_cover.md)
   : Dark Cloud Cover
 - [`doji()`](https://serkor1.github.io/ta-lib-R/reference/doji.md) :
@@ -290,7 +290,7 @@ Morning Star, and many more — 61 patterns in total.
 - [`dragonfly_doji()`](https://serkor1.github.io/ta-lib-R/reference/dragonfly_doji.md)
   : Dragonfly Doji
 - [`engulfing()`](https://serkor1.github.io/ta-lib-R/reference/engulfing.md)
-  : Engulfing
+  : Engulfing Pattern
 - [`evening_doji_star()`](https://serkor1.github.io/ta-lib-R/reference/evening_doji_star.md)
   : Evening Doji Star
 - [`evening_star()`](https://serkor1.github.io/ta-lib-R/reference/evening_star.md)
@@ -304,31 +304,31 @@ Morning Star, and many more — 61 patterns in total.
 - [`hanging_man()`](https://serkor1.github.io/ta-lib-R/reference/hanging_man.md)
   : Hanging Man
 - [`harami()`](https://serkor1.github.io/ta-lib-R/reference/harami.md) :
-  Harami
+  Harami Pattern
 - [`harami_cross()`](https://serkor1.github.io/ta-lib-R/reference/harami_cross.md)
-  : Harami Cross
+  : Harami Cross Pattern
 - [`high_wave()`](https://serkor1.github.io/ta-lib-R/reference/high_wave.md)
-  : High Wave
+  : High-Wave Candle
 - [`hikakke()`](https://serkor1.github.io/ta-lib-R/reference/hikakke.md)
-  : Hikkake
+  : Hikkake Pattern
 - [`hikakke_mod()`](https://serkor1.github.io/ta-lib-R/reference/hikakke_mod.md)
-  : Hikkake Modified
+  : Modified Hikkake Pattern
 - [`homing_pigeon()`](https://serkor1.github.io/ta-lib-R/reference/homing_pigeon.md)
   : Homing Pigeon
 - [`in_neck()`](https://serkor1.github.io/ta-lib-R/reference/in_neck.md)
-  : In Neck
+  : In-Neck Pattern
 - [`inverted_hammer()`](https://serkor1.github.io/ta-lib-R/reference/inverted_hammer.md)
   : Inverted Hammer
 - [`kicking()`](https://serkor1.github.io/ta-lib-R/reference/kicking.md)
   : Kicking
 - [`kicking_baby_length()`](https://serkor1.github.io/ta-lib-R/reference/kicking_baby_length.md)
-  : Kicking Baby Length
+  : Kicking - bull/bear determined by the longer marubozu
 - [`ladder_bottom()`](https://serkor1.github.io/ta-lib-R/reference/ladder_bottom.md)
   : Ladder Bottom
 - [`long_legged_doji()`](https://serkor1.github.io/ta-lib-R/reference/long_legged_doji.md)
   : Long Legged Doji
 - [`long_line()`](https://serkor1.github.io/ta-lib-R/reference/long_line.md)
-  : Long Line
+  : Long Line Candle
 - [`marubozu()`](https://serkor1.github.io/ta-lib-R/reference/marubozu.md)
   : Marubozu
 - [`mat_hold()`](https://serkor1.github.io/ta-lib-R/reference/mat_hold.md)
@@ -340,9 +340,9 @@ Morning Star, and many more — 61 patterns in total.
 - [`morning_star()`](https://serkor1.github.io/ta-lib-R/reference/morning_star.md)
   : Morning Star
 - [`on_neck()`](https://serkor1.github.io/ta-lib-R/reference/on_neck.md)
-  : On-Neck
+  : On-Neck Pattern
 - [`piercing()`](https://serkor1.github.io/ta-lib-R/reference/piercing.md)
-  : Piercing
+  : Piercing Pattern
 - [`rickshaw_man()`](https://serkor1.github.io/ta-lib-R/reference/rickshaw_man.md)
   : Rickshaw Man
 - [`rise_fall_3_methods()`](https://serkor1.github.io/ta-lib-R/reference/rise_fall_3_methods.md)
@@ -360,7 +360,7 @@ Morning Star, and many more — 61 patterns in total.
 - [`stick_sandwich()`](https://serkor1.github.io/ta-lib-R/reference/stick_sandwich.md)
   : Stick Sandwich
 - [`takuri()`](https://serkor1.github.io/ta-lib-R/reference/takuri.md) :
-  Takuri
+  Takuri (Dragonfly Doji with very long lower shadow)
 - [`tasuki_gap()`](https://serkor1.github.io/ta-lib-R/reference/tasuki_gap.md)
   : Tasuki Gap
 - [`three_black_crows()`](https://serkor1.github.io/ta-lib-R/reference/three_black_crows.md)
@@ -368,23 +368,23 @@ Morning Star, and many more — 61 patterns in total.
 - [`three_identical_crows()`](https://serkor1.github.io/ta-lib-R/reference/three_identical_crows.md)
   : Identical Three Crows
 - [`three_inside()`](https://serkor1.github.io/ta-lib-R/reference/three_inside.md)
-  : Three Inside
+  : Three Inside Up/Down
 - [`three_line_strike()`](https://serkor1.github.io/ta-lib-R/reference/three_line_strike.md)
   : Three-Line Strike
 - [`three_outside()`](https://serkor1.github.io/ta-lib-R/reference/three_outside.md)
-  : Three Outside
+  : Three Outside Up/Down
 - [`three_stars_in_the_south()`](https://serkor1.github.io/ta-lib-R/reference/three_stars_in_the_south.md)
-  : Three Stars in the South
+  : Three Stars In The South
 - [`three_white_soldiers()`](https://serkor1.github.io/ta-lib-R/reference/three_white_soldiers.md)
-  : Three White Soldiers
+  : Three Advancing White Soldiers
 - [`thrusting()`](https://serkor1.github.io/ta-lib-R/reference/thrusting.md)
-  : Thrusting
+  : Thrusting Pattern
 - [`tristar()`](https://serkor1.github.io/ta-lib-R/reference/tristar.md)
-  : Tristar
+  : Tristar Pattern
 - [`two_crows()`](https://serkor1.github.io/ta-lib-R/reference/two_crows.md)
   : Two Crows
 - [`unique_3_river()`](https://serkor1.github.io/ta-lib-R/reference/unique_3_river.md)
-  : Unique Three River
+  : Unique 3 River
 - [`upside_gap_2_crows()`](https://serkor1.github.io/ta-lib-R/reference/upside_gap_2_crows.md)
   : Upside Gap Two Crows
 - [`xside_gap_3_methods()`](https://serkor1.github.io/ta-lib-R/reference/xside_gap_3_methods.md)
@@ -407,7 +407,7 @@ Williams %R, and ADX.
 - [`average_directional_movement_index_rating()`](https://serkor1.github.io/ta-lib-R/reference/average_directional_movement_index_rating.md)
   : Average Directional Movement Index Rating
 - [`balance_of_power()`](https://serkor1.github.io/ta-lib-R/reference/balance_of_power.md)
-  : Balance of Power
+  : Balance Of Power
 - [`chande_momentum_oscillator()`](https://serkor1.github.io/ta-lib-R/reference/chande_momentum_oscillator.md)
   : Chande Momentum Oscillator
 - [`commodity_channel_index()`](https://serkor1.github.io/ta-lib-R/reference/commodity_channel_index.md)
@@ -415,13 +415,13 @@ Williams %R, and ADX.
 - [`directional_movement_index()`](https://serkor1.github.io/ta-lib-R/reference/directional_movement_index.md)
   : Directional Movement Index
 - [`extended_moving_average_convergence_divergence()`](https://serkor1.github.io/ta-lib-R/reference/extended_moving_average_convergence_divergence.md)
-  : Moving Average Convergence Divergence (Extended)
+  : MACD with controllable MA type
 - [`fast_stochastic()`](https://serkor1.github.io/ta-lib-R/reference/fast_stochastic.md)
-  : Fast Stochastic
+  : Stochastic Fast
 - [`fixed_moving_average_convergence_divergence()`](https://serkor1.github.io/ta-lib-R/reference/fixed_moving_average_convergence_divergence.md)
-  : Moving Average Convergence Divergence (Fixed)
+  : Moving Average Convergence/Divergence Fix 12/26
 - [`intraday_movement_index()`](https://serkor1.github.io/ta-lib-R/reference/intraday_movement_index.md)
-  : Intraday Movement Index
+  : Intraday Momentum Index
 - [`minus_directional_indicator()`](https://serkor1.github.io/ta-lib-R/reference/minus_directional_indicator.md)
   : Minus Directional Indicator
 - [`minus_directional_movement()`](https://serkor1.github.io/ta-lib-R/reference/minus_directional_movement.md)
@@ -431,17 +431,15 @@ Williams %R, and ADX.
 - [`money_flow_index()`](https://serkor1.github.io/ta-lib-R/reference/money_flow_index.md)
   : Money Flow Index
 - [`moving_average_convergence_divergence()`](https://serkor1.github.io/ta-lib-R/reference/moving_average_convergence_divergence.md)
-  : Moving Average Convergence Divergence
+  : Moving Average Convergence/Divergence
 - [`percentage_price_oscillator()`](https://serkor1.github.io/ta-lib-R/reference/percentage_price_oscillator.md)
   : Percentage Price Oscillator
 - [`plus_directional_indicator()`](https://serkor1.github.io/ta-lib-R/reference/plus_directional_indicator.md)
   : Plus Directional Indicator
 - [`plus_directional_movement()`](https://serkor1.github.io/ta-lib-R/reference/plus_directional_movement.md)
   : Plus Directional Movement
-- [`rate_of_change()`](https://serkor1.github.io/ta-lib-R/reference/rate_of_change.md)
-  : Rate of Change
 - [`ratio_of_change()`](https://serkor1.github.io/ta-lib-R/reference/ratio_of_change.md)
-  : Ratio of Change
+  : Rate of change ratio: (price/prevPrice)
 - [`relative_strength_index()`](https://serkor1.github.io/ta-lib-R/reference/relative_strength_index.md)
   : Relative Strength Index
 - [`stochastic()`](https://serkor1.github.io/ta-lib-R/reference/stochastic.md)
@@ -449,11 +447,11 @@ Williams %R, and ADX.
 - [`stochastic_relative_strength_index()`](https://serkor1.github.io/ta-lib-R/reference/stochastic_relative_strength_index.md)
   : Stochastic Relative Strength Index
 - [`triple_exponential_average()`](https://serkor1.github.io/ta-lib-R/reference/triple_exponential_average.md)
-  : Triple Exponential Average
+  : 1-day Rate-Of-Change (ROC) of a Triple Smooth EMA
 - [`ultimate_oscillator()`](https://serkor1.github.io/ta-lib-R/reference/ultimate_oscillator.md)
   : Ultimate Oscillator
 - [`williams_oscillator()`](https://serkor1.github.io/ta-lib-R/reference/williams_oscillator.md)
-  : Williams %R
+  : Williams' %R
 
 ## Overlap Studies
 
@@ -470,13 +468,17 @@ trend-following overlays.
 - [`exponential_moving_average()`](https://serkor1.github.io/ta-lib-R/reference/exponential_moving_average.md)
   : Exponential Moving Average
 - [`extended_parabolic_stop_and_reverse()`](https://serkor1.github.io/ta-lib-R/reference/extended_parabolic_stop_and_reverse.md)
-  : Parabolic Stop and Reverse (SAR) - Extended
+  : Parabolic SAR - Extended
 - [`kaufman_adaptive_moving_average()`](https://serkor1.github.io/ta-lib-R/reference/kaufman_adaptive_moving_average.md)
   : Kaufman Adaptive Moving Average
 - [`mesa_adaptive_moving_average()`](https://serkor1.github.io/ta-lib-R/reference/mesa_adaptive_moving_average.md)
   : MESA Adaptive Moving Average
+- [`midpoint_period()`](https://serkor1.github.io/ta-lib-R/reference/midpoint_period.md)
+  : MidPoint over period
+- [`midpoint_price()`](https://serkor1.github.io/ta-lib-R/reference/midpoint_price.md)
+  : Midpoint Price over period
 - [`parabolic_stop_and_reverse()`](https://serkor1.github.io/ta-lib-R/reference/parabolic_stop_and_reverse.md)
-  : Parabolic Stop and Reverse (SAR)
+  : Parabolic SAR
 - [`simple_moving_average()`](https://serkor1.github.io/ta-lib-R/reference/simple_moving_average.md)
   : Simple Moving Average
 - [`t3_exponential_moving_average()`](https://serkor1.github.io/ta-lib-R/reference/t3_exponential_moving_average.md)
@@ -487,6 +489,8 @@ trend-following overlays.
   : Triangular Moving Average
 - [`triple_exponential_moving_average()`](https://serkor1.github.io/ta-lib-R/reference/triple_exponential_moving_average.md)
   : Triple Exponential Moving Average
+- [`variable_moving_average_period()`](https://serkor1.github.io/ta-lib-R/reference/variable_moving_average_period.md)
+  : Moving average with variable period
 - [`weighted_moving_average()`](https://serkor1.github.io/ta-lib-R/reference/weighted_moving_average.md)
   : Weighted Moving Average
 
@@ -517,7 +521,7 @@ Includes On-Balance Volume (OBV), Chaikin A/D Line, and A/D Oscillator.
 - [`chaikin_accumulation_distribution_oscillator()`](https://serkor1.github.io/ta-lib-R/reference/chaikin_accumulation_distribution_oscillator.md)
   : Chaikin A/D Oscillator
 - [`on_balance_volume()`](https://serkor1.github.io/ta-lib-R/reference/on_balance_volume.md)
-  : On-Balance Volume
+  : On Balance Volume
 - [`trading_volume()`](https://serkor1.github.io/ta-lib-R/reference/trading_volume.md)
   : Trading Volume
 
@@ -556,31 +560,31 @@ return series. Includes rolling variance, standard deviation, linear
 regression, and time series forecast.
 
 - [`rolling_beta()`](https://serkor1.github.io/ta-lib-R/reference/rolling_beta.md)
-  : Rolling Beta
+  : Beta
 - [`rolling_correlation()`](https://serkor1.github.io/ta-lib-R/reference/rolling_correlation.md)
-  : Rolling Correlation
-- [`rolling_max()`](https://serkor1.github.io/ta-lib-R/reference/rolling_max.md)
-  : Rolling Max
-- [`rolling_min()`](https://serkor1.github.io/ta-lib-R/reference/rolling_min.md)
-  : Rolling Min
+  : Pearson's Correlation Coefficient (r)
+- [`rolling_maximum()`](https://serkor1.github.io/ta-lib-R/reference/rolling_maximum.md)
+  : Highest value over a specified period
+- [`rolling_minimum()`](https://serkor1.github.io/ta-lib-R/reference/rolling_minimum.md)
+  : Lowest value over a specified period
 - [`rolling_standard_deviation()`](https://serkor1.github.io/ta-lib-R/reference/rolling_standard_deviation.md)
-  : Rolling Standard Deviation
+  : Standard Deviation
 - [`rolling_sum()`](https://serkor1.github.io/ta-lib-R/reference/rolling_sum.md)
-  : Rolling Sum
+  : Summation
 - [`rolling_variance()`](https://serkor1.github.io/ta-lib-R/reference/rolling_variance.md)
-  : Rolling Standard Deviation
+  : Variance
 
 ## Price Transformations
 
 Transform raw OHLC prices into derived series. Average Price, Median
 Price, Typical Price, and Weighted Close Price.
 
+- [`average_deviation()`](https://serkor1.github.io/ta-lib-R/reference/average_deviation.md)
+  : Average Deviation
 - [`average_price()`](https://serkor1.github.io/ta-lib-R/reference/average_price.md)
   : Average Price
 - [`median_price()`](https://serkor1.github.io/ta-lib-R/reference/median_price.md)
   : Median Price
-- [`midpoint_price()`](https://serkor1.github.io/ta-lib-R/reference/midpoint_price.md)
-  : Midpoint Price
 - [`typical_price()`](https://serkor1.github.io/ta-lib-R/reference/typical_price.md)
   : Typical Price
 - [`weighted_close_price()`](https://serkor1.github.io/ta-lib-R/reference/weighted_close_price.md)
@@ -618,5 +622,3 @@ daily price data for BTC, SPY, NVDA, and ATOM.
   Charts](https://serkor1.github.io/ta-lib-R/articles/charting.md):
 - [{talib}: R bindings to
   TA-Lib](https://serkor1.github.io/ta-lib-R/articles/talib.md):
-- [Tidyverse
-  Workflows](https://serkor1.github.io/ta-lib-R/articles/tidyverse.md):

@@ -123,8 +123,8 @@ that mirrors the TA-Lib C function name. Both are interchangeable:
 
 ## these are equivalent
 identical(
-    talib::relative_strength_index(talib::BTC, n = 14),
-    talib::RSI(talib::BTC, n = 14)
+    talib::relative_strength_index(talib::BTC, timePeriod = 14),
+    talib::RSI(talib::BTC, timePeriod = 14)
 )
 #> [1] TRUE
 ```
@@ -137,10 +137,10 @@ produce a value. This is called the **lookback period**. The first
 
 ``` r
 
-## SMA with n = 5 has a lookback of 4
+## SMA with timePeriod = 5 has a lookback of 4
 head(
-    talib::SMA(talib::BTC, n = 5),
-    n = 7
+    talib::SMA(talib::BTC, timePeriod = 5),
+    timePeriod = 7
 )
 #>                          SMA
 #> 2024-01-01 01:00:00       NA
@@ -149,14 +149,13 @@ head(
 #> 2024-01-04 01:00:00       NA
 #> 2024-01-05 01:00:00 44076.95
 #> 2024-01-06 01:00:00 44038.77
-#> 2024-01-07 01:00:00 43835.33
 ```
 
 The lookback is stored as an attribute on the result:
 
 ``` r
 
-x <- talib::SMA(talib::BTC, n = 20)
+x <- talib::SMA(talib::BTC, timePeriod = 20)
 attr(x, "lookback")
 #> [1] 19
 ```
@@ -304,11 +303,12 @@ serve a dual purpose:
 
 ## SMA as a specification
 str(
-    talib::SMA(n = 20)
+    talib::SMA(timePeriod = 20)
 )
 #> List of 2
-#>  $ n     : int 20
-#>  $ maType: int 0
+#>  $ timePeriod: int 20
+#>  $ maType    : int 0
+#>  - attr(*, "class")= chr "maType"
 ```
 
 This specification can be passed to indicators like
@@ -323,7 +323,8 @@ to control the type of smoothing:
 tail(
     talib::bollinger_bands(
         talib::BTC,
-        ma = talib::EMA(n = 20)
+        timePeriod = 20,
+        maType = talib::EMA()
     )
 )
 #>                     UpperBand MiddleBand LowerBand
@@ -341,17 +342,19 @@ tail(
 tail(
     talib::stochastic(
         talib::BTC,
-        slowk = talib::WMA(n = 5),
-        slowd = talib::EMA(n = 3)
+        slowKPeriod = 5,
+        slowKMa = talib::EMA(),
+        slowDPeriod = 5,
+        slowDMa = talib::EMA()
     )
 )
 #>                        SlowK    SlowD
-#> 2024-12-26 01:00:00 62.93474 57.17934
-#> 2024-12-27 01:00:00 52.56693 54.87313
-#> 2024-12-28 01:00:00 43.17803 49.02558
-#> 2024-12-29 01:00:00 27.93503 38.48031
-#> 2024-12-30 01:00:00 19.49793 28.98912
-#> 2024-12-31 01:00:00 22.83957 25.91435
+#> 2024-12-26 01:00:00 57.95326 52.08347
+#> 2024-12-27 01:00:00 46.58872 50.25188
+#> 2024-12-28 01:00:00 40.20738 46.90372
+#> 2024-12-29 01:00:00 30.26784 41.35843
+#> 2024-12-30 01:00:00 25.30502 36.00729
+#> 2024-12-31 01:00:00 28.28073 33.43177
 ```
 
 ## Candlestick pattern recognition
@@ -378,16 +381,8 @@ tail(x)
 
 ## find all bullish occurrences
 talib::BTC[which(x == 1), ]
-#>                         open     high      low    close    volume
-#> 2024-01-13 01:00:00 42770.74 43244.75 42417.54 42842.43 1389.8450
-#> 2024-01-19 01:00:00 41286.00 42144.29 40250.00 41622.00 2204.1180
-#> 2024-01-23 01:00:00 39521.03 40135.90 38508.01 39871.07 1691.9766
-#> 2024-03-06 01:00:00 63803.50 67655.97 62834.01 66112.32 2152.6899
-#> 2024-04-03 02:00:00 65477.34 66944.00 64500.00 65986.02  730.2592
-#> 2024-04-16 02:00:00 63449.24 64392.44 61641.34 63820.00  975.8047
-#> 2024-05-02 02:00:00 58267.89 59638.02 56893.92 59066.67 1608.7340
-#> 2024-06-27 02:00:00 60828.18 62346.00 60559.38 61629.99 1343.3199
-#> 2024-12-20 01:00:00 97385.63 98138.88 92129.00 97767.96 6001.8659
+#> [1] open   high   low    close  volume
+#> <0 rows> (or 0-length row.names)
 ```
 
 > **Note:** For a detailed treatment of candlestick lookback and

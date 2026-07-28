@@ -53,7 +53,7 @@ length as the input:
 x <- talib::doji(talib::BTC)
 table(x)
 #> CDLDOJI
-#>   0   1 
+#>   0 100 
 #> 300  56
 ```
 
@@ -77,10 +77,11 @@ table(talib::engulfing(talib::BTC))
 #>   19   11  297   12   25
 ```
 
-### The `eps` parameter
+### The `penetration` parameter
 
-Seven patterns accept an `eps` (penetration) parameter that controls how
-far one candle must intrude into the body of another. These are
+Seven patterns accept an `penetration` (penetration) parameter that
+controls how far one candle must intrude into the body of another. These
+are
 [`morning_star()`](https://serkor1.github.io/ta-lib-R/reference/morning_star.md),
 [`evening_star()`](https://serkor1.github.io/ta-lib-R/reference/evening_star.md),
 [`morning_doji_star()`](https://serkor1.github.io/ta-lib-R/reference/morning_doji_star.md),
@@ -89,12 +90,12 @@ far one candle must intrude into the body of another. These are
 [`dark_cloud_cover()`](https://serkor1.github.io/ta-lib-R/reference/dark_cloud_cover.md),
 and
 [`mat_hold()`](https://serkor1.github.io/ta-lib-R/reference/mat_hold.md).
-The default is `eps = 0` for all of them.
+The default is `penetration = 0` for all of them.
 
 ``` r
 
 ## Evening Star with 30% penetration
-x <- talib::evening_star(talib::BTC, eps = 0.3)
+x <- talib::evening_star(talib::BTC, penetration = 0.3)
 sum(abs(x), na.rm = TRUE)
 #> [1] 0
 ```
@@ -171,7 +172,7 @@ action:
 
 ## default N = 10
 sum(abs(talib::doji(talib::BTC)), na.rm = TRUE)
-#> [1] 56
+#> [1] 5600
 ```
 
 ``` r
@@ -179,7 +180,7 @@ sum(abs(talib::doji(talib::BTC)), na.rm = TRUE)
 ## shorter lookback
 options(talib.BodyDoji.N = 3)
 sum(abs(talib::doji(talib::BTC)), na.rm = TRUE)
-#> [1] 61
+#> [1] 6100
 ```
 
 ### Effect of sensitivity (`alpha`)
@@ -191,7 +192,7 @@ higher `alpha` means a wider acceptance threshold:
 
 ## default alpha = 0.1
 sum(abs(talib::doji(talib::BTC)), na.rm = TRUE)
-#> [1] 56
+#> [1] 5600
 ```
 
 ``` r
@@ -199,7 +200,7 @@ sum(abs(talib::doji(talib::BTC)), na.rm = TRUE)
 ## more permissive: accept bodies up to 20% of the high-low range
 options(talib.BodyDoji.alpha = 0.2)
 sum(abs(talib::doji(talib::BTC)), na.rm = TRUE)
-#> [1] 109
+#> [1] 10900
 ```
 
 The default `alpha = 0.1` for BodyDoji means: “the real body is

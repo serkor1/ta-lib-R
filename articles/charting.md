@@ -60,8 +60,8 @@ averages) are drawn on the main panel. Indicators with their own scale
 
 {
   talib::chart(talib::BTC)
-  talib::indicator(talib::SMA, n = 7)
-  talib::indicator(talib::SMA, n = 14)
+  talib::indicator(talib::SMA, timePeriod = 7)
+  talib::indicator(talib::SMA, timePeriod = 14)
   talib::indicator(talib::RSI)
 }
 ```
@@ -91,9 +91,9 @@ panel. To merge multiple indicators onto the same panel, pass them as
 {
   talib::chart(talib::BTC)
   talib::indicator(
-    talib::RSI(n = 10),
-    talib::RSI(n = 14),
-    talib::RSI(n = 21)
+    talib::RSI(timePeriod = 10),
+    talib::RSI(timePeriod = 14),
+    talib::RSI(timePeriod = 21)
   )
 }
 ```
@@ -107,7 +107,7 @@ indicators—and they don’t have to be the same type:
 {
   talib::chart(talib::BTC)
   talib::indicator(
-    talib::RSI(n = 14),
+    talib::RSI(timePeriod = 14),
     talib::MACD()
   )
 }
@@ -122,19 +122,19 @@ chart:
   talib::chart(talib::BTC)
   talib::indicator(talib::BBANDS)
   talib::indicator(
-    talib::RSI(n = 10),
-    talib::RSI(n = 14),
-    talib::RSI(n = 21)
+    talib::RSI(timePeriod = 10),
+    talib::RSI(timePeriod = 14),
+    talib::RSI(timePeriod = 21)
   )
   talib::indicator(talib::MACD)
 }
 ```
 
-> **Note:** the syntax matters. `indicator(RSI, n = 14)` passes a
-> function and arguments separately (single indicator).
-> `indicator(RSI(n = 14), RSI(n = 21))` passes *calls* (combined panel).
-> A single call like `indicator(RSI(n = 14))` also works and is
-> equivalent to the single-indicator form.
+> **Note:** the syntax matters. `indicator(RSI, timePeriod = 14)` passes
+> a function and arguments separately (single indicator).
+> `indicator(RSI(timePeriod = 14), RSI(timePeriod = 21))` passes *calls*
+> (combined panel). A single call like `indicator(RSI(timePeriod = 14))`
+> also works and is equivalent to the single-indicator form.
 
 ### Standalone indicators
 
@@ -270,10 +270,10 @@ The default theme uses a dark background with cyan and blue candles.
 
 {
   talib::chart(talib::BTC)
-  talib::indicator(talib::SMA, n = 7)
-  talib::indicator(talib::SMA, n = 14)
-  talib::indicator(talib::SMA, n = 21)
-  talib::indicator(talib::SMA, n = 28)
+  talib::indicator(talib::SMA, timePeriod = 7)
+  talib::indicator(talib::SMA, timePeriod = 14)
+  talib::indicator(talib::SMA, timePeriod = 21)
+  talib::indicator(talib::SMA, timePeriod = 28)
   talib::indicator(talib::MACD)
   talib::indicator(talib::trading_volume)
 }
@@ -288,10 +288,10 @@ A light theme with neutral grays.
 {
   talib::set_theme$hawks_and_doves
   talib::chart(talib::BTC)
-  talib::indicator(talib::SMA, n = 7)
-  talib::indicator(talib::SMA, n = 14)
-  talib::indicator(talib::SMA, n = 21)
-  talib::indicator(talib::SMA, n = 28)
+  talib::indicator(talib::SMA, timePeriod = 7)
+  talib::indicator(talib::SMA, timePeriod = 14)
+  talib::indicator(talib::SMA, timePeriod = 21)
+  talib::indicator(talib::SMA, timePeriod = 28)
   talib::indicator(talib::MACD)
   talib::indicator(talib::trading_volume)
 }
@@ -306,10 +306,10 @@ A dark theme with teal and orange accents.
 {
   talib::set_theme$payout
   talib::chart(talib::BTC)
-  talib::indicator(talib::SMA, n = 7)
-  talib::indicator(talib::SMA, n = 14)
-  talib::indicator(talib::SMA, n = 21)
-  talib::indicator(talib::SMA, n = 28)
+  talib::indicator(talib::SMA, timePeriod = 7)
+  talib::indicator(talib::SMA, timePeriod = 14)
+  talib::indicator(talib::SMA, timePeriod = 21)
+  talib::indicator(talib::SMA, timePeriod = 28)
   talib::indicator(talib::MACD)
   talib::indicator(talib::trading_volume)
 }
@@ -324,10 +324,10 @@ A bright theme with teal and red candles on a light background.
 {
   talib::set_theme$tp_slapped
   talib::chart(talib::BTC)
-  talib::indicator(talib::SMA, n = 7)
-  talib::indicator(talib::SMA, n = 14)
-  talib::indicator(talib::SMA, n = 21)
-  talib::indicator(talib::SMA, n = 28)
+  talib::indicator(talib::SMA, timePeriod = 7)
+  talib::indicator(talib::SMA, timePeriod = 14)
+  talib::indicator(talib::SMA, timePeriod = 21)
+  talib::indicator(talib::SMA, timePeriod = 28)
   talib::indicator(talib::MACD)
   talib::indicator(talib::trading_volume)
 }
@@ -342,10 +342,10 @@ A light, muted theme with earthy tones.
 {
   talib::set_theme$trust_the_process
   talib::chart(talib::BTC)
-  talib::indicator(talib::SMA, n = 7)
-  talib::indicator(talib::SMA, n = 14)
-  talib::indicator(talib::SMA, n = 21)
-  talib::indicator(talib::SMA, n = 28)
+  talib::indicator(talib::SMA, timePeriod = 7)
+  talib::indicator(talib::SMA, timePeriod = 14)
+  talib::indicator(talib::SMA, timePeriod = 21)
+  talib::indicator(talib::SMA, timePeriod = 28)
   talib::indicator(talib::MACD)
   talib::indicator(talib::trading_volume)
 }
@@ -363,10 +363,10 @@ tritanopia. The colorway is the Okabe-Ito qualitative palette.
 {
   talib::set_theme$bloomberg_terminal
   talib::chart(talib::BTC)
-  talib::indicator(talib::SMA, n = 7)
-  talib::indicator(talib::SMA, n = 14)
-  talib::indicator(talib::SMA, n = 21)
-  talib::indicator(talib::SMA, n = 28)
+  talib::indicator(talib::SMA, timePeriod = 7)
+  talib::indicator(talib::SMA, timePeriod = 14)
+  talib::indicator(talib::SMA, timePeriod = 21)
+  talib::indicator(talib::SMA, timePeriod = 28)
   talib::indicator(talib::MACD)
   talib::indicator(talib::trading_volume)
 }
@@ -384,10 +384,10 @@ under full achromatopsia.
 {
   talib::set_theme$limit_up
   talib::chart(talib::BTC)
-  talib::indicator(talib::SMA, n = 7)
-  talib::indicator(talib::SMA, n = 14)
-  talib::indicator(talib::SMA, n = 21)
-  talib::indicator(talib::SMA, n = 28)
+  talib::indicator(talib::SMA, timePeriod = 7)
+  talib::indicator(talib::SMA, timePeriod = 14)
+  talib::indicator(talib::SMA, timePeriod = 21)
+  talib::indicator(talib::SMA, timePeriod = 28)
   talib::indicator(talib::MACD)
   talib::indicator(talib::trading_volume)
 }
@@ -405,10 +405,10 @@ males); separation under tritanopia is weaker but still readable.
 {
   talib::set_theme$bid_n_ask
   talib::chart(talib::BTC)
-  talib::indicator(talib::SMA, n = 7)
-  talib::indicator(talib::SMA, n = 14)
-  talib::indicator(talib::SMA, n = 21)
-  talib::indicator(talib::SMA, n = 28)
+  talib::indicator(talib::SMA, timePeriod = 7)
+  talib::indicator(talib::SMA, timePeriod = 14)
+  talib::indicator(talib::SMA, timePeriod = 21)
+  talib::indicator(talib::SMA, timePeriod = 28)
   talib::indicator(talib::MACD)
   talib::indicator(talib::trading_volume)
 }
@@ -487,7 +487,7 @@ work the same way.
   talib::set_theme$hawks_and_doves
 
   talib::chart(talib::BTC)
-  talib::indicator(talib::SMA, n = 14)
+  talib::indicator(talib::SMA, timePeriod = 14)
   talib::indicator(talib::RSI)
 }
 ```

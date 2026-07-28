@@ -8,7 +8,6 @@
 <url><loc>https://serkor1.github.io/ta-lib-R/articles/charting.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/articles/index.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/articles/talib.html</loc></url>
-<url><loc>https://serkor1.github.io/ta-lib-R/articles/tidyverse.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/authors.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/index.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/news/index.html</loc></url>
@@ -22,6 +21,7 @@
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/advance_block.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/aroon.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/aroon_oscillator.html</loc></url>
+<url><loc>https://serkor1.github.io/ta-lib-R/reference/average_deviation.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/average_directional_movement_index.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/average_directional_movement_index_rating.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/average_price.html</loc></url>
@@ -82,6 +82,7 @@
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/matching_low.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/median_price.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/mesa_adaptive_moving_average.html</loc></url>
+<url><loc>https://serkor1.github.io/ta-lib-R/reference/midpoint_period.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/midpoint_price.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/minus_directional_indicator.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/minus_directional_movement.html</loc></url>
@@ -99,15 +100,14 @@
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/piercing.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/plus_directional_indicator.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/plus_directional_movement.html</loc></url>
-<url><loc>https://serkor1.github.io/ta-lib-R/reference/rate_of_change.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/ratio_of_change.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/relative_strength_index.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/rickshaw_man.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/rise_fall_3_methods.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/rolling_beta.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/rolling_correlation.html</loc></url>
-<url><loc>https://serkor1.github.io/ta-lib-R/reference/rolling_max.html</loc></url>
-<url><loc>https://serkor1.github.io/ta-lib-R/reference/rolling_min.html</loc></url>
+<url><loc>https://serkor1.github.io/ta-lib-R/reference/rolling_maximum.html</loc></url>
+<url><loc>https://serkor1.github.io/ta-lib-R/reference/rolling_minimum.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/rolling_standard_deviation.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/rolling_sum.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/rolling_variance.html</loc></url>
@@ -146,6 +146,7 @@
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/ultimate_oscillator.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/unique_3_river.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/upside_gap_2_crows.html</loc></url>
+<url><loc>https://serkor1.github.io/ta-lib-R/reference/variable_moving_average_period.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/weighted_close_price.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/weighted_moving_average.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/williams_oscillator.html</loc></url>

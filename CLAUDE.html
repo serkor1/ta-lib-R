@@ -21,7 +21,6 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="articles/candlestick.html">Candlestick Pattern Recognition</a></li>
     <li><a class="dropdown-item" href="articles/charting.html">Financial Charts</a></li>
-    <li><a class="dropdown-item" href="articles/tidyverse.html">Tidyverse Workflows</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -53,7 +52,7 @@
 </div>
 <div class="section level2">
 <h2 id="build-commands">Build Commands<a class="anchor" aria-label="anchor" href="#build-commands"></a></h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">make</span> build          <span class="co"># Full build: gen-code → document → install</span></span>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">make</span> build          <span class="co"># Full build: clean → fmt → document → install (does NOT run gen-code)</span></span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">make</span> check          <span class="co"># R CMD check --as-cran</span></span>
 <span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">make</span> check-full     <span class="co"># R CMD check with valgrind</span></span>
 <span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">make</span> test           <span class="co"># Run testthat suite</span></span>
@@ -67,24 +66,19 @@
 <h2 id="architecture">Architecture<a class="anchor" aria-label="anchor" href="#architecture"></a></h2>
 <div class="section level3">
 <h3 id="code-generation-most-source-files-are-generated">Code Generation (Most Source Files Are Generated)<a class="anchor" aria-label="anchor" href="#code-generation-most-source-files-are-generated"></a></h3>
-<p>Most R wrappers (<code>R/ta_*.R</code>), C wrappers (<code>src/ta_*.c</code>), and tests (<code>tests/testthat/test-ta_*.R</code>) are <strong>auto-generated</strong>. Do not edit these directly — modify the generation infrastructure in <code>codegen/</code> instead:</p>
+<p>Most R wrappers (<code>R/ta_*.R</code>), the C X-macro header (<code>src/TA-Lib.h</code>), and tests (<code>tests/testthat/test-ta_*.R</code>) are <strong>auto-generated</strong> by the zero-dependency Rust crate in <code>codegen/</code> — see <code>codegen/README.md</code> for the full architecture. Do not edit generated files directly — modify the generation infrastructure instead:</p>
 <ul><li>
-<code>codegen/gen_code/indicators.R</code> — Unified metadata for all 128 indicators</li>
+<code>codegen/src/</code> — <code>main.rs</code> (driver), <code>c_header.rs</code> (C X-macro lines from ta_func.h), <code>metadata.rs</code> (XML mining), <code>render.rs</code> (template rendering + splice preservation), <code>testthat.rs</code> (test files), <code>tables.rs</code> (the hand-maintained per-indicator lookup tables: names, chart types, classifications, exclusions)</li>
 <li>
-<code>codegen/gen_code/generate.R</code> — Single driver script that generates R, C, and test files</li>
-<li>
-<code>codegen/gen_code/utils.R</code> — <code>impl_generate_indicator()</code> and <code>impl_generate_test()</code> helpers</li>
-<li>
-<code>codegen/generate_indicator.sh</code>, <code>generate_API.sh</code>, <code>generate_FFI.sh</code> — Shell scripts for template-driven generation</li>
-<li>
-<code>src/api.h</code> and <code>src/init.c</code> — Auto-generated (function prototypes and R registration)</li>
-</ul><p>Run <code>make gen-code</code> after changing any generation logic.</p>
+<code>codegen/templates/</code> — plain R files with <code>${...}</code> placeholders; the <code>chart_*</code> templates are dual-backend (one file renders both the <code>.plotly</code> and <code>.ggplot</code> method)</li>
+<li>Hand-edited content between <code>## splice:&lt;name&gt;:start</code> / <code>## splice:&lt;name&gt;:end</code> markers in generated files survives regeneration</li>
+</ul><p>Run <code>make gen-code</code> after changing any generation logic (<code>cargo test</code> inside <code>codegen/</code> tests the generator itself).</p>
 </div>
 <div class="section level3">
 <h3 id="r--c-binding">R ↔︎ C Binding<a class="anchor" aria-label="anchor" href="#r--c-binding"></a></h3>
 <p>Uses <code><a href="https://rdrr.io/r/base/CallExternal.html" class="external-link">.Call()</a></code> (R’s native C interface), not Rcpp. Each indicator has:</p>
 <ol style="list-style-type: decimal"><li>
-<strong>C wrapper</strong> (<code>src/ta_*.c</code>): Converts R SEXP → C arrays, calls TA-Lib, returns SEXP matrix</li>
+<strong>C wrapper</strong>: one X-macro line in the generated <code>src/TA-Lib.h</code>, expanded by the hand-written <code>src/wrapper.h</code>/<code>src/init.c</code> macros into a function that converts R SEXP → C arrays, calls TA-Lib, and returns a SEXP matrix (there are no per-indicator <code>.c</code> files)</li>
 <li>
 <strong>R wrapper</strong> (<code>R/ta_*.R</code>): S3 generic with methods for <code>default</code>, <code>data.frame</code>, and <code>plotly</code>
 </li>
@@ -141,9 +135,9 @@
 <code>R/talib-package.R</code> — <code>generate_returns_section()</code> used at roxygen-render time by <code>man-roxygen/returns.R</code>
 </li>
 <li>
-<code>src/dataframe.c</code> — Matrix↔︎data.frame conversion (<code>map_dfr</code>)</li>
+<code>src/data-frame.c</code> — Matrix↔︎data.frame conversion (<code>map_dfr</code>)</li>
 <li>
-<code>src/container.h</code>, <code>src/shift.h</code>, <code>src/names.h</code> — Shared C utilities</li>
+<code>src/shift.h</code>, <code>src/names.h</code> — Shared C utilities</li>
 </ul></div>
 <div class="section level3">
 <h3 id="ta-lib-submodule">TA-Lib Submodule<a class="anchor" aria-label="anchor" href="#ta-lib-submodule"></a></h3>

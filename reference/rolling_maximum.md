@@ -1,6 +1,6 @@
-# Rolling Min
+# Highest value over a specified period
 
-`rolling_min()` is a generic S3 function that preserves the input
+`rolling_maximum()` is a generic S3 function that preserves the input
 [class](https://rdrr.io/r/base/class.html):
 [double](https://rdrr.io/r/base/double.html) vector in,
 [double](https://rdrr.io/r/base/double.html) vector out.
@@ -28,7 +28,7 @@ behaviour depends on `na.bridge`:
 ## Usage
 
 ``` r
-rolling_min(x, n = 30, na.bridge = FALSE)
+rolling_maximum(x, timePeriod = 30, na.bridge = FALSE, ...)
 ```
 
 ## Arguments
@@ -38,7 +38,7 @@ rolling_min(x, n = 30, na.bridge = FALSE)
   ([double](https://rdrr.io/r/base/double.html)). A
   [double](https://rdrr.io/r/base/double.html) vector.
 
-- n:
+- timePeriod:
 
   ([integer](https://rdrr.io/r/base/integer.html)). Lookback period
   (window size). A positive
@@ -60,6 +60,10 @@ rolling_min(x, n = 30, na.bridge = FALSE)
   observations as if they were adjacent - see the **Handling of `NA`
   values** section above for the consequences.
 
+- ...:
+
+  Additional parameters.
+
 ## Value
 
 A [double](https://rdrr.io/r/base/double.html) vector with the same
@@ -67,10 +71,10 @@ A [double](https://rdrr.io/r/base/double.html) vector with the same
 
 ## See also
 
-Other Rolling Statistic:
+Other Rolling Statistics:
 [`rolling_beta()`](https://serkor1.github.io/ta-lib-R/reference/rolling_beta.md),
 [`rolling_correlation()`](https://serkor1.github.io/ta-lib-R/reference/rolling_correlation.md),
-[`rolling_max()`](https://serkor1.github.io/ta-lib-R/reference/rolling_max.md),
+[`rolling_minimum()`](https://serkor1.github.io/ta-lib-R/reference/rolling_minimum.md),
 [`rolling_standard_deviation()`](https://serkor1.github.io/ta-lib-R/reference/rolling_standard_deviation.md),
 [`rolling_sum()`](https://serkor1.github.io/ta-lib-R/reference/rolling_sum.md),
 [`rolling_variance()`](https://serkor1.github.io/ta-lib-R/reference/rolling_variance.md)
@@ -88,9 +92,9 @@ data(BTC, package = "talib")
 
 ## calculate the indicator
 ## Open
-output <- talib::rolling_min(x = BTC[[1]])
+output <- talib::rolling_maximum(x = BTC[[1]])
 
 ## display the results
 utils::tail(output)
-#> [1] 91920.01 94776.00 94167.78 94167.78 93564.00 92624.41
+#> [1] 106136.9 106136.9 106136.9 106136.9 106136.9 106136.9
 ```

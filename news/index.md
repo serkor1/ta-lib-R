@@ -2,6 +2,12 @@
 
 ## version 0.9-3
 
+This version brings *many* changes to the R package. The entire code
+generating backend have been rewritten so it *closely* follows the
+upstream naming of parameters and it uses X-macros so it also installs
+way fastert than before - but it also means that there is alot of
+breaking changes. The update is a big leap towards a stable release.
+
 ### improvements
 
 - A new function for pre-calculating the lookback-period has been
@@ -20,7 +26,134 @@ The function returns the minimum required lookback for calculating the
 indicator. Its use-case is customized control-flows for downstream
 wrappers and/or packages that declares dependency on {talib}.
 
+- The source code have been re-written so it generates the underlying
+  TA-Lib wrappers using preprocessors and X-Macros, which compiles much
+  faster than before.
+
+- ***MAVP:** Moving Average Variable Periods*—The function calculates a
+  moving average with variable periods between candles. See below:
+
+``` r
+
+talib::variable_moving_average_period(
+  x = 1:10,
+  periods = c(1, 1, 1, 2, 2, 2, 3, 4, 4, 4),
+  minimumPeriod = 2,
+  maximumPeriod = 4
+)
+
+#> [1]  NA  NA  NA 3.5 4.5 5.5 6.0 6.5 7.5 8.5
+#> attr(,"lookback")
+```
+
+- ***AVGDEV:** Averge deviation*—The function calculates the average
+  deviation of a series. See below:
+
+``` r
+
+talib::average_deviation(
+x = 1:10,
+periods = c(1, 1, 1, 2, 2, 2, 3, 4, 4, 4),
+timePeriod = 5
+)
+#>  [1]  NA  NA  NA  NA 1.2 1.2 1.2 1.2 1.2 1.2
+#> attr(,"lookback")
+#> [1] 4
+```
+
+### breaking changes
+
+- **General:** All functions now follows the naming convention of
+  TA-Lib. All function signatures are on the following form:
+
+``` r
+
+indicator(
+  x,          ## unchanged
+  cols,       ## unchanged
+  ## additional/optional TA-Lib parameters
+  ## are now camelCase mined upstream
+  timePeriod, ## was 'n' before
+  fooBar,     ## was 'foo_bar' or 'foobar' before
+  fooBaz,     ## was 'foo_baz' or 'foobaz' before
+  na.bridge = FALSE ## unchanged
+)
+```
+
+This has the benefit of being transparent when comparing or reading the
+source code.
+
+- **MATypes:** Functions that used MATypes in the indicator function are
+  now significantly different. See the
+  [`bollinger_bands()`](https://serkor1.github.io/ta-lib-R/reference/bollinger_bands.md)
+  below:
+
+``` r
+
+talib::bollinger_bands(
+        talib::BTC,
+        timePeriod = 20,
+        maType = talib::EMA()
+)
+```
+
+Prior to this update, the correct call was:
+
+``` r
+
+talib::bollinger_bands(
+        talib::BTC,
+    ma = talib::EMA(n = 20)
+)
+```
+
+While the above function call is aestethically pleasing, it did
+introduce some ambigiuites in other calls. See, for example,
+[`APO()`](https://serkor1.github.io/ta-lib-R/reference/absolute_price_oscillator.md)
+(v0.9.2) below:
+
+``` r
+
+absolute_price_oscillator(
+  x,
+  cols,
+  fast = 12,
+  slow = 26,
+  ma = SMA(n = 9),
+  na.bridge = FALSE,
+  ...
+)
+```
+
+In this specific case the function has three different `n` - the
+underlying function were discarding `n = 9` while keeping the MAType.
+The new call is given as:
+
+``` r
+
+absolute_price_oscillator(
+    x,
+    cols,
+    fastPeriod = 12,
+    slowPeriod = 26,
+    maType = 0,
+    na.bridge = FALSE,
+    ...
+) 
+```
+
+In this call the role of each argument is *should* be clearer than
+before.
+
 ### bug-fixes
+
+- ***CCI:** Incorrect charting*—The indicator were incorrectly
+  classified as a main chart indicator—
+
+- ***One-dimensional indicators:** incorrect return
+  \<class\>*—Indicators that returns a one-dimensional indicator (MA,
+  RSI, etc.) were returning a \<matrix\> or \<data.frame\> instead of
+  \<numeric\>.
 
 ## version 0.9-2
 

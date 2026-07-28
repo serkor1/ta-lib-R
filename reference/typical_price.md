@@ -96,9 +96,9 @@ An object of same [class](https://rdrr.io/r/base/class.html) and
 ## See also
 
 Other Price Transform:
+[`average_deviation()`](https://serkor1.github.io/ta-lib-R/reference/average_deviation.md),
 [`average_price()`](https://serkor1.github.io/ta-lib-R/reference/average_price.md),
 [`median_price()`](https://serkor1.github.io/ta-lib-R/reference/median_price.md),
-[`midpoint_price()`](https://serkor1.github.io/ta-lib-R/reference/midpoint_price.md),
 [`weighted_close_price()`](https://serkor1.github.io/ta-lib-R/reference/weighted_close_price.md)
 
 ## Author
