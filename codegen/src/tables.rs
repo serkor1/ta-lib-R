@@ -285,7 +285,6 @@ pub const EXCLUDED_INDICATORS: &[&str] = &[
     "MA",
     "ROC",
     "ROCP",
-    "ROCR",
     "ROCR100",
     "LINEARREG",
     "LINEARREG_ANGLE",
