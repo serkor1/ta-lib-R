@@ -174,3 +174,18 @@ ${FUN}.numeric <- function(
 
 	x
 }
+
+#' @usage NULL
+${ALIAS}_lookback <- ${FUN}_lookback <- function(
+	x,
+	cols,
+	${ARGS}
+	na.bridge = FALSE,
+	...
+) {
+
+	.Call(
+		C_impl_ta_${ALIAS}_lookback${C_SIGNATURE_LOOKBACK}
+	)
+}
+

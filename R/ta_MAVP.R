@@ -27,9 +27,8 @@ variable_moving_average_period <- function(
 	maximumPeriod = 30,
 	maType = 0,
 	na.bridge = FALSE,
-	...
-) {
-	UseMethod("variable_moving_average_period")
+	...) {
+  UseMethod("variable_moving_average_period")
 }
 
 #' @export
@@ -51,8 +50,8 @@ variable_moving_average_period.default <- function(
 	maximumPeriod = 30,
 	maType = 0,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -80,7 +79,7 @@ variable_moving_average_period.default <- function(
 		as.double(periods),
 		as.integer(minimumPeriod),
 		as.integer(maximumPeriod),
-		as.maType(maType),
+		as.maType(maType),		
 		as.logical(na.bridge)
 	)
 
@@ -117,6 +116,7 @@ variable_moving_average_period.data.frame <- function(
 			...
 		)
 	)
+
 }
 
 #' @usage NULL
@@ -131,22 +131,22 @@ variable_moving_average_period.matrix <- function(
 	maximumPeriod = 30,
 	maType = 0,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	variable_moving_average_period.default(
-		x = x,
-		cols = cols,
-		periods = periods,
-		minimumPeriod = minimumPeriod,
-		maximumPeriod = maximumPeriod,
-		maType = maType,
-		na.bridge = na.bridge,
-		...
-	)
+			x = x,
+			cols = cols ,
+			periods = periods,
+			minimumPeriod = minimumPeriod,
+			maximumPeriod = maximumPeriod,
+			maType = maType,
+			na.bridge = na.bridge,
+			...
+		)
 }
 
 #' @usage NULL
-variable_moving_average_period_lookback <- function(
+MAVP_lookback <- variable_moving_average_period_lookback <- function(
 	x,
 	cols,
 	periods,
@@ -156,13 +156,16 @@ variable_moving_average_period_lookback <- function(
 	na.bridge = FALSE,
 	...
 ) {
+
 	.Call(
 		C_impl_ta_MAVP_lookback,
 		as.integer(minimumPeriod),
 		as.integer(maximumPeriod),
 		as.maType(maType)
 	)
+
 }
+
 #' @usage NULL
 #' @aliases variable_moving_average_period
 #'
@@ -175,8 +178,8 @@ variable_moving_average_period.numeric <- function(
 	maximumPeriod = 30,
 	maType = 0,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## warn if 'cols' have been
 	## passed just to make sure
 	## the user knows its not possible
@@ -218,8 +221,8 @@ variable_moving_average_period.plotly <- function(
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
-	...
-) {
+	...) {
+
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -247,9 +250,9 @@ variable_moving_average_period.plotly <- function(
 			names(constructed_series)
 		),
 		periods = periods,
-		minimumPeriod = minimumPeriod,
-		maximumPeriod = maximumPeriod,
-		maType = maType,
+			minimumPeriod = minimumPeriod,
+			maximumPeriod = maximumPeriod,
+			maType = maType,
 		na.bridge = TRUE
 	)
 
@@ -309,8 +312,8 @@ variable_moving_average_period.ggplot <- function(
 	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...
-) {
+	...) {
+
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -337,9 +340,9 @@ variable_moving_average_period.ggplot <- function(
 			names(constructed_series)
 		),
 		periods = periods,
-		minimumPeriod = minimumPeriod,
-		maximumPeriod = maximumPeriod,
-		maType = maType,
+			minimumPeriod = minimumPeriod,
+			maximumPeriod = maximumPeriod,
+			maType = maType,
 		na.bridge = TRUE
 	)
 

@@ -16,9 +16,8 @@ rolling_variance <- function(
 	x,
 	timePeriod = 5,
 	deviations = 1,
-	na.bridge = FALSE
-) {
-	UseMethod("rolling_variance")
+	na.bridge = FALSE, ...) {
+  UseMethod("rolling_variance")
 }
 
 #' @export
@@ -36,8 +35,8 @@ rolling_variance.default <- function(
 	x,
 	timePeriod = 5,
 	deviations = 1,
-	na.bridge = FALSE
-) {
+	na.bridge = FALSE, ...) {
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -67,14 +66,14 @@ rolling_variance.numeric <- function(
 	x,
 	timePeriod = 5,
 	deviations = 1,
-	na.bridge = FALSE
-) {
+	na.bridge = FALSE, ...) {
+
 	## calculate indicator and
 	## return as data.frame
 	x <- rolling_variance.default(
 		x = x,
 		timePeriod = timePeriod,
-		deviations = deviations,
+			deviations = deviations,
 		na.bridge = na.bridge
 	)
 
@@ -85,4 +84,18 @@ rolling_variance.numeric <- function(
 
 	## return indicator
 	x
+}
+
+#' @usage NULL
+VAR_lookback <- rolling_variance_lookback <- function(
+	x,timePeriod = 5,
+	deviations = 1,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_VAR_lookback,
+		as.integer(timePeriod),
+		as.double(deviations)
+	)
 }

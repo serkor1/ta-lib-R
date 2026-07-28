@@ -28,9 +28,8 @@ evening_doji_star <- function(
 	cols,
 	penetration = 0.3,
 	na.bridge = FALSE,
-	...
-) {
-	UseMethod("evening_doji_star")
+	...) {
+  UseMethod("evening_doji_star")
 }
 
 #' @export
@@ -49,8 +48,8 @@ evening_doji_star.default <- function(
 	cols,
 	penetration = 0.3,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## get candlestick pattern
 	## options
 	##
@@ -73,7 +72,7 @@ evening_doji_star.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~ open + high + low + close,
+		default_formula = ~open + high + low + close,
 		data = x,
 		...
 	)
@@ -88,10 +87,10 @@ evening_doji_star.default <- function(
 		.Call(
 			C_impl_ta_CDLEVENINGDOJISTAR,
 			constructed_series[[1]],
-			constructed_series[[2]],
-			constructed_series[[3]],
-			constructed_series[[4]],
-			as.double(penetration),
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
+		as.double(penetration),
 			normalize,
 			as.logical(na.bridge)
 		)
@@ -127,6 +126,7 @@ evening_doji_star.data.frame <- function(
 			...
 		)
 	)
+
 }
 
 #' @usage NULL
@@ -138,14 +138,27 @@ evening_doji_star.matrix <- function(
 	cols,
 	penetration = 0.3,
 	na.bridge = FALSE,
+	...) {
+
+	evening_doji_star.default(
+			x = x,
+			cols = cols ,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
+}
+
+#' @usage NULL
+CDLEVENINGDOJISTAR_lookback <- evening_doji_star_lookback <- function(
+	x,
+	cols,penetration = 0.3,
+	na.bridge = FALSE,
 	...
 ) {
-	evening_doji_star.default(
-		x = x,
-		cols = cols,
-		penetration = penetration,
-		na.bridge = na.bridge,
-		...
+	.Call(
+		C_impl_ta_CDLEVENINGDOJISTAR_lookback,
+		as.double(penetration)
 	)
 }
 
@@ -158,8 +171,8 @@ evening_doji_star.plotly <- function(
 	cols,
 	penetration = 0.3,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -175,7 +188,7 @@ evening_doji_star.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		default_formula = ~open + high + low + close,
 		...
 	)
 
@@ -219,8 +232,8 @@ evening_doji_star.ggplot <- function(
 	cols,
 	penetration = 0.3,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -235,7 +248,7 @@ evening_doji_star.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		default_formula = ~open + high + low + close,
 		...
 	)
 

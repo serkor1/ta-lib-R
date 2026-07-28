@@ -119,7 +119,7 @@ ${FUN}.matrix <- function(
 }
 
 #' @usage NULL
-${FUN}_lookback <- function(
+${ALIAS}_lookback <- ${FUN}_lookback <- function(
 	x,
 	cols,
 	${ARGS}

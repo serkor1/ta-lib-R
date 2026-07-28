@@ -19,9 +19,8 @@ midpoint_price <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...
-) {
-	UseMethod("midpoint_price")
+	...) {
+  UseMethod("midpoint_price")
 }
 
 #' @export
@@ -40,8 +39,8 @@ midpoint_price.default <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -52,7 +51,7 @@ midpoint_price.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~ high + low,
+		default_formula = ~high + low,
 		data = x,
 		...
 	)
@@ -67,7 +66,7 @@ midpoint_price.default <- function(
 		C_impl_ta_MIDPRICE,
 		constructed_series[[1]],
 		constructed_series[[2]],
-		as.integer(timePeriod),
+		as.integer(timePeriod),		
 		as.logical(na.bridge)
 	)
 
@@ -98,6 +97,7 @@ midpoint_price.data.frame <- function(
 			...
 		)
 	)
+
 }
 
 #' @usage NULL
@@ -109,30 +109,33 @@ midpoint_price.matrix <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	midpoint_price.default(
-		x = x,
-		cols = cols,
-		timePeriod = timePeriod,
-		na.bridge = na.bridge,
-		...
-	)
+			x = x,
+			cols = cols ,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
 }
 
 #' @usage NULL
-midpoint_price_lookback <- function(
+MIDPRICE_lookback <- midpoint_price_lookback <- function(
 	x,
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
+
 	.Call(
 		C_impl_ta_MIDPRICE_lookback,
 		as.integer(timePeriod)
 	)
+
 }
+
 #' @usage NULL
 #' @aliases midpoint_price
 #'
@@ -144,8 +147,8 @@ midpoint_price.plotly <- function(
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
-	...
-) {
+	...) {
+
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -161,7 +164,7 @@ midpoint_price.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low,
+		default_formula = ~high + low,
 		...
 	)
 
@@ -224,8 +227,8 @@ midpoint_price.ggplot <- function(
 	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...
-) {
+	...) {
+
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -240,7 +243,7 @@ midpoint_price.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low,
+		default_formula = ~high + low,
 		...
 	)
 

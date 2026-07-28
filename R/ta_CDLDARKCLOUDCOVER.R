@@ -28,9 +28,8 @@ dark_cloud_cover <- function(
 	cols,
 	penetration = 0.5,
 	na.bridge = FALSE,
-	...
-) {
-	UseMethod("dark_cloud_cover")
+	...) {
+  UseMethod("dark_cloud_cover")
 }
 
 #' @export
@@ -49,8 +48,8 @@ dark_cloud_cover.default <- function(
 	cols,
 	penetration = 0.5,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## get candlestick pattern
 	## options
 	##
@@ -73,7 +72,7 @@ dark_cloud_cover.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~ open + high + low + close,
+		default_formula = ~open + high + low + close,
 		data = x,
 		...
 	)
@@ -88,10 +87,10 @@ dark_cloud_cover.default <- function(
 		.Call(
 			C_impl_ta_CDLDARKCLOUDCOVER,
 			constructed_series[[1]],
-			constructed_series[[2]],
-			constructed_series[[3]],
-			constructed_series[[4]],
-			as.double(penetration),
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
+		as.double(penetration),
 			normalize,
 			as.logical(na.bridge)
 		)
@@ -127,6 +126,7 @@ dark_cloud_cover.data.frame <- function(
 			...
 		)
 	)
+
 }
 
 #' @usage NULL
@@ -138,14 +138,27 @@ dark_cloud_cover.matrix <- function(
 	cols,
 	penetration = 0.5,
 	na.bridge = FALSE,
+	...) {
+
+	dark_cloud_cover.default(
+			x = x,
+			cols = cols ,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
+}
+
+#' @usage NULL
+CDLDARKCLOUDCOVER_lookback <- dark_cloud_cover_lookback <- function(
+	x,
+	cols,penetration = 0.5,
+	na.bridge = FALSE,
 	...
 ) {
-	dark_cloud_cover.default(
-		x = x,
-		cols = cols,
-		penetration = penetration,
-		na.bridge = na.bridge,
-		...
+	.Call(
+		C_impl_ta_CDLDARKCLOUDCOVER_lookback,
+		as.double(penetration)
 	)
 }
 
@@ -158,8 +171,8 @@ dark_cloud_cover.plotly <- function(
 	cols,
 	penetration = 0.5,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -175,7 +188,7 @@ dark_cloud_cover.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		default_formula = ~open + high + low + close,
 		...
 	)
 
@@ -219,8 +232,8 @@ dark_cloud_cover.ggplot <- function(
 	cols,
 	penetration = 0.5,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -235,7 +248,7 @@ dark_cloud_cover.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		default_formula = ~open + high + low + close,
 		...
 	)
 

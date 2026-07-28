@@ -18,9 +18,8 @@ chaikin_accumulation_distribution_line <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
-	UseMethod("chaikin_accumulation_distribution_line")
+	...) {
+  UseMethod("chaikin_accumulation_distribution_line")
 }
 
 #' @export
@@ -38,8 +37,8 @@ chaikin_accumulation_distribution_line.default <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -50,7 +49,7 @@ chaikin_accumulation_distribution_line.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~ high + low + close + volume,
+		default_formula = ~high + low + close + volume,
 		data = x,
 		...
 	)
@@ -66,7 +65,7 @@ chaikin_accumulation_distribution_line.default <- function(
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		constructed_series[[4]],
+		constructed_series[[4]],		
 		as.logical(na.bridge)
 	)
 
@@ -95,6 +94,7 @@ chaikin_accumulation_distribution_line.data.frame <- function(
 			...
 		)
 	)
+
 }
 
 #' @usage NULL
@@ -105,27 +105,30 @@ chaikin_accumulation_distribution_line.matrix <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	chaikin_accumulation_distribution_line.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
-	)
+			x = x,
+			cols = cols ,
+			na.bridge = na.bridge,
+			...
+		)
 }
 
 #' @usage NULL
-chaikin_accumulation_distribution_line_lookback <- function(
+AD_lookback <- chaikin_accumulation_distribution_line_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
 	...
 ) {
+
 	.Call(
 		C_impl_ta_AD_lookback
 	)
+
 }
+
 #' @usage NULL
 #' @aliases chaikin_accumulation_distribution_line
 #'
@@ -137,8 +140,8 @@ chaikin_accumulation_distribution_line.plotly <- function(
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
-	...
-) {
+	...) {
+
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -154,7 +157,7 @@ chaikin_accumulation_distribution_line.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close + volume,
+		default_formula = ~high + low + close + volume,
 		...
 	)
 
@@ -201,13 +204,9 @@ chaikin_accumulation_distribution_line.plotly <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {
-				"Chaikin A/D Line"
-			} else {
-				title
-			}
+			title = if (missing(title)) {"Chaikin A/D Line"} else {title}
 		),
-		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		data = constructed_indicator[,values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract
 	)
 
@@ -228,8 +227,8 @@ chaikin_accumulation_distribution_line.ggplot <- function(
 	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...
-) {
+	...) {
+
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -244,7 +243,7 @@ chaikin_accumulation_distribution_line.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close + volume,
+		default_formula = ~high + low + close + volume,
 		...
 	)
 
@@ -291,13 +290,9 @@ chaikin_accumulation_distribution_line.ggplot <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {
-				"Chaikin A/D Line"
-			} else {
-				title
-			}
+			title = if (missing(title)) {"Chaikin A/D Line"} else {title}
 		),
-		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		data = constructed_indicator[,values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract,
 		name = get0(x = "name", ifnotfound = NULL)
 	)

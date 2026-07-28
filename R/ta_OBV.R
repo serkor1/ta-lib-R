@@ -18,9 +18,8 @@ on_balance_volume <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
-	UseMethod("on_balance_volume")
+	...) {
+  UseMethod("on_balance_volume")
 }
 
 #' @export
@@ -38,8 +37,8 @@ on_balance_volume.default <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -50,7 +49,7 @@ on_balance_volume.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~ close + volume,
+		default_formula = ~close + volume,
 		data = x,
 		...
 	)
@@ -64,7 +63,7 @@ on_balance_volume.default <- function(
 	x <- .Call(
 		C_impl_ta_OBV,
 		constructed_series[[1]],
-		constructed_series[[2]],
+		constructed_series[[2]],		
 		as.logical(na.bridge)
 	)
 
@@ -93,6 +92,7 @@ on_balance_volume.data.frame <- function(
 			...
 		)
 	)
+
 }
 
 #' @usage NULL
@@ -103,27 +103,30 @@ on_balance_volume.matrix <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	on_balance_volume.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
-	)
+			x = x,
+			cols = cols ,
+			na.bridge = na.bridge,
+			...
+		)
 }
 
 #' @usage NULL
-on_balance_volume_lookback <- function(
+OBV_lookback <- on_balance_volume_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
 	...
 ) {
+
 	.Call(
 		C_impl_ta_OBV_lookback
 	)
+
 }
+
 #' @usage NULL
 #' @aliases on_balance_volume
 #'
@@ -135,8 +138,8 @@ on_balance_volume.plotly <- function(
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
-	...
-) {
+	...) {
+
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -152,7 +155,7 @@ on_balance_volume.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ close + volume,
+		default_formula = ~close + volume,
 		...
 	)
 
@@ -196,13 +199,9 @@ on_balance_volume.plotly <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {
-				"On Balance Volume"
-			} else {
-				title
-			}
+			title = if (missing(title)) {"On Balance Volume"} else {title}
 		),
-		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		data = constructed_indicator[,values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract
 	)
 
@@ -223,8 +222,8 @@ on_balance_volume.ggplot <- function(
 	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...
-) {
+	...) {
+
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -239,7 +238,7 @@ on_balance_volume.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ close + volume,
+		default_formula = ~close + volume,
 		...
 	)
 
@@ -286,13 +285,9 @@ on_balance_volume.ggplot <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {
-				"On Balance Volume"
-			} else {
-				title
-			}
+			title = if (missing(title)) {"On Balance Volume"} else {title}
 		),
-		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		data = constructed_indicator[,values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract,
 		name = get0(x = "name", ifnotfound = NULL)
 	)

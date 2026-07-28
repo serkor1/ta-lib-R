@@ -15,7 +15,7 @@ ${PARAM_DOCS}
 ${FUN} <- function(
 	${SERIES}
 	${ARGS}
-	na.bridge = FALSE) {
+	na.bridge = FALSE, ...) {
   UseMethod("${FUN}")
 }
 
@@ -33,14 +33,14 @@ ${ALIAS} <- ${FUN}
 ${FUN}.default <- function(
 	${SERIES}
 	${ARGS}
-	na.bridge = FALSE) {
+	na.bridge = FALSE, ...) {
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_${ALIAS},
 		## splice:call:start
-		${C_NUMERIC},
+		${C_NUMERIC},,,
 		## splice:call:end
 		as.logical(na.bridge)
 	)
@@ -61,7 +61,7 @@ ${FUN}.default <- function(
 ${FUN}.numeric <- function(
 	${SERIES}
 	${ARGS}
-	na.bridge = FALSE) {
+	na.bridge = FALSE, ...) {
 
 	## calculate indicator and
 	## return as data.frame
@@ -78,4 +78,16 @@ ${FUN}.numeric <- function(
 
 	## return indicator
 	x
+}
+
+#' @usage NULL
+${ALIAS}_lookback <- ${FUN}_lookback <- function(
+	x,${ARGS}
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_${ALIAS}_lookback${C_SIGNATURE_LOOKBACK}
+	)
+	
 }

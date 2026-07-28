@@ -18,9 +18,8 @@ dominant_cycle_phase <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
-	UseMethod("dominant_cycle_phase")
+	...) {
+  UseMethod("dominant_cycle_phase")
 }
 
 #' @export
@@ -38,8 +37,8 @@ dominant_cycle_phase.default <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -63,7 +62,7 @@ dominant_cycle_phase.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_HT_DCPHASE,
-		constructed_series[[1]],
+		constructed_series[[1]],		
 		as.logical(na.bridge)
 	)
 
@@ -92,6 +91,7 @@ dominant_cycle_phase.data.frame <- function(
 			...
 		)
 	)
+
 }
 
 #' @usage NULL
@@ -102,27 +102,30 @@ dominant_cycle_phase.matrix <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	dominant_cycle_phase.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
-	)
+			x = x,
+			cols = cols ,
+			na.bridge = na.bridge,
+			...
+		)
 }
 
 #' @usage NULL
-dominant_cycle_phase_lookback <- function(
+HT_DCPHASE_lookback <- dominant_cycle_phase_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
 	...
 ) {
+
 	.Call(
 		C_impl_ta_HT_DCPHASE_lookback
 	)
+
 }
+
 #' @usage NULL
 #' @aliases dominant_cycle_phase
 #'
@@ -131,8 +134,8 @@ dominant_cycle_phase.numeric <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## warn if 'cols' have been
 	## passed just to make sure
 	## the user knows its not possible
@@ -167,8 +170,8 @@ dominant_cycle_phase.plotly <- function(
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
-	...
-) {
+	...) {
+
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -240,13 +243,9 @@ dominant_cycle_phase.plotly <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {
-				"Hilbert Transform - Dominant Cycle Phase"
-			} else {
-				title
-			}
+			title = if (missing(title)) {"Hilbert Transform - Dominant Cycle Phase"} else {title}
 		),
-		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		data = constructed_indicator[,values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract
 	)
 
@@ -267,8 +266,8 @@ dominant_cycle_phase.ggplot <- function(
 	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...
-) {
+	...) {
+
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -330,13 +329,9 @@ dominant_cycle_phase.ggplot <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {
-				"Hilbert Transform - Dominant Cycle Phase"
-			} else {
-				title
-			}
+			title = if (missing(title)) {"Hilbert Transform - Dominant Cycle Phase"} else {title}
 		),
-		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		data = constructed_indicator[,values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract,
 		name = get0(x = "name", ifnotfound = NULL)
 	)

@@ -18,9 +18,8 @@ balance_of_power <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
-	UseMethod("balance_of_power")
+	...) {
+  UseMethod("balance_of_power")
 }
 
 #' @export
@@ -38,8 +37,8 @@ balance_of_power.default <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -50,7 +49,7 @@ balance_of_power.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~ open + high + low + close,
+		default_formula = ~open + high + low + close,
 		data = x,
 		...
 	)
@@ -66,7 +65,7 @@ balance_of_power.default <- function(
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		constructed_series[[4]],
+		constructed_series[[4]],		
 		as.logical(na.bridge)
 	)
 
@@ -95,6 +94,7 @@ balance_of_power.data.frame <- function(
 			...
 		)
 	)
+
 }
 
 #' @usage NULL
@@ -105,27 +105,30 @@ balance_of_power.matrix <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	balance_of_power.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
-	)
+			x = x,
+			cols = cols ,
+			na.bridge = na.bridge,
+			...
+		)
 }
 
 #' @usage NULL
-balance_of_power_lookback <- function(
+BOP_lookback <- balance_of_power_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
 	...
 ) {
+
 	.Call(
 		C_impl_ta_BOP_lookback
 	)
+
 }
+
 #' @usage NULL
 #' @aliases balance_of_power
 #'
@@ -137,8 +140,8 @@ balance_of_power.plotly <- function(
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
-	...
-) {
+	...) {
+
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -154,7 +157,7 @@ balance_of_power.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		default_formula = ~open + high + low + close,
 		...
 	)
 
@@ -212,13 +215,9 @@ balance_of_power.plotly <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {
-				"Balance Of Power"
-			} else {
-				title
-			}
+			title = if (missing(title)) {"Balance Of Power"} else {title}
 		),
-		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		data = constructed_indicator[,values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract
 	)
 
@@ -239,8 +238,8 @@ balance_of_power.ggplot <- function(
 	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...
-) {
+	...) {
+
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -255,7 +254,7 @@ balance_of_power.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		default_formula = ~open + high + low + close,
 		...
 	)
 
@@ -304,13 +303,9 @@ balance_of_power.ggplot <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {
-				"Balance Of Power"
-			} else {
-				title
-			}
+			title = if (missing(title)) {"Balance Of Power"} else {title}
 		),
-		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		data = constructed_indicator[,values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract,
 		name = get0(x = "name", ifnotfound = NULL)
 	)

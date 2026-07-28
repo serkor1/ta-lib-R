@@ -19,9 +19,8 @@ plus_directional_movement <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...
-) {
-	UseMethod("plus_directional_movement")
+	...) {
+  UseMethod("plus_directional_movement")
 }
 
 #' @export
@@ -40,8 +39,8 @@ plus_directional_movement.default <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -52,7 +51,7 @@ plus_directional_movement.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~ high + low,
+		default_formula = ~high + low,
 		data = x,
 		...
 	)
@@ -67,7 +66,7 @@ plus_directional_movement.default <- function(
 		C_impl_ta_PLUS_DM,
 		constructed_series[[1]],
 		constructed_series[[2]],
-		as.integer(timePeriod),
+		as.integer(timePeriod),		
 		as.logical(na.bridge)
 	)
 
@@ -98,6 +97,7 @@ plus_directional_movement.data.frame <- function(
 			...
 		)
 	)
+
 }
 
 #' @usage NULL
@@ -109,30 +109,33 @@ plus_directional_movement.matrix <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	plus_directional_movement.default(
-		x = x,
-		cols = cols,
-		timePeriod = timePeriod,
-		na.bridge = na.bridge,
-		...
-	)
+			x = x,
+			cols = cols ,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
 }
 
 #' @usage NULL
-plus_directional_movement_lookback <- function(
+PLUS_DM_lookback <- plus_directional_movement_lookback <- function(
 	x,
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
+
 	.Call(
 		C_impl_ta_PLUS_DM_lookback,
 		as.integer(timePeriod)
 	)
+
 }
+
 #' @usage NULL
 #' @aliases plus_directional_movement
 #'
@@ -145,8 +148,8 @@ plus_directional_movement.plotly <- function(
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
-	...
-) {
+	...) {
+
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -162,7 +165,7 @@ plus_directional_movement.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low,
+		default_formula = ~high + low,
 		...
 	)
 
@@ -210,13 +213,9 @@ plus_directional_movement.plotly <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {
-				"Plus Directional Movement"
-			} else {
-				title
-			}
+			title = if (missing(title)) {"Plus Directional Movement"} else {title}
 		),
-		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		data = constructed_indicator[,values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract
 	)
 
@@ -238,8 +237,8 @@ plus_directional_movement.ggplot <- function(
 	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...
-) {
+	...) {
+
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -254,7 +253,7 @@ plus_directional_movement.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low,
+		default_formula = ~high + low,
 		...
 	)
 
@@ -302,13 +301,9 @@ plus_directional_movement.ggplot <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {
-				"Plus Directional Movement"
-			} else {
-				title
-			}
+			title = if (missing(title)) {"Plus Directional Movement"} else {title}
 		),
-		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		data = constructed_indicator[,values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract,
 		name = get0(x = "name", ifnotfound = NULL)
 	)

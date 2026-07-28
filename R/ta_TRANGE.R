@@ -18,9 +18,8 @@ true_range <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
-	UseMethod("true_range")
+	...) {
+  UseMethod("true_range")
 }
 
 #' @export
@@ -38,8 +37,8 @@ true_range.default <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -50,7 +49,7 @@ true_range.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~ high + low + close,
+		default_formula = ~high + low + close,
 		data = x,
 		...
 	)
@@ -65,7 +64,7 @@ true_range.default <- function(
 		C_impl_ta_TRANGE,
 		constructed_series[[1]],
 		constructed_series[[2]],
-		constructed_series[[3]],
+		constructed_series[[3]],		
 		as.logical(na.bridge)
 	)
 
@@ -94,6 +93,7 @@ true_range.data.frame <- function(
 			...
 		)
 	)
+
 }
 
 #' @usage NULL
@@ -104,27 +104,30 @@ true_range.matrix <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	true_range.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
-	)
+			x = x,
+			cols = cols ,
+			na.bridge = na.bridge,
+			...
+		)
 }
 
 #' @usage NULL
-true_range_lookback <- function(
+TRANGE_lookback <- true_range_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
 	...
 ) {
+
 	.Call(
 		C_impl_ta_TRANGE_lookback
 	)
+
 }
+
 #' @usage NULL
 #' @aliases true_range
 #'
@@ -136,8 +139,8 @@ true_range.plotly <- function(
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
-	...
-) {
+	...) {
+
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -153,7 +156,7 @@ true_range.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		default_formula = ~high + low + close,
 		...
 	)
 
@@ -200,13 +203,9 @@ true_range.plotly <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {
-				"True Range"
-			} else {
-				title
-			}
+			title = if (missing(title)) {"True Range"} else {title}
 		),
-		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		data = constructed_indicator[,values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract
 	)
 
@@ -227,8 +226,8 @@ true_range.ggplot <- function(
 	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...
-) {
+	...) {
+
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -243,7 +242,7 @@ true_range.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		default_formula = ~high + low + close,
 		...
 	)
 
@@ -290,13 +289,9 @@ true_range.ggplot <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {
-				"True Range"
-			} else {
-				title
-			}
+			title = if (missing(title)) {"True Range"} else {title}
 		),
-		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		data = constructed_indicator[,values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract,
 		name = get0(x = "name", ifnotfound = NULL)
 	)
