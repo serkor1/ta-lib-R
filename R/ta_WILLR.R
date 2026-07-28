@@ -19,9 +19,8 @@ williams_oscillator <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...
-) {
-	UseMethod("williams_oscillator")
+	...) {
+  UseMethod("williams_oscillator")
 }
 
 #' @export
@@ -40,8 +39,8 @@ williams_oscillator.default <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -52,7 +51,7 @@ williams_oscillator.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~ high + low + close,
+		default_formula = ~high + low + close,
 		data = x,
 		...
 	)
@@ -68,7 +67,7 @@ williams_oscillator.default <- function(
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		as.integer(timePeriod),
+		as.integer(timePeriod),		
 		as.logical(na.bridge)
 	)
 
@@ -99,6 +98,7 @@ williams_oscillator.data.frame <- function(
 			...
 		)
 	)
+
 }
 
 #' @usage NULL
@@ -110,30 +110,33 @@ williams_oscillator.matrix <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	williams_oscillator.default(
-		x = x,
-		cols = cols,
-		timePeriod = timePeriod,
-		na.bridge = na.bridge,
-		...
-	)
+			x = x,
+			cols = cols ,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
 }
 
 #' @usage NULL
-williams_oscillator_lookback <- function(
+WILLR_lookback <- williams_oscillator_lookback <- function(
 	x,
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
+
 	.Call(
 		C_impl_ta_WILLR_lookback,
 		as.integer(timePeriod)
 	)
+
 }
+
 #' @usage NULL
 #' @aliases williams_oscillator
 #'
@@ -148,8 +151,8 @@ williams_oscillator.plotly <- function(
 	upper_bound = -80,
 	## splice:optional-plotly:end
 	title,
-	...
-) {
+	...) {
+
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -165,7 +168,7 @@ williams_oscillator.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		default_formula = ~high + low + close,
 		...
 	)
 
@@ -219,13 +222,9 @@ williams_oscillator.plotly <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {
-				"Williams&apos; %R"
-			} else {
-				title
-			}
+			title = if (missing(title)) {"Williams&apos; %R"} else {title}
 		),
-		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		data = constructed_indicator[,values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract
 	)
 
@@ -247,8 +246,8 @@ williams_oscillator.ggplot <- function(
 	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...
-) {
+	...) {
+
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -263,7 +262,7 @@ williams_oscillator.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		default_formula = ~high + low + close,
 		...
 	)
 
@@ -315,13 +314,9 @@ williams_oscillator.ggplot <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {
-				"Williams&apos; %R"
-			} else {
-				title
-			}
+			title = if (missing(title)) {"Williams&apos; %R"} else {title}
 		),
-		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		data = constructed_indicator[,values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract,
 		name = get0(x = "name", ifnotfound = NULL)
 	)

@@ -7,10 +7,11 @@
 ## test that the function runs without
 ## any conditions
 testthat::test_that(desc = 'Runs without *any* conditions', code = {
-	output <- testthat::expect_no_condition(
+
+    output <- testthat::expect_no_condition(
 		{
 			rolling_maximum(
-				x = SPY[, 1]
+				x = SPY[,1]
 			)
 		}
 	)
@@ -19,27 +20,46 @@ testthat::test_that(desc = 'Runs without *any* conditions', code = {
 ## test that the length of the input
 ## matches the output
 testthat::test_that(desc = 'Length in, length out', code = {
-	testthat::expect_equal(
+    testthat::expect_equal(
 		object = length(
-			rolling_maximum(
-				x = SPY[, 1]
-			)
+		rolling_maximum(
+			x = SPY[,1]
+		)
 		),
-		expected = length(SPY[, 1])
+		expected = length(SPY[,1])
 	)
 })
 
 ## test that the output is a <double> vector
 testthat::test_that(desc = 'Output type', code = {
-	output <- rolling_maximum(
-		x = SPY[, 1]
-	)
 
-	testthat::expect_true(
+output <- rolling_maximum(
+			x = SPY[,1]
+		)
+
+testthat::expect_true(
 		typeof(output) == "double" || typeof(output) == "integer"
 	)
 
 	testthat::expect_true(
 		is.null(dim(output))
 	)
+
 })
+
+## test the output's attribute "lookback" matches
+## the lookback()
+testthat::test_that(desc = 'Lookback equivalence', code = {
+
+output <- attr(
+	rolling_maximum(x = SPY[,1]),
+	"lookback"
+)
+
+testthat::expect_equal(
+		object = output,
+		expected = lookback(FUN = rolling_maximum, x = SPY[,1])
+	)
+
+}
+)

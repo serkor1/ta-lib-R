@@ -28,8 +28,8 @@ mesa_adaptive_moving_average <- function(
 	fastLimit = 0.5,
 	slowLimit = 0.05,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## if 'x' is missing mesa_adaptive_moving_average functions
 	## as a Moving Average Specification
 	if (missing(x)) {
@@ -37,21 +37,9 @@ mesa_adaptive_moving_average <- function(
 		## from call
 		x <- structure(
 			list(
-				timePeriod = if (missing(timePeriod)) {
-					30L
-				} else {
-					as.integer(timePeriod)
-				},
-				fastLimit = if (missing(fastLimit)) {
-					0.5
-				} else {
-					as.double(fastLimit)
-				},
-				slowLimit = if (missing(slowLimit)) {
-					0.05
-				} else {
-					as.double(slowLimit)
-				},
+				timePeriod = if (missing(timePeriod)) 30L else as.integer(timePeriod),
+				fastLimit = if (missing(fastLimit)) 0.5 else as.double(fastLimit),
+				slowLimit = if (missing(slowLimit)) 0.05 else as.double(slowLimit),
 				maType = 7L
 			),
 			class = "maType"
@@ -81,8 +69,8 @@ mesa_adaptive_moving_average.default <- function(
 	fastLimit = 0.5,
 	slowLimit = 0.05,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -143,6 +131,7 @@ mesa_adaptive_moving_average.data.frame <- function(
 			...
 		)
 	)
+
 }
 
 #' @usage NULL
@@ -156,17 +145,17 @@ mesa_adaptive_moving_average.matrix <- function(
 	fastLimit = 0.5,
 	slowLimit = 0.05,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	mesa_adaptive_moving_average.default(
-		x = x,
-		cols = cols,
-		timePeriod = timePeriod,
-		fastLimit = fastLimit,
-		slowLimit = slowLimit,
-		na.bridge = na.bridge,
-		...
-	)
+			x = x,
+			cols = cols ,
+			timePeriod = timePeriod,
+			fastLimit = fastLimit,
+			slowLimit = slowLimit,
+			na.bridge = na.bridge,
+			...
+		)
 }
 
 #' @usage NULL
@@ -180,8 +169,8 @@ mesa_adaptive_moving_average.numeric <- function(
 	fastLimit = 0.5,
 	slowLimit = 0.05,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## warn if 'cols' have been
 	## passed just to make sure
 	## the user knows its not possible
@@ -208,6 +197,25 @@ mesa_adaptive_moving_average.numeric <- function(
 }
 
 #' @usage NULL
+MAMA_lookback <- mesa_adaptive_moving_average_lookback <- function(
+	x,
+	cols,
+	timePeriod = 30,
+	fastLimit = 0.5,
+	slowLimit = 0.05,
+	na.bridge = FALSE,
+	...
+) {
+
+	.Call(
+		C_impl_ta_MAMA_lookback,
+		as.double(fastLimit),
+		as.double(slowLimit)
+	)
+}
+
+
+#' @usage NULL
 #' @aliases mesa_adaptive_moving_average
 #'
 #' @export
@@ -218,8 +226,8 @@ mesa_adaptive_moving_average.plotly <- function(
 	fastLimit = 0.5,
 	slowLimit = 0.05,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -247,8 +255,8 @@ mesa_adaptive_moving_average.plotly <- function(
 			names(constructed_series)
 		),
 		timePeriod = timePeriod,
-		fastLimit = fastLimit,
-		slowLimit = slowLimit,
+			fastLimit = fastLimit,
+			slowLimit = slowLimit,
 		na.bridge = TRUE
 	)
 
@@ -263,9 +271,7 @@ mesa_adaptive_moving_average.plotly <- function(
 		init = state[["main"]],
 		traces = list(
 			list(
-				y = ~ constructed_indicator[["MAMA"]][
-					-(1:attr(constructed_indicator, "lookback", TRUE))
-				],
+				y = ~constructed_indicator[["MAMA"]][-(1:attr(constructed_indicator, "lookback", TRUE))],
 				legendgroup = "MovingAverage",
 				legendgrouptitle = list(
 					text = "Moving Averages"
@@ -292,8 +298,8 @@ mesa_adaptive_moving_average.ggplot <- function(
 	fastLimit = 0.5,
 	slowLimit = 0.05,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -320,8 +326,8 @@ mesa_adaptive_moving_average.ggplot <- function(
 			names(constructed_series)
 		),
 		timePeriod = timePeriod,
-		fastLimit = fastLimit,
-		slowLimit = slowLimit,
+			fastLimit = fastLimit,
+			slowLimit = slowLimit,
 		na.bridge = TRUE
 	)
 

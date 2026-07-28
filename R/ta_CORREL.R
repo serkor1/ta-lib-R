@@ -16,9 +16,8 @@ rolling_correlation <- function(
 	x,
 	y,
 	timePeriod = 30,
-	na.bridge = FALSE
-) {
-	UseMethod("rolling_correlation")
+	na.bridge = FALSE, ...) {
+  UseMethod("rolling_correlation")
 }
 
 #' @export
@@ -36,8 +35,8 @@ rolling_correlation.default <- function(
 	x,
 	y,
 	timePeriod = 30,
-	na.bridge = FALSE
-) {
+	na.bridge = FALSE, ...) {
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -67,8 +66,8 @@ rolling_correlation.numeric <- function(
 	x,
 	y,
 	timePeriod = 30,
-	na.bridge = FALSE
-) {
+	na.bridge = FALSE, ...) {
+
 	## calculate indicator and
 	## return as data.frame
 	x <- rolling_correlation.default(
@@ -85,4 +84,16 @@ rolling_correlation.numeric <- function(
 
 	## return indicator
 	x
+}
+
+#' @usage NULL
+CORREL_lookback <- rolling_correlation_lookback <- function(
+	x,timePeriod = 30,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_CORREL_lookback,
+		as.integer(timePeriod)
+	)
 }

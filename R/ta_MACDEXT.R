@@ -29,9 +29,8 @@ extended_moving_average_convergence_divergence <- function(
 	signalPeriod = 9,
 	signalMa = 0,
 	na.bridge = FALSE,
-	...
-) {
-	UseMethod("extended_moving_average_convergence_divergence")
+	...) {
+  UseMethod("extended_moving_average_convergence_divergence")
 }
 
 #' @export
@@ -55,8 +54,8 @@ extended_moving_average_convergence_divergence.default <- function(
 	signalPeriod = 9,
 	signalMa = 0,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -86,7 +85,7 @@ extended_moving_average_convergence_divergence.default <- function(
 		as.integer(slowPeriod),
 		as.maType(slowMa),
 		as.integer(signalPeriod),
-		as.maType(signalMa),
+		as.maType(signalMa),		
 		as.logical(na.bridge)
 	)
 
@@ -127,6 +126,7 @@ extended_moving_average_convergence_divergence.data.frame <- function(
 			...
 		)
 	)
+
 }
 
 #' @usage NULL
@@ -143,24 +143,24 @@ extended_moving_average_convergence_divergence.matrix <- function(
 	signalPeriod = 9,
 	signalMa = 0,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	extended_moving_average_convergence_divergence.default(
-		x = x,
-		cols = cols,
-		fastPeriod = fastPeriod,
-		fastMa = fastMa,
-		slowPeriod = slowPeriod,
-		slowMa = slowMa,
-		signalPeriod = signalPeriod,
-		signalMa = signalMa,
-		na.bridge = na.bridge,
-		...
-	)
+			x = x,
+			cols = cols ,
+			fastPeriod = fastPeriod,
+			fastMa = fastMa,
+			slowPeriod = slowPeriod,
+			slowMa = slowMa,
+			signalPeriod = signalPeriod,
+			signalMa = signalMa,
+			na.bridge = na.bridge,
+			...
+		)
 }
 
 #' @usage NULL
-extended_moving_average_convergence_divergence_lookback <- function(
+MACDEXT_lookback <- extended_moving_average_convergence_divergence_lookback <- function(
 	x,
 	cols,
 	fastPeriod = 12,
@@ -172,6 +172,7 @@ extended_moving_average_convergence_divergence_lookback <- function(
 	na.bridge = FALSE,
 	...
 ) {
+
 	.Call(
 		C_impl_ta_MACDEXT_lookback,
 		as.integer(fastPeriod),
@@ -181,7 +182,9 @@ extended_moving_average_convergence_divergence_lookback <- function(
 		as.integer(signalPeriod),
 		as.maType(signalMa)
 	)
+
 }
+
 #' @usage NULL
 #' @aliases extended_moving_average_convergence_divergence
 #'
@@ -196,8 +199,8 @@ extended_moving_average_convergence_divergence.numeric <- function(
 	signalPeriod = 9,
 	signalMa = 0,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## warn if 'cols' have been
 	## passed just to make sure
 	## the user knows its not possible
@@ -244,8 +247,8 @@ extended_moving_average_convergence_divergence.plotly <- function(
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
-	...
-) {
+	...) {
+
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -273,11 +276,11 @@ extended_moving_average_convergence_divergence.plotly <- function(
 			names(constructed_series)
 		),
 		fastPeriod = fastPeriod,
-		fastMa = fastMa,
-		slowPeriod = slowPeriod,
-		slowMa = slowMa,
-		signalPeriod = signalPeriod,
-		signalMa = signalMa,
+			fastMa = fastMa,
+			slowPeriod = slowPeriod,
+			slowMa = slowMa,
+			signalPeriod = signalPeriod,
+			signalMa = signalMa,
 		na.bridge = TRUE
 	)
 
@@ -352,13 +355,9 @@ extended_moving_average_convergence_divergence.plotly <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {
-				"MACD with controllable MA type"
-			} else {
-				title
-			}
+			title = if (missing(title)) {"MACD with controllable MA type"} else {title}
 		),
-		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		data = constructed_indicator[,values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract
 	)
 
@@ -385,8 +384,8 @@ extended_moving_average_convergence_divergence.ggplot <- function(
 	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...
-) {
+	...) {
+
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -413,11 +412,11 @@ extended_moving_average_convergence_divergence.ggplot <- function(
 			names(constructed_series)
 		),
 		fastPeriod = fastPeriod,
-		fastMa = fastMa,
-		slowPeriod = slowPeriod,
-		slowMa = slowMa,
-		signalPeriod = signalPeriod,
-		signalMa = signalMa,
+			fastMa = fastMa,
+			slowPeriod = slowPeriod,
+			slowMa = slowMa,
+			signalPeriod = signalPeriod,
+			signalMa = signalMa,
 		na.bridge = TRUE
 	)
 
@@ -467,13 +466,9 @@ extended_moving_average_convergence_divergence.ggplot <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {
-				"MACD with controllable MA type"
-			} else {
-				title
-			}
+			title = if (missing(title)) {"MACD with controllable MA type"} else {title}
 		),
-		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		data = constructed_indicator[,values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract,
 		name = get0(x = "name", ifnotfound = NULL)
 	)

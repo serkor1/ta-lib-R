@@ -19,9 +19,8 @@ momentum <- function(
 	cols,
 	timePeriod = 10,
 	na.bridge = FALSE,
-	...
-) {
-	UseMethod("momentum")
+	...) {
+  UseMethod("momentum")
 }
 
 #' @export
@@ -40,8 +39,8 @@ momentum.default <- function(
 	cols,
 	timePeriod = 10,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -66,7 +65,7 @@ momentum.default <- function(
 	x <- .Call(
 		C_impl_ta_MOM,
 		constructed_series[[1]],
-		as.integer(timePeriod),
+		as.integer(timePeriod),		
 		as.logical(na.bridge)
 	)
 
@@ -97,6 +96,7 @@ momentum.data.frame <- function(
 			...
 		)
 	)
+
 }
 
 #' @usage NULL
@@ -108,30 +108,33 @@ momentum.matrix <- function(
 	cols,
 	timePeriod = 10,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	momentum.default(
-		x = x,
-		cols = cols,
-		timePeriod = timePeriod,
-		na.bridge = na.bridge,
-		...
-	)
+			x = x,
+			cols = cols ,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
 }
 
 #' @usage NULL
-momentum_lookback <- function(
+MOM_lookback <- momentum_lookback <- function(
 	x,
 	cols,
 	timePeriod = 10,
 	na.bridge = FALSE,
 	...
 ) {
+
 	.Call(
 		C_impl_ta_MOM_lookback,
 		as.integer(timePeriod)
 	)
+
 }
+
 #' @usage NULL
 #' @aliases momentum
 #'
@@ -141,8 +144,8 @@ momentum.numeric <- function(
 	cols,
 	timePeriod = 10,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## warn if 'cols' have been
 	## passed just to make sure
 	## the user knows its not possible
@@ -179,8 +182,8 @@ momentum.plotly <- function(
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
-	...
-) {
+	...) {
+
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -247,13 +250,9 @@ momentum.plotly <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {
-				"Momentum"
-			} else {
-				title
-			}
+			title = if (missing(title)) {"Momentum"} else {title}
 		),
-		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		data = constructed_indicator[,values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract
 	)
 
@@ -275,8 +274,8 @@ momentum.ggplot <- function(
 	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...
-) {
+	...) {
+
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -339,13 +338,9 @@ momentum.ggplot <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {
-				"Momentum"
-			} else {
-				title
-			}
+			title = if (missing(title)) {"Momentum"} else {title}
 		),
-		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		data = constructed_indicator[,values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract,
 		name = get0(x = "name", ifnotfound = NULL)
 	)

@@ -24,9 +24,8 @@ stochastic_relative_strength_index <- function(
 	fastDPeriod = 3,
 	fastDMa = 0,
 	na.bridge = FALSE,
-	...
-) {
-	UseMethod("stochastic_relative_strength_index")
+	...) {
+  UseMethod("stochastic_relative_strength_index")
 }
 
 #' @export
@@ -48,8 +47,8 @@ stochastic_relative_strength_index.default <- function(
 	fastDPeriod = 3,
 	fastDMa = 0,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -77,7 +76,7 @@ stochastic_relative_strength_index.default <- function(
 		as.integer(timePeriod),
 		as.integer(fastKPeriod),
 		as.integer(fastDPeriod),
-		as.maType(fastDMa),
+		as.maType(fastDMa),		
 		as.logical(na.bridge)
 	)
 
@@ -114,6 +113,7 @@ stochastic_relative_strength_index.data.frame <- function(
 			...
 		)
 	)
+
 }
 
 #' @usage NULL
@@ -128,22 +128,22 @@ stochastic_relative_strength_index.matrix <- function(
 	fastDPeriod = 3,
 	fastDMa = 0,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	stochastic_relative_strength_index.default(
-		x = x,
-		cols = cols,
-		timePeriod = timePeriod,
-		fastKPeriod = fastKPeriod,
-		fastDPeriod = fastDPeriod,
-		fastDMa = fastDMa,
-		na.bridge = na.bridge,
-		...
-	)
+			x = x,
+			cols = cols ,
+			timePeriod = timePeriod,
+			fastKPeriod = fastKPeriod,
+			fastDPeriod = fastDPeriod,
+			fastDMa = fastDMa,
+			na.bridge = na.bridge,
+			...
+		)
 }
 
 #' @usage NULL
-stochastic_relative_strength_index_lookback <- function(
+STOCHRSI_lookback <- stochastic_relative_strength_index_lookback <- function(
 	x,
 	cols,
 	timePeriod = 14,
@@ -153,6 +153,7 @@ stochastic_relative_strength_index_lookback <- function(
 	na.bridge = FALSE,
 	...
 ) {
+
 	.Call(
 		C_impl_ta_STOCHRSI_lookback,
 		as.integer(timePeriod),
@@ -160,7 +161,9 @@ stochastic_relative_strength_index_lookback <- function(
 		as.integer(fastDPeriod),
 		as.maType(fastDMa)
 	)
+
 }
+
 #' @usage NULL
 #' @aliases stochastic_relative_strength_index
 #'
@@ -173,8 +176,8 @@ stochastic_relative_strength_index.numeric <- function(
 	fastDPeriod = 3,
 	fastDMa = 0,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## warn if 'cols' have been
 	## passed just to make sure
 	## the user knows its not possible
@@ -219,8 +222,8 @@ stochastic_relative_strength_index.plotly <- function(
 	upper_bound = 80,
 	## splice:optional-plotly:end
 	title,
-	...
-) {
+	...) {
+
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -248,9 +251,9 @@ stochastic_relative_strength_index.plotly <- function(
 			names(constructed_series)
 		),
 		timePeriod = timePeriod,
-		fastKPeriod = fastKPeriod,
-		fastDPeriod = fastDPeriod,
-		fastDMa = fastDMa,
+			fastKPeriod = fastKPeriod,
+			fastDPeriod = fastDPeriod,
+			fastDMa = fastDMa,
 		na.bridge = TRUE
 	)
 
@@ -294,13 +297,9 @@ stochastic_relative_strength_index.plotly <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {
-				"Stochastic Relative Strength Index"
-			} else {
-				title
-			}
+			title = if (missing(title)) {"Stochastic Relative Strength Index"} else {title}
 		),
-		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		data = constructed_indicator[,values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract
 	)
 
@@ -325,8 +324,8 @@ stochastic_relative_strength_index.ggplot <- function(
 	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...
-) {
+	...) {
+
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -353,9 +352,9 @@ stochastic_relative_strength_index.ggplot <- function(
 			names(constructed_series)
 		),
 		timePeriod = timePeriod,
-		fastKPeriod = fastKPeriod,
-		fastDPeriod = fastDPeriod,
-		fastDMa = fastDMa,
+			fastKPeriod = fastKPeriod,
+			fastDPeriod = fastDPeriod,
+			fastDMa = fastDMa,
 		na.bridge = TRUE
 	)
 
@@ -397,13 +396,9 @@ stochastic_relative_strength_index.ggplot <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {
-				"Stochastic Relative Strength Index"
-			} else {
-				title
-			}
+			title = if (missing(title)) {"Stochastic Relative Strength Index"} else {title}
 		),
-		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		data = constructed_indicator[,values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract,
 		name = get0(x = "name", ifnotfound = NULL)
 	)

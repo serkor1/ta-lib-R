@@ -27,9 +27,8 @@ in_neck <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
-	UseMethod("in_neck")
+	...) {
+  UseMethod("in_neck")
 }
 
 #' @export
@@ -47,8 +46,8 @@ in_neck.default <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## get candlestick pattern
 	## options
 	##
@@ -71,7 +70,7 @@ in_neck.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~ open + high + low + close,
+		default_formula = ~open + high + low + close,
 		data = x,
 		...
 	)
@@ -86,9 +85,9 @@ in_neck.default <- function(
 		.Call(
 			C_impl_ta_CDLINNECK,
 			constructed_series[[1]],
-			constructed_series[[2]],
-			constructed_series[[3]],
-			constructed_series[[4]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
 			normalize,
 			as.logical(na.bridge)
 		)
@@ -122,6 +121,7 @@ in_neck.data.frame <- function(
 			...
 		)
 	)
+
 }
 
 #' @usage NULL
@@ -132,13 +132,25 @@ in_neck.matrix <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
+	...) {
+
+	in_neck.default(
+			x = x,
+			cols = cols ,
+			na.bridge = na.bridge,
+			...
+		)
+}
+
+#' @usage NULL
+CDLINNECK_lookback <- in_neck_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
 	...
 ) {
-	in_neck.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
+	.Call(
+		C_impl_ta_CDLINNECK_lookback
 	)
 }
 
@@ -150,8 +162,8 @@ in_neck.plotly <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -167,7 +179,7 @@ in_neck.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		default_formula = ~open + high + low + close,
 		...
 	)
 
@@ -209,8 +221,8 @@ in_neck.ggplot <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -225,7 +237,7 @@ in_neck.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		default_formula = ~open + high + low + close,
 		...
 	)
 

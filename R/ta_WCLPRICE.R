@@ -18,9 +18,8 @@ weighted_close_price <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
-	UseMethod("weighted_close_price")
+	...) {
+  UseMethod("weighted_close_price")
 }
 
 #' @export
@@ -38,8 +37,8 @@ weighted_close_price.default <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -50,7 +49,7 @@ weighted_close_price.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~ high + low + close,
+		default_formula = ~high + low + close,
 		data = x,
 		...
 	)
@@ -65,7 +64,7 @@ weighted_close_price.default <- function(
 		C_impl_ta_WCLPRICE,
 		constructed_series[[1]],
 		constructed_series[[2]],
-		constructed_series[[3]],
+		constructed_series[[3]],		
 		as.logical(na.bridge)
 	)
 
@@ -94,6 +93,7 @@ weighted_close_price.data.frame <- function(
 			...
 		)
 	)
+
 }
 
 #' @usage NULL
@@ -104,24 +104,26 @@ weighted_close_price.matrix <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	weighted_close_price.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
-	)
+			x = x,
+			cols = cols ,
+			na.bridge = na.bridge,
+			...
+		)
 }
 
 #' @usage NULL
-weighted_close_price_lookback <- function(
+WCLPRICE_lookback <- weighted_close_price_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
 	...
 ) {
+
 	.Call(
 		C_impl_ta_WCLPRICE_lookback
 	)
+
 }

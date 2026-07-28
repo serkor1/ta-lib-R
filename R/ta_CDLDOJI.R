@@ -27,9 +27,8 @@ doji <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
-	UseMethod("doji")
+	...) {
+  UseMethod("doji")
 }
 
 #' @export
@@ -47,8 +46,8 @@ doji.default <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## get candlestick pattern
 	## options
 	##
@@ -71,7 +70,7 @@ doji.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~ open + high + low + close,
+		default_formula = ~open + high + low + close,
 		data = x,
 		...
 	)
@@ -86,9 +85,9 @@ doji.default <- function(
 		.Call(
 			C_impl_ta_CDLDOJI,
 			constructed_series[[1]],
-			constructed_series[[2]],
-			constructed_series[[3]],
-			constructed_series[[4]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
 			normalize,
 			as.logical(na.bridge)
 		)
@@ -122,6 +121,7 @@ doji.data.frame <- function(
 			...
 		)
 	)
+
 }
 
 #' @usage NULL
@@ -132,13 +132,25 @@ doji.matrix <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
+	...) {
+
+	doji.default(
+			x = x,
+			cols = cols ,
+			na.bridge = na.bridge,
+			...
+		)
+}
+
+#' @usage NULL
+CDLDOJI_lookback <- doji_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
 	...
 ) {
-	doji.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
+	.Call(
+		C_impl_ta_CDLDOJI_lookback
 	)
 }
 
@@ -150,8 +162,8 @@ doji.plotly <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -167,7 +179,7 @@ doji.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		default_formula = ~open + high + low + close,
 		...
 	)
 
@@ -209,8 +221,8 @@ doji.ggplot <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -225,7 +237,7 @@ doji.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		default_formula = ~open + high + low + close,
 		...
 	)
 

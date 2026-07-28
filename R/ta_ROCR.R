@@ -19,9 +19,8 @@ ratio_of_change <- function(
 	cols,
 	timePeriod = 10,
 	na.bridge = FALSE,
-	...
-) {
-	UseMethod("ratio_of_change")
+	...) {
+  UseMethod("ratio_of_change")
 }
 
 #' @export
@@ -40,8 +39,8 @@ ratio_of_change.default <- function(
 	cols,
 	timePeriod = 10,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -66,7 +65,7 @@ ratio_of_change.default <- function(
 	x <- .Call(
 		C_impl_ta_ROCR,
 		constructed_series[[1]],
-		as.integer(timePeriod),
+		as.integer(timePeriod),		
 		as.logical(na.bridge)
 	)
 
@@ -97,6 +96,7 @@ ratio_of_change.data.frame <- function(
 			...
 		)
 	)
+
 }
 
 #' @usage NULL
@@ -108,30 +108,33 @@ ratio_of_change.matrix <- function(
 	cols,
 	timePeriod = 10,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	ratio_of_change.default(
-		x = x,
-		cols = cols,
-		timePeriod = timePeriod,
-		na.bridge = na.bridge,
-		...
-	)
+			x = x,
+			cols = cols ,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
 }
 
 #' @usage NULL
-ratio_of_change_lookback <- function(
+ROCR_lookback <- ratio_of_change_lookback <- function(
 	x,
 	cols,
 	timePeriod = 10,
 	na.bridge = FALSE,
 	...
 ) {
+
 	.Call(
 		C_impl_ta_ROCR_lookback,
 		as.integer(timePeriod)
 	)
+
 }
+
 #' @usage NULL
 #' @aliases ratio_of_change
 #'
@@ -141,8 +144,8 @@ ratio_of_change.numeric <- function(
 	cols,
 	timePeriod = 10,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## warn if 'cols' have been
 	## passed just to make sure
 	## the user knows its not possible
@@ -179,8 +182,8 @@ ratio_of_change.plotly <- function(
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
-	...
-) {
+	...) {
+
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -251,13 +254,9 @@ ratio_of_change.plotly <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {
-				"Rate of change ratio: (price/prevPrice)"
-			} else {
-				title
-			}
+			title = if (missing(title)) {"Rate of change ratio: (price/prevPrice)"} else {title}
 		),
-		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		data = constructed_indicator[,values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract
 	)
 
@@ -279,8 +278,8 @@ ratio_of_change.ggplot <- function(
 	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...
-) {
+	...) {
+
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -343,13 +342,9 @@ ratio_of_change.ggplot <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {
-				"Rate of change ratio: (price/prevPrice)"
-			} else {
-				title
-			}
+			title = if (missing(title)) {"Rate of change ratio: (price/prevPrice)"} else {title}
 		),
-		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		data = constructed_indicator[,values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract,
 		name = get0(x = "name", ifnotfound = NULL)
 	)

@@ -26,8 +26,8 @@ t3_exponential_moving_average <- function(
 	timePeriod = 5,
 	volumeFactor = 0.7,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## if 'x' is missing t3_exponential_moving_average functions
 	## as a Moving Average Specification
 	if (missing(x)) {
@@ -35,16 +35,8 @@ t3_exponential_moving_average <- function(
 		## from call
 		x <- structure(
 			list(
-				timePeriod = if (missing(timePeriod)) {
-					5L
-				} else {
-					as.integer(timePeriod)
-				},
-				volumeFactor = if (missing(volumeFactor)) {
-					0.7
-				} else {
-					as.double(volumeFactor)
-				},
+				timePeriod = if (missing(timePeriod)) 5L else as.integer(timePeriod),
+				volumeFactor = if (missing(volumeFactor)) 0.7 else as.double(volumeFactor),
 				maType = 8L
 			),
 			class = "maType"
@@ -73,8 +65,8 @@ t3_exponential_moving_average.default <- function(
 	timePeriod = 5,
 	volumeFactor = 0.7,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -133,6 +125,7 @@ t3_exponential_moving_average.data.frame <- function(
 			...
 		)
 	)
+
 }
 
 #' @usage NULL
@@ -145,16 +138,16 @@ t3_exponential_moving_average.matrix <- function(
 	timePeriod = 5,
 	volumeFactor = 0.7,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	t3_exponential_moving_average.default(
-		x = x,
-		cols = cols,
-		timePeriod = timePeriod,
-		volumeFactor = volumeFactor,
-		na.bridge = na.bridge,
-		...
-	)
+			x = x,
+			cols = cols ,
+			timePeriod = timePeriod,
+			volumeFactor = volumeFactor,
+			na.bridge = na.bridge,
+			...
+		)
 }
 
 #' @usage NULL
@@ -167,8 +160,8 @@ t3_exponential_moving_average.numeric <- function(
 	timePeriod = 5,
 	volumeFactor = 0.7,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## warn if 'cols' have been
 	## passed just to make sure
 	## the user knows its not possible
@@ -195,6 +188,24 @@ t3_exponential_moving_average.numeric <- function(
 }
 
 #' @usage NULL
+T3_lookback <- t3_exponential_moving_average_lookback <- function(
+	x,
+	cols,
+	timePeriod = 5,
+	volumeFactor = 0.7,
+	na.bridge = FALSE,
+	...
+) {
+
+	.Call(
+		C_impl_ta_T3_lookback,
+		as.integer(timePeriod),
+		as.double(volumeFactor)
+	)
+}
+
+
+#' @usage NULL
 #' @aliases t3_exponential_moving_average
 #'
 #' @export
@@ -204,8 +215,8 @@ t3_exponential_moving_average.plotly <- function(
 	timePeriod = 5,
 	volumeFactor = 0.7,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -233,7 +244,7 @@ t3_exponential_moving_average.plotly <- function(
 			names(constructed_series)
 		),
 		timePeriod = timePeriod,
-		volumeFactor = volumeFactor,
+			volumeFactor = volumeFactor,
 		na.bridge = TRUE
 	)
 
@@ -248,9 +259,7 @@ t3_exponential_moving_average.plotly <- function(
 		init = state[["main"]],
 		traces = list(
 			list(
-				y = ~ constructed_indicator[["T3"]][
-					-(1:attr(constructed_indicator, "lookback", TRUE))
-				],
+				y = ~constructed_indicator[["T3"]][-(1:attr(constructed_indicator, "lookback", TRUE))],
 				legendgroup = "MovingAverage",
 				legendgrouptitle = list(
 					text = "Moving Averages"
@@ -276,8 +285,8 @@ t3_exponential_moving_average.ggplot <- function(
 	timePeriod = 5,
 	volumeFactor = 0.7,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -304,7 +313,7 @@ t3_exponential_moving_average.ggplot <- function(
 			names(constructed_series)
 		),
 		timePeriod = timePeriod,
-		volumeFactor = volumeFactor,
+			volumeFactor = volumeFactor,
 		na.bridge = TRUE
 	)
 

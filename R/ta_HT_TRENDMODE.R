@@ -18,9 +18,8 @@ trend_cycle_mode <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
-	UseMethod("trend_cycle_mode")
+	...) {
+  UseMethod("trend_cycle_mode")
 }
 
 #' @export
@@ -38,8 +37,8 @@ trend_cycle_mode.default <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -63,7 +62,7 @@ trend_cycle_mode.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_HT_TRENDMODE,
-		constructed_series[[1]],
+		constructed_series[[1]],		
 		as.logical(na.bridge)
 	)
 
@@ -92,6 +91,7 @@ trend_cycle_mode.data.frame <- function(
 			...
 		)
 	)
+
 }
 
 #' @usage NULL
@@ -102,27 +102,30 @@ trend_cycle_mode.matrix <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	trend_cycle_mode.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
-	)
+			x = x,
+			cols = cols ,
+			na.bridge = na.bridge,
+			...
+		)
 }
 
 #' @usage NULL
-trend_cycle_mode_lookback <- function(
+HT_TRENDMODE_lookback <- trend_cycle_mode_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
 	...
 ) {
+
 	.Call(
 		C_impl_ta_HT_TRENDMODE_lookback
 	)
+
 }
+
 #' @usage NULL
 #' @aliases trend_cycle_mode
 #'
@@ -131,8 +134,8 @@ trend_cycle_mode.numeric <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## warn if 'cols' have been
 	## passed just to make sure
 	## the user knows its not possible
@@ -167,8 +170,8 @@ trend_cycle_mode.plotly <- function(
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
-	...
-) {
+	...) {
+
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -239,13 +242,9 @@ trend_cycle_mode.plotly <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {
-				"Hilbert Transform - Trend vs Cycle Mode"
-			} else {
-				title
-			}
+			title = if (missing(title)) {"Hilbert Transform - Trend vs Cycle Mode"} else {title}
 		),
-		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		data = constructed_indicator[,values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract
 	)
 
@@ -266,8 +265,8 @@ trend_cycle_mode.ggplot <- function(
 	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...
-) {
+	...) {
+
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -328,13 +327,9 @@ trend_cycle_mode.ggplot <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {
-				"Hilbert Transform - Trend vs Cycle Mode"
-			} else {
-				title
-			}
+			title = if (missing(title)) {"Hilbert Transform - Trend vs Cycle Mode"} else {title}
 		),
-		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		data = constructed_indicator[,values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract,
 		name = get0(x = "name", ifnotfound = NULL)
 	)

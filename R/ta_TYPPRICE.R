@@ -18,9 +18,8 @@ typical_price <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
-	UseMethod("typical_price")
+	...) {
+  UseMethod("typical_price")
 }
 
 #' @export
@@ -38,8 +37,8 @@ typical_price.default <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -50,7 +49,7 @@ typical_price.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~ high + low + close,
+		default_formula = ~high + low + close,
 		data = x,
 		...
 	)
@@ -65,7 +64,7 @@ typical_price.default <- function(
 		C_impl_ta_TYPPRICE,
 		constructed_series[[1]],
 		constructed_series[[2]],
-		constructed_series[[3]],
+		constructed_series[[3]],		
 		as.logical(na.bridge)
 	)
 
@@ -94,6 +93,7 @@ typical_price.data.frame <- function(
 			...
 		)
 	)
+
 }
 
 #' @usage NULL
@@ -104,24 +104,26 @@ typical_price.matrix <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	typical_price.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
-	)
+			x = x,
+			cols = cols ,
+			na.bridge = na.bridge,
+			...
+		)
 }
 
 #' @usage NULL
-typical_price_lookback <- function(
+TYPPRICE_lookback <- typical_price_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
 	...
 ) {
+
 	.Call(
 		C_impl_ta_TYPPRICE_lookback
 	)
+
 }

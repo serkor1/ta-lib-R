@@ -28,9 +28,8 @@ mat_hold <- function(
 	cols,
 	penetration = 0.5,
 	na.bridge = FALSE,
-	...
-) {
-	UseMethod("mat_hold")
+	...) {
+  UseMethod("mat_hold")
 }
 
 #' @export
@@ -49,8 +48,8 @@ mat_hold.default <- function(
 	cols,
 	penetration = 0.5,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## get candlestick pattern
 	## options
 	##
@@ -73,7 +72,7 @@ mat_hold.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~ open + high + low + close,
+		default_formula = ~open + high + low + close,
 		data = x,
 		...
 	)
@@ -88,10 +87,10 @@ mat_hold.default <- function(
 		.Call(
 			C_impl_ta_CDLMATHOLD,
 			constructed_series[[1]],
-			constructed_series[[2]],
-			constructed_series[[3]],
-			constructed_series[[4]],
-			as.double(penetration),
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
+		as.double(penetration),
 			normalize,
 			as.logical(na.bridge)
 		)
@@ -127,6 +126,7 @@ mat_hold.data.frame <- function(
 			...
 		)
 	)
+
 }
 
 #' @usage NULL
@@ -138,14 +138,27 @@ mat_hold.matrix <- function(
 	cols,
 	penetration = 0.5,
 	na.bridge = FALSE,
+	...) {
+
+	mat_hold.default(
+			x = x,
+			cols = cols ,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
+}
+
+#' @usage NULL
+CDLMATHOLD_lookback <- mat_hold_lookback <- function(
+	x,
+	cols,penetration = 0.5,
+	na.bridge = FALSE,
 	...
 ) {
-	mat_hold.default(
-		x = x,
-		cols = cols,
-		penetration = penetration,
-		na.bridge = na.bridge,
-		...
+	.Call(
+		C_impl_ta_CDLMATHOLD_lookback,
+		as.double(penetration)
 	)
 }
 
@@ -158,8 +171,8 @@ mat_hold.plotly <- function(
 	cols,
 	penetration = 0.5,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -175,7 +188,7 @@ mat_hold.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		default_formula = ~open + high + low + close,
 		...
 	)
 
@@ -219,8 +232,8 @@ mat_hold.ggplot <- function(
 	cols,
 	penetration = 0.5,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -235,7 +248,7 @@ mat_hold.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		default_formula = ~open + high + low + close,
 		...
 	)
 

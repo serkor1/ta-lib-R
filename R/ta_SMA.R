@@ -25,8 +25,8 @@ simple_moving_average <- function(
 	cols,
 	timePeriod = 30,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## if 'x' is missing simple_moving_average functions
 	## as a Moving Average Specification
 	if (missing(x)) {
@@ -34,11 +34,7 @@ simple_moving_average <- function(
 		## from call
 		x <- structure(
 			list(
-				timePeriod = if (missing(timePeriod)) {
-					30L
-				} else {
-					as.integer(timePeriod)
-				},
+				timePeriod = if (missing(timePeriod)) 30L else as.integer(timePeriod),
 				maType = 0L
 			),
 			class = "maType"
@@ -66,8 +62,8 @@ simple_moving_average.default <- function(
 	cols,
 	timePeriod = 30,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -123,6 +119,7 @@ simple_moving_average.data.frame <- function(
 			...
 		)
 	)
+
 }
 
 #' @usage NULL
@@ -134,15 +131,15 @@ simple_moving_average.matrix <- function(
 	cols,
 	timePeriod = 30,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	simple_moving_average.default(
-		x = x,
-		cols = cols,
-		timePeriod = timePeriod,
-		na.bridge = na.bridge,
-		...
-	)
+			x = x,
+			cols = cols ,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
 }
 
 #' @usage NULL
@@ -154,8 +151,8 @@ simple_moving_average.numeric <- function(
 	cols,
 	timePeriod = 30,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## warn if 'cols' have been
 	## passed just to make sure
 	## the user knows its not possible
@@ -181,6 +178,22 @@ simple_moving_average.numeric <- function(
 }
 
 #' @usage NULL
+SMA_lookback <- simple_moving_average_lookback <- function(
+	x,
+	cols,
+	timePeriod = 30,
+	na.bridge = FALSE,
+	...
+) {
+
+	.Call(
+		C_impl_ta_SMA_lookback,
+		as.integer(timePeriod)
+	)
+}
+
+
+#' @usage NULL
 #' @aliases simple_moving_average
 #'
 #' @export
@@ -189,8 +202,8 @@ simple_moving_average.plotly <- function(
 	cols,
 	timePeriod = 30,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -232,9 +245,7 @@ simple_moving_average.plotly <- function(
 		init = state[["main"]],
 		traces = list(
 			list(
-				y = ~ constructed_indicator[["SMA"]][
-					-(1:attr(constructed_indicator, "lookback", TRUE))
-				],
+				y = ~constructed_indicator[["SMA"]][-(1:attr(constructed_indicator, "lookback", TRUE))],
 				legendgroup = "MovingAverage",
 				legendgrouptitle = list(
 					text = "Moving Averages"
@@ -259,8 +270,8 @@ simple_moving_average.ggplot <- function(
 	cols,
 	timePeriod = 30,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## check ggplot2 availability
 	assert_ggplot2()
 

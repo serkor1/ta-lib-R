@@ -33,9 +33,8 @@ extended_parabolic_stop_and_reverse <- function(
 	afShort = 0.02,
 	afMaxShort = 0.2,
 	na.bridge = FALSE,
-	...
-) {
-	UseMethod("extended_parabolic_stop_and_reverse")
+	...) {
+  UseMethod("extended_parabolic_stop_and_reverse")
 }
 
 #' @export
@@ -61,8 +60,8 @@ extended_parabolic_stop_and_reverse.default <- function(
 	afShort = 0.02,
 	afMaxShort = 0.2,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -73,7 +72,7 @@ extended_parabolic_stop_and_reverse.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~ high + low,
+		default_formula = ~high + low,
 		data = x,
 		...
 	)
@@ -95,7 +94,7 @@ extended_parabolic_stop_and_reverse.default <- function(
 		as.double(afMaxLong),
 		as.double(afInitShort),
 		as.double(afShort),
-		as.double(afMaxShort),
+		as.double(afMaxShort),		
 		as.logical(na.bridge)
 	)
 
@@ -140,6 +139,7 @@ extended_parabolic_stop_and_reverse.data.frame <- function(
 			...
 		)
 	)
+
 }
 
 #' @usage NULL
@@ -158,26 +158,26 @@ extended_parabolic_stop_and_reverse.matrix <- function(
 	afShort = 0.02,
 	afMaxShort = 0.2,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	extended_parabolic_stop_and_reverse.default(
-		x = x,
-		cols = cols,
-		startValue = startValue,
-		offsetOnReverse = offsetOnReverse,
-		afInitLong = afInitLong,
-		afLong = afLong,
-		afMaxLong = afMaxLong,
-		afInitShort = afInitShort,
-		afShort = afShort,
-		afMaxShort = afMaxShort,
-		na.bridge = na.bridge,
-		...
-	)
+			x = x,
+			cols = cols ,
+			startValue = startValue,
+			offsetOnReverse = offsetOnReverse,
+			afInitLong = afInitLong,
+			afLong = afLong,
+			afMaxLong = afMaxLong,
+			afInitShort = afInitShort,
+			afShort = afShort,
+			afMaxShort = afMaxShort,
+			na.bridge = na.bridge,
+			...
+		)
 }
 
 #' @usage NULL
-extended_parabolic_stop_and_reverse_lookback <- function(
+SAREXT_lookback <- extended_parabolic_stop_and_reverse_lookback <- function(
 	x,
 	cols,
 	startValue = 0,
@@ -191,6 +191,7 @@ extended_parabolic_stop_and_reverse_lookback <- function(
 	na.bridge = FALSE,
 	...
 ) {
+
 	.Call(
 		C_impl_ta_SAREXT_lookback,
 		as.double(startValue),
@@ -202,7 +203,9 @@ extended_parabolic_stop_and_reverse_lookback <- function(
 		as.double(afShort),
 		as.double(afMaxShort)
 	)
+
 }
+
 #' @usage NULL
 #' @aliases extended_parabolic_stop_and_reverse
 #'
@@ -221,8 +224,8 @@ extended_parabolic_stop_and_reverse.plotly <- function(
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
-	...
-) {
+	...) {
+
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -238,7 +241,7 @@ extended_parabolic_stop_and_reverse.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low,
+		default_formula = ~high + low,
 		...
 	)
 
@@ -250,13 +253,13 @@ extended_parabolic_stop_and_reverse.plotly <- function(
 			names(constructed_series)
 		),
 		startValue = startValue,
-		offsetOnReverse = offsetOnReverse,
-		afInitLong = afInitLong,
-		afLong = afLong,
-		afMaxLong = afMaxLong,
-		afInitShort = afInitShort,
-		afShort = afShort,
-		afMaxShort = afMaxShort,
+			offsetOnReverse = offsetOnReverse,
+			afInitLong = afInitLong,
+			afLong = afLong,
+			afMaxLong = afMaxLong,
+			afInitShort = afInitShort,
+			afShort = afShort,
+			afMaxShort = afMaxShort,
 		na.bridge = TRUE
 	)
 
@@ -340,8 +343,8 @@ extended_parabolic_stop_and_reverse.ggplot <- function(
 	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...
-) {
+	...) {
+
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -356,7 +359,7 @@ extended_parabolic_stop_and_reverse.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low,
+		default_formula = ~high + low,
 		...
 	)
 
@@ -368,13 +371,13 @@ extended_parabolic_stop_and_reverse.ggplot <- function(
 			names(constructed_series)
 		),
 		startValue = startValue,
-		offsetOnReverse = offsetOnReverse,
-		afInitLong = afInitLong,
-		afLong = afLong,
-		afMaxLong = afMaxLong,
-		afInitShort = afInitShort,
-		afShort = afShort,
-		afMaxShort = afMaxShort,
+			offsetOnReverse = offsetOnReverse,
+			afInitLong = afInitLong,
+			afLong = afLong,
+			afMaxLong = afMaxLong,
+			afInitShort = afInitShort,
+			afShort = afShort,
+			afMaxShort = afMaxShort,
 		na.bridge = TRUE
 	)
 

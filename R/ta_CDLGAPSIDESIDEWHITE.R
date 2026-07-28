@@ -27,9 +27,8 @@ gaps_side_white <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
-	UseMethod("gaps_side_white")
+	...) {
+  UseMethod("gaps_side_white")
 }
 
 #' @export
@@ -47,8 +46,8 @@ gaps_side_white.default <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## get candlestick pattern
 	## options
 	##
@@ -71,7 +70,7 @@ gaps_side_white.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~ open + high + low + close,
+		default_formula = ~open + high + low + close,
 		data = x,
 		...
 	)
@@ -86,9 +85,9 @@ gaps_side_white.default <- function(
 		.Call(
 			C_impl_ta_CDLGAPSIDESIDEWHITE,
 			constructed_series[[1]],
-			constructed_series[[2]],
-			constructed_series[[3]],
-			constructed_series[[4]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
 			normalize,
 			as.logical(na.bridge)
 		)
@@ -122,6 +121,7 @@ gaps_side_white.data.frame <- function(
 			...
 		)
 	)
+
 }
 
 #' @usage NULL
@@ -132,13 +132,25 @@ gaps_side_white.matrix <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
+	...) {
+
+	gaps_side_white.default(
+			x = x,
+			cols = cols ,
+			na.bridge = na.bridge,
+			...
+		)
+}
+
+#' @usage NULL
+CDLGAPSIDESIDEWHITE_lookback <- gaps_side_white_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
 	...
 ) {
-	gaps_side_white.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
+	.Call(
+		C_impl_ta_CDLGAPSIDESIDEWHITE_lookback
 	)
 }
 
@@ -150,8 +162,8 @@ gaps_side_white.plotly <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -167,7 +179,7 @@ gaps_side_white.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		default_formula = ~open + high + low + close,
 		...
 	)
 
@@ -209,8 +221,8 @@ gaps_side_white.ggplot <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...
-) {
+	...) {
+
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -225,7 +237,7 @@ gaps_side_white.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		default_formula = ~open + high + low + close,
 		...
 	)
 
