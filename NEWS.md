@@ -19,42 +19,34 @@ talib::lookback(
 The function returns the minimum required lookback for calculating the indicator.
 Its use-case is customized control-flows for downstream wrappers and/or packages that declares dependency on {talib}.
 
-* The underlying source code have been completely rewritten so {talib} compiles much faster than before.
+* The source code have been re-written so it generates the underlying TA-Lib wrappers using preprocessors and X-Macros, which compiles much faster than before. 
 
-
-* ***MAVP:** Moving Average Variable Periods*—The function calculates a moving average with variable periods between candles. See below:
+* _**MAVP:** Moving Average Variable Periods_—The function calculates a moving average with variable periods between candles. See below:
 
 ```R
-## generate series
-x <- data.frame(
-  close = 1:10,
-  periods = c(1, 1, 1, 2, 2, 2, 3, 4, 4, 4)
-)
-
 talib::variable_moving_average_period(
-  x = x,
+  x = 1:10,
+  periods = c(1, 1, 1, 2, 2, 2, 3, 4, 4, 4),
   minimumPeriod = 2,
   maximumPeriod = 4
 )
 
-#>    MAVP
-#> 1    NA
-#> 2    NA
-#> 3    NA
-#> 4   3.5
-#> 5   4.5
-#> 6   5.5
-#> 7   6.0
-#> 8   6.5
-#> 9   7.5
-#> 10  8.5
+#> [1]  NA  NA  NA 3.5 4.5 5.5 6.0 6.5 7.5 8.5
+#> attr(,"lookback")
 ```
 
+* _**AVGDEV:** Averge deviation_—The function calculates the average deviation of a series. See below:
 
-
-
-* AVGDEV
-
+```R
+talib::average_deviation(
+x = 1:10,
+periods = c(1, 1, 1, 2, 2, 2, 3, 4, 4, 4),
+timePeriod = 5
+)
+#>  [1]  NA  NA  NA  NA 1.2 1.2 1.2 1.2 1.2 1.2
+#> attr(,"lookback")
+#> [1] 4
+```
 
 ## breaking changes
 
@@ -125,13 +117,11 @@ absolute_price_oscillator(
 
 In this call the role of each argument is *should* be clearer than before.
 
-
-
 ## bug-fixes
 
-* CCI as main chart should have been subchart
-* Correct return of one-dimensional indicators
+* _**CCI:** Incorrect charting_—The indicator were incorrectly classified as a main chart indicator— 
 
+* _**One-dimensional indicators:** incorrect return \<class\>_—Indicators that returns a one-dimensional indicator (MA, RSI, etc.) were returning a \<matrix\> or \<data.frame\> instead of \<numeric\>.
 
 # version 0.9-2
 
