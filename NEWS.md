@@ -123,6 +123,10 @@ In this call the role of each argument is *should* be clearer than before.
 
 * _**One-dimensional indicators:** incorrect return \<class\>_—Indicators that returns a one-dimensional indicator (MA, RSI, etc.) were returning a \<matrix\> or \<data.frame\> instead of \<numeric\>.
 
+* _**Merged indicators:** overlapping last-values_—On the plotly backend, merging indicators onto one panel stacked every last-value label on the panel's top-right corner. The labels are now collapsed into a single evenly spaced label, mirroring the merged subtitle of the ggplot2 backend.
+
+* _**Merged indicators:** indistinguishable last-values_—Merged last-value labels used the bare output column name, so merging the same indicator with different parameters displayed identical labels. The labels now carry the full indicator specification, including its parameters, as the ggplot2 backend already did.
+
 # version 0.9-2
 
 ## improvements
