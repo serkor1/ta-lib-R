@@ -196,10 +196,10 @@
 <span></span>
 <span>    <span class="co">## add Simple Moving Averages (SMA)</span></span>
 <span>    <span class="co">## to the chart in a loop</span></span>
-<span>    <span class="kw">for</span> <span class="op">(</span><span class="va">n</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">15</span>, by <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="kw">for</span> <span class="op">(</span><span class="va">timePeriod</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">15</span>, by <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>        <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="reference/indicator.html">indicator</a></span><span class="op">(</span></span>
 <span>            <span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="reference/simple_moving_average.html">SMA</a></span>,</span>
-<span>            n <span class="op">=</span> <span class="va">n</span></span>
+<span>            timePeriod <span class="op">=</span> <span class="va">timePeriod</span></span>
 <span>        <span class="op">)</span></span>
 <span>    <span class="op">}</span></span>
 <span></span>
@@ -208,9 +208,9 @@
 <span>    <span class="co">## can be grouped to avoid repeated</span></span>
 <span>    <span class="co">## subpanels</span></span>
 <span>    <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="reference/indicator.html">indicator</a></span><span class="op">(</span></span>
-<span>        <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="reference/relative_strength_index.html">RSI</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
-<span>        <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="reference/relative_strength_index.html">RSI</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">14</span><span class="op">)</span>,</span>
-<span>        <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="reference/relative_strength_index.html">RSI</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">21</span><span class="op">)</span></span>
+<span>        <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="reference/relative_strength_index.html">RSI</a></span><span class="op">(</span>timePeriod <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
+<span>        <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="reference/relative_strength_index.html">RSI</a></span><span class="op">(</span>timePeriod <span class="op">=</span> <span class="fl">14</span><span class="op">)</span>,</span>
+<span>        <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="reference/relative_strength_index.html">RSI</a></span><span class="op">(</span>timePeriod <span class="op">=</span> <span class="fl">21</span><span class="op">)</span></span>
 <span>    <span class="op">)</span></span>
 <span></span>
 <span>    <span class="co">## identify Doji patterns</span></span>

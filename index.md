@@ -126,10 +126,10 @@ BTC <- talib::BTC[1:75, ]
 
     ## add Simple Moving Averages (SMA)
     ## to the chart in a loop
-    for (n in seq(5, 15, by = 3)) {
+    for (timePeriod in seq(5, 15, by = 3)) {
         talib::indicator(
             talib::SMA,
-            n = n
+            timePeriod = timePeriod
         )
     }
 
@@ -138,9 +138,9 @@ BTC <- talib::BTC[1:75, ]
     ## can be grouped to avoid repeated
     ## subpanels
     talib::indicator(
-        talib::RSI(n = 10),
-        talib::RSI(n = 14),
-        talib::RSI(n = 21)
+        talib::RSI(timePeriod = 10),
+        talib::RSI(timePeriod = 14),
+        talib::RSI(timePeriod = 21)
     )
 
     ## identify Doji patterns
