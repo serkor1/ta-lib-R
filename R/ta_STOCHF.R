@@ -253,7 +253,8 @@ fast_stochastic.plotly <- function(
 			}
 		),
 		data = constructed_indicator[, values_to_extract, drop = FALSE],
-		values_to_extract = values_to_extract
+		values_to_extract = values_to_extract,
+		name = get0(x = "name", ifnotfound = NULL)
 	)
 
 	state <- .chart_state()
