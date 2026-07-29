@@ -155,6 +155,18 @@ before.
   RSI, etc.) were returning a \<matrix\> or \<data.frame\> instead of
   \<numeric\>.
 
+- ***Merged indicators:** overlapping last-values*—On the plotly
+  backend, merging indicators onto one panel stacked every last-value
+  label on the panel’s top-right corner. The labels are now collapsed
+  into a single evenly spaced label, mirroring the merged subtitle of
+  the ggplot2 backend.
+
+- ***Merged indicators:** indistinguishable last-values*—Merged
+  last-value labels used the bare output column name, so merging the
+  same indicator with different parameters displayed identical labels.
+  The labels now carry the full indicator specification, including its
+  parameters, as the ggplot2 backend already did.
+
 ## version 0.9-2
 
 CRAN release: 2026-05-10

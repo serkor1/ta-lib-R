@@ -138,6 +138,8 @@
 <h3 id="bug-fixes-0-9-3">bug-fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-9-3"></a></h3>
 <ul><li><p><em><strong>CCI:</strong> Incorrect charting</em>—The indicator were incorrectly classified as a main chart indicator—</p></li>
 <li><p><em><strong>One-dimensional indicators:</strong> incorrect return &lt;class&gt;</em>—Indicators that returns a one-dimensional indicator (MA, RSI, etc.) were returning a &lt;matrix&gt; or &lt;data.frame&gt; instead of &lt;numeric&gt;.</p></li>
+<li><p><em><strong>Merged indicators:</strong> overlapping last-values</em>—On the plotly backend, merging indicators onto one panel stacked every last-value label on the panel’s top-right corner. The labels are now collapsed into a single evenly spaced label, mirroring the merged subtitle of the ggplot2 backend.</p></li>
+<li><p><em><strong>Merged indicators:</strong> indistinguishable last-values</em>—Merged last-value labels used the bare output column name, so merging the same indicator with different parameters displayed identical labels. The labels now carry the full indicator specification, including its parameters, as the ggplot2 backend already did.</p></li>
 </ul></div>
 </div>
     <div class="section level2">
