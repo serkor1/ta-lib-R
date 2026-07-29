@@ -13,8 +13,8 @@ template:
   light-switch: yes
   opengraph:
     image:
-      src: man/figures/logo.png
-      alt: "talib R package logo"
+      src: man/figures/social-preview.png
+      alt: "Candlestick chart with two moving averages in the talib color palette"
   bslib:
     primary: '#0054AD'
     border-radius: 0.5rem
