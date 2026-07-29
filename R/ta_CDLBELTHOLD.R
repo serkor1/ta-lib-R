@@ -27,8 +27,9 @@ belt_hold <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-  UseMethod("belt_hold")
+	...
+) {
+	UseMethod("belt_hold")
 }
 
 #' @export
@@ -46,8 +47,8 @@ belt_hold.default <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## get candlestick pattern
 	## options
 	##
@@ -70,7 +71,7 @@ belt_hold.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~open + high + low + close,
+		default_formula = ~ open + high + low + close,
 		data = x,
 		...
 	)
@@ -85,9 +86,9 @@ belt_hold.default <- function(
 		.Call(
 			C_impl_ta_CDLBELTHOLD,
 			constructed_series[[1]],
-		constructed_series[[2]],
-		constructed_series[[3]],
-		constructed_series[[4]],
+			constructed_series[[2]],
+			constructed_series[[3]],
+			constructed_series[[4]],
 			normalize,
 			as.logical(na.bridge)
 		)
@@ -121,7 +122,6 @@ belt_hold.data.frame <- function(
 			...
 		)
 	)
-
 }
 
 #' @usage NULL
@@ -132,14 +132,14 @@ belt_hold.matrix <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	belt_hold.default(
-			x = x,
-			cols = cols ,
-			na.bridge = na.bridge,
-			...
-		)
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -162,8 +162,8 @@ belt_hold.plotly <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -179,7 +179,7 @@ belt_hold.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~open + high + low + close,
+		default_formula = ~ open + high + low + close,
 		...
 	)
 
@@ -221,8 +221,8 @@ belt_hold.ggplot <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -237,7 +237,7 @@ belt_hold.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~open + high + low + close,
+		default_formula = ~ open + high + low + close,
 		...
 	)
 

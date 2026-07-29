@@ -18,8 +18,9 @@ average_price <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-  UseMethod("average_price")
+	...
+) {
+	UseMethod("average_price")
 }
 
 #' @export
@@ -37,8 +38,8 @@ average_price.default <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -49,7 +50,7 @@ average_price.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~open + high + low + close,
+		default_formula = ~ open + high + low + close,
 		data = x,
 		...
 	)
@@ -65,7 +66,7 @@ average_price.default <- function(
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		constructed_series[[4]],		
+		constructed_series[[4]],
 		as.logical(na.bridge)
 	)
 
@@ -94,7 +95,6 @@ average_price.data.frame <- function(
 			...
 		)
 	)
-
 }
 
 #' @usage NULL
@@ -105,14 +105,14 @@ average_price.matrix <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	average_price.default(
-			x = x,
-			cols = cols ,
-			na.bridge = na.bridge,
-			...
-		)
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -122,9 +122,7 @@ AVGPRICE_lookback <- average_price_lookback <- function(
 	na.bridge = FALSE,
 	...
 ) {
-
 	.Call(
 		C_impl_ta_AVGPRICE_lookback
 	)
-
 }

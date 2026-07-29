@@ -27,8 +27,9 @@ three_white_soldiers <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-  UseMethod("three_white_soldiers")
+	...
+) {
+	UseMethod("three_white_soldiers")
 }
 
 #' @export
@@ -46,8 +47,8 @@ three_white_soldiers.default <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## get candlestick pattern
 	## options
 	##
@@ -70,7 +71,7 @@ three_white_soldiers.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~open + high + low + close,
+		default_formula = ~ open + high + low + close,
 		data = x,
 		...
 	)
@@ -85,9 +86,9 @@ three_white_soldiers.default <- function(
 		.Call(
 			C_impl_ta_CDL3WHITESOLDIERS,
 			constructed_series[[1]],
-		constructed_series[[2]],
-		constructed_series[[3]],
-		constructed_series[[4]],
+			constructed_series[[2]],
+			constructed_series[[3]],
+			constructed_series[[4]],
 			normalize,
 			as.logical(na.bridge)
 		)
@@ -121,7 +122,6 @@ three_white_soldiers.data.frame <- function(
 			...
 		)
 	)
-
 }
 
 #' @usage NULL
@@ -132,14 +132,14 @@ three_white_soldiers.matrix <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	three_white_soldiers.default(
-			x = x,
-			cols = cols ,
-			na.bridge = na.bridge,
-			...
-		)
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -162,8 +162,8 @@ three_white_soldiers.plotly <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -179,7 +179,7 @@ three_white_soldiers.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~open + high + low + close,
+		default_formula = ~ open + high + low + close,
 		...
 	)
 
@@ -221,8 +221,8 @@ three_white_soldiers.ggplot <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -237,7 +237,7 @@ three_white_soldiers.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~open + high + low + close,
+		default_formula = ~ open + high + low + close,
 		...
 	)
 

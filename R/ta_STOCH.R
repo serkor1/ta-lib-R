@@ -27,8 +27,9 @@ stochastic <- function(
 	slowDPeriod = 3,
 	slowDMa = 0,
 	na.bridge = FALSE,
-	...) {
-  UseMethod("stochastic")
+	...
+) {
+	UseMethod("stochastic")
 }
 
 #' @export
@@ -51,8 +52,8 @@ stochastic.default <- function(
 	slowDPeriod = 3,
 	slowDMa = 0,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -63,7 +64,7 @@ stochastic.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~high + low + close,
+		default_formula = ~ high + low + close,
 		data = x,
 		...
 	)
@@ -83,7 +84,7 @@ stochastic.default <- function(
 		as.integer(slowKPeriod),
 		as.maType(slowKMa),
 		as.integer(slowDPeriod),
-		as.maType(slowDMa),		
+		as.maType(slowDMa),
 		as.logical(na.bridge)
 	)
 
@@ -122,7 +123,6 @@ stochastic.data.frame <- function(
 			...
 		)
 	)
-
 }
 
 #' @usage NULL
@@ -138,19 +138,19 @@ stochastic.matrix <- function(
 	slowDPeriod = 3,
 	slowDMa = 0,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	stochastic.default(
-			x = x,
-			cols = cols ,
-			fastKPeriod = fastKPeriod,
-			slowKPeriod = slowKPeriod,
-			slowKMa = slowKMa,
-			slowDPeriod = slowDPeriod,
-			slowDMa = slowDMa,
-			na.bridge = na.bridge,
-			...
-		)
+		x = x,
+		cols = cols,
+		fastKPeriod = fastKPeriod,
+		slowKPeriod = slowKPeriod,
+		slowKMa = slowKMa,
+		slowDPeriod = slowDPeriod,
+		slowDMa = slowDMa,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -165,7 +165,6 @@ STOCH_lookback <- stochastic_lookback <- function(
 	na.bridge = FALSE,
 	...
 ) {
-
 	.Call(
 		C_impl_ta_STOCH_lookback,
 		as.integer(fastKPeriod),
@@ -174,7 +173,6 @@ STOCH_lookback <- stochastic_lookback <- function(
 		as.integer(slowDPeriod),
 		as.maType(slowDMa)
 	)
-
 }
 
 #' @usage NULL
@@ -195,8 +193,8 @@ stochastic.plotly <- function(
 	upper_bound = 80,
 	## splice:optional-plotly:end
 	title,
-	...) {
-
+	...
+) {
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -212,7 +210,7 @@ stochastic.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~high + low + close,
+		default_formula = ~ high + low + close,
 		...
 	)
 
@@ -224,10 +222,10 @@ stochastic.plotly <- function(
 			names(constructed_series)
 		),
 		fastKPeriod = fastKPeriod,
-			slowKPeriod = slowKPeriod,
-			slowKMa = slowKMa,
-			slowDPeriod = slowDPeriod,
-			slowDMa = slowDMa,
+		slowKPeriod = slowKPeriod,
+		slowKMa = slowKMa,
+		slowDPeriod = slowDPeriod,
+		slowDMa = slowDMa,
 		na.bridge = TRUE
 	)
 
@@ -274,9 +272,13 @@ stochastic.plotly <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {"Stochastic"} else {title}
+			title = if (missing(title)) {
+				"Stochastic"
+			} else {
+				title
+			}
 		),
-		data = constructed_indicator[,values_to_extract, drop = FALSE],
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract
 	)
 
@@ -302,8 +304,8 @@ stochastic.ggplot <- function(
 	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...) {
-
+	...
+) {
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -318,7 +320,7 @@ stochastic.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~high + low + close,
+		default_formula = ~ high + low + close,
 		...
 	)
 
@@ -330,10 +332,10 @@ stochastic.ggplot <- function(
 			names(constructed_series)
 		),
 		fastKPeriod = fastKPeriod,
-			slowKPeriod = slowKPeriod,
-			slowKMa = slowKMa,
-			slowDPeriod = slowDPeriod,
-			slowDMa = slowDMa,
+		slowKPeriod = slowKPeriod,
+		slowKMa = slowKMa,
+		slowDPeriod = slowDPeriod,
+		slowDMa = slowDMa,
 		na.bridge = TRUE
 	)
 
@@ -375,9 +377,13 @@ stochastic.ggplot <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {"Stochastic"} else {title}
+			title = if (missing(title)) {
+				"Stochastic"
+			} else {
+				title
+			}
 		),
-		data = constructed_indicator[,values_to_extract, drop = FALSE],
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract,
 		name = get0(x = "name", ifnotfound = NULL)
 	)

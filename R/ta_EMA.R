@@ -25,8 +25,8 @@ exponential_moving_average <- function(
 	cols,
 	timePeriod = 30,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## if 'x' is missing exponential_moving_average functions
 	## as a Moving Average Specification
 	if (missing(x)) {
@@ -34,7 +34,11 @@ exponential_moving_average <- function(
 		## from call
 		x <- structure(
 			list(
-				timePeriod = if (missing(timePeriod)) 30L else as.integer(timePeriod),
+				timePeriod = if (missing(timePeriod)) {
+					30L
+				} else {
+					as.integer(timePeriod)
+				},
 				maType = 1L
 			),
 			class = "maType"
@@ -62,8 +66,8 @@ exponential_moving_average.default <- function(
 	cols,
 	timePeriod = 30,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -119,7 +123,6 @@ exponential_moving_average.data.frame <- function(
 			...
 		)
 	)
-
 }
 
 #' @usage NULL
@@ -131,15 +134,15 @@ exponential_moving_average.matrix <- function(
 	cols,
 	timePeriod = 30,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	exponential_moving_average.default(
-			x = x,
-			cols = cols ,
-			timePeriod = timePeriod,
-			na.bridge = na.bridge,
-			...
-		)
+		x = x,
+		cols = cols,
+		timePeriod = timePeriod,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -151,8 +154,8 @@ exponential_moving_average.numeric <- function(
 	cols,
 	timePeriod = 30,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## warn if 'cols' have been
 	## passed just to make sure
 	## the user knows its not possible
@@ -185,7 +188,6 @@ EMA_lookback <- exponential_moving_average_lookback <- function(
 	na.bridge = FALSE,
 	...
 ) {
-
 	.Call(
 		C_impl_ta_EMA_lookback,
 		as.integer(timePeriod)
@@ -202,8 +204,8 @@ exponential_moving_average.plotly <- function(
 	cols,
 	timePeriod = 30,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -245,7 +247,9 @@ exponential_moving_average.plotly <- function(
 		init = state[["main"]],
 		traces = list(
 			list(
-				y = ~constructed_indicator[["EMA"]][-(1:attr(constructed_indicator, "lookback", TRUE))],
+				y = ~ constructed_indicator[["EMA"]][
+					-(1:attr(constructed_indicator, "lookback", TRUE))
+				],
 				legendgroup = "MovingAverage",
 				legendgrouptitle = list(
 					text = "Moving Averages"
@@ -270,8 +274,8 @@ exponential_moving_average.ggplot <- function(
 	cols,
 	timePeriod = 30,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## check ggplot2 availability
 	assert_ggplot2()
 

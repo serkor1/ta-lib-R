@@ -18,8 +18,9 @@ sine_wave <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-  UseMethod("sine_wave")
+	...
+) {
+	UseMethod("sine_wave")
 }
 
 #' @export
@@ -37,8 +38,8 @@ sine_wave.default <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -62,7 +63,7 @@ sine_wave.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_HT_SINE,
-		constructed_series[[1]],		
+		constructed_series[[1]],
 		as.logical(na.bridge)
 	)
 
@@ -91,7 +92,6 @@ sine_wave.data.frame <- function(
 			...
 		)
 	)
-
 }
 
 #' @usage NULL
@@ -102,14 +102,14 @@ sine_wave.matrix <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	sine_wave.default(
-			x = x,
-			cols = cols ,
-			na.bridge = na.bridge,
-			...
-		)
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -119,11 +119,9 @@ HT_SINE_lookback <- sine_wave_lookback <- function(
 	na.bridge = FALSE,
 	...
 ) {
-
 	.Call(
 		C_impl_ta_HT_SINE_lookback
 	)
-
 }
 
 #' @usage NULL
@@ -134,8 +132,8 @@ sine_wave.numeric <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## warn if 'cols' have been
 	## passed just to make sure
 	## the user knows its not possible
@@ -170,8 +168,8 @@ sine_wave.plotly <- function(
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
-	...) {
-
+	...
+) {
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -249,9 +247,13 @@ sine_wave.plotly <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {"Hilbert Transform - SineWave"} else {title}
+			title = if (missing(title)) {
+				"Hilbert Transform - SineWave"
+			} else {
+				title
+			}
 		),
-		data = constructed_indicator[,values_to_extract, drop = FALSE],
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract
 	)
 
@@ -272,8 +274,8 @@ sine_wave.ggplot <- function(
 	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...) {
-
+	...
+) {
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -338,9 +340,13 @@ sine_wave.ggplot <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {"Hilbert Transform - SineWave"} else {title}
+			title = if (missing(title)) {
+				"Hilbert Transform - SineWave"
+			} else {
+				title
+			}
 		),
-		data = constructed_indicator[,values_to_extract, drop = FALSE],
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract,
 		name = get0(x = "name", ifnotfound = NULL)
 	)

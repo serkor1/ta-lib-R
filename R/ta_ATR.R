@@ -19,8 +19,9 @@ average_true_range <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...) {
-  UseMethod("average_true_range")
+	...
+) {
+	UseMethod("average_true_range")
 }
 
 #' @export
@@ -39,8 +40,8 @@ average_true_range.default <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -51,7 +52,7 @@ average_true_range.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~high + low + close,
+		default_formula = ~ high + low + close,
 		data = x,
 		...
 	)
@@ -67,7 +68,7 @@ average_true_range.default <- function(
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		as.integer(timePeriod),		
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
@@ -98,7 +99,6 @@ average_true_range.data.frame <- function(
 			...
 		)
 	)
-
 }
 
 #' @usage NULL
@@ -110,15 +110,15 @@ average_true_range.matrix <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	average_true_range.default(
-			x = x,
-			cols = cols ,
-			timePeriod = timePeriod,
-			na.bridge = na.bridge,
-			...
-		)
+		x = x,
+		cols = cols,
+		timePeriod = timePeriod,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -129,12 +129,10 @@ ATR_lookback <- average_true_range_lookback <- function(
 	na.bridge = FALSE,
 	...
 ) {
-
 	.Call(
 		C_impl_ta_ATR_lookback,
 		as.integer(timePeriod)
 	)
-
 }
 
 #' @usage NULL
@@ -149,8 +147,8 @@ average_true_range.plotly <- function(
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
-	...) {
-
+	...
+) {
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -166,7 +164,7 @@ average_true_range.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~high + low + close,
+		default_formula = ~ high + low + close,
 		...
 	)
 
@@ -214,9 +212,13 @@ average_true_range.plotly <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {"Average True Range"} else {title}
+			title = if (missing(title)) {
+				"Average True Range"
+			} else {
+				title
+			}
 		),
-		data = constructed_indicator[,values_to_extract, drop = FALSE],
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract
 	)
 
@@ -238,8 +240,8 @@ average_true_range.ggplot <- function(
 	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...) {
-
+	...
+) {
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -254,7 +256,7 @@ average_true_range.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~high + low + close,
+		default_formula = ~ high + low + close,
 		...
 	)
 
@@ -302,9 +304,13 @@ average_true_range.ggplot <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {"Average True Range"} else {title}
+			title = if (missing(title)) {
+				"Average True Range"
+			} else {
+				title
+			}
 		),
-		data = constructed_indicator[,values_to_extract, drop = FALSE],
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract,
 		name = get0(x = "name", ifnotfound = NULL)
 	)

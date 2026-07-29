@@ -23,8 +23,9 @@ ultimate_oscillator <- function(
 	secondPeriod = 14,
 	thirdPeriod = 28,
 	na.bridge = FALSE,
-	...) {
-  UseMethod("ultimate_oscillator")
+	...
+) {
+	UseMethod("ultimate_oscillator")
 }
 
 #' @export
@@ -45,8 +46,8 @@ ultimate_oscillator.default <- function(
 	secondPeriod = 14,
 	thirdPeriod = 28,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -57,7 +58,7 @@ ultimate_oscillator.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~high + low + close,
+		default_formula = ~ high + low + close,
 		data = x,
 		...
 	)
@@ -75,7 +76,7 @@ ultimate_oscillator.default <- function(
 		constructed_series[[3]],
 		as.integer(firstPeriod),
 		as.integer(secondPeriod),
-		as.integer(thirdPeriod),		
+		as.integer(thirdPeriod),
 		as.logical(na.bridge)
 	)
 
@@ -110,7 +111,6 @@ ultimate_oscillator.data.frame <- function(
 			...
 		)
 	)
-
 }
 
 #' @usage NULL
@@ -124,17 +124,17 @@ ultimate_oscillator.matrix <- function(
 	secondPeriod = 14,
 	thirdPeriod = 28,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	ultimate_oscillator.default(
-			x = x,
-			cols = cols ,
-			firstPeriod = firstPeriod,
-			secondPeriod = secondPeriod,
-			thirdPeriod = thirdPeriod,
-			na.bridge = na.bridge,
-			...
-		)
+		x = x,
+		cols = cols,
+		firstPeriod = firstPeriod,
+		secondPeriod = secondPeriod,
+		thirdPeriod = thirdPeriod,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -147,14 +147,12 @@ ULTOSC_lookback <- ultimate_oscillator_lookback <- function(
 	na.bridge = FALSE,
 	...
 ) {
-
 	.Call(
 		C_impl_ta_ULTOSC_lookback,
 		as.integer(firstPeriod),
 		as.integer(secondPeriod),
 		as.integer(thirdPeriod)
 	)
-
 }
 
 #' @usage NULL
@@ -173,8 +171,8 @@ ultimate_oscillator.plotly <- function(
 	upper_bound = 70,
 	## splice:optional-plotly:end
 	title,
-	...) {
-
+	...
+) {
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -190,7 +188,7 @@ ultimate_oscillator.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~high + low + close,
+		default_formula = ~ high + low + close,
 		...
 	)
 
@@ -202,8 +200,8 @@ ultimate_oscillator.plotly <- function(
 			names(constructed_series)
 		),
 		firstPeriod = firstPeriod,
-			secondPeriod = secondPeriod,
-			thirdPeriod = thirdPeriod,
+		secondPeriod = secondPeriod,
+		thirdPeriod = thirdPeriod,
 		na.bridge = TRUE
 	)
 
@@ -251,9 +249,13 @@ ultimate_oscillator.plotly <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {"Ultimate Oscillator"} else {title}
+			title = if (missing(title)) {
+				"Ultimate Oscillator"
+			} else {
+				title
+			}
 		),
-		data = constructed_indicator[,values_to_extract, drop = FALSE],
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract
 	)
 
@@ -277,8 +279,8 @@ ultimate_oscillator.ggplot <- function(
 	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...) {
-
+	...
+) {
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -293,7 +295,7 @@ ultimate_oscillator.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~high + low + close,
+		default_formula = ~ high + low + close,
 		...
 	)
 
@@ -305,8 +307,8 @@ ultimate_oscillator.ggplot <- function(
 			names(constructed_series)
 		),
 		firstPeriod = firstPeriod,
-			secondPeriod = secondPeriod,
-			thirdPeriod = thirdPeriod,
+		secondPeriod = secondPeriod,
+		thirdPeriod = thirdPeriod,
 		na.bridge = TRUE
 	)
 
@@ -348,9 +350,13 @@ ultimate_oscillator.ggplot <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {"Ultimate Oscillator"} else {title}
+			title = if (missing(title)) {
+				"Ultimate Oscillator"
+			} else {
+				title
+			}
 		),
-		data = constructed_indicator[,values_to_extract, drop = FALSE],
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract,
 		name = get0(x = "name", ifnotfound = NULL)
 	)

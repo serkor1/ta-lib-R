@@ -21,8 +21,9 @@ parabolic_stop_and_reverse <- function(
 	accelerationFactor = 0.02,
 	afMaximum = 0.2,
 	na.bridge = FALSE,
-	...) {
-  UseMethod("parabolic_stop_and_reverse")
+	...
+) {
+	UseMethod("parabolic_stop_and_reverse")
 }
 
 #' @export
@@ -42,8 +43,8 @@ parabolic_stop_and_reverse.default <- function(
 	accelerationFactor = 0.02,
 	afMaximum = 0.2,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -54,7 +55,7 @@ parabolic_stop_and_reverse.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~high + low,
+		default_formula = ~ high + low,
 		data = x,
 		...
 	)
@@ -70,7 +71,7 @@ parabolic_stop_and_reverse.default <- function(
 		constructed_series[[1]],
 		constructed_series[[2]],
 		as.double(accelerationFactor),
-		as.double(afMaximum),		
+		as.double(afMaximum),
 		as.logical(na.bridge)
 	)
 
@@ -103,7 +104,6 @@ parabolic_stop_and_reverse.data.frame <- function(
 			...
 		)
 	)
-
 }
 
 #' @usage NULL
@@ -116,16 +116,16 @@ parabolic_stop_and_reverse.matrix <- function(
 	accelerationFactor = 0.02,
 	afMaximum = 0.2,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	parabolic_stop_and_reverse.default(
-			x = x,
-			cols = cols ,
-			accelerationFactor = accelerationFactor,
-			afMaximum = afMaximum,
-			na.bridge = na.bridge,
-			...
-		)
+		x = x,
+		cols = cols,
+		accelerationFactor = accelerationFactor,
+		afMaximum = afMaximum,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -137,13 +137,11 @@ SAR_lookback <- parabolic_stop_and_reverse_lookback <- function(
 	na.bridge = FALSE,
 	...
 ) {
-
 	.Call(
 		C_impl_ta_SAR_lookback,
 		as.double(accelerationFactor),
 		as.double(afMaximum)
 	)
-
 }
 
 #' @usage NULL
@@ -158,8 +156,8 @@ parabolic_stop_and_reverse.plotly <- function(
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
-	...) {
-
+	...
+) {
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -175,7 +173,7 @@ parabolic_stop_and_reverse.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~high + low,
+		default_formula = ~ high + low,
 		...
 	)
 
@@ -187,7 +185,7 @@ parabolic_stop_and_reverse.plotly <- function(
 			names(constructed_series)
 		),
 		accelerationFactor = accelerationFactor,
-			afMaximum = afMaximum,
+		afMaximum = afMaximum,
 		na.bridge = TRUE
 	)
 
@@ -265,8 +263,8 @@ parabolic_stop_and_reverse.ggplot <- function(
 	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...) {
-
+	...
+) {
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -281,7 +279,7 @@ parabolic_stop_and_reverse.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~high + low,
+		default_formula = ~ high + low,
 		...
 	)
 
@@ -293,7 +291,7 @@ parabolic_stop_and_reverse.ggplot <- function(
 			names(constructed_series)
 		),
 		accelerationFactor = accelerationFactor,
-			afMaximum = afMaximum,
+		afMaximum = afMaximum,
 		na.bridge = TRUE
 	)
 

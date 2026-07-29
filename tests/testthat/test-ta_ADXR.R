@@ -8,19 +8,17 @@
 ## checks this ensures that
 ## average_directional_movement_index_rating and ADXR produces the same results
 testthat::test_that(desc = 'Alias and function similarity', code = {
+	## 1) test that the alias and
+	##    function returns the same values
+	output <- average_directional_movement_index_rating(SPY)
+	alias <- ADXR(SPY)
 
-    ## 1) test that the alias and
-    ##    function returns the same values
-    output <- average_directional_movement_index_rating(SPY)
-    alias  <- ADXR(SPY)
-
-    ## 1.1) check if the values
+	## 1.1) check if the values
 	##      are equal
 	testthat::expect_equal(
-		object   = output,
+		object = output,
 		expected = alias
 	)
-
 })
 
 ## type-checks for data.frames and
@@ -33,7 +31,6 @@ testthat::test_that(desc = 'Class in, class out (<matrix>)', code = {
 	testthat::expect_true(
 		inherits(average_directional_movement_index_rating(SPY), class(SPY))
 	)
-
 })
 
 ## <data.frame> object
@@ -52,13 +49,13 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 ## NOTE: This test is more of a test of the internal
 ##       series() function
 testthat::test_that(desc = 'Default calls', code = {
-    testthat::expect_equal(
+	testthat::expect_equal(
 		object = average_directional_movement_index_rating(
 			BTC
 		),
 		expected = average_directional_movement_index_rating(
 			BTC,
-			cols = ~high + low + close
+			cols = ~ high + low + close
 		)
 	)
 })
@@ -68,7 +65,7 @@ testthat::test_that(desc = 'Default calls', code = {
 ##
 ## <data.frame> object
 testthat::test_that(desc = 'Equal length of input and output for <data.frame> with na.bridge = TRUE', code = {
-    testthat::expect_equal(
+	testthat::expect_equal(
 		object = nrow(average_directional_movement_index_rating(
 			ATOM,
 			na.bridge = TRUE
@@ -84,9 +81,12 @@ testthat::test_that(desc = 'Row names are respected for <data.frame>, na.bridge 
 	x_names <- row.names(ATOM)
 
 	## calculate indicator
-	indicator <- average_directional_movement_index_rating(ATOM, na.bridge = TRUE)
+	indicator <- average_directional_movement_index_rating(
+		ATOM,
+		na.bridge = TRUE
+	)
 
-    testthat::expect_equal(
+	testthat::expect_equal(
 		object = x_names,
 		expected = rownames(indicator)
 	)
@@ -97,7 +97,7 @@ testthat::test_that(desc = 'Row names are respected for <data.frame>, na.bridge 
 ##
 ## <data.frame> object
 testthat::test_that(desc = 'Equal length of input and output for <data.frame>', code = {
-    testthat::expect_equal(
+	testthat::expect_equal(
 		object = nrow(average_directional_movement_index_rating(
 			BTC
 		)),
@@ -114,7 +114,7 @@ testthat::test_that(desc = 'Row names are respected for <data.frame>', code = {
 	## calculate indicator
 	indicator <- average_directional_movement_index_rating(BTC)
 
-    testthat::expect_equal(
+	testthat::expect_equal(
 		object = x_names,
 		expected = rownames(indicator)
 	)
@@ -122,7 +122,7 @@ testthat::test_that(desc = 'Row names are respected for <data.frame>', code = {
 
 ## <matrix> object
 testthat::test_that(desc = 'Equal length of input and output for <matrix>', code = {
-    testthat::expect_equal(
+	testthat::expect_equal(
 		object = nrow(average_directional_movement_index_rating(
 			SPY
 		)),
@@ -136,13 +136,13 @@ testthat::test_that(desc = 'Row names are respected for <matrix>', code = {
 	## extract row names
 	## NOTE: by default the SPY has no
 	##       rownames
-	rownames(SPY) <- paste0("row",1:nrow(SPY))
+	rownames(SPY) <- paste0("row", 1:nrow(SPY))
 
 	## calculate indicator
 	indicator <- average_directional_movement_index_rating(SPY)
 
-    testthat::expect_equal(
-		object = paste0("row",1:nrow(SPY)),
+	testthat::expect_equal(
+		object = paste0("row", 1:nrow(SPY)),
 		expected = rownames(indicator)
 	)
 })
@@ -150,19 +150,19 @@ testthat::test_that(desc = 'Row names are respected for <matrix>', code = {
 ## test the output's attribute "lookback" matches
 ## the lookback()
 testthat::test_that(desc = 'Lookback equivalence', code = {
-
-output <- attr(
-	average_directional_movement_index_rating(x = SPY),
-	"lookback"
-)
-
-testthat::expect_equal(
-		object = output,
-		expected = lookback(FUN = average_directional_movement_index_rating, x = SPY)
+	output <- attr(
+		average_directional_movement_index_rating(x = SPY),
+		"lookback"
 	)
 
-}
-)
+	testthat::expect_equal(
+		object = output,
+		expected = lookback(
+			FUN = average_directional_movement_index_rating,
+			x = SPY
+		)
+	)
+})
 
 ## <plotly>-method checks for <data.frame>
 ## and <matrix>

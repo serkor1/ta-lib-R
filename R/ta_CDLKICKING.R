@@ -27,8 +27,9 @@ kicking <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-  UseMethod("kicking")
+	...
+) {
+	UseMethod("kicking")
 }
 
 #' @export
@@ -46,8 +47,8 @@ kicking.default <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## get candlestick pattern
 	## options
 	##
@@ -70,7 +71,7 @@ kicking.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~open + high + low + close,
+		default_formula = ~ open + high + low + close,
 		data = x,
 		...
 	)
@@ -85,9 +86,9 @@ kicking.default <- function(
 		.Call(
 			C_impl_ta_CDLKICKING,
 			constructed_series[[1]],
-		constructed_series[[2]],
-		constructed_series[[3]],
-		constructed_series[[4]],
+			constructed_series[[2]],
+			constructed_series[[3]],
+			constructed_series[[4]],
 			normalize,
 			as.logical(na.bridge)
 		)
@@ -121,7 +122,6 @@ kicking.data.frame <- function(
 			...
 		)
 	)
-
 }
 
 #' @usage NULL
@@ -132,14 +132,14 @@ kicking.matrix <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	kicking.default(
-			x = x,
-			cols = cols ,
-			na.bridge = na.bridge,
-			...
-		)
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -162,8 +162,8 @@ kicking.plotly <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -179,7 +179,7 @@ kicking.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~open + high + low + close,
+		default_formula = ~ open + high + low + close,
 		...
 	)
 
@@ -221,8 +221,8 @@ kicking.ggplot <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -237,7 +237,7 @@ kicking.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~open + high + low + close,
+		default_formula = ~ open + high + low + close,
 		...
 	)
 

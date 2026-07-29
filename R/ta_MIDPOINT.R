@@ -19,8 +19,9 @@ midpoint_period <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...) {
-  UseMethod("midpoint_period")
+	...
+) {
+	UseMethod("midpoint_period")
 }
 
 #' @export
@@ -39,8 +40,8 @@ midpoint_period.default <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -65,7 +66,7 @@ midpoint_period.default <- function(
 	x <- .Call(
 		C_impl_ta_MIDPOINT,
 		constructed_series[[1]],
-		as.integer(timePeriod),		
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
@@ -96,7 +97,6 @@ midpoint_period.data.frame <- function(
 			...
 		)
 	)
-
 }
 
 #' @usage NULL
@@ -108,15 +108,15 @@ midpoint_period.matrix <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	midpoint_period.default(
-			x = x,
-			cols = cols ,
-			timePeriod = timePeriod,
-			na.bridge = na.bridge,
-			...
-		)
+		x = x,
+		cols = cols,
+		timePeriod = timePeriod,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -127,12 +127,10 @@ MIDPOINT_lookback <- midpoint_period_lookback <- function(
 	na.bridge = FALSE,
 	...
 ) {
-
 	.Call(
 		C_impl_ta_MIDPOINT_lookback,
 		as.integer(timePeriod)
 	)
-
 }
 
 #' @usage NULL
@@ -144,8 +142,8 @@ midpoint_period.numeric <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## warn if 'cols' have been
 	## passed just to make sure
 	## the user knows its not possible
@@ -181,8 +179,8 @@ midpoint_period.plotly <- function(
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
-	...) {
-
+	...
+) {
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -261,8 +259,8 @@ midpoint_period.ggplot <- function(
 	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...) {
-
+	...
+) {
 	## check ggplot2 availability
 	assert_ggplot2()
 

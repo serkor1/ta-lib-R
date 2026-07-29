@@ -15,8 +15,10 @@
 rolling_maximum <- function(
 	x,
 	timePeriod = 30,
-	na.bridge = FALSE, ...) {
-  UseMethod("rolling_maximum")
+	na.bridge = FALSE,
+	...
+) {
+	UseMethod("rolling_maximum")
 }
 
 #' @export
@@ -33,8 +35,9 @@ MAX <- rolling_maximum
 rolling_maximum.default <- function(
 	x,
 	timePeriod = 30,
-	na.bridge = FALSE, ...) {
-
+	na.bridge = FALSE,
+	...
+) {
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -62,8 +65,9 @@ rolling_maximum.default <- function(
 rolling_maximum.numeric <- function(
 	x,
 	timePeriod = 30,
-	na.bridge = FALSE, ...) {
-
+	na.bridge = FALSE,
+	...
+) {
 	## calculate indicator and
 	## return as data.frame
 	x <- rolling_maximum.default(
@@ -83,7 +87,8 @@ rolling_maximum.numeric <- function(
 
 #' @usage NULL
 MAX_lookback <- rolling_maximum_lookback <- function(
-	x,timePeriod = 30,
+	x,
+	timePeriod = 30,
 	na.bridge = FALSE,
 	...
 ) {

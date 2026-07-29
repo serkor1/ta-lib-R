@@ -8,19 +8,17 @@
 ## checks this ensures that
 ## tasuki_gap and CDLTASUKIGAP produces the same results
 testthat::test_that(desc = 'Alias and function similarity', code = {
+	## 1) test that the alias and
+	##    function returns the same values
+	output <- tasuki_gap(SPY)
+	alias <- CDLTASUKIGAP(SPY)
 
-    ## 1) test that the alias and
-    ##    function returns the same values
-    output <- tasuki_gap(SPY)
-    alias  <- CDLTASUKIGAP(SPY)
-
-    ## 1.1) check if the values
+	## 1.1) check if the values
 	##      are equal
 	testthat::expect_equal(
-		object   = output,
+		object = output,
 		expected = alias
 	)
-
 })
 
 ## type-checks for data.frames and
@@ -33,7 +31,6 @@ testthat::test_that(desc = 'Class in, class out (<matrix>)', code = {
 	testthat::expect_true(
 		inherits(tasuki_gap(SPY), class(SPY))
 	)
-
 })
 
 ## <data.frame> object
@@ -52,13 +49,13 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 ## NOTE: This test is more of a test of the internal
 ##       series() function
 testthat::test_that(desc = 'Default calls', code = {
-    testthat::expect_equal(
+	testthat::expect_equal(
 		object = tasuki_gap(
 			BTC
 		),
 		expected = tasuki_gap(
 			BTC,
-			cols = ~open + high + low + close
+			cols = ~ open + high + low + close
 		)
 	)
 })
@@ -68,7 +65,7 @@ testthat::test_that(desc = 'Default calls', code = {
 ##
 ## <data.frame> object
 testthat::test_that(desc = 'Equal length of input and output for <data.frame> with na.bridge = TRUE', code = {
-    testthat::expect_equal(
+	testthat::expect_equal(
 		object = nrow(tasuki_gap(
 			ATOM,
 			na.bridge = TRUE
@@ -86,7 +83,7 @@ testthat::test_that(desc = 'Row names are respected for <data.frame>, na.bridge 
 	## calculate indicator
 	indicator <- tasuki_gap(ATOM, na.bridge = TRUE)
 
-    testthat::expect_equal(
+	testthat::expect_equal(
 		object = x_names,
 		expected = rownames(indicator)
 	)
@@ -97,7 +94,7 @@ testthat::test_that(desc = 'Row names are respected for <data.frame>, na.bridge 
 ##
 ## <data.frame> object
 testthat::test_that(desc = 'Equal length of input and output for <data.frame>', code = {
-    testthat::expect_equal(
+	testthat::expect_equal(
 		object = nrow(tasuki_gap(
 			BTC
 		)),
@@ -114,7 +111,7 @@ testthat::test_that(desc = 'Row names are respected for <data.frame>', code = {
 	## calculate indicator
 	indicator <- tasuki_gap(BTC)
 
-    testthat::expect_equal(
+	testthat::expect_equal(
 		object = x_names,
 		expected = rownames(indicator)
 	)
@@ -122,7 +119,7 @@ testthat::test_that(desc = 'Row names are respected for <data.frame>', code = {
 
 ## <matrix> object
 testthat::test_that(desc = 'Equal length of input and output for <matrix>', code = {
-    testthat::expect_equal(
+	testthat::expect_equal(
 		object = nrow(tasuki_gap(
 			SPY
 		)),
@@ -136,13 +133,13 @@ testthat::test_that(desc = 'Row names are respected for <matrix>', code = {
 	## extract row names
 	## NOTE: by default the SPY has no
 	##       rownames
-	rownames(SPY) <- paste0("row",1:nrow(SPY))
+	rownames(SPY) <- paste0("row", 1:nrow(SPY))
 
 	## calculate indicator
 	indicator <- tasuki_gap(SPY)
 
-    testthat::expect_equal(
-		object = paste0("row",1:nrow(SPY)),
+	testthat::expect_equal(
+		object = paste0("row", 1:nrow(SPY)),
 		expected = rownames(indicator)
 	)
 })
@@ -150,19 +147,16 @@ testthat::test_that(desc = 'Row names are respected for <matrix>', code = {
 ## test the output's attribute "lookback" matches
 ## the lookback()
 testthat::test_that(desc = 'Lookback equivalence', code = {
+	output <- attr(
+		tasuki_gap(x = SPY),
+		"lookback"
+	)
 
-output <- attr(
-	tasuki_gap(x = SPY),
-	"lookback"
-)
-
-testthat::expect_equal(
+	testthat::expect_equal(
 		object = output,
 		expected = lookback(FUN = tasuki_gap, x = SPY)
 	)
-
-}
-)
+})
 
 ## <plotly>-method checks for <data.frame>
 ## and <matrix>

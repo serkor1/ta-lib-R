@@ -15,8 +15,10 @@
 rolling_minimum <- function(
 	x,
 	timePeriod = 30,
-	na.bridge = FALSE, ...) {
-  UseMethod("rolling_minimum")
+	na.bridge = FALSE,
+	...
+) {
+	UseMethod("rolling_minimum")
 }
 
 #' @export
@@ -33,8 +35,9 @@ MIN <- rolling_minimum
 rolling_minimum.default <- function(
 	x,
 	timePeriod = 30,
-	na.bridge = FALSE, ...) {
-
+	na.bridge = FALSE,
+	...
+) {
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -62,8 +65,9 @@ rolling_minimum.default <- function(
 rolling_minimum.numeric <- function(
 	x,
 	timePeriod = 30,
-	na.bridge = FALSE, ...) {
-
+	na.bridge = FALSE,
+	...
+) {
 	## calculate indicator and
 	## return as data.frame
 	x <- rolling_minimum.default(
@@ -83,7 +87,8 @@ rolling_minimum.numeric <- function(
 
 #' @usage NULL
 MIN_lookback <- rolling_minimum_lookback <- function(
-	x,timePeriod = 30,
+	x,
+	timePeriod = 30,
 	na.bridge = FALSE,
 	...
 ) {

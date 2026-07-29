@@ -15,8 +15,10 @@
 rolling_sum <- function(
 	x,
 	timePeriod = 30,
-	na.bridge = FALSE, ...) {
-  UseMethod("rolling_sum")
+	na.bridge = FALSE,
+	...
+) {
+	UseMethod("rolling_sum")
 }
 
 #' @export
@@ -33,8 +35,9 @@ SUM <- rolling_sum
 rolling_sum.default <- function(
 	x,
 	timePeriod = 30,
-	na.bridge = FALSE, ...) {
-
+	na.bridge = FALSE,
+	...
+) {
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -62,8 +65,9 @@ rolling_sum.default <- function(
 rolling_sum.numeric <- function(
 	x,
 	timePeriod = 30,
-	na.bridge = FALSE, ...) {
-
+	na.bridge = FALSE,
+	...
+) {
 	## calculate indicator and
 	## return as data.frame
 	x <- rolling_sum.default(
@@ -83,7 +87,8 @@ rolling_sum.numeric <- function(
 
 #' @usage NULL
 SUM_lookback <- rolling_sum_lookback <- function(
-	x,timePeriod = 30,
+	x,
+	timePeriod = 30,
 	na.bridge = FALSE,
 	...
 ) {

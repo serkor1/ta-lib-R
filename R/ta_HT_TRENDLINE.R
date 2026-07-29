@@ -18,8 +18,9 @@ trendline <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-  UseMethod("trendline")
+	...
+) {
+	UseMethod("trendline")
 }
 
 #' @export
@@ -37,8 +38,8 @@ trendline.default <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -62,7 +63,7 @@ trendline.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_HT_TRENDLINE,
-		constructed_series[[1]],		
+		constructed_series[[1]],
 		as.logical(na.bridge)
 	)
 
@@ -91,7 +92,6 @@ trendline.data.frame <- function(
 			...
 		)
 	)
-
 }
 
 #' @usage NULL
@@ -102,14 +102,14 @@ trendline.matrix <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	trendline.default(
-			x = x,
-			cols = cols ,
-			na.bridge = na.bridge,
-			...
-		)
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -119,11 +119,9 @@ HT_TRENDLINE_lookback <- trendline_lookback <- function(
 	na.bridge = FALSE,
 	...
 ) {
-
 	.Call(
 		C_impl_ta_HT_TRENDLINE_lookback
 	)
-
 }
 
 #' @usage NULL
@@ -134,8 +132,8 @@ trendline.numeric <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## warn if 'cols' have been
 	## passed just to make sure
 	## the user knows its not possible
@@ -169,8 +167,8 @@ trendline.plotly <- function(
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
-	...) {
-
+	...
+) {
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -239,8 +237,8 @@ trendline.ggplot <- function(
 	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...) {
-
+	...
+) {
 	## check ggplot2 availability
 	assert_ggplot2()
 

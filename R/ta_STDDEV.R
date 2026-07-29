@@ -16,8 +16,10 @@ rolling_standard_deviation <- function(
 	x,
 	timePeriod = 5,
 	deviations = 1,
-	na.bridge = FALSE, ...) {
-  UseMethod("rolling_standard_deviation")
+	na.bridge = FALSE,
+	...
+) {
+	UseMethod("rolling_standard_deviation")
 }
 
 #' @export
@@ -35,8 +37,9 @@ rolling_standard_deviation.default <- function(
 	x,
 	timePeriod = 5,
 	deviations = 1,
-	na.bridge = FALSE, ...) {
-
+	na.bridge = FALSE,
+	...
+) {
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -66,14 +69,15 @@ rolling_standard_deviation.numeric <- function(
 	x,
 	timePeriod = 5,
 	deviations = 1,
-	na.bridge = FALSE, ...) {
-
+	na.bridge = FALSE,
+	...
+) {
 	## calculate indicator and
 	## return as data.frame
 	x <- rolling_standard_deviation.default(
 		x = x,
 		timePeriod = timePeriod,
-			deviations = deviations,
+		deviations = deviations,
 		na.bridge = na.bridge
 	)
 
@@ -88,7 +92,8 @@ rolling_standard_deviation.numeric <- function(
 
 #' @usage NULL
 STDDEV_lookback <- rolling_standard_deviation_lookback <- function(
-	x,timePeriod = 5,
+	x,
+	timePeriod = 5,
 	deviations = 1,
 	na.bridge = FALSE,
 	...

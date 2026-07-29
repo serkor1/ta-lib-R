@@ -16,8 +16,10 @@ rolling_beta <- function(
 	x,
 	y,
 	timePeriod = 5,
-	na.bridge = FALSE, ...) {
-  UseMethod("rolling_beta")
+	na.bridge = FALSE,
+	...
+) {
+	UseMethod("rolling_beta")
 }
 
 #' @export
@@ -35,8 +37,9 @@ rolling_beta.default <- function(
 	x,
 	y,
 	timePeriod = 5,
-	na.bridge = FALSE, ...) {
-
+	na.bridge = FALSE,
+	...
+) {
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -66,8 +69,9 @@ rolling_beta.numeric <- function(
 	x,
 	y,
 	timePeriod = 5,
-	na.bridge = FALSE, ...) {
-
+	na.bridge = FALSE,
+	...
+) {
 	## calculate indicator and
 	## return as data.frame
 	x <- rolling_beta.default(
@@ -88,7 +92,8 @@ rolling_beta.numeric <- function(
 
 #' @usage NULL
 BETA_lookback <- rolling_beta_lookback <- function(
-	x,timePeriod = 5,
+	x,
+	timePeriod = 5,
 	na.bridge = FALSE,
 	...
 ) {

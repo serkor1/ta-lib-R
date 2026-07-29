@@ -19,8 +19,9 @@ acceleration_bands <- function(
 	cols,
 	timePeriod = 20,
 	na.bridge = FALSE,
-	...) {
-  UseMethod("acceleration_bands")
+	...
+) {
+	UseMethod("acceleration_bands")
 }
 
 #' @export
@@ -39,8 +40,8 @@ acceleration_bands.default <- function(
 	cols,
 	timePeriod = 20,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -51,7 +52,7 @@ acceleration_bands.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~high + low + close,
+		default_formula = ~ high + low + close,
 		data = x,
 		...
 	)
@@ -67,7 +68,7 @@ acceleration_bands.default <- function(
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		as.integer(timePeriod),		
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
@@ -98,7 +99,6 @@ acceleration_bands.data.frame <- function(
 			...
 		)
 	)
-
 }
 
 #' @usage NULL
@@ -110,15 +110,15 @@ acceleration_bands.matrix <- function(
 	cols,
 	timePeriod = 20,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	acceleration_bands.default(
-			x = x,
-			cols = cols ,
-			timePeriod = timePeriod,
-			na.bridge = na.bridge,
-			...
-		)
+		x = x,
+		cols = cols,
+		timePeriod = timePeriod,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -129,12 +129,10 @@ ACCBANDS_lookback <- acceleration_bands_lookback <- function(
 	na.bridge = FALSE,
 	...
 ) {
-
 	.Call(
 		C_impl_ta_ACCBANDS_lookback,
 		as.integer(timePeriod)
 	)
-
 }
 
 #' @usage NULL
@@ -150,8 +148,8 @@ acceleration_bands.plotly <- function(
 	color = "steelblue",
 	alpha = 0.2,
 	## splice:optional-plotly:end
-	...) {
-
+	...
+) {
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -167,7 +165,7 @@ acceleration_bands.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~high + low + close,
+		default_formula = ~ high + low + close,
 		...
 	)
 
@@ -253,8 +251,8 @@ acceleration_bands.ggplot <- function(
 	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...) {
-
+	...
+) {
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -269,7 +267,7 @@ acceleration_bands.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~high + low + close,
+		default_formula = ~ high + low + close,
 		...
 	)
 

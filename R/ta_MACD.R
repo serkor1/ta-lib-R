@@ -23,8 +23,9 @@ moving_average_convergence_divergence <- function(
 	slowPeriod = 26,
 	signalPeriod = 9,
 	na.bridge = FALSE,
-	...) {
-  UseMethod("moving_average_convergence_divergence")
+	...
+) {
+	UseMethod("moving_average_convergence_divergence")
 }
 
 #' @export
@@ -45,8 +46,8 @@ moving_average_convergence_divergence.default <- function(
 	slowPeriod = 26,
 	signalPeriod = 9,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -73,7 +74,7 @@ moving_average_convergence_divergence.default <- function(
 		constructed_series[[1]],
 		as.integer(fastPeriod),
 		as.integer(slowPeriod),
-		as.integer(signalPeriod),		
+		as.integer(signalPeriod),
 		as.logical(na.bridge)
 	)
 
@@ -108,7 +109,6 @@ moving_average_convergence_divergence.data.frame <- function(
 			...
 		)
 	)
-
 }
 
 #' @usage NULL
@@ -122,17 +122,17 @@ moving_average_convergence_divergence.matrix <- function(
 	slowPeriod = 26,
 	signalPeriod = 9,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	moving_average_convergence_divergence.default(
-			x = x,
-			cols = cols ,
-			fastPeriod = fastPeriod,
-			slowPeriod = slowPeriod,
-			signalPeriod = signalPeriod,
-			na.bridge = na.bridge,
-			...
-		)
+		x = x,
+		cols = cols,
+		fastPeriod = fastPeriod,
+		slowPeriod = slowPeriod,
+		signalPeriod = signalPeriod,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -145,14 +145,12 @@ MACD_lookback <- moving_average_convergence_divergence_lookback <- function(
 	na.bridge = FALSE,
 	...
 ) {
-
 	.Call(
 		C_impl_ta_MACD_lookback,
 		as.integer(fastPeriod),
 		as.integer(slowPeriod),
 		as.integer(signalPeriod)
 	)
-
 }
 
 #' @usage NULL
@@ -166,8 +164,8 @@ moving_average_convergence_divergence.numeric <- function(
 	slowPeriod = 26,
 	signalPeriod = 9,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## warn if 'cols' have been
 	## passed just to make sure
 	## the user knows its not possible
@@ -208,8 +206,8 @@ moving_average_convergence_divergence.plotly <- function(
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
-	...) {
-
+	...
+) {
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -237,8 +235,8 @@ moving_average_convergence_divergence.plotly <- function(
 			names(constructed_series)
 		),
 		fastPeriod = fastPeriod,
-			slowPeriod = slowPeriod,
-			signalPeriod = signalPeriod,
+		slowPeriod = slowPeriod,
+		signalPeriod = signalPeriod,
 		na.bridge = TRUE
 	)
 
@@ -313,9 +311,13 @@ moving_average_convergence_divergence.plotly <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {"Moving Average Convergence/Divergence"} else {title}
+			title = if (missing(title)) {
+				"Moving Average Convergence/Divergence"
+			} else {
+				title
+			}
 		),
-		data = constructed_indicator[,values_to_extract, drop = FALSE],
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract
 	)
 
@@ -339,8 +341,8 @@ moving_average_convergence_divergence.ggplot <- function(
 	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...) {
-
+	...
+) {
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -367,8 +369,8 @@ moving_average_convergence_divergence.ggplot <- function(
 			names(constructed_series)
 		),
 		fastPeriod = fastPeriod,
-			slowPeriod = slowPeriod,
-			signalPeriod = signalPeriod,
+		slowPeriod = slowPeriod,
+		signalPeriod = signalPeriod,
 		na.bridge = TRUE
 	)
 
@@ -418,9 +420,13 @@ moving_average_convergence_divergence.ggplot <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {"Moving Average Convergence/Divergence"} else {title}
+			title = if (missing(title)) {
+				"Moving Average Convergence/Divergence"
+			} else {
+				title
+			}
 		),
-		data = constructed_indicator[,values_to_extract, drop = FALSE],
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract,
 		name = get0(x = "name", ifnotfound = NULL)
 	)

@@ -19,8 +19,9 @@ aroon <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...) {
-  UseMethod("aroon")
+	...
+) {
+	UseMethod("aroon")
 }
 
 #' @export
@@ -39,8 +40,8 @@ aroon.default <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -51,7 +52,7 @@ aroon.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~high + low,
+		default_formula = ~ high + low,
 		data = x,
 		...
 	)
@@ -66,7 +67,7 @@ aroon.default <- function(
 		C_impl_ta_AROON,
 		constructed_series[[1]],
 		constructed_series[[2]],
-		as.integer(timePeriod),		
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
@@ -97,7 +98,6 @@ aroon.data.frame <- function(
 			...
 		)
 	)
-
 }
 
 #' @usage NULL
@@ -109,15 +109,15 @@ aroon.matrix <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	aroon.default(
-			x = x,
-			cols = cols ,
-			timePeriod = timePeriod,
-			na.bridge = na.bridge,
-			...
-		)
+		x = x,
+		cols = cols,
+		timePeriod = timePeriod,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -128,12 +128,10 @@ AROON_lookback <- aroon_lookback <- function(
 	na.bridge = FALSE,
 	...
 ) {
-
 	.Call(
 		C_impl_ta_AROON_lookback,
 		as.integer(timePeriod)
 	)
-
 }
 
 #' @usage NULL
@@ -148,8 +146,8 @@ aroon.plotly <- function(
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
-	...) {
-
+	...
+) {
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -165,7 +163,7 @@ aroon.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~high + low,
+		default_formula = ~ high + low,
 		...
 	)
 
@@ -232,9 +230,13 @@ aroon.plotly <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {"Aroon"} else {title}
+			title = if (missing(title)) {
+				"Aroon"
+			} else {
+				title
+			}
 		),
-		data = constructed_indicator[,values_to_extract, drop = FALSE],
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract
 	)
 
@@ -256,8 +258,8 @@ aroon.ggplot <- function(
 	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...) {
-
+	...
+) {
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -272,7 +274,7 @@ aroon.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~high + low,
+		default_formula = ~ high + low,
 		...
 	)
 
@@ -323,9 +325,13 @@ aroon.ggplot <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {"Aroon"} else {title}
+			title = if (missing(title)) {
+				"Aroon"
+			} else {
+				title
+			}
 		),
-		data = constructed_indicator[,values_to_extract, drop = FALSE],
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract,
 		name = get0(x = "name", ifnotfound = NULL)
 	)

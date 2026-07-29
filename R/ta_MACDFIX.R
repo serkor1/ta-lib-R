@@ -19,8 +19,9 @@ fixed_moving_average_convergence_divergence <- function(
 	cols,
 	signalPeriod = 9,
 	na.bridge = FALSE,
-	...) {
-  UseMethod("fixed_moving_average_convergence_divergence")
+	...
+) {
+	UseMethod("fixed_moving_average_convergence_divergence")
 }
 
 #' @export
@@ -39,8 +40,8 @@ fixed_moving_average_convergence_divergence.default <- function(
 	cols,
 	signalPeriod = 9,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -65,7 +66,7 @@ fixed_moving_average_convergence_divergence.default <- function(
 	x <- .Call(
 		C_impl_ta_MACDFIX,
 		constructed_series[[1]],
-		as.integer(signalPeriod),		
+		as.integer(signalPeriod),
 		as.logical(na.bridge)
 	)
 
@@ -96,7 +97,6 @@ fixed_moving_average_convergence_divergence.data.frame <- function(
 			...
 		)
 	)
-
 }
 
 #' @usage NULL
@@ -108,15 +108,15 @@ fixed_moving_average_convergence_divergence.matrix <- function(
 	cols,
 	signalPeriod = 9,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	fixed_moving_average_convergence_divergence.default(
-			x = x,
-			cols = cols ,
-			signalPeriod = signalPeriod,
-			na.bridge = na.bridge,
-			...
-		)
+		x = x,
+		cols = cols,
+		signalPeriod = signalPeriod,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -127,12 +127,10 @@ MACDFIX_lookback <- fixed_moving_average_convergence_divergence_lookback <- func
 	na.bridge = FALSE,
 	...
 ) {
-
 	.Call(
 		C_impl_ta_MACDFIX_lookback,
 		as.integer(signalPeriod)
 	)
-
 }
 
 #' @usage NULL
@@ -144,8 +142,8 @@ fixed_moving_average_convergence_divergence.numeric <- function(
 	cols,
 	signalPeriod = 9,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## warn if 'cols' have been
 	## passed just to make sure
 	## the user knows its not possible
@@ -182,8 +180,8 @@ fixed_moving_average_convergence_divergence.plotly <- function(
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
-	...) {
-
+	...
+) {
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -283,9 +281,13 @@ fixed_moving_average_convergence_divergence.plotly <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {"Moving Average Convergence/Divergence Fix 12/26"} else {title}
+			title = if (missing(title)) {
+				"Moving Average Convergence/Divergence Fix 12/26"
+			} else {
+				title
+			}
 		),
-		data = constructed_indicator[,values_to_extract, drop = FALSE],
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract
 	)
 
@@ -307,8 +309,8 @@ fixed_moving_average_convergence_divergence.ggplot <- function(
 	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...) {
-
+	...
+) {
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -384,9 +386,13 @@ fixed_moving_average_convergence_divergence.ggplot <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {"Moving Average Convergence/Divergence Fix 12/26"} else {title}
+			title = if (missing(title)) {
+				"Moving Average Convergence/Divergence Fix 12/26"
+			} else {
+				title
+			}
 		),
-		data = constructed_indicator[,values_to_extract, drop = FALSE],
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract,
 		name = get0(x = "name", ifnotfound = NULL)
 	)

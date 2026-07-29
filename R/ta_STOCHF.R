@@ -23,8 +23,9 @@ fast_stochastic <- function(
 	fastDPeriod = 3,
 	fastDMa = 0,
 	na.bridge = FALSE,
-	...) {
-  UseMethod("fast_stochastic")
+	...
+) {
+	UseMethod("fast_stochastic")
 }
 
 #' @export
@@ -45,8 +46,8 @@ fast_stochastic.default <- function(
 	fastDPeriod = 3,
 	fastDMa = 0,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -57,7 +58,7 @@ fast_stochastic.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~high + low + close,
+		default_formula = ~ high + low + close,
 		data = x,
 		...
 	)
@@ -75,7 +76,7 @@ fast_stochastic.default <- function(
 		constructed_series[[3]],
 		as.integer(fastKPeriod),
 		as.integer(fastDPeriod),
-		as.maType(fastDMa),		
+		as.maType(fastDMa),
 		as.logical(na.bridge)
 	)
 
@@ -110,7 +111,6 @@ fast_stochastic.data.frame <- function(
 			...
 		)
 	)
-
 }
 
 #' @usage NULL
@@ -124,17 +124,17 @@ fast_stochastic.matrix <- function(
 	fastDPeriod = 3,
 	fastDMa = 0,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	fast_stochastic.default(
-			x = x,
-			cols = cols ,
-			fastKPeriod = fastKPeriod,
-			fastDPeriod = fastDPeriod,
-			fastDMa = fastDMa,
-			na.bridge = na.bridge,
-			...
-		)
+		x = x,
+		cols = cols,
+		fastKPeriod = fastKPeriod,
+		fastDPeriod = fastDPeriod,
+		fastDMa = fastDMa,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -147,14 +147,12 @@ STOCHF_lookback <- fast_stochastic_lookback <- function(
 	na.bridge = FALSE,
 	...
 ) {
-
 	.Call(
 		C_impl_ta_STOCHF_lookback,
 		as.integer(fastKPeriod),
 		as.integer(fastDPeriod),
 		as.maType(fastDMa)
 	)
-
 }
 
 #' @usage NULL
@@ -173,8 +171,8 @@ fast_stochastic.plotly <- function(
 	upper_bound = 80,
 	## splice:optional-plotly:end
 	title,
-	...) {
-
+	...
+) {
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -190,7 +188,7 @@ fast_stochastic.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~high + low + close,
+		default_formula = ~ high + low + close,
 		...
 	)
 
@@ -202,8 +200,8 @@ fast_stochastic.plotly <- function(
 			names(constructed_series)
 		),
 		fastKPeriod = fastKPeriod,
-			fastDPeriod = fastDPeriod,
-			fastDMa = fastDMa,
+		fastDPeriod = fastDPeriod,
+		fastDMa = fastDMa,
 		na.bridge = TRUE
 	)
 
@@ -248,9 +246,13 @@ fast_stochastic.plotly <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {"Stochastic Fast"} else {title}
+			title = if (missing(title)) {
+				"Stochastic Fast"
+			} else {
+				title
+			}
 		),
-		data = constructed_indicator[,values_to_extract, drop = FALSE],
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract
 	)
 
@@ -274,8 +276,8 @@ fast_stochastic.ggplot <- function(
 	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...) {
-
+	...
+) {
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -290,7 +292,7 @@ fast_stochastic.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~high + low + close,
+		default_formula = ~ high + low + close,
 		...
 	)
 
@@ -302,8 +304,8 @@ fast_stochastic.ggplot <- function(
 			names(constructed_series)
 		),
 		fastKPeriod = fastKPeriod,
-			fastDPeriod = fastDPeriod,
-			fastDMa = fastDMa,
+		fastDPeriod = fastDPeriod,
+		fastDMa = fastDMa,
 		na.bridge = TRUE
 	)
 
@@ -345,9 +347,13 @@ fast_stochastic.ggplot <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {"Stochastic Fast"} else {title}
+			title = if (missing(title)) {
+				"Stochastic Fast"
+			} else {
+				title
+			}
 		),
-		data = constructed_indicator[,values_to_extract, drop = FALSE],
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract,
 		name = get0(x = "name", ifnotfound = NULL)
 	)

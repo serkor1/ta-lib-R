@@ -18,8 +18,9 @@ median_price <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-  UseMethod("median_price")
+	...
+) {
+	UseMethod("median_price")
 }
 
 #' @export
@@ -37,8 +38,8 @@ median_price.default <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -49,7 +50,7 @@ median_price.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~high + low,
+		default_formula = ~ high + low,
 		data = x,
 		...
 	)
@@ -63,7 +64,7 @@ median_price.default <- function(
 	x <- .Call(
 		C_impl_ta_MEDPRICE,
 		constructed_series[[1]],
-		constructed_series[[2]],		
+		constructed_series[[2]],
 		as.logical(na.bridge)
 	)
 
@@ -92,7 +93,6 @@ median_price.data.frame <- function(
 			...
 		)
 	)
-
 }
 
 #' @usage NULL
@@ -103,14 +103,14 @@ median_price.matrix <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	median_price.default(
-			x = x,
-			cols = cols ,
-			na.bridge = na.bridge,
-			...
-		)
+		x = x,
+		cols = cols,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -120,9 +120,7 @@ MEDPRICE_lookback <- median_price_lookback <- function(
 	na.bridge = FALSE,
 	...
 ) {
-
 	.Call(
 		C_impl_ta_MEDPRICE_lookback
 	)
-
 }

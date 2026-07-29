@@ -23,8 +23,9 @@ percentage_price_oscillator <- function(
 	slowPeriod = 26,
 	maType = 0,
 	na.bridge = FALSE,
-	...) {
-  UseMethod("percentage_price_oscillator")
+	...
+) {
+	UseMethod("percentage_price_oscillator")
 }
 
 #' @export
@@ -45,8 +46,8 @@ percentage_price_oscillator.default <- function(
 	slowPeriod = 26,
 	maType = 0,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -73,7 +74,7 @@ percentage_price_oscillator.default <- function(
 		constructed_series[[1]],
 		as.integer(fastPeriod),
 		as.integer(slowPeriod),
-		as.maType(maType),		
+		as.maType(maType),
 		as.logical(na.bridge)
 	)
 
@@ -108,7 +109,6 @@ percentage_price_oscillator.data.frame <- function(
 			...
 		)
 	)
-
 }
 
 #' @usage NULL
@@ -122,17 +122,17 @@ percentage_price_oscillator.matrix <- function(
 	slowPeriod = 26,
 	maType = 0,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	percentage_price_oscillator.default(
-			x = x,
-			cols = cols ,
-			fastPeriod = fastPeriod,
-			slowPeriod = slowPeriod,
-			maType = maType,
-			na.bridge = na.bridge,
-			...
-		)
+		x = x,
+		cols = cols,
+		fastPeriod = fastPeriod,
+		slowPeriod = slowPeriod,
+		maType = maType,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -145,14 +145,12 @@ PPO_lookback <- percentage_price_oscillator_lookback <- function(
 	na.bridge = FALSE,
 	...
 ) {
-
 	.Call(
 		C_impl_ta_PPO_lookback,
 		as.integer(fastPeriod),
 		as.integer(slowPeriod),
 		as.maType(maType)
 	)
-
 }
 
 #' @usage NULL
@@ -166,8 +164,8 @@ percentage_price_oscillator.numeric <- function(
 	slowPeriod = 26,
 	maType = 0,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## warn if 'cols' have been
 	## passed just to make sure
 	## the user knows its not possible
@@ -208,8 +206,8 @@ percentage_price_oscillator.plotly <- function(
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
-	...) {
-
+	...
+) {
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -237,8 +235,8 @@ percentage_price_oscillator.plotly <- function(
 			names(constructed_series)
 		),
 		fastPeriod = fastPeriod,
-			slowPeriod = slowPeriod,
-			maType = maType,
+		slowPeriod = slowPeriod,
+		maType = maType,
 		na.bridge = TRUE
 	)
 
@@ -279,9 +277,13 @@ percentage_price_oscillator.plotly <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {"Percentage Price Oscillator"} else {title}
+			title = if (missing(title)) {
+				"Percentage Price Oscillator"
+			} else {
+				title
+			}
 		),
-		data = constructed_indicator[,values_to_extract, drop = FALSE],
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract
 	)
 
@@ -305,8 +307,8 @@ percentage_price_oscillator.ggplot <- function(
 	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...) {
-
+	...
+) {
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -333,8 +335,8 @@ percentage_price_oscillator.ggplot <- function(
 			names(constructed_series)
 		),
 		fastPeriod = fastPeriod,
-			slowPeriod = slowPeriod,
-			maType = maType,
+		slowPeriod = slowPeriod,
+		maType = maType,
 		na.bridge = TRUE
 	)
 
@@ -371,9 +373,13 @@ percentage_price_oscillator.ggplot <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {"Percentage Price Oscillator"} else {title}
+			title = if (missing(title)) {
+				"Percentage Price Oscillator"
+			} else {
+				title
+			}
 		),
-		data = constructed_indicator[,values_to_extract, drop = FALSE],
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract,
 		name = get0(x = "name", ifnotfound = NULL)
 	)

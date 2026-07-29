@@ -19,8 +19,9 @@ minus_directional_indicator <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...) {
-  UseMethod("minus_directional_indicator")
+	...
+) {
+	UseMethod("minus_directional_indicator")
 }
 
 #' @export
@@ -39,8 +40,8 @@ minus_directional_indicator.default <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -51,7 +52,7 @@ minus_directional_indicator.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~high + low + close,
+		default_formula = ~ high + low + close,
 		data = x,
 		...
 	)
@@ -67,7 +68,7 @@ minus_directional_indicator.default <- function(
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		as.integer(timePeriod),		
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
@@ -98,7 +99,6 @@ minus_directional_indicator.data.frame <- function(
 			...
 		)
 	)
-
 }
 
 #' @usage NULL
@@ -110,15 +110,15 @@ minus_directional_indicator.matrix <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	minus_directional_indicator.default(
-			x = x,
-			cols = cols ,
-			timePeriod = timePeriod,
-			na.bridge = na.bridge,
-			...
-		)
+		x = x,
+		cols = cols,
+		timePeriod = timePeriod,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -129,12 +129,10 @@ MINUS_DI_lookback <- minus_directional_indicator_lookback <- function(
 	na.bridge = FALSE,
 	...
 ) {
-
 	.Call(
 		C_impl_ta_MINUS_DI_lookback,
 		as.integer(timePeriod)
 	)
-
 }
 
 #' @usage NULL
@@ -149,8 +147,8 @@ minus_directional_indicator.plotly <- function(
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
-	...) {
-
+	...
+) {
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -166,7 +164,7 @@ minus_directional_indicator.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~high + low + close,
+		default_formula = ~ high + low + close,
 		...
 	)
 
@@ -214,9 +212,13 @@ minus_directional_indicator.plotly <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {"Minus Directional Indicator"} else {title}
+			title = if (missing(title)) {
+				"Minus Directional Indicator"
+			} else {
+				title
+			}
 		),
-		data = constructed_indicator[,values_to_extract, drop = FALSE],
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract
 	)
 
@@ -238,8 +240,8 @@ minus_directional_indicator.ggplot <- function(
 	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...) {
-
+	...
+) {
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -254,7 +256,7 @@ minus_directional_indicator.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~high + low + close,
+		default_formula = ~ high + low + close,
 		...
 	)
 
@@ -302,9 +304,13 @@ minus_directional_indicator.ggplot <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {"Minus Directional Indicator"} else {title}
+			title = if (missing(title)) {
+				"Minus Directional Indicator"
+			} else {
+				title
+			}
 		),
-		data = constructed_indicator[,values_to_extract, drop = FALSE],
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract,
 		name = get0(x = "name", ifnotfound = NULL)
 	)

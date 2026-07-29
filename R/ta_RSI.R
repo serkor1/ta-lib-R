@@ -19,8 +19,9 @@ relative_strength_index <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...) {
-  UseMethod("relative_strength_index")
+	...
+) {
+	UseMethod("relative_strength_index")
 }
 
 #' @export
@@ -39,8 +40,8 @@ relative_strength_index.default <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -65,7 +66,7 @@ relative_strength_index.default <- function(
 	x <- .Call(
 		C_impl_ta_RSI,
 		constructed_series[[1]],
-		as.integer(timePeriod),		
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
@@ -96,7 +97,6 @@ relative_strength_index.data.frame <- function(
 			...
 		)
 	)
-
 }
 
 #' @usage NULL
@@ -108,15 +108,15 @@ relative_strength_index.matrix <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	relative_strength_index.default(
-			x = x,
-			cols = cols ,
-			timePeriod = timePeriod,
-			na.bridge = na.bridge,
-			...
-		)
+		x = x,
+		cols = cols,
+		timePeriod = timePeriod,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -127,12 +127,10 @@ RSI_lookback <- relative_strength_index_lookback <- function(
 	na.bridge = FALSE,
 	...
 ) {
-
 	.Call(
 		C_impl_ta_RSI_lookback,
 		as.integer(timePeriod)
 	)
-
 }
 
 #' @usage NULL
@@ -144,8 +142,8 @@ relative_strength_index.numeric <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## warn if 'cols' have been
 	## passed just to make sure
 	## the user knows its not possible
@@ -184,8 +182,8 @@ relative_strength_index.plotly <- function(
 	upper_bound = 80,
 	## splice:optional-plotly:end
 	title,
-	...) {
-
+	...
+) {
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -258,9 +256,13 @@ relative_strength_index.plotly <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {"Relative Strength Index"} else {title}
+			title = if (missing(title)) {
+				"Relative Strength Index"
+			} else {
+				title
+			}
 		),
-		data = constructed_indicator[,values_to_extract, drop = FALSE],
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract
 	)
 
@@ -282,8 +284,8 @@ relative_strength_index.ggplot <- function(
 	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...) {
-
+	...
+) {
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -350,9 +352,13 @@ relative_strength_index.ggplot <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {"Relative Strength Index"} else {title}
+			title = if (missing(title)) {
+				"Relative Strength Index"
+			} else {
+				title
+			}
 		),
-		data = constructed_indicator[,values_to_extract, drop = FALSE],
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract,
 		name = get0(x = "name", ifnotfound = NULL)
 	)

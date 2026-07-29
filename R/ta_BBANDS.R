@@ -24,8 +24,9 @@ bollinger_bands <- function(
 	deviationsDown = 2,
 	maType = 0,
 	na.bridge = FALSE,
-	...) {
-  UseMethod("bollinger_bands")
+	...
+) {
+	UseMethod("bollinger_bands")
 }
 
 #' @export
@@ -47,8 +48,8 @@ bollinger_bands.default <- function(
 	deviationsDown = 2,
 	maType = 0,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -76,7 +77,7 @@ bollinger_bands.default <- function(
 		as.integer(timePeriod),
 		as.double(deviationsUp),
 		as.double(deviationsDown),
-		as.maType(maType),		
+		as.maType(maType),
 		as.logical(na.bridge)
 	)
 
@@ -113,7 +114,6 @@ bollinger_bands.data.frame <- function(
 			...
 		)
 	)
-
 }
 
 #' @usage NULL
@@ -128,18 +128,18 @@ bollinger_bands.matrix <- function(
 	deviationsDown = 2,
 	maType = 0,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	bollinger_bands.default(
-			x = x,
-			cols = cols ,
-			timePeriod = timePeriod,
-			deviationsUp = deviationsUp,
-			deviationsDown = deviationsDown,
-			maType = maType,
-			na.bridge = na.bridge,
-			...
-		)
+		x = x,
+		cols = cols,
+		timePeriod = timePeriod,
+		deviationsUp = deviationsUp,
+		deviationsDown = deviationsDown,
+		maType = maType,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -153,7 +153,6 @@ BBANDS_lookback <- bollinger_bands_lookback <- function(
 	na.bridge = FALSE,
 	...
 ) {
-
 	.Call(
 		C_impl_ta_BBANDS_lookback,
 		as.integer(timePeriod),
@@ -161,7 +160,6 @@ BBANDS_lookback <- bollinger_bands_lookback <- function(
 		as.double(deviationsDown),
 		as.maType(maType)
 	)
-
 }
 
 #' @usage NULL
@@ -176,8 +174,8 @@ bollinger_bands.numeric <- function(
 	deviationsDown = 2,
 	maType = 0,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## warn if 'cols' have been
 	## passed just to make sure
 	## the user knows its not possible
@@ -221,8 +219,8 @@ bollinger_bands.plotly <- function(
 	color = "steelblue",
 	alpha = 0.2,
 	## splice:optional-plotly:end
-	...) {
-
+	...
+) {
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -250,9 +248,9 @@ bollinger_bands.plotly <- function(
 			names(constructed_series)
 		),
 		timePeriod = timePeriod,
-			deviationsUp = deviationsUp,
-			deviationsDown = deviationsDown,
-			maType = maType,
+		deviationsUp = deviationsUp,
+		deviationsDown = deviationsDown,
+		maType = maType,
 		na.bridge = TRUE
 	)
 
@@ -354,8 +352,8 @@ bollinger_bands.ggplot <- function(
 	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...) {
-
+	...
+) {
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -382,9 +380,9 @@ bollinger_bands.ggplot <- function(
 			names(constructed_series)
 		),
 		timePeriod = timePeriod,
-			deviationsUp = deviationsUp,
-			deviationsDown = deviationsDown,
-			maType = maType,
+		deviationsUp = deviationsUp,
+		deviationsDown = deviationsDown,
+		maType = maType,
 		na.bridge = TRUE
 	)
 

@@ -19,8 +19,9 @@ average_directional_movement_index <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...) {
-  UseMethod("average_directional_movement_index")
+	...
+) {
+	UseMethod("average_directional_movement_index")
 }
 
 #' @export
@@ -39,8 +40,8 @@ average_directional_movement_index.default <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -51,7 +52,7 @@ average_directional_movement_index.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~high + low + close,
+		default_formula = ~ high + low + close,
 		data = x,
 		...
 	)
@@ -67,7 +68,7 @@ average_directional_movement_index.default <- function(
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		as.integer(timePeriod),		
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
@@ -98,7 +99,6 @@ average_directional_movement_index.data.frame <- function(
 			...
 		)
 	)
-
 }
 
 #' @usage NULL
@@ -110,15 +110,15 @@ average_directional_movement_index.matrix <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	average_directional_movement_index.default(
-			x = x,
-			cols = cols ,
-			timePeriod = timePeriod,
-			na.bridge = na.bridge,
-			...
-		)
+		x = x,
+		cols = cols,
+		timePeriod = timePeriod,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -129,12 +129,10 @@ ADX_lookback <- average_directional_movement_index_lookback <- function(
 	na.bridge = FALSE,
 	...
 ) {
-
 	.Call(
 		C_impl_ta_ADX_lookback,
 		as.integer(timePeriod)
 	)
-
 }
 
 #' @usage NULL
@@ -152,8 +150,8 @@ average_directional_movement_index.plotly <- function(
 	upper_bound = 75,
 	## splice:optional-plotly:end
 	title,
-	...) {
-
+	...
+) {
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -169,7 +167,7 @@ average_directional_movement_index.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~high + low + close,
+		default_formula = ~ high + low + close,
 		...
 	)
 
@@ -227,9 +225,13 @@ average_directional_movement_index.plotly <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {"Average Directional Movement Index"} else {title}
+			title = if (missing(title)) {
+				"Average Directional Movement Index"
+			} else {
+				title
+			}
 		),
-		data = constructed_indicator[,values_to_extract, drop = FALSE],
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract
 	)
 
@@ -251,8 +253,8 @@ average_directional_movement_index.ggplot <- function(
 	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...) {
-
+	...
+) {
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -267,7 +269,7 @@ average_directional_movement_index.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~high + low + close,
+		default_formula = ~ high + low + close,
 		...
 	)
 
@@ -320,9 +322,13 @@ average_directional_movement_index.ggplot <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {"Average Directional Movement Index"} else {title}
+			title = if (missing(title)) {
+				"Average Directional Movement Index"
+			} else {
+				title
+			}
 		),
-		data = constructed_indicator[,values_to_extract, drop = FALSE],
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract,
 		name = get0(x = "name", ifnotfound = NULL)
 	)

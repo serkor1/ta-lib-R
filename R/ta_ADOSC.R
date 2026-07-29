@@ -21,8 +21,9 @@ chaikin_accumulation_distribution_oscillator <- function(
 	fastPeriod = 3,
 	slowPeriod = 10,
 	na.bridge = FALSE,
-	...) {
-  UseMethod("chaikin_accumulation_distribution_oscillator")
+	...
+) {
+	UseMethod("chaikin_accumulation_distribution_oscillator")
 }
 
 #' @export
@@ -42,8 +43,8 @@ chaikin_accumulation_distribution_oscillator.default <- function(
 	fastPeriod = 3,
 	slowPeriod = 10,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -54,7 +55,7 @@ chaikin_accumulation_distribution_oscillator.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~high + low + close + volume,
+		default_formula = ~ high + low + close + volume,
 		data = x,
 		...
 	)
@@ -72,7 +73,7 @@ chaikin_accumulation_distribution_oscillator.default <- function(
 		constructed_series[[3]],
 		constructed_series[[4]],
 		as.integer(fastPeriod),
-		as.integer(slowPeriod),		
+		as.integer(slowPeriod),
 		as.logical(na.bridge)
 	)
 
@@ -105,7 +106,6 @@ chaikin_accumulation_distribution_oscillator.data.frame <- function(
 			...
 		)
 	)
-
 }
 
 #' @usage NULL
@@ -118,16 +118,16 @@ chaikin_accumulation_distribution_oscillator.matrix <- function(
 	fastPeriod = 3,
 	slowPeriod = 10,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	chaikin_accumulation_distribution_oscillator.default(
-			x = x,
-			cols = cols ,
-			fastPeriod = fastPeriod,
-			slowPeriod = slowPeriod,
-			na.bridge = na.bridge,
-			...
-		)
+		x = x,
+		cols = cols,
+		fastPeriod = fastPeriod,
+		slowPeriod = slowPeriod,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -139,13 +139,11 @@ ADOSC_lookback <- chaikin_accumulation_distribution_oscillator_lookback <- funct
 	na.bridge = FALSE,
 	...
 ) {
-
 	.Call(
 		C_impl_ta_ADOSC_lookback,
 		as.integer(fastPeriod),
 		as.integer(slowPeriod)
 	)
-
 }
 
 #' @usage NULL
@@ -161,8 +159,8 @@ chaikin_accumulation_distribution_oscillator.plotly <- function(
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
 	title,
-	...) {
-
+	...
+) {
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -178,7 +176,7 @@ chaikin_accumulation_distribution_oscillator.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~high + low + close + volume,
+		default_formula = ~ high + low + close + volume,
 		...
 	)
 
@@ -190,7 +188,7 @@ chaikin_accumulation_distribution_oscillator.plotly <- function(
 			names(constructed_series)
 		),
 		fastPeriod = fastPeriod,
-			slowPeriod = slowPeriod,
+		slowPeriod = slowPeriod,
 		na.bridge = TRUE
 	)
 
@@ -227,9 +225,13 @@ chaikin_accumulation_distribution_oscillator.plotly <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {"Chaikin A/D Oscillator"} else {title}
+			title = if (missing(title)) {
+				"Chaikin A/D Oscillator"
+			} else {
+				title
+			}
 		),
-		data = constructed_indicator[,values_to_extract, drop = FALSE],
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract
 	)
 
@@ -252,8 +254,8 @@ chaikin_accumulation_distribution_oscillator.ggplot <- function(
 	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	...) {
-
+	...
+) {
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -268,7 +270,7 @@ chaikin_accumulation_distribution_oscillator.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~high + low + close + volume,
+		default_formula = ~ high + low + close + volume,
 		...
 	)
 
@@ -280,7 +282,7 @@ chaikin_accumulation_distribution_oscillator.ggplot <- function(
 			names(constructed_series)
 		),
 		fastPeriod = fastPeriod,
-			slowPeriod = slowPeriod,
+		slowPeriod = slowPeriod,
 		na.bridge = TRUE
 	)
 
@@ -317,9 +319,13 @@ chaikin_accumulation_distribution_oscillator.ggplot <- function(
 				ifnotfound = NULL
 			),
 			data = constructed_indicator,
-			title = if (missing(title)) {"Chaikin A/D Oscillator"} else {title}
+			title = if (missing(title)) {
+				"Chaikin A/D Oscillator"
+			} else {
+				title
+			}
 		),
-		data = constructed_indicator[,values_to_extract, drop = FALSE],
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
 		values_to_extract = values_to_extract,
 		name = get0(x = "name", ifnotfound = NULL)
 	)

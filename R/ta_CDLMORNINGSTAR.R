@@ -28,8 +28,9 @@ morning_star <- function(
 	cols,
 	penetration = 0.3,
 	na.bridge = FALSE,
-	...) {
-  UseMethod("morning_star")
+	...
+) {
+	UseMethod("morning_star")
 }
 
 #' @export
@@ -48,8 +49,8 @@ morning_star.default <- function(
 	cols,
 	penetration = 0.3,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## get candlestick pattern
 	## options
 	##
@@ -72,7 +73,7 @@ morning_star.default <- function(
 	## from input
 	constructed_series <- series(
 		x = cols,
-		default_formula = ~open + high + low + close,
+		default_formula = ~ open + high + low + close,
 		data = x,
 		...
 	)
@@ -87,10 +88,10 @@ morning_star.default <- function(
 		.Call(
 			C_impl_ta_CDLMORNINGSTAR,
 			constructed_series[[1]],
-		constructed_series[[2]],
-		constructed_series[[3]],
-		constructed_series[[4]],
-		as.double(penetration),
+			constructed_series[[2]],
+			constructed_series[[3]],
+			constructed_series[[4]],
+			as.double(penetration),
 			normalize,
 			as.logical(na.bridge)
 		)
@@ -126,7 +127,6 @@ morning_star.data.frame <- function(
 			...
 		)
 	)
-
 }
 
 #' @usage NULL
@@ -138,21 +138,22 @@ morning_star.matrix <- function(
 	cols,
 	penetration = 0.3,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	morning_star.default(
-			x = x,
-			cols = cols ,
-			penetration = penetration,
-			na.bridge = na.bridge,
-			...
-		)
+		x = x,
+		cols = cols,
+		penetration = penetration,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
 CDLMORNINGSTAR_lookback <- morning_star_lookback <- function(
 	x,
-	cols,penetration = 0.3,
+	cols,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
@@ -171,8 +172,8 @@ morning_star.plotly <- function(
 	cols,
 	penetration = 0.3,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## check that input value
 	## 'x' is <plotly>-object
 	assert_plotly_object(x)
@@ -188,7 +189,7 @@ morning_star.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~open + high + low + close,
+		default_formula = ~ open + high + low + close,
 		...
 	)
 
@@ -232,8 +233,8 @@ morning_star.ggplot <- function(
 	cols,
 	penetration = 0.3,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## check ggplot2 availability
 	assert_ggplot2()
 
@@ -248,7 +249,7 @@ morning_star.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~open + high + low + close,
+		default_formula = ~ open + high + low + close,
 		...
 	)
 

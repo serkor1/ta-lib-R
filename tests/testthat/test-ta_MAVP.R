@@ -8,19 +8,17 @@
 ## checks this ensures that
 ## variable_moving_average_period and MAVP produces the same results
 testthat::test_that(desc = 'Alias and function similarity', code = {
+	## 1) test that the alias and
+	##    function returns the same values
+	output <- variable_moving_average_period(SPY, periods = rep(5, nrow(SPY)))
+	alias <- MAVP(SPY, periods = rep(5, nrow(SPY)))
 
-    ## 1) test that the alias and
-    ##    function returns the same values
-    output <- variable_moving_average_period(SPY, periods = rep(5, nrow(SPY)))
-    alias  <- MAVP(SPY, periods = rep(5, nrow(SPY)))
-
-    ## 1.1) check if the values
+	## 1.1) check if the values
 	##      are equal
 	testthat::expect_equal(
-		object   = output,
+		object = output,
 		expected = alias
 	)
-
 })
 
 ## type-checks for data.frames and
@@ -31,9 +29,11 @@ testthat::test_that(desc = 'Class in, class out (<matrix>)', code = {
 	## 1) check that the output class
 	##    matches the input class
 	testthat::expect_true(
-		inherits(variable_moving_average_period(SPY, periods = rep(5, nrow(SPY))), class(SPY))
+		inherits(
+			variable_moving_average_period(SPY, periods = rep(5, nrow(SPY))),
+			class(SPY)
+		)
 	)
-
 })
 
 ## <data.frame> object
@@ -41,7 +41,10 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 	## 1) check that the output class
 	##    matches the input class
 	testthat::expect_true(
-		inherits(variable_moving_average_period(BTC, periods = rep(5, nrow(BTC))), class(BTC))
+		inherits(
+			variable_moving_average_period(BTC, periods = rep(5, nrow(BTC))),
+			class(BTC)
+		)
 	)
 })
 
@@ -52,13 +55,15 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 ## NOTE: This test is more of a test of the internal
 ##       series() function
 testthat::test_that(desc = 'Default calls', code = {
-    testthat::expect_equal(
+	testthat::expect_equal(
 		object = variable_moving_average_period(
-			BTC, periods = rep(5, nrow(BTC))
+			BTC,
+			periods = rep(5, nrow(BTC))
 		),
 		expected = variable_moving_average_period(
 			BTC,
-			cols = ~close, periods = rep(5, nrow(BTC))
+			cols = ~close,
+			periods = rep(5, nrow(BTC))
 		)
 	)
 })
@@ -68,9 +73,10 @@ testthat::test_that(desc = 'Default calls', code = {
 ##
 ## <data.frame> object
 testthat::test_that(desc = 'Equal length of input and output for <data.frame> with na.bridge = TRUE', code = {
-    testthat::expect_equal(
+	testthat::expect_equal(
 		object = nrow(variable_moving_average_period(
-			ATOM, periods = rep(5, nrow(ATOM)),
+			ATOM,
+			periods = rep(5, nrow(ATOM)),
 			na.bridge = TRUE
 		)),
 		expected = nrow(ATOM)
@@ -84,9 +90,13 @@ testthat::test_that(desc = 'Row names are respected for <data.frame>, na.bridge 
 	x_names <- row.names(ATOM)
 
 	## calculate indicator
-	indicator <- variable_moving_average_period(ATOM, periods = rep(5, nrow(ATOM)), na.bridge = TRUE)
+	indicator <- variable_moving_average_period(
+		ATOM,
+		periods = rep(5, nrow(ATOM)),
+		na.bridge = TRUE
+	)
 
-    testthat::expect_equal(
+	testthat::expect_equal(
 		object = x_names,
 		expected = rownames(indicator)
 	)
@@ -97,9 +107,10 @@ testthat::test_that(desc = 'Row names are respected for <data.frame>, na.bridge 
 ##
 ## <data.frame> object
 testthat::test_that(desc = 'Equal length of input and output for <data.frame>', code = {
-    testthat::expect_equal(
+	testthat::expect_equal(
 		object = nrow(variable_moving_average_period(
-			BTC, periods = rep(5, nrow(BTC))
+			BTC,
+			periods = rep(5, nrow(BTC))
 		)),
 		expected = nrow(BTC)
 	)
@@ -112,9 +123,12 @@ testthat::test_that(desc = 'Row names are respected for <data.frame>', code = {
 	x_names <- row.names(BTC)
 
 	## calculate indicator
-	indicator <- variable_moving_average_period(BTC, periods = rep(5, nrow(BTC)))
+	indicator <- variable_moving_average_period(
+		BTC,
+		periods = rep(5, nrow(BTC))
+	)
 
-    testthat::expect_equal(
+	testthat::expect_equal(
 		object = x_names,
 		expected = rownames(indicator)
 	)
@@ -122,9 +136,10 @@ testthat::test_that(desc = 'Row names are respected for <data.frame>', code = {
 
 ## <matrix> object
 testthat::test_that(desc = 'Equal length of input and output for <matrix>', code = {
-    testthat::expect_equal(
+	testthat::expect_equal(
 		object = nrow(variable_moving_average_period(
-			SPY, periods = rep(5, nrow(SPY))
+			SPY,
+			periods = rep(5, nrow(SPY))
 		)),
 		expected = nrow(SPY)
 	)
@@ -136,13 +151,16 @@ testthat::test_that(desc = 'Row names are respected for <matrix>', code = {
 	## extract row names
 	## NOTE: by default the SPY has no
 	##       rownames
-	rownames(SPY) <- paste0("row",1:nrow(SPY))
+	rownames(SPY) <- paste0("row", 1:nrow(SPY))
 
 	## calculate indicator
-	indicator <- variable_moving_average_period(SPY, periods = rep(5, nrow(SPY)))
+	indicator <- variable_moving_average_period(
+		SPY,
+		periods = rep(5, nrow(SPY))
+	)
 
-    testthat::expect_equal(
-		object = paste0("row",1:nrow(SPY)),
+	testthat::expect_equal(
+		object = paste0("row", 1:nrow(SPY)),
 		expected = rownames(indicator)
 	)
 })
@@ -150,19 +168,20 @@ testthat::test_that(desc = 'Row names are respected for <matrix>', code = {
 ## test the output's attribute "lookback" matches
 ## the lookback()
 testthat::test_that(desc = 'Lookback equivalence', code = {
-
-output <- attr(
-	variable_moving_average_period(x = SPY, periods = rep(5, nrow(SPY))),
-	"lookback"
-)
-
-testthat::expect_equal(
-		object = output,
-		expected = lookback(FUN = variable_moving_average_period, x = SPY, periods = rep(5, nrow(SPY)))
+	output <- attr(
+		variable_moving_average_period(x = SPY, periods = rep(5, nrow(SPY))),
+		"lookback"
 	)
 
-}
-)
+	testthat::expect_equal(
+		object = output,
+		expected = lookback(
+			FUN = variable_moving_average_period,
+			x = SPY,
+			periods = rep(5, nrow(SPY))
+		)
+	)
+})
 
 ## <plotly>-method checks for <data.frame>
 ## and <matrix>
@@ -174,7 +193,10 @@ testthat::test_that(desc = '<plotly>-methods for <data.frame>', code = {
 	output <- testthat::expect_no_error(
 		{
 			chart(BTC)
-			indicator(variable_moving_average_period, periods = rep(5, nrow(BTC)))
+			indicator(
+				variable_moving_average_period,
+				periods = rep(5, nrow(BTC))
+			)
 		}
 	)
 
@@ -192,7 +214,10 @@ testthat::test_that(desc = '<plotly>-methods for <matrix>', code = {
 	output <- testthat::expect_no_error(
 		{
 			chart(SPY)
-			indicator(variable_moving_average_period, periods = rep(5, nrow(SPY)))
+			indicator(
+				variable_moving_average_period,
+				periods = rep(5, nrow(SPY))
+			)
 		}
 	)
 
@@ -217,7 +242,10 @@ testthat::test_that(desc = '<ggplot>-methods for <data.frame>', code = {
 			options(talib.chart.backend = "ggplot2")
 			on.exit(options(talib.chart.backend = "plotly"))
 			chart(BTC)
-			indicator(variable_moving_average_period, periods = rep(5, nrow(BTC)))
+			indicator(
+				variable_moving_average_period,
+				periods = rep(5, nrow(BTC))
+			)
 		}
 	)
 
@@ -239,7 +267,10 @@ testthat::test_that(desc = '<ggplot>-methods for <matrix>', code = {
 			options(talib.chart.backend = "ggplot2")
 			on.exit(options(talib.chart.backend = "plotly"))
 			chart(SPY)
-			indicator(variable_moving_average_period, periods = rep(5, nrow(SPY)))
+			indicator(
+				variable_moving_average_period,
+				periods = rep(5, nrow(SPY))
+			)
 		}
 	)
 

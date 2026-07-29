@@ -19,8 +19,9 @@ average_deviation <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...) {
-  UseMethod("average_deviation")
+	...
+) {
+	UseMethod("average_deviation")
 }
 
 #' @export
@@ -39,8 +40,8 @@ average_deviation.default <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## validate 'cols'-argument
 	## if explicitly passed
 	if (!missing(cols)) {
@@ -65,7 +66,7 @@ average_deviation.default <- function(
 	x <- .Call(
 		C_impl_ta_AVGDEV,
 		constructed_series[[1]],
-		as.integer(timePeriod),		
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
@@ -96,7 +97,6 @@ average_deviation.data.frame <- function(
 			...
 		)
 	)
-
 }
 
 #' @usage NULL
@@ -108,15 +108,15 @@ average_deviation.matrix <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	average_deviation.default(
-			x = x,
-			cols = cols ,
-			timePeriod = timePeriod,
-			na.bridge = na.bridge,
-			...
-		)
+		x = x,
+		cols = cols,
+		timePeriod = timePeriod,
+		na.bridge = na.bridge,
+		...
+	)
 }
 
 #' @usage NULL
@@ -127,12 +127,10 @@ AVGDEV_lookback <- average_deviation_lookback <- function(
 	na.bridge = FALSE,
 	...
 ) {
-
 	.Call(
 		C_impl_ta_AVGDEV_lookback,
 		as.integer(timePeriod)
 	)
-
 }
 
 #' @usage NULL
@@ -144,8 +142,8 @@ average_deviation.numeric <- function(
 	cols,
 	timePeriod = 14,
 	na.bridge = FALSE,
-	...) {
-
+	...
+) {
 	## warn if 'cols' have been
 	## passed just to make sure
 	## the user knows its not possible
