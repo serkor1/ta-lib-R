@@ -97,7 +97,8 @@ ${FUN}.${METHOD} <- function(
 			title = if (missing(title)) {"${TITLE}"} else {title}
 		),
 		data = constructed_indicator[,values_to_extract, drop = FALSE],
-#plotly#		values_to_extract = values_to_extract
+#plotly#		values_to_extract = values_to_extract,
+#plotly#		name = get0(x = "name", ifnotfound = NULL)
 #ggplot#		values_to_extract = values_to_extract,
 #ggplot#		name = get0(x = "name", ifnotfound = NULL)
 	)

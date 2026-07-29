@@ -383,13 +383,47 @@ indicator_multi <- function(exprs, envir) {
 merge_subchart_plotly <- function(from, to) {
 	state <- .chart_state()
 
+	## rewrite a built panel's last-value annotation to the spec name
+	## stored by add_last_value_ly() (RSI(10): 45.32 instead of
+	## RSI: 45.32) so merged indicators stay distinguishable -
+	## mirrors the spec-named subtitle of the ggplot2 backend
+	## single output: RSI(10): 45.32
+	## multi output: MACD(12,26,9): 0.50 / 0.30 / 0.20
+	relabel_last_value <- function(built, panel) {
+		lv <- attr(panel, "talib_last_value")
+		if (is.null(lv)) {
+			return(built)
+		}
+		anns <- built$x$layout$annotations
+		for (j in seq_along(anns)) {
+			if (
+				identical(anns[[j]]$xanchor, "right") &&
+					identical(anns[[j]]$yanchor, "bottom")
+			) {
+				built$x$layout$annotations[[j]]$text <- sprintf(
+					"<b>%s:</b> %s",
+					lv$name,
+					paste(sprintf("%.2f", lv$values), collapse = " / ")
+				)
+				break
+			}
+		}
+		built
+	}
+
 	## build the base panel
-	base <- plotly::plotly_build(state$sub[[from]])
+	base <- relabel_last_value(
+		plotly::plotly_build(state$sub[[from]]),
+		state$sub[[from]]
+	)
 
 	## merge traces and annotations
 	## from subsequent panels
 	for (i in seq(from + 1L, to)) {
-		other <- plotly::plotly_build(state$sub[[i]])
+		other <- relabel_last_value(
+			plotly::plotly_build(state$sub[[i]]),
+			state$sub[[i]]
+		)
 		base$x$data <- c(base$x$data, other$x$data)
 
 		## merge annotations like subchart
@@ -400,6 +434,34 @@ merge_subchart_plotly <- function(from, to) {
 				other$x$layout$annotations
 			)
 		}
+	}
+
+	## the per-panel last-value labels all sit at the panel's
+	## top-right corner (x = 1, y = 1, paper) and would overlap -
+	## collapse them into one evenly spaced right-aligned label,
+	## mirroring the merged subtitle of the ggplot2 backend
+	## opt-out via options(talib.chart.merged_last_value = FALSE)
+	anns <- base$x$layout$annotations
+	is_last_value <- vapply(
+		anns,
+		function(a) {
+			identical(a$xanchor, "right") &&
+				identical(a$yanchor, "bottom")
+		},
+		logical(1)
+	)
+	if (any(is_last_value)) {
+		if (getOption("talib.chart.merged_last_value", TRUE)) {
+			keep <- which(is_last_value)[1L]
+			anns[[keep]]$text <- paste(
+				vapply(anns[is_last_value], `[[`, character(1), "text"),
+				collapse = "&nbsp;&nbsp;"
+			)
+			anns <- anns[!is_last_value | seq_along(anns) == keep]
+		} else {
+			anns <- anns[!is_last_value]
+		}
+		base$x$layout$annotations <- anns
 	}
 
 	## remove explicit y-range so plotly
