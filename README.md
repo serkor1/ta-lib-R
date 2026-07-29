@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from dev/README.Rmd. Please edit that file -->
 
-# {talib}: Fast TA-Lib indicators and candlestick patterns for R <img src="man/figures/logo.png" align="right" height="170" alt="" />
+# {talib}: Fast TA-Lib indicators and candlestick patterns for R <a href="https://serkor1.github.io/ta-lib-R/"><img src="man/figures/logo.svg" align="right" height="170" alt="talib website" /></a>
 
 <!-- badges: start -->
 

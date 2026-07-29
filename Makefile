@@ -37,22 +37,29 @@ TA-Lib: ## Install TA-Lib on system (Requires sudo)
 ## targets either directly or recursively
 ## and its a good idea to run to prevent shenanigans
 ## when creating new S3 functions or similar.
+.PHONY: document
 document: fmt ## Document R package using {devtools}
 	@Rscript --verbose -e "devtools::document()"
 
 ## pkgdown
 ## 	Build the online documentation
 ##  and preview the built site
+.PHONY: pkgdown
 pkgdown: ## Build {pkgdown} documentation
 	@$(MAKE) document
 	@Rscript -e "pkgdown::clean_site()"
+	@Rscript dev/favicons.R
 	@Rscript -e "pkgdown::init_site()"
 	@Rscript -e "pkgdown::build_site()"
+	@rm -rf pkgdown/favicon
+	@rmdir pkgdown 2>/dev/null || true
 	@Rscript -e "pkgdown::preview_site()"
 
+.PHONY: build
 build: document
 	@R CMD build . --no-build-vignettes --no-manual
 
+.PHONY: install
 install: build ## Install the R package
 	@R CMD INSTALL $(tarball_location) --no-multiarch
 
@@ -60,6 +67,7 @@ install: build ## Install the R package
 ## 	This target runs the full benchmark suite
 ##  against {TTR} - if there is a need for modifying
 ##  plots and such do it in the folder
+.PHONY: bench
 bench: ## Run benchmark(s) against {TTR}
 	@echo -e "Running full benchmark suite (overhead + TTR comparison)..."
 	@echo -e ""
@@ -80,10 +88,12 @@ bench: ## Run benchmark(s) against {TTR}
 ##
 ## NOTE: There is no need to install the package
 ##       before checks.
+.PHONY: check
 check: build ## Check R package
 	@R CMD check --no-multiarch --ignore-vignettes --no-manual $(tarball_location)
 	@$(MAKE) README
 
+.PHONY: check-cran
 check-cran: document ## Check R package (CRAN)
 	@R CMD build .
 	@R CMD check --install-args=--configure-args="--force-vendor" --as-cran --use-valgrind $(tarball_location)
@@ -92,6 +102,7 @@ check-cran: document ## Check R package (CRAN)
 ## Test
 ## 	This target runs the unit-tests including 
 ##  the parity tests without conducting the full check suite
+.PHONY: test
 test: install parity-prepare ## Run unit-tests
 	@TALIB_PARITY_SNAPSHOT_DIR=$$(pwd)/tests/parity/snapshot \
 	 Rscript --verbose -e "library(talib); testthat::test_dir('tests/testthat', stop_on_failure = TRUE)"
@@ -111,6 +122,7 @@ test: install parity-prepare ## Run unit-tests
 ##  unistall fails, its no longer possible to uninstall
 ##  but it can be fixed by reinstalling TA-Lib and then
 ##  running purge again!
+.PHONY: clean
 clean: ## Remove artifacts
 	@rm -rf src/*.o
 	@rm -rf src/*.so
@@ -119,6 +131,7 @@ clean: ## Remove artifacts
 	@rm -rf $(package_name).Rcheck
 	@rm -rf docs
 
+.PHONY: purge
 purge: clean ## Remove TA-Lib arifacts and system libraries
 	@if pkg-config --exists ta-lib; then		   \
 		(cd src/ta-lib && sudo $(MAKE) uninstall); \
@@ -129,6 +142,7 @@ purge: clean ## Remove TA-Lib arifacts and system libraries
 	@rm -rf tests/parity/snapshot
 	@rm -f codegen/parity/parity_gen
 
+.PHONY: fmt
 fmt: ## Format code
 	@clang-format \
 	-style='{
@@ -160,6 +174,7 @@ codegen: ## Generate R wrappers and unit-tests
 ## 	This target is an internal helper
 ##  used for the test target which compares
 ##  the output against upstream
+.PHONY: parity-prepare
 parity-prepare:
 	@CC=$${CC:-gcc}; 						\
 	if pkg-config --exists ta-lib; then 	\
