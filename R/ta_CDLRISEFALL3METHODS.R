@@ -39,6 +39,13 @@ rise_fall_3_methods <- function(
 #' @aliases rise_fall_3_methods
 CDLRISEFALL3METHODS <- rise_fall_3_methods
 
+#' @export
+#' @usage NULL
+#' @rdname rise_fall_3_methods
+#'
+#' @aliases rise_fall_3_methods
+riseFall3Methods <- rise_fall_3_methods
+
 #' @usage NULL
 #' @aliases rise_fall_3_methods
 #'
@@ -143,7 +150,7 @@ rise_fall_3_methods.matrix <- function(
 }
 
 #' @usage NULL
-CDLRISEFALL3METHODS_lookback <- rise_fall_3_methods_lookback <- function(
+CDLRISEFALL3METHODS_lookback <- riseFall3Methods_lookback <- rise_fall_3_methods_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

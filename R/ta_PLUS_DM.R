@@ -31,6 +31,13 @@ plus_directional_movement <- function(
 #' @aliases plus_directional_movement
 PLUS_DM <- plus_directional_movement
 
+#' @export
+#' @usage NULL
+#' @rdname plus_directional_movement
+#'
+#' @aliases plus_directional_movement
+plusDirectionalMovement <- plus_directional_movement
+
 #' @usage NULL
 #' @aliases plus_directional_movement
 #'
@@ -121,7 +128,7 @@ plus_directional_movement.matrix <- function(
 }
 
 #' @usage NULL
-PLUS_DM_lookback <- plus_directional_movement_lookback <- function(
+PLUS_DM_lookback <- plusDirectionalMovement_lookback <- plus_directional_movement_lookback <- function(
 	x,
 	cols,
 	timePeriod = 14,

@@ -29,6 +29,13 @@ rolling_standard_deviation <- function(
 #' @aliases rolling_standard_deviation
 STDDEV <- rolling_standard_deviation
 
+#' @export
+#' @usage NULL
+#' @rdname rolling_standard_deviation
+#'
+#' @aliases rolling_standard_deviation
+rollingStandardDeviation <- rolling_standard_deviation
+
 #' @usage NULL
 #' @aliases rolling_standard_deviation
 #'
@@ -91,7 +98,7 @@ rolling_standard_deviation.numeric <- function(
 }
 
 #' @usage NULL
-STDDEV_lookback <- rolling_standard_deviation_lookback <- function(
+STDDEV_lookback <- rollingStandardDeviation_lookback <- rolling_standard_deviation_lookback <- function(
 	x,
 	timePeriod = 5,
 	deviations = 1,

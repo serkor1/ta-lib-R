@@ -57,6 +57,13 @@ exponential_moving_average <- function(
 #' @aliases exponential_moving_average
 EMA <- exponential_moving_average
 
+#' @export
+#' @usage NULL
+#' @rdname exponential_moving_average
+#'
+#' @aliases exponential_moving_average
+exponentialMovingAverage <- exponential_moving_average
+
 #' @usage NULL
 #' @aliases exponential_moving_average
 #'
@@ -181,7 +188,7 @@ exponential_moving_average.numeric <- function(
 }
 
 #' @usage NULL
-EMA_lookback <- exponential_moving_average_lookback <- function(
+EMA_lookback <- exponentialMovingAverage_lookback <- exponential_moving_average_lookback <- function(
 	x,
 	cols,
 	timePeriod = 30,

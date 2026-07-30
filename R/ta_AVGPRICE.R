@@ -30,6 +30,13 @@ average_price <- function(
 #' @aliases average_price
 AVGPRICE <- average_price
 
+#' @export
+#' @usage NULL
+#' @rdname average_price
+#'
+#' @aliases average_price
+averagePrice <- average_price
+
 #' @usage NULL
 #' @aliases average_price
 #'
@@ -116,7 +123,7 @@ average_price.matrix <- function(
 }
 
 #' @usage NULL
-AVGPRICE_lookback <- average_price_lookback <- function(
+AVGPRICE_lookback <- averagePrice_lookback <- average_price_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

@@ -28,6 +28,13 @@ rolling_maximum <- function(
 #' @aliases rolling_maximum
 MAX <- rolling_maximum
 
+#' @export
+#' @usage NULL
+#' @rdname rolling_maximum
+#'
+#' @aliases rolling_maximum
+rollingMaximum <- rolling_maximum
+
 #' @usage NULL
 #' @aliases rolling_maximum
 #'
@@ -86,7 +93,7 @@ rolling_maximum.numeric <- function(
 }
 
 #' @usage NULL
-MAX_lookback <- rolling_maximum_lookback <- function(
+MAX_lookback <- rollingMaximum_lookback <- rolling_maximum_lookback <- function(
 	x,
 	timePeriod = 30,
 	na.bridge = FALSE,

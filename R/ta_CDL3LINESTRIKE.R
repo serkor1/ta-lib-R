@@ -39,6 +39,13 @@ three_line_strike <- function(
 #' @aliases three_line_strike
 CDL3LINESTRIKE <- three_line_strike
 
+#' @export
+#' @usage NULL
+#' @rdname three_line_strike
+#'
+#' @aliases three_line_strike
+threeLineStrike <- three_line_strike
+
 #' @usage NULL
 #' @aliases three_line_strike
 #'
@@ -143,7 +150,7 @@ three_line_strike.matrix <- function(
 }
 
 #' @usage NULL
-CDL3LINESTRIKE_lookback <- three_line_strike_lookback <- function(
+CDL3LINESTRIKE_lookback <- threeLineStrike_lookback <- three_line_strike_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

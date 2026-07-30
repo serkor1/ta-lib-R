@@ -39,6 +39,13 @@ advance_block <- function(
 #' @aliases advance_block
 CDLADVANCEBLOCK <- advance_block
 
+#' @export
+#' @usage NULL
+#' @rdname advance_block
+#'
+#' @aliases advance_block
+advanceBlock <- advance_block
+
 #' @usage NULL
 #' @aliases advance_block
 #'
@@ -143,7 +150,7 @@ advance_block.matrix <- function(
 }
 
 #' @usage NULL
-CDLADVANCEBLOCK_lookback <- advance_block_lookback <- function(
+CDLADVANCEBLOCK_lookback <- advanceBlock_lookback <- advance_block_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

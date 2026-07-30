@@ -39,6 +39,13 @@ three_outside <- function(
 #' @aliases three_outside
 CDL3OUTSIDE <- three_outside
 
+#' @export
+#' @usage NULL
+#' @rdname three_outside
+#'
+#' @aliases three_outside
+threeOutside <- three_outside
+
 #' @usage NULL
 #' @aliases three_outside
 #'
@@ -143,7 +150,7 @@ three_outside.matrix <- function(
 }
 
 #' @usage NULL
-CDL3OUTSIDE_lookback <- three_outside_lookback <- function(
+CDL3OUTSIDE_lookback <- threeOutside_lookback <- three_outside_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

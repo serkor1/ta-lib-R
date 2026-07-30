@@ -39,6 +39,13 @@ counter_attack <- function(
 #' @aliases counter_attack
 CDLCOUNTERATTACK <- counter_attack
 
+#' @export
+#' @usage NULL
+#' @rdname counter_attack
+#'
+#' @aliases counter_attack
+counterAttack <- counter_attack
+
 #' @usage NULL
 #' @aliases counter_attack
 #'
@@ -143,7 +150,7 @@ counter_attack.matrix <- function(
 }
 
 #' @usage NULL
-CDLCOUNTERATTACK_lookback <- counter_attack_lookback <- function(
+CDLCOUNTERATTACK_lookback <- counterAttack_lookback <- counter_attack_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

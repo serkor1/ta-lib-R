@@ -35,6 +35,13 @@ fast_stochastic <- function(
 #' @aliases fast_stochastic
 STOCHF <- fast_stochastic
 
+#' @export
+#' @usage NULL
+#' @rdname fast_stochastic
+#'
+#' @aliases fast_stochastic
+fastStochastic <- fast_stochastic
+
 #' @usage NULL
 #' @aliases fast_stochastic
 #'
@@ -138,7 +145,7 @@ fast_stochastic.matrix <- function(
 }
 
 #' @usage NULL
-STOCHF_lookback <- fast_stochastic_lookback <- function(
+STOCHF_lookback <- fastStochastic_lookback <- fast_stochastic_lookback <- function(
 	x,
 	cols,
 	fastKPeriod = 5,

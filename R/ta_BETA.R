@@ -29,6 +29,13 @@ rolling_beta <- function(
 #' @aliases rolling_beta
 BETA <- rolling_beta
 
+#' @export
+#' @usage NULL
+#' @rdname rolling_beta
+#'
+#' @aliases rolling_beta
+rollingBeta <- rolling_beta
+
 #' @usage NULL
 #' @aliases rolling_beta
 #'
@@ -91,7 +98,7 @@ rolling_beta.numeric <- function(
 }
 
 #' @usage NULL
-BETA_lookback <- rolling_beta_lookback <- function(
+BETA_lookback <- rollingBeta_lookback <- rolling_beta_lookback <- function(
 	x,
 	timePeriod = 5,
 	na.bridge = FALSE,

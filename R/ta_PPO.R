@@ -35,6 +35,13 @@ percentage_price_oscillator <- function(
 #' @aliases percentage_price_oscillator
 PPO <- percentage_price_oscillator
 
+#' @export
+#' @usage NULL
+#' @rdname percentage_price_oscillator
+#'
+#' @aliases percentage_price_oscillator
+percentagePriceOscillator <- percentage_price_oscillator
+
 #' @usage NULL
 #' @aliases percentage_price_oscillator
 #'
@@ -136,7 +143,7 @@ percentage_price_oscillator.matrix <- function(
 }
 
 #' @usage NULL
-PPO_lookback <- percentage_price_oscillator_lookback <- function(
+PPO_lookback <- percentagePriceOscillator_lookback <- percentage_price_oscillator_lookback <- function(
 	x,
 	cols,
 	fastPeriod = 12,

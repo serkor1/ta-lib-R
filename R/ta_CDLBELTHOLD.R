@@ -39,6 +39,13 @@ belt_hold <- function(
 #' @aliases belt_hold
 CDLBELTHOLD <- belt_hold
 
+#' @export
+#' @usage NULL
+#' @rdname belt_hold
+#'
+#' @aliases belt_hold
+beltHold <- belt_hold
+
 #' @usage NULL
 #' @aliases belt_hold
 #'
@@ -143,7 +150,7 @@ belt_hold.matrix <- function(
 }
 
 #' @usage NULL
-CDLBELTHOLD_lookback <- belt_hold_lookback <- function(
+CDLBELTHOLD_lookback <- beltHold_lookback <- belt_hold_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

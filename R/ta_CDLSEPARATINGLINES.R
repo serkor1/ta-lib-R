@@ -39,6 +39,13 @@ separating_lines <- function(
 #' @aliases separating_lines
 CDLSEPARATINGLINES <- separating_lines
 
+#' @export
+#' @usage NULL
+#' @rdname separating_lines
+#'
+#' @aliases separating_lines
+separatingLines <- separating_lines
+
 #' @usage NULL
 #' @aliases separating_lines
 #'
@@ -143,7 +150,7 @@ separating_lines.matrix <- function(
 }
 
 #' @usage NULL
-CDLSEPARATINGLINES_lookback <- separating_lines_lookback <- function(
+CDLSEPARATINGLINES_lookback <- separatingLines_lookback <- separating_lines_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

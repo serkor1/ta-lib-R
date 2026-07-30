@@ -39,6 +39,13 @@ three_white_soldiers <- function(
 #' @aliases three_white_soldiers
 CDL3WHITESOLDIERS <- three_white_soldiers
 
+#' @export
+#' @usage NULL
+#' @rdname three_white_soldiers
+#'
+#' @aliases three_white_soldiers
+threeWhiteSoldiers <- three_white_soldiers
+
 #' @usage NULL
 #' @aliases three_white_soldiers
 #'
@@ -143,7 +150,7 @@ three_white_soldiers.matrix <- function(
 }
 
 #' @usage NULL
-CDL3WHITESOLDIERS_lookback <- three_white_soldiers_lookback <- function(
+CDL3WHITESOLDIERS_lookback <- threeWhiteSoldiers_lookback <- three_white_soldiers_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

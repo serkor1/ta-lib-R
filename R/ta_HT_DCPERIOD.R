@@ -30,6 +30,13 @@ dominant_cycle_period <- function(
 #' @aliases dominant_cycle_period
 HT_DCPERIOD <- dominant_cycle_period
 
+#' @export
+#' @usage NULL
+#' @rdname dominant_cycle_period
+#'
+#' @aliases dominant_cycle_period
+dominantCyclePeriod <- dominant_cycle_period
+
 #' @usage NULL
 #' @aliases dominant_cycle_period
 #'
@@ -113,7 +120,7 @@ dominant_cycle_period.matrix <- function(
 }
 
 #' @usage NULL
-HT_DCPERIOD_lookback <- dominant_cycle_period_lookback <- function(
+HT_DCPERIOD_lookback <- dominantCyclePeriod_lookback <- dominant_cycle_period_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

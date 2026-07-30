@@ -31,6 +31,13 @@ normalized_average_true_range <- function(
 #' @aliases normalized_average_true_range
 NATR <- normalized_average_true_range
 
+#' @export
+#' @usage NULL
+#' @rdname normalized_average_true_range
+#'
+#' @aliases normalized_average_true_range
+normalizedAverageTrueRange <- normalized_average_true_range
+
 #' @usage NULL
 #' @aliases normalized_average_true_range
 #'
@@ -122,7 +129,7 @@ normalized_average_true_range.matrix <- function(
 }
 
 #' @usage NULL
-NATR_lookback <- normalized_average_true_range_lookback <- function(
+NATR_lookback <- normalizedAverageTrueRange_lookback <- normalized_average_true_range_lookback <- function(
 	x,
 	cols,
 	timePeriod = 14,

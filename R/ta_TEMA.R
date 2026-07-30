@@ -57,6 +57,13 @@ triple_exponential_moving_average <- function(
 #' @aliases triple_exponential_moving_average
 TEMA <- triple_exponential_moving_average
 
+#' @export
+#' @usage NULL
+#' @rdname triple_exponential_moving_average
+#'
+#' @aliases triple_exponential_moving_average
+tripleExponentialMovingAverage <- triple_exponential_moving_average
+
 #' @usage NULL
 #' @aliases triple_exponential_moving_average
 #'
@@ -181,7 +188,7 @@ triple_exponential_moving_average.numeric <- function(
 }
 
 #' @usage NULL
-TEMA_lookback <- triple_exponential_moving_average_lookback <- function(
+TEMA_lookback <- tripleExponentialMovingAverage_lookback <- triple_exponential_moving_average_lookback <- function(
 	x,
 	cols,
 	timePeriod = 30,

@@ -30,6 +30,13 @@ weighted_close_price <- function(
 #' @aliases weighted_close_price
 WCLPRICE <- weighted_close_price
 
+#' @export
+#' @usage NULL
+#' @rdname weighted_close_price
+#'
+#' @aliases weighted_close_price
+weightedClosePrice <- weighted_close_price
+
 #' @usage NULL
 #' @aliases weighted_close_price
 #'
@@ -115,7 +122,7 @@ weighted_close_price.matrix <- function(
 }
 
 #' @usage NULL
-WCLPRICE_lookback <- weighted_close_price_lookback <- function(
+WCLPRICE_lookback <- weightedClosePrice_lookback <- weighted_close_price_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

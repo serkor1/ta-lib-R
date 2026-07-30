@@ -39,6 +39,13 @@ three_inside <- function(
 #' @aliases three_inside
 CDL3INSIDE <- three_inside
 
+#' @export
+#' @usage NULL
+#' @rdname three_inside
+#'
+#' @aliases three_inside
+threeInside <- three_inside
+
 #' @usage NULL
 #' @aliases three_inside
 #'
@@ -143,7 +150,7 @@ three_inside.matrix <- function(
 }
 
 #' @usage NULL
-CDL3INSIDE_lookback <- three_inside_lookback <- function(
+CDL3INSIDE_lookback <- threeInside_lookback <- three_inside_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

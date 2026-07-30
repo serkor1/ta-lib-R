@@ -40,6 +40,13 @@ evening_doji_star <- function(
 #' @aliases evening_doji_star
 CDLEVENINGDOJISTAR <- evening_doji_star
 
+#' @export
+#' @usage NULL
+#' @rdname evening_doji_star
+#'
+#' @aliases evening_doji_star
+eveningDojiStar <- evening_doji_star
+
 #' @usage NULL
 #' @aliases evening_doji_star
 #'
@@ -150,7 +157,7 @@ evening_doji_star.matrix <- function(
 }
 
 #' @usage NULL
-CDLEVENINGDOJISTAR_lookback <- evening_doji_star_lookback <- function(
+CDLEVENINGDOJISTAR_lookback <- eveningDojiStar_lookback <- evening_doji_star_lookback <- function(
 	x,
 	cols,
 	penetration = 0.3,

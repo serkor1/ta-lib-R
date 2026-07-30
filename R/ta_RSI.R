@@ -31,6 +31,13 @@ relative_strength_index <- function(
 #' @aliases relative_strength_index
 RSI <- relative_strength_index
 
+#' @export
+#' @usage NULL
+#' @rdname relative_strength_index
+#'
+#' @aliases relative_strength_index
+relativeStrengthIndex <- relative_strength_index
+
 #' @usage NULL
 #' @aliases relative_strength_index
 #'
@@ -120,7 +127,7 @@ relative_strength_index.matrix <- function(
 }
 
 #' @usage NULL
-RSI_lookback <- relative_strength_index_lookback <- function(
+RSI_lookback <- relativeStrengthIndex_lookback <- relative_strength_index_lookback <- function(
 	x,
 	cols,
 	timePeriod = 14,

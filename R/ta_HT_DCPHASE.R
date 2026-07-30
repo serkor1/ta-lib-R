@@ -30,6 +30,13 @@ dominant_cycle_phase <- function(
 #' @aliases dominant_cycle_phase
 HT_DCPHASE <- dominant_cycle_phase
 
+#' @export
+#' @usage NULL
+#' @rdname dominant_cycle_phase
+#'
+#' @aliases dominant_cycle_phase
+dominantCyclePhase <- dominant_cycle_phase
+
 #' @usage NULL
 #' @aliases dominant_cycle_phase
 #'
@@ -113,7 +120,7 @@ dominant_cycle_phase.matrix <- function(
 }
 
 #' @usage NULL
-HT_DCPHASE_lookback <- dominant_cycle_phase_lookback <- function(
+HT_DCPHASE_lookback <- dominantCyclePhase_lookback <- dominant_cycle_phase_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

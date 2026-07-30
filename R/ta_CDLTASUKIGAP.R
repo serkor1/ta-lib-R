@@ -39,6 +39,13 @@ tasuki_gap <- function(
 #' @aliases tasuki_gap
 CDLTASUKIGAP <- tasuki_gap
 
+#' @export
+#' @usage NULL
+#' @rdname tasuki_gap
+#'
+#' @aliases tasuki_gap
+tasukiGap <- tasuki_gap
+
 #' @usage NULL
 #' @aliases tasuki_gap
 #'
@@ -143,7 +150,7 @@ tasuki_gap.matrix <- function(
 }
 
 #' @usage NULL
-CDLTASUKIGAP_lookback <- tasuki_gap_lookback <- function(
+CDLTASUKIGAP_lookback <- tasukiGap_lookback <- tasuki_gap_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

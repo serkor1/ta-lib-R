@@ -41,6 +41,13 @@ extended_moving_average_convergence_divergence <- function(
 #' @aliases extended_moving_average_convergence_divergence
 MACDEXT <- extended_moving_average_convergence_divergence
 
+#' @export
+#' @usage NULL
+#' @rdname extended_moving_average_convergence_divergence
+#'
+#' @aliases extended_moving_average_convergence_divergence
+extendedMovingAverageConvergenceDivergence <- extended_moving_average_convergence_divergence
+
 #' @usage NULL
 #' @aliases extended_moving_average_convergence_divergence
 #'
@@ -160,7 +167,7 @@ extended_moving_average_convergence_divergence.matrix <- function(
 }
 
 #' @usage NULL
-MACDEXT_lookback <- extended_moving_average_convergence_divergence_lookback <- function(
+MACDEXT_lookback <- extendedMovingAverageConvergenceDivergence_lookback <- extended_moving_average_convergence_divergence_lookback <- function(
 	x,
 	cols,
 	fastPeriod = 12,

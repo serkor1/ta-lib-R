@@ -31,6 +31,13 @@ midpoint_price <- function(
 #' @aliases midpoint_price
 MIDPRICE <- midpoint_price
 
+#' @export
+#' @usage NULL
+#' @rdname midpoint_price
+#'
+#' @aliases midpoint_price
+midpointPrice <- midpoint_price
+
 #' @usage NULL
 #' @aliases midpoint_price
 #'
@@ -121,7 +128,7 @@ midpoint_price.matrix <- function(
 }
 
 #' @usage NULL
-MIDPRICE_lookback <- midpoint_price_lookback <- function(
+MIDPRICE_lookback <- midpointPrice_lookback <- midpoint_price_lookback <- function(
 	x,
 	cols,
 	timePeriod = 14,

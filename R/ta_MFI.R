@@ -31,6 +31,13 @@ money_flow_index <- function(
 #' @aliases money_flow_index
 MFI <- money_flow_index
 
+#' @export
+#' @usage NULL
+#' @rdname money_flow_index
+#'
+#' @aliases money_flow_index
+moneyFlowIndex <- money_flow_index
+
 #' @usage NULL
 #' @aliases money_flow_index
 #'
@@ -123,7 +130,7 @@ money_flow_index.matrix <- function(
 }
 
 #' @usage NULL
-MFI_lookback <- money_flow_index_lookback <- function(
+MFI_lookback <- moneyFlowIndex_lookback <- money_flow_index_lookback <- function(
 	x,
 	cols,
 	timePeriod = 14,

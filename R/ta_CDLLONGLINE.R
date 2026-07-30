@@ -39,6 +39,13 @@ long_line <- function(
 #' @aliases long_line
 CDLLONGLINE <- long_line
 
+#' @export
+#' @usage NULL
+#' @rdname long_line
+#'
+#' @aliases long_line
+longLine <- long_line
+
 #' @usage NULL
 #' @aliases long_line
 #'
@@ -143,7 +150,7 @@ long_line.matrix <- function(
 }
 
 #' @usage NULL
-CDLLONGLINE_lookback <- long_line_lookback <- function(
+CDLLONGLINE_lookback <- longLine_lookback <- long_line_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

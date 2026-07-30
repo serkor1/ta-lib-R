@@ -39,6 +39,13 @@ harami_cross <- function(
 #' @aliases harami_cross
 CDLHARAMICROSS <- harami_cross
 
+#' @export
+#' @usage NULL
+#' @rdname harami_cross
+#'
+#' @aliases harami_cross
+haramiCross <- harami_cross
+
 #' @usage NULL
 #' @aliases harami_cross
 #'
@@ -143,7 +150,7 @@ harami_cross.matrix <- function(
 }
 
 #' @usage NULL
-CDLHARAMICROSS_lookback <- harami_cross_lookback <- function(
+CDLHARAMICROSS_lookback <- haramiCross_lookback <- harami_cross_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

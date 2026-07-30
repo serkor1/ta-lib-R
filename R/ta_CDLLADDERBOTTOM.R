@@ -39,6 +39,13 @@ ladder_bottom <- function(
 #' @aliases ladder_bottom
 CDLLADDERBOTTOM <- ladder_bottom
 
+#' @export
+#' @usage NULL
+#' @rdname ladder_bottom
+#'
+#' @aliases ladder_bottom
+ladderBottom <- ladder_bottom
+
 #' @usage NULL
 #' @aliases ladder_bottom
 #'
@@ -143,7 +150,7 @@ ladder_bottom.matrix <- function(
 }
 
 #' @usage NULL
-CDLLADDERBOTTOM_lookback <- ladder_bottom_lookback <- function(
+CDLLADDERBOTTOM_lookback <- ladderBottom_lookback <- ladder_bottom_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

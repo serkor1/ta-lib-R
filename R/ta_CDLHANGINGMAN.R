@@ -39,6 +39,13 @@ hanging_man <- function(
 #' @aliases hanging_man
 CDLHANGINGMAN <- hanging_man
 
+#' @export
+#' @usage NULL
+#' @rdname hanging_man
+#'
+#' @aliases hanging_man
+hangingMan <- hanging_man
+
 #' @usage NULL
 #' @aliases hanging_man
 #'
@@ -143,7 +150,7 @@ hanging_man.matrix <- function(
 }
 
 #' @usage NULL
-CDLHANGINGMAN_lookback <- hanging_man_lookback <- function(
+CDLHANGINGMAN_lookback <- hangingMan_lookback <- hanging_man_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

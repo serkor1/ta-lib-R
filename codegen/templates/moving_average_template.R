@@ -52,6 +52,13 @@ ${FUN} <- function(
 #'
 #' @aliases ${FUN}
 ${ALIAS} <- ${FUN}
+#camel#
+#camel##' @export
+#camel##' @usage NULL
+#camel##' @rdname ${FUN}
+#camel##'
+#camel##' @aliases ${FUN}
+#camel#${CAMEL} <- ${FUN}
 
 #' @usage NULL
 #' @aliases ${FUN}
@@ -176,7 +183,7 @@ ${FUN}.numeric <- function(
 }
 
 #' @usage NULL
-${ALIAS}_lookback <- ${FUN}_lookback <- function(
+${ALIAS}_lookback <- ${CAMEL_LOOKBACK}${FUN}_lookback <- function(
 	x,
 	cols,
 	${ARGS}

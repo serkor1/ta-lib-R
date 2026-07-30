@@ -31,6 +31,13 @@ minus_directional_indicator <- function(
 #' @aliases minus_directional_indicator
 MINUS_DI <- minus_directional_indicator
 
+#' @export
+#' @usage NULL
+#' @rdname minus_directional_indicator
+#'
+#' @aliases minus_directional_indicator
+minusDirectionalIndicator <- minus_directional_indicator
+
 #' @usage NULL
 #' @aliases minus_directional_indicator
 #'
@@ -122,7 +129,7 @@ minus_directional_indicator.matrix <- function(
 }
 
 #' @usage NULL
-MINUS_DI_lookback <- minus_directional_indicator_lookback <- function(
+MINUS_DI_lookback <- minusDirectionalIndicator_lookback <- minus_directional_indicator_lookback <- function(
 	x,
 	cols,
 	timePeriod = 14,

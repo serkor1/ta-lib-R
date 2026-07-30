@@ -31,6 +31,13 @@ average_directional_movement_index_rating <- function(
 #' @aliases average_directional_movement_index_rating
 ADXR <- average_directional_movement_index_rating
 
+#' @export
+#' @usage NULL
+#' @rdname average_directional_movement_index_rating
+#'
+#' @aliases average_directional_movement_index_rating
+averageDirectionalMovementIndexRating <- average_directional_movement_index_rating
+
 #' @usage NULL
 #' @aliases average_directional_movement_index_rating
 #'
@@ -122,7 +129,7 @@ average_directional_movement_index_rating.matrix <- function(
 }
 
 #' @usage NULL
-ADXR_lookback <- average_directional_movement_index_rating_lookback <- function(
+ADXR_lookback <- averageDirectionalMovementIndexRating_lookback <- average_directional_movement_index_rating_lookback <- function(
 	x,
 	cols,
 	timePeriod = 14,

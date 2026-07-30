@@ -57,6 +57,13 @@ simple_moving_average <- function(
 #' @aliases simple_moving_average
 SMA <- simple_moving_average
 
+#' @export
+#' @usage NULL
+#' @rdname simple_moving_average
+#'
+#' @aliases simple_moving_average
+simpleMovingAverage <- simple_moving_average
+
 #' @usage NULL
 #' @aliases simple_moving_average
 #'
@@ -181,7 +188,7 @@ simple_moving_average.numeric <- function(
 }
 
 #' @usage NULL
-SMA_lookback <- simple_moving_average_lookback <- function(
+SMA_lookback <- simpleMovingAverage_lookback <- simple_moving_average_lookback <- function(
 	x,
 	cols,
 	timePeriod = 30,

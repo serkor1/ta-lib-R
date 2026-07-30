@@ -30,6 +30,13 @@ phasor_components <- function(
 #' @aliases phasor_components
 HT_PHASOR <- phasor_components
 
+#' @export
+#' @usage NULL
+#' @rdname phasor_components
+#'
+#' @aliases phasor_components
+phasorComponents <- phasor_components
+
 #' @usage NULL
 #' @aliases phasor_components
 #'
@@ -113,7 +120,7 @@ phasor_components.matrix <- function(
 }
 
 #' @usage NULL
-HT_PHASOR_lookback <- phasor_components_lookback <- function(
+HT_PHASOR_lookback <- phasorComponents_lookback <- phasor_components_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

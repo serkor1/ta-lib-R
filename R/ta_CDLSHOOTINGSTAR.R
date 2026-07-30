@@ -39,6 +39,13 @@ shooting_star <- function(
 #' @aliases shooting_star
 CDLSHOOTINGSTAR <- shooting_star
 
+#' @export
+#' @usage NULL
+#' @rdname shooting_star
+#'
+#' @aliases shooting_star
+shootingStar <- shooting_star
+
 #' @usage NULL
 #' @aliases shooting_star
 #'
@@ -143,7 +150,7 @@ shooting_star.matrix <- function(
 }
 
 #' @usage NULL
-CDLSHOOTINGSTAR_lookback <- shooting_star_lookback <- function(
+CDLSHOOTINGSTAR_lookback <- shootingStar_lookback <- shooting_star_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

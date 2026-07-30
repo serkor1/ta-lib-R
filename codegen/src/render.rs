@@ -11,12 +11,17 @@
 //!   - filling ${METHOD} (plotly|ggplot), ${PKG} (plotly|ggplot2)
 //!     and ${SUFFIX} (ly|gg)
 //!
+//! The camelCase alias block is marker-conditional the same way:
+//! render_camel() keeps '#camel#'-prefixed lines (prefix stripped)
+//! only when the camelCase name differs from the snake_case name.
+//!
 //! After rendering, hand-edited splice regions of the existing file
 //! on disk are preserved by preserve_regions() (see main.rs).
 
 use crate::metadata::{MetaData, OptionalArg, OptionalType};
 use crate::tables::{
-    ChartType, MOVING_AVERAGES, agnostic, chart_type, function_name, is_candlestick, ma_type,
+    ChartType, MOVING_AVERAGES, agnostic, camel_case_name, chart_type, function_name,
+    is_candlestick, ma_type,
 };
 
 /// The template files rendered by render_indicator(),
@@ -121,6 +126,26 @@ fn render_backend(template: &str, backend: &Backend) -> String {
     out.replace("${METHOD}", backend.method)
         .replace("${PKG}", backend.pkg)
         .replace("${SUFFIX}", backend.suffix)
+}
+
+/// Keep '#camel#'-prefixed lines (prefix stripped) only when the
+/// indicator has a distinct camelCase alias; for single-word names
+/// (doji, aroon) the block would alias the function to itself
+pub fn render_camel(template: &str, keep: bool) -> String {
+    let mut out = template
+        .lines()
+        .filter_map(|line| match line.strip_prefix("#camel#") {
+            Some(rest) => keep.then_some(rest),
+            None => Some(line),
+        })
+        .collect::<Vec<&str>>()
+        .join("\n");
+
+    if template.ends_with('\n') {
+        out.push('\n');
+    }
+
+    out
 }
 
 /// Render the R wrapper of an indicator from its family's main
@@ -353,10 +378,25 @@ pub fn render_indicator(f: &MetaData, t: &Templates) -> String {
         .map(|c| format!(",\n\t\t{c}"))
         .collect::<String>();
 
+    // the camelCase alias; single-word indicator names camelCase
+    // to themselves, dropping the '#camel#' alias block instead
+    let camel = camel_case_name(&f.indicator);
+    let has_camel = camel != fun;
+
+    // the camelCase link of the chained lookback assignment
+    // (BBANDS_lookback <- bollingerBands_lookback <- ...)
+    let camel_lookback = if has_camel {
+        format!("{camel}_lookback <- ")
+    } else {
+        String::new()
+    };
+
     let fill = |template: &str| {
-        template
+        render_camel(template, has_camel)
             .replace("${FUN}", fun)
             .replace("${ALIAS}", &f.indicator)
+            .replace("${CAMEL_LOOKBACK}", &camel_lookback)
+            .replace("${CAMEL}", &camel)
             .replace("${TITLE}", &f.title)
             .replace(
                 "${FAMILY}",
@@ -712,6 +752,28 @@ tail
         // no lookback and no numeric method
         assert!(!rendered.contains("_lookback"));
         assert!(!rendered.contains(".numeric"));
+    }
+
+    #[test]
+    fn renders_camel_alias() {
+        let funcs = parse_api(SAMPLE);
+        let templates = Templates::load(concat!(env!("CARGO_MANIFEST_DIR"), "/templates"));
+
+        // BBANDS carries a camelCase alias next to the uppercase
+        // one, and its lookback joins the chained assignment
+        let rendered = render_indicator(&funcs[0], &templates);
+        assert!(rendered.contains("bollingerBands <- bollinger_bands"));
+        assert!(rendered.contains(
+            "BBANDS_lookback <- bollingerBands_lookback <- bollinger_bands_lookback <- function("
+        ));
+        assert!(!rendered.contains("#camel#"), "unstripped camel prefix");
+
+        // 'doji' camelCases to itself: the alias block is
+        // dropped and the lookback chain stays two-membered
+        let rendered = render_indicator(&funcs[1], &templates);
+        assert!(!rendered.contains("doji <- doji"));
+        assert!(rendered.contains("CDLDOJI_lookback <- doji_lookback <- function("));
+        assert!(!rendered.contains("#camel#"), "unstripped camel prefix");
     }
 
     #[test]

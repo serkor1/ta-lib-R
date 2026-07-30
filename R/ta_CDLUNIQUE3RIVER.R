@@ -39,6 +39,13 @@ unique_3_river <- function(
 #' @aliases unique_3_river
 CDLUNIQUE3RIVER <- unique_3_river
 
+#' @export
+#' @usage NULL
+#' @rdname unique_3_river
+#'
+#' @aliases unique_3_river
+unique3River <- unique_3_river
+
 #' @usage NULL
 #' @aliases unique_3_river
 #'
@@ -143,7 +150,7 @@ unique_3_river.matrix <- function(
 }
 
 #' @usage NULL
-CDLUNIQUE3RIVER_lookback <- unique_3_river_lookback <- function(
+CDLUNIQUE3RIVER_lookback <- unique3River_lookback <- unique_3_river_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

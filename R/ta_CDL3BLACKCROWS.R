@@ -39,6 +39,13 @@ three_black_crows <- function(
 #' @aliases three_black_crows
 CDL3BLACKCROWS <- three_black_crows
 
+#' @export
+#' @usage NULL
+#' @rdname three_black_crows
+#'
+#' @aliases three_black_crows
+threeBlackCrows <- three_black_crows
+
 #' @usage NULL
 #' @aliases three_black_crows
 #'
@@ -143,7 +150,7 @@ three_black_crows.matrix <- function(
 }
 
 #' @usage NULL
-CDL3BLACKCROWS_lookback <- three_black_crows_lookback <- function(
+CDL3BLACKCROWS_lookback <- threeBlackCrows_lookback <- three_black_crows_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

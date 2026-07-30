@@ -57,6 +57,13 @@ weighted_moving_average <- function(
 #' @aliases weighted_moving_average
 WMA <- weighted_moving_average
 
+#' @export
+#' @usage NULL
+#' @rdname weighted_moving_average
+#'
+#' @aliases weighted_moving_average
+weightedMovingAverage <- weighted_moving_average
+
 #' @usage NULL
 #' @aliases weighted_moving_average
 #'
@@ -181,7 +188,7 @@ weighted_moving_average.numeric <- function(
 }
 
 #' @usage NULL
-WMA_lookback <- weighted_moving_average_lookback <- function(
+WMA_lookback <- weightedMovingAverage_lookback <- weighted_moving_average_lookback <- function(
 	x,
 	cols,
 	timePeriod = 30,

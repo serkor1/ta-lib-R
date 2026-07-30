@@ -30,6 +30,13 @@ typical_price <- function(
 #' @aliases typical_price
 TYPPRICE <- typical_price
 
+#' @export
+#' @usage NULL
+#' @rdname typical_price
+#'
+#' @aliases typical_price
+typicalPrice <- typical_price
+
 #' @usage NULL
 #' @aliases typical_price
 #'
@@ -115,7 +122,7 @@ typical_price.matrix <- function(
 }
 
 #' @usage NULL
-TYPPRICE_lookback <- typical_price_lookback <- function(
+TYPPRICE_lookback <- typicalPrice_lookback <- typical_price_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

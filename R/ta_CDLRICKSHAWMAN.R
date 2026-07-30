@@ -39,6 +39,13 @@ rickshaw_man <- function(
 #' @aliases rickshaw_man
 CDLRICKSHAWMAN <- rickshaw_man
 
+#' @export
+#' @usage NULL
+#' @rdname rickshaw_man
+#'
+#' @aliases rickshaw_man
+rickshawMan <- rickshaw_man
+
 #' @usage NULL
 #' @aliases rickshaw_man
 #'
@@ -143,7 +150,7 @@ rickshaw_man.matrix <- function(
 }
 
 #' @usage NULL
-CDLRICKSHAWMAN_lookback <- rickshaw_man_lookback <- function(
+CDLRICKSHAWMAN_lookback <- rickshawMan_lookback <- rickshaw_man_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

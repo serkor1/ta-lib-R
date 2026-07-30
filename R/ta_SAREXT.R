@@ -45,6 +45,13 @@ extended_parabolic_stop_and_reverse <- function(
 #' @aliases extended_parabolic_stop_and_reverse
 SAREXT <- extended_parabolic_stop_and_reverse
 
+#' @export
+#' @usage NULL
+#' @rdname extended_parabolic_stop_and_reverse
+#'
+#' @aliases extended_parabolic_stop_and_reverse
+extendedParabolicStopAndReverse <- extended_parabolic_stop_and_reverse
+
 #' @usage NULL
 #' @aliases extended_parabolic_stop_and_reverse
 #'
@@ -177,7 +184,7 @@ extended_parabolic_stop_and_reverse.matrix <- function(
 }
 
 #' @usage NULL
-SAREXT_lookback <- extended_parabolic_stop_and_reverse_lookback <- function(
+SAREXT_lookback <- extendedParabolicStopAndReverse_lookback <- extended_parabolic_stop_and_reverse_lookback <- function(
 	x,
 	cols,
 	startValue = 0,

@@ -31,6 +31,13 @@ average_deviation <- function(
 #' @aliases average_deviation
 AVGDEV <- average_deviation
 
+#' @export
+#' @usage NULL
+#' @rdname average_deviation
+#'
+#' @aliases average_deviation
+averageDeviation <- average_deviation
+
 #' @usage NULL
 #' @aliases average_deviation
 #'
@@ -120,7 +127,7 @@ average_deviation.matrix <- function(
 }
 
 #' @usage NULL
-AVGDEV_lookback <- average_deviation_lookback <- function(
+AVGDEV_lookback <- averageDeviation_lookback <- average_deviation_lookback <- function(
 	x,
 	cols,
 	timePeriod = 14,

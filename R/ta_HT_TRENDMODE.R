@@ -30,6 +30,13 @@ trend_cycle_mode <- function(
 #' @aliases trend_cycle_mode
 HT_TRENDMODE <- trend_cycle_mode
 
+#' @export
+#' @usage NULL
+#' @rdname trend_cycle_mode
+#'
+#' @aliases trend_cycle_mode
+trendCycleMode <- trend_cycle_mode
+
 #' @usage NULL
 #' @aliases trend_cycle_mode
 #'
@@ -113,7 +120,7 @@ trend_cycle_mode.matrix <- function(
 }
 
 #' @usage NULL
-HT_TRENDMODE_lookback <- trend_cycle_mode_lookback <- function(
+HT_TRENDMODE_lookback <- trendCycleMode_lookback <- trend_cycle_mode_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

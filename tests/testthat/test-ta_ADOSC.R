@@ -19,6 +19,17 @@ testthat::test_that(desc = 'Alias and function similarity', code = {
 		object = output,
 		expected = alias
 	)
+
+	## 2) test that the camelCase alias
+	##    returns the same values
+	camel <- chaikinAccumulationDistributionOscillator(SPY)
+
+	## 2.1) check if the values
+	##      are equal
+	testthat::expect_equal(
+		object = output,
+		expected = camel
+	)
 })
 
 ## type-checks for data.frames and
@@ -161,6 +172,13 @@ testthat::test_that(desc = 'Lookback equivalence', code = {
 			FUN = chaikin_accumulation_distribution_oscillator,
 			x = SPY
 		)
+	)
+
+	## the camelCase lookback alias
+	## is the function itself
+	testthat::expect_identical(
+		object = chaikinAccumulationDistributionOscillator_lookback,
+		expected = chaikin_accumulation_distribution_oscillator_lookback
 	)
 })
 

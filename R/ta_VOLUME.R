@@ -31,6 +31,13 @@ trading_volume <- function(
 #' @aliases trading_volume
 VOLUME <- trading_volume
 
+#' @export
+#' @usage NULL
+#' @rdname trading_volume
+#'
+#' @aliases trading_volume
+tradingVolume <- trading_volume
+
 #' @usage NULL
 #' @aliases trading_volume
 #'

@@ -70,6 +70,13 @@ mesa_adaptive_moving_average <- function(
 #' @aliases mesa_adaptive_moving_average
 MAMA <- mesa_adaptive_moving_average
 
+#' @export
+#' @usage NULL
+#' @rdname mesa_adaptive_moving_average
+#'
+#' @aliases mesa_adaptive_moving_average
+mesaAdaptiveMovingAverage <- mesa_adaptive_moving_average
+
 #' @usage NULL
 #' @aliases mesa_adaptive_moving_average
 #'
@@ -208,7 +215,7 @@ mesa_adaptive_moving_average.numeric <- function(
 }
 
 #' @usage NULL
-MAMA_lookback <- mesa_adaptive_moving_average_lookback <- function(
+MAMA_lookback <- mesaAdaptiveMovingAverage_lookback <- mesa_adaptive_moving_average_lookback <- function(
 	x,
 	cols,
 	timePeriod = 30,

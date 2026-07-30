@@ -57,6 +57,13 @@ kaufman_adaptive_moving_average <- function(
 #' @aliases kaufman_adaptive_moving_average
 KAMA <- kaufman_adaptive_moving_average
 
+#' @export
+#' @usage NULL
+#' @rdname kaufman_adaptive_moving_average
+#'
+#' @aliases kaufman_adaptive_moving_average
+kaufmanAdaptiveMovingAverage <- kaufman_adaptive_moving_average
+
 #' @usage NULL
 #' @aliases kaufman_adaptive_moving_average
 #'
@@ -181,7 +188,7 @@ kaufman_adaptive_moving_average.numeric <- function(
 }
 
 #' @usage NULL
-KAMA_lookback <- kaufman_adaptive_moving_average_lookback <- function(
+KAMA_lookback <- kaufmanAdaptiveMovingAverage_lookback <- kaufman_adaptive_moving_average_lookback <- function(
 	x,
 	cols,
 	timePeriod = 30,

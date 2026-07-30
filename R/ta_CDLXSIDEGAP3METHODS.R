@@ -39,6 +39,13 @@ xside_gap_3_methods <- function(
 #' @aliases xside_gap_3_methods
 CDLXSIDEGAP3METHODS <- xside_gap_3_methods
 
+#' @export
+#' @usage NULL
+#' @rdname xside_gap_3_methods
+#'
+#' @aliases xside_gap_3_methods
+xsideGap3Methods <- xside_gap_3_methods
+
 #' @usage NULL
 #' @aliases xside_gap_3_methods
 #'
@@ -143,7 +150,7 @@ xside_gap_3_methods.matrix <- function(
 }
 
 #' @usage NULL
-CDLXSIDEGAP3METHODS_lookback <- xside_gap_3_methods_lookback <- function(
+CDLXSIDEGAP3METHODS_lookback <- xsideGap3Methods_lookback <- xside_gap_3_methods_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

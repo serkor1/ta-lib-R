@@ -30,6 +30,13 @@ chaikin_accumulation_distribution_line <- function(
 #' @aliases chaikin_accumulation_distribution_line
 AD <- chaikin_accumulation_distribution_line
 
+#' @export
+#' @usage NULL
+#' @rdname chaikin_accumulation_distribution_line
+#'
+#' @aliases chaikin_accumulation_distribution_line
+chaikinAccumulationDistributionLine <- chaikin_accumulation_distribution_line
+
 #' @usage NULL
 #' @aliases chaikin_accumulation_distribution_line
 #'
@@ -116,7 +123,7 @@ chaikin_accumulation_distribution_line.matrix <- function(
 }
 
 #' @usage NULL
-AD_lookback <- chaikin_accumulation_distribution_line_lookback <- function(
+AD_lookback <- chaikinAccumulationDistributionLine_lookback <- chaikin_accumulation_distribution_line_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

@@ -30,6 +30,13 @@ sine_wave <- function(
 #' @aliases sine_wave
 HT_SINE <- sine_wave
 
+#' @export
+#' @usage NULL
+#' @rdname sine_wave
+#'
+#' @aliases sine_wave
+sineWave <- sine_wave
+
 #' @usage NULL
 #' @aliases sine_wave
 #'
@@ -113,7 +120,7 @@ sine_wave.matrix <- function(
 }
 
 #' @usage NULL
-HT_SINE_lookback <- sine_wave_lookback <- function(
+HT_SINE_lookback <- sineWave_lookback <- sine_wave_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

@@ -33,6 +33,13 @@ chaikin_accumulation_distribution_oscillator <- function(
 #' @aliases chaikin_accumulation_distribution_oscillator
 ADOSC <- chaikin_accumulation_distribution_oscillator
 
+#' @export
+#' @usage NULL
+#' @rdname chaikin_accumulation_distribution_oscillator
+#'
+#' @aliases chaikin_accumulation_distribution_oscillator
+chaikinAccumulationDistributionOscillator <- chaikin_accumulation_distribution_oscillator
+
 #' @usage NULL
 #' @aliases chaikin_accumulation_distribution_oscillator
 #'
@@ -131,7 +138,7 @@ chaikin_accumulation_distribution_oscillator.matrix <- function(
 }
 
 #' @usage NULL
-ADOSC_lookback <- chaikin_accumulation_distribution_oscillator_lookback <- function(
+ADOSC_lookback <- chaikinAccumulationDistributionOscillator_lookback <- chaikin_accumulation_distribution_oscillator_lookback <- function(
 	x,
 	cols,
 	fastPeriod = 3,

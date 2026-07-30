@@ -39,6 +39,13 @@ concealing_baby_swallow <- function(
 #' @aliases concealing_baby_swallow
 CDLCONCEALBABYSWALL <- concealing_baby_swallow
 
+#' @export
+#' @usage NULL
+#' @rdname concealing_baby_swallow
+#'
+#' @aliases concealing_baby_swallow
+concealingBabySwallow <- concealing_baby_swallow
+
 #' @usage NULL
 #' @aliases concealing_baby_swallow
 #'
@@ -143,7 +150,7 @@ concealing_baby_swallow.matrix <- function(
 }
 
 #' @usage NULL
-CDLCONCEALBABYSWALL_lookback <- concealing_baby_swallow_lookback <- function(
+CDLCONCEALBABYSWALL_lookback <- concealingBabySwallow_lookback <- concealing_baby_swallow_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

@@ -30,6 +30,13 @@ median_price <- function(
 #' @aliases median_price
 MEDPRICE <- median_price
 
+#' @export
+#' @usage NULL
+#' @rdname median_price
+#'
+#' @aliases median_price
+medianPrice <- median_price
+
 #' @usage NULL
 #' @aliases median_price
 #'
@@ -114,7 +121,7 @@ median_price.matrix <- function(
 }
 
 #' @usage NULL
-MEDPRICE_lookback <- median_price_lookback <- function(
+MEDPRICE_lookback <- medianPrice_lookback <- median_price_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

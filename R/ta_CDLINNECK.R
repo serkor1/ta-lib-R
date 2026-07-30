@@ -39,6 +39,13 @@ in_neck <- function(
 #' @aliases in_neck
 CDLINNECK <- in_neck
 
+#' @export
+#' @usage NULL
+#' @rdname in_neck
+#'
+#' @aliases in_neck
+inNeck <- in_neck
+
 #' @usage NULL
 #' @aliases in_neck
 #'
@@ -143,7 +150,7 @@ in_neck.matrix <- function(
 }
 
 #' @usage NULL
-CDLINNECK_lookback <- in_neck_lookback <- function(
+CDLINNECK_lookback <- inNeck_lookback <- in_neck_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

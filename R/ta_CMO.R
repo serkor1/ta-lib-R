@@ -31,6 +31,13 @@ chande_momentum_oscillator <- function(
 #' @aliases chande_momentum_oscillator
 CMO <- chande_momentum_oscillator
 
+#' @export
+#' @usage NULL
+#' @rdname chande_momentum_oscillator
+#'
+#' @aliases chande_momentum_oscillator
+chandeMomentumOscillator <- chande_momentum_oscillator
+
 #' @usage NULL
 #' @aliases chande_momentum_oscillator
 #'
@@ -120,7 +127,7 @@ chande_momentum_oscillator.matrix <- function(
 }
 
 #' @usage NULL
-CMO_lookback <- chande_momentum_oscillator_lookback <- function(
+CMO_lookback <- chandeMomentumOscillator_lookback <- chande_momentum_oscillator_lookback <- function(
 	x,
 	cols,
 	timePeriod = 14,

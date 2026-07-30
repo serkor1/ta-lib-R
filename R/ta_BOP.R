@@ -30,6 +30,13 @@ balance_of_power <- function(
 #' @aliases balance_of_power
 BOP <- balance_of_power
 
+#' @export
+#' @usage NULL
+#' @rdname balance_of_power
+#'
+#' @aliases balance_of_power
+balanceOfPower <- balance_of_power
+
 #' @usage NULL
 #' @aliases balance_of_power
 #'
@@ -116,7 +123,7 @@ balance_of_power.matrix <- function(
 }
 
 #' @usage NULL
-BOP_lookback <- balance_of_power_lookback <- function(
+BOP_lookback <- balanceOfPower_lookback <- balance_of_power_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

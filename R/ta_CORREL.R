@@ -29,6 +29,13 @@ rolling_correlation <- function(
 #' @aliases rolling_correlation
 CORREL <- rolling_correlation
 
+#' @export
+#' @usage NULL
+#' @rdname rolling_correlation
+#'
+#' @aliases rolling_correlation
+rollingCorrelation <- rolling_correlation
+
 #' @usage NULL
 #' @aliases rolling_correlation
 #'
@@ -91,7 +98,7 @@ rolling_correlation.numeric <- function(
 }
 
 #' @usage NULL
-CORREL_lookback <- rolling_correlation_lookback <- function(
+CORREL_lookback <- rollingCorrelation_lookback <- rolling_correlation_lookback <- function(
 	x,
 	timePeriod = 30,
 	na.bridge = FALSE,

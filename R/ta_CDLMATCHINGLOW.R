@@ -39,6 +39,13 @@ matching_low <- function(
 #' @aliases matching_low
 CDLMATCHINGLOW <- matching_low
 
+#' @export
+#' @usage NULL
+#' @rdname matching_low
+#'
+#' @aliases matching_low
+matchingLow <- matching_low
+
 #' @usage NULL
 #' @aliases matching_low
 #'
@@ -143,7 +150,7 @@ matching_low.matrix <- function(
 }
 
 #' @usage NULL
-CDLMATCHINGLOW_lookback <- matching_low_lookback <- function(
+CDLMATCHINGLOW_lookback <- matchingLow_lookback <- matching_low_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

@@ -40,6 +40,13 @@ morning_star <- function(
 #' @aliases morning_star
 CDLMORNINGSTAR <- morning_star
 
+#' @export
+#' @usage NULL
+#' @rdname morning_star
+#'
+#' @aliases morning_star
+morningStar <- morning_star
+
 #' @usage NULL
 #' @aliases morning_star
 #'
@@ -150,7 +157,7 @@ morning_star.matrix <- function(
 }
 
 #' @usage NULL
-CDLMORNINGSTAR_lookback <- morning_star_lookback <- function(
+CDLMORNINGSTAR_lookback <- morningStar_lookback <- morning_star_lookback <- function(
 	x,
 	cols,
 	penetration = 0.3,

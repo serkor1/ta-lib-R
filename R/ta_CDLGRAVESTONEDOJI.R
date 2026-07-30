@@ -39,6 +39,13 @@ gravestone_doji <- function(
 #' @aliases gravestone_doji
 CDLGRAVESTONEDOJI <- gravestone_doji
 
+#' @export
+#' @usage NULL
+#' @rdname gravestone_doji
+#'
+#' @aliases gravestone_doji
+gravestoneDoji <- gravestone_doji
+
 #' @usage NULL
 #' @aliases gravestone_doji
 #'
@@ -143,7 +150,7 @@ gravestone_doji.matrix <- function(
 }
 
 #' @usage NULL
-CDLGRAVESTONEDOJI_lookback <- gravestone_doji_lookback <- function(
+CDLGRAVESTONEDOJI_lookback <- gravestoneDoji_lookback <- gravestone_doji_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

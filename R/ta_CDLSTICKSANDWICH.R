@@ -39,6 +39,13 @@ stick_sandwich <- function(
 #' @aliases stick_sandwich
 CDLSTICKSANDWICH <- stick_sandwich
 
+#' @export
+#' @usage NULL
+#' @rdname stick_sandwich
+#'
+#' @aliases stick_sandwich
+stickSandwich <- stick_sandwich
+
 #' @usage NULL
 #' @aliases stick_sandwich
 #'
@@ -143,7 +150,7 @@ stick_sandwich.matrix <- function(
 }
 
 #' @usage NULL
-CDLSTICKSANDWICH_lookback <- stick_sandwich_lookback <- function(
+CDLSTICKSANDWICH_lookback <- stickSandwich_lookback <- stick_sandwich_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

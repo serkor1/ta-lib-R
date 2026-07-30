@@ -39,6 +39,13 @@ hikakke_mod <- function(
 #' @aliases hikakke_mod
 CDLHIKKAKEMOD <- hikakke_mod
 
+#' @export
+#' @usage NULL
+#' @rdname hikakke_mod
+#'
+#' @aliases hikakke_mod
+hikakkeMod <- hikakke_mod
+
 #' @usage NULL
 #' @aliases hikakke_mod
 #'
@@ -143,7 +150,7 @@ hikakke_mod.matrix <- function(
 }
 
 #' @usage NULL
-CDLHIKKAKEMOD_lookback <- hikakke_mod_lookback <- function(
+CDLHIKKAKEMOD_lookback <- hikakkeMod_lookback <- hikakke_mod_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

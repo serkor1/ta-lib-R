@@ -40,6 +40,13 @@ mat_hold <- function(
 #' @aliases mat_hold
 CDLMATHOLD <- mat_hold
 
+#' @export
+#' @usage NULL
+#' @rdname mat_hold
+#'
+#' @aliases mat_hold
+matHold <- mat_hold
+
 #' @usage NULL
 #' @aliases mat_hold
 #'
@@ -150,7 +157,7 @@ mat_hold.matrix <- function(
 }
 
 #' @usage NULL
-CDLMATHOLD_lookback <- mat_hold_lookback <- function(
+CDLMATHOLD_lookback <- matHold_lookback <- mat_hold_lookback <- function(
 	x,
 	cols,
 	penetration = 0.5,

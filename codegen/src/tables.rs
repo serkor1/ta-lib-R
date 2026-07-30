@@ -6,7 +6,7 @@
 //! classifications and the exclusions. This is the one file to
 //! touch when customizing how an indicator is generated.
 
-use crate::metadata::{tag_blocks, tag_text};
+use crate::metadata::{camel_case, tag_blocks, tag_text};
 
 /// Maps <Abbreviation> to snake_case indicator names
 /// and defaults to <Abbreviation>
@@ -152,6 +152,12 @@ pub fn function_name(abbreviation: &str) -> &str {
         .find(|(alias, _)| *alias == abbreviation)
         .map(|(_, fun)| *fun)
         .unwrap_or(abbreviation)
+}
+
+/// The camelCase R name of an indicator,
+/// e.g. BBANDS -> bollingerBands
+pub fn camel_case_name(abbreviation: &str) -> String {
+    camel_case(function_name(abbreviation))
 }
 
 /// Main indicators overlay the candlestick chart itself while
@@ -337,6 +343,14 @@ mod tests {
     fn function_name_falls_back_to_abbreviation() {
         assert_eq!(function_name("BBANDS"), "bollinger_bands");
         assert_eq!(function_name("NOT_A_REAL_FUNC"), "NOT_A_REAL_FUNC");
+    }
+
+    #[test]
+    fn camel_case_name_derives_from_snake_case() {
+        assert_eq!(camel_case_name("BBANDS"), "bollingerBands");
+        assert_eq!(camel_case_name("RSI"), "relativeStrengthIndex");
+        assert_eq!(camel_case_name("CDLRISEFALL3METHODS"), "riseFall3Methods");
+        assert_eq!(camel_case_name("T3"), "t3ExponentialMovingAverage");
     }
 
     #[test]

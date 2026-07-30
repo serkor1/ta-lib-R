@@ -167,21 +167,22 @@ BTC <- talib::BTC[1:75, ]
 
 ## Implementation: {talib} vs upstream (TA-Lib Core)
 
-Functions use descriptive snake_case names, but every function is
-aliased to its [TA-Lib](https://github.com/TA-Lib/ta-lib) shorthand for
-compatibility with the broader ecosystem:
+Functions use descriptive snake_case names; each is aliased to its
+[TA-Lib](https://github.com/TA-Lib/ta-lib) shorthand for compatibility
+with the broader ecosystem, and to a camelCase name for consistency
+across R’s finance ecosystem:
 
 <div align="center">
 
-| Category | TA-Lib (C) | {talib} | {talib} alias |
-|:---|:---|:---|:---|
-| Overlap Studies | `TA_BBANDS()` | `bollinger_bands()` | `BBANDS()` |
-| Momentum Indicators | `TA_CCI()` | `commodity_channel_index()` | `CCI()` |
-| Volume Indicators | `TA_OBV()` | `on_balance_volume()` | `OBV()` |
-| Volatility Indicators | `TA_ATR()` | `average_true_range()` | `ATR()` |
-| Price Transform | `TA_AVGPRICE()` | `average_price()` | `AVGPRICE()` |
-| Cycle Indicators | `TA_HT_SINE()` | `sine_wave()` | `HT_SINE()` |
-| Pattern Recognition | `TA_CDLHANGINGMAN()` | `hanging_man()` | `CDLHANGINGMAN()` |
+| Category | TA-Lib (C) | {talib} | {talib} alias | {talib} camelCase alias |
+|:---|:---|:---|:---|:---|
+| Overlap Studies | `TA_BBANDS()` | `bollinger_bands()` | `BBANDS()` | `bollingerBands()` |
+| Momentum Indicators | `TA_CCI()` | `commodity_channel_index()` | `CCI()` | `commodityChannelIndex()` |
+| Volume Indicators | `TA_OBV()` | `on_balance_volume()` | `OBV()` | `onBalanceVolume()` |
+| Volatility Indicators | `TA_ATR()` | `average_true_range()` | `ATR()` | `averageTrueRange()` |
+| Price Transform | `TA_AVGPRICE()` | `average_price()` | `AVGPRICE()` | `averagePrice()` |
+| Cycle Indicators | `TA_HT_SINE()` | `sine_wave()` | `HT_SINE()` | `sineWave()` |
+| Pattern Recognition | `TA_CDLHANGINGMAN()` | `hanging_man()` | `CDLHANGINGMAN()` | `hangingMan()` |
 
 </div>
 

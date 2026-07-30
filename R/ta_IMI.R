@@ -31,6 +31,13 @@ intraday_movement_index <- function(
 #' @aliases intraday_movement_index
 IMI <- intraday_movement_index
 
+#' @export
+#' @usage NULL
+#' @rdname intraday_movement_index
+#'
+#' @aliases intraday_movement_index
+intradayMovementIndex <- intraday_movement_index
+
 #' @usage NULL
 #' @aliases intraday_movement_index
 #'
@@ -121,7 +128,7 @@ intraday_movement_index.matrix <- function(
 }
 
 #' @usage NULL
-IMI_lookback <- intraday_movement_index_lookback <- function(
+IMI_lookback <- intradayMovementIndex_lookback <- intraday_movement_index_lookback <- function(
 	x,
 	cols,
 	timePeriod = 14,

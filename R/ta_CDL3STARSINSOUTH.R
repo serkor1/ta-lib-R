@@ -39,6 +39,13 @@ three_stars_in_the_south <- function(
 #' @aliases three_stars_in_the_south
 CDL3STARSINSOUTH <- three_stars_in_the_south
 
+#' @export
+#' @usage NULL
+#' @rdname three_stars_in_the_south
+#'
+#' @aliases three_stars_in_the_south
+threeStarsInTheSouth <- three_stars_in_the_south
+
 #' @usage NULL
 #' @aliases three_stars_in_the_south
 #'
@@ -143,7 +150,7 @@ three_stars_in_the_south.matrix <- function(
 }
 
 #' @usage NULL
-CDL3STARSINSOUTH_lookback <- three_stars_in_the_south_lookback <- function(
+CDL3STARSINSOUTH_lookback <- threeStarsInTheSouth_lookback <- three_stars_in_the_south_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

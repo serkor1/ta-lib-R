@@ -63,6 +63,13 @@ t3_exponential_moving_average <- function(
 #' @aliases t3_exponential_moving_average
 T3 <- t3_exponential_moving_average
 
+#' @export
+#' @usage NULL
+#' @rdname t3_exponential_moving_average
+#'
+#' @aliases t3_exponential_moving_average
+t3ExponentialMovingAverage <- t3_exponential_moving_average
+
 #' @usage NULL
 #' @aliases t3_exponential_moving_average
 #'
@@ -195,7 +202,7 @@ t3_exponential_moving_average.numeric <- function(
 }
 
 #' @usage NULL
-T3_lookback <- t3_exponential_moving_average_lookback <- function(
+T3_lookback <- t3ExponentialMovingAverage_lookback <- t3_exponential_moving_average_lookback <- function(
 	x,
 	cols,
 	timePeriod = 5,

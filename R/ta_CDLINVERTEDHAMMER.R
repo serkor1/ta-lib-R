@@ -39,6 +39,13 @@ inverted_hammer <- function(
 #' @aliases inverted_hammer
 CDLINVERTEDHAMMER <- inverted_hammer
 
+#' @export
+#' @usage NULL
+#' @rdname inverted_hammer
+#'
+#' @aliases inverted_hammer
+invertedHammer <- inverted_hammer
+
 #' @usage NULL
 #' @aliases inverted_hammer
 #'
@@ -143,7 +150,7 @@ inverted_hammer.matrix <- function(
 }
 
 #' @usage NULL
-CDLINVERTEDHAMMER_lookback <- inverted_hammer_lookback <- function(
+CDLINVERTEDHAMMER_lookback <- invertedHammer_lookback <- inverted_hammer_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

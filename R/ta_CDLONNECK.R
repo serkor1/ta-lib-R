@@ -39,6 +39,13 @@ on_neck <- function(
 #' @aliases on_neck
 CDLONNECK <- on_neck
 
+#' @export
+#' @usage NULL
+#' @rdname on_neck
+#'
+#' @aliases on_neck
+onNeck <- on_neck
+
 #' @usage NULL
 #' @aliases on_neck
 #'
@@ -143,7 +150,7 @@ on_neck.matrix <- function(
 }
 
 #' @usage NULL
-CDLONNECK_lookback <- on_neck_lookback <- function(
+CDLONNECK_lookback <- onNeck_lookback <- on_neck_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

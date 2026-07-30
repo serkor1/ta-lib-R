@@ -31,6 +31,13 @@ fixed_moving_average_convergence_divergence <- function(
 #' @aliases fixed_moving_average_convergence_divergence
 MACDFIX <- fixed_moving_average_convergence_divergence
 
+#' @export
+#' @usage NULL
+#' @rdname fixed_moving_average_convergence_divergence
+#'
+#' @aliases fixed_moving_average_convergence_divergence
+fixedMovingAverageConvergenceDivergence <- fixed_moving_average_convergence_divergence
+
 #' @usage NULL
 #' @aliases fixed_moving_average_convergence_divergence
 #'
@@ -120,7 +127,7 @@ fixed_moving_average_convergence_divergence.matrix <- function(
 }
 
 #' @usage NULL
-MACDFIX_lookback <- fixed_moving_average_convergence_divergence_lookback <- function(
+MACDFIX_lookback <- fixedMovingAverageConvergenceDivergence_lookback <- fixed_moving_average_convergence_divergence_lookback <- function(
 	x,
 	cols,
 	signalPeriod = 9,

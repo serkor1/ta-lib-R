@@ -57,6 +57,13 @@ double_exponential_moving_average <- function(
 #' @aliases double_exponential_moving_average
 DEMA <- double_exponential_moving_average
 
+#' @export
+#' @usage NULL
+#' @rdname double_exponential_moving_average
+#'
+#' @aliases double_exponential_moving_average
+doubleExponentialMovingAverage <- double_exponential_moving_average
+
 #' @usage NULL
 #' @aliases double_exponential_moving_average
 #'
@@ -181,7 +188,7 @@ double_exponential_moving_average.numeric <- function(
 }
 
 #' @usage NULL
-DEMA_lookback <- double_exponential_moving_average_lookback <- function(
+DEMA_lookback <- doubleExponentialMovingAverage_lookback <- double_exponential_moving_average_lookback <- function(
 	x,
 	cols,
 	timePeriod = 30,

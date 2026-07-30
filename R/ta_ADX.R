@@ -31,6 +31,13 @@ average_directional_movement_index <- function(
 #' @aliases average_directional_movement_index
 ADX <- average_directional_movement_index
 
+#' @export
+#' @usage NULL
+#' @rdname average_directional_movement_index
+#'
+#' @aliases average_directional_movement_index
+averageDirectionalMovementIndex <- average_directional_movement_index
+
 #' @usage NULL
 #' @aliases average_directional_movement_index
 #'
@@ -122,7 +129,7 @@ average_directional_movement_index.matrix <- function(
 }
 
 #' @usage NULL
-ADX_lookback <- average_directional_movement_index_lookback <- function(
+ADX_lookback <- averageDirectionalMovementIndex_lookback <- average_directional_movement_index_lookback <- function(
 	x,
 	cols,
 	timePeriod = 14,

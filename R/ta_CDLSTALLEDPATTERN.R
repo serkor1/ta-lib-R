@@ -39,6 +39,13 @@ stalled_pattern <- function(
 #' @aliases stalled_pattern
 CDLSTALLEDPATTERN <- stalled_pattern
 
+#' @export
+#' @usage NULL
+#' @rdname stalled_pattern
+#'
+#' @aliases stalled_pattern
+stalledPattern <- stalled_pattern
+
 #' @usage NULL
 #' @aliases stalled_pattern
 #'
@@ -143,7 +150,7 @@ stalled_pattern.matrix <- function(
 }
 
 #' @usage NULL
-CDLSTALLEDPATTERN_lookback <- stalled_pattern_lookback <- function(
+CDLSTALLEDPATTERN_lookback <- stalledPattern_lookback <- stalled_pattern_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

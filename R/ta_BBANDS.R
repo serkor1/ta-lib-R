@@ -36,6 +36,13 @@ bollinger_bands <- function(
 #' @aliases bollinger_bands
 BBANDS <- bollinger_bands
 
+#' @export
+#' @usage NULL
+#' @rdname bollinger_bands
+#'
+#' @aliases bollinger_bands
+bollingerBands <- bollinger_bands
+
 #' @usage NULL
 #' @aliases bollinger_bands
 #'
@@ -143,7 +150,7 @@ bollinger_bands.matrix <- function(
 }
 
 #' @usage NULL
-BBANDS_lookback <- bollinger_bands_lookback <- function(
+BBANDS_lookback <- bollingerBands_lookback <- bollinger_bands_lookback <- function(
 	x,
 	cols,
 	timePeriod = 5,

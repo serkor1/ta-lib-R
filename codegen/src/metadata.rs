@@ -102,7 +102,7 @@ pub(crate) fn tag_text<'a>(xml: &'a str, tag: &str) -> Option<&'a str> {
 }
 
 /// 'Fast-K Period' -> fastKPeriod, 'Bollinger Bands' -> bollingerBands
-fn camel_case(s: &str) -> String {
+pub fn camel_case(s: &str) -> String {
     let mut out = String::new();
     let mut boundary = false;
 

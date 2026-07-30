@@ -30,6 +30,13 @@ on_balance_volume <- function(
 #' @aliases on_balance_volume
 OBV <- on_balance_volume
 
+#' @export
+#' @usage NULL
+#' @rdname on_balance_volume
+#'
+#' @aliases on_balance_volume
+onBalanceVolume <- on_balance_volume
+
 #' @usage NULL
 #' @aliases on_balance_volume
 #'
@@ -114,7 +121,7 @@ on_balance_volume.matrix <- function(
 }
 
 #' @usage NULL
-OBV_lookback <- on_balance_volume_lookback <- function(
+OBV_lookback <- onBalanceVolume_lookback <- on_balance_volume_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

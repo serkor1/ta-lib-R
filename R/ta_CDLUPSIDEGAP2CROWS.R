@@ -39,6 +39,13 @@ upside_gap_2_crows <- function(
 #' @aliases upside_gap_2_crows
 CDLUPSIDEGAP2CROWS <- upside_gap_2_crows
 
+#' @export
+#' @usage NULL
+#' @rdname upside_gap_2_crows
+#'
+#' @aliases upside_gap_2_crows
+upsideGap2Crows <- upside_gap_2_crows
+
 #' @usage NULL
 #' @aliases upside_gap_2_crows
 #'
@@ -143,7 +150,7 @@ upside_gap_2_crows.matrix <- function(
 }
 
 #' @usage NULL
-CDLUPSIDEGAP2CROWS_lookback <- upside_gap_2_crows_lookback <- function(
+CDLUPSIDEGAP2CROWS_lookback <- upsideGap2Crows_lookback <- upside_gap_2_crows_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

@@ -40,6 +40,13 @@ evening_star <- function(
 #' @aliases evening_star
 CDLEVENINGSTAR <- evening_star
 
+#' @export
+#' @usage NULL
+#' @rdname evening_star
+#'
+#' @aliases evening_star
+eveningStar <- evening_star
+
 #' @usage NULL
 #' @aliases evening_star
 #'
@@ -150,7 +157,7 @@ evening_star.matrix <- function(
 }
 
 #' @usage NULL
-CDLEVENINGSTAR_lookback <- evening_star_lookback <- function(
+CDLEVENINGSTAR_lookback <- eveningStar_lookback <- evening_star_lookback <- function(
 	x,
 	cols,
 	penetration = 0.3,

@@ -39,6 +39,13 @@ doji_star <- function(
 #' @aliases doji_star
 CDLDOJISTAR <- doji_star
 
+#' @export
+#' @usage NULL
+#' @rdname doji_star
+#'
+#' @aliases doji_star
+dojiStar <- doji_star
+
 #' @usage NULL
 #' @aliases doji_star
 #'
@@ -143,7 +150,7 @@ doji_star.matrix <- function(
 }
 
 #' @usage NULL
-CDLDOJISTAR_lookback <- doji_star_lookback <- function(
+CDLDOJISTAR_lookback <- dojiStar_lookback <- doji_star_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

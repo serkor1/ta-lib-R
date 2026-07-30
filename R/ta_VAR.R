@@ -29,6 +29,13 @@ rolling_variance <- function(
 #' @aliases rolling_variance
 VAR <- rolling_variance
 
+#' @export
+#' @usage NULL
+#' @rdname rolling_variance
+#'
+#' @aliases rolling_variance
+rollingVariance <- rolling_variance
+
 #' @usage NULL
 #' @aliases rolling_variance
 #'
@@ -91,7 +98,7 @@ rolling_variance.numeric <- function(
 }
 
 #' @usage NULL
-VAR_lookback <- rolling_variance_lookback <- function(
+VAR_lookback <- rollingVariance_lookback <- rolling_variance_lookback <- function(
 	x,
 	timePeriod = 5,
 	deviations = 1,

@@ -40,6 +40,13 @@ abandoned_baby <- function(
 #' @aliases abandoned_baby
 CDLABANDONEDBABY <- abandoned_baby
 
+#' @export
+#' @usage NULL
+#' @rdname abandoned_baby
+#'
+#' @aliases abandoned_baby
+abandonedBaby <- abandoned_baby
+
 #' @usage NULL
 #' @aliases abandoned_baby
 #'
@@ -150,7 +157,7 @@ abandoned_baby.matrix <- function(
 }
 
 #' @usage NULL
-CDLABANDONEDBABY_lookback <- abandoned_baby_lookback <- function(
+CDLABANDONEDBABY_lookback <- abandonedBaby_lookback <- abandoned_baby_lookback <- function(
 	x,
 	cols,
 	penetration = 0.3,

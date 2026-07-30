@@ -19,6 +19,17 @@ testthat::test_that(desc = 'Alias and function similarity', code = {
 		object = output,
 		expected = alias
 	)
+
+	## 2) test that the camelCase alias
+	##    returns the same values
+	camel <- threeIdenticalCrows(SPY)
+
+	## 2.1) check if the values
+	##      are equal
+	testthat::expect_equal(
+		object = output,
+		expected = camel
+	)
 })
 
 ## type-checks for data.frames and
@@ -155,6 +166,13 @@ testthat::test_that(desc = 'Lookback equivalence', code = {
 	testthat::expect_equal(
 		object = output,
 		expected = lookback(FUN = three_identical_crows, x = SPY)
+	)
+
+	## the camelCase lookback alias
+	## is the function itself
+	testthat::expect_identical(
+		object = threeIdenticalCrows_lookback,
+		expected = three_identical_crows_lookback
 	)
 })
 

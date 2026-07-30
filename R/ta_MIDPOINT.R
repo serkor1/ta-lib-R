@@ -31,6 +31,13 @@ midpoint_period <- function(
 #' @aliases midpoint_period
 MIDPOINT <- midpoint_period
 
+#' @export
+#' @usage NULL
+#' @rdname midpoint_period
+#'
+#' @aliases midpoint_period
+midpointPeriod <- midpoint_period
+
 #' @usage NULL
 #' @aliases midpoint_period
 #'
@@ -120,7 +127,7 @@ midpoint_period.matrix <- function(
 }
 
 #' @usage NULL
-MIDPOINT_lookback <- midpoint_period_lookback <- function(
+MIDPOINT_lookback <- midpointPeriod_lookback <- midpoint_period_lookback <- function(
 	x,
 	cols,
 	timePeriod = 14,

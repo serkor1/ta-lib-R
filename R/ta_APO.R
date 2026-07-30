@@ -35,6 +35,13 @@ absolute_price_oscillator <- function(
 #' @aliases absolute_price_oscillator
 APO <- absolute_price_oscillator
 
+#' @export
+#' @usage NULL
+#' @rdname absolute_price_oscillator
+#'
+#' @aliases absolute_price_oscillator
+absolutePriceOscillator <- absolute_price_oscillator
+
 #' @usage NULL
 #' @aliases absolute_price_oscillator
 #'
@@ -136,7 +143,7 @@ absolute_price_oscillator.matrix <- function(
 }
 
 #' @usage NULL
-APO_lookback <- absolute_price_oscillator_lookback <- function(
+APO_lookback <- absolutePriceOscillator_lookback <- absolute_price_oscillator_lookback <- function(
 	x,
 	cols,
 	fastPeriod = 12,

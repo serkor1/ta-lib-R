@@ -36,6 +36,13 @@ stochastic_relative_strength_index <- function(
 #' @aliases stochastic_relative_strength_index
 STOCHRSI <- stochastic_relative_strength_index
 
+#' @export
+#' @usage NULL
+#' @rdname stochastic_relative_strength_index
+#'
+#' @aliases stochastic_relative_strength_index
+stochasticRelativeStrengthIndex <- stochastic_relative_strength_index
+
 #' @usage NULL
 #' @aliases stochastic_relative_strength_index
 #'
@@ -143,7 +150,7 @@ stochastic_relative_strength_index.matrix <- function(
 }
 
 #' @usage NULL
-STOCHRSI_lookback <- stochastic_relative_strength_index_lookback <- function(
+STOCHRSI_lookback <- stochasticRelativeStrengthIndex_lookback <- stochastic_relative_strength_index_lookback <- function(
 	x,
 	cols,
 	timePeriod = 14,

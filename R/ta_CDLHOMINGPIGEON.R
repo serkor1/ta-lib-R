@@ -39,6 +39,13 @@ homing_pigeon <- function(
 #' @aliases homing_pigeon
 CDLHOMINGPIGEON <- homing_pigeon
 
+#' @export
+#' @usage NULL
+#' @rdname homing_pigeon
+#'
+#' @aliases homing_pigeon
+homingPigeon <- homing_pigeon
+
 #' @usage NULL
 #' @aliases homing_pigeon
 #'
@@ -143,7 +150,7 @@ homing_pigeon.matrix <- function(
 }
 
 #' @usage NULL
-CDLHOMINGPIGEON_lookback <- homing_pigeon_lookback <- function(
+CDLHOMINGPIGEON_lookback <- homingPigeon_lookback <- homing_pigeon_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

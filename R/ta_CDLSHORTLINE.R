@@ -39,6 +39,13 @@ short_line <- function(
 #' @aliases short_line
 CDLSHORTLINE <- short_line
 
+#' @export
+#' @usage NULL
+#' @rdname short_line
+#'
+#' @aliases short_line
+shortLine <- short_line
+
 #' @usage NULL
 #' @aliases short_line
 #'
@@ -143,7 +150,7 @@ short_line.matrix <- function(
 }
 
 #' @usage NULL
-CDLSHORTLINE_lookback <- short_line_lookback <- function(
+CDLSHORTLINE_lookback <- shortLine_lookback <- short_line_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

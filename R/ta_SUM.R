@@ -28,6 +28,13 @@ rolling_sum <- function(
 #' @aliases rolling_sum
 SUM <- rolling_sum
 
+#' @export
+#' @usage NULL
+#' @rdname rolling_sum
+#'
+#' @aliases rolling_sum
+rollingSum <- rolling_sum
+
 #' @usage NULL
 #' @aliases rolling_sum
 #'
@@ -86,7 +93,7 @@ rolling_sum.numeric <- function(
 }
 
 #' @usage NULL
-SUM_lookback <- rolling_sum_lookback <- function(
+SUM_lookback <- rollingSum_lookback <- rolling_sum_lookback <- function(
 	x,
 	timePeriod = 30,
 	na.bridge = FALSE,

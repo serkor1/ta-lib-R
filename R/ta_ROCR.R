@@ -31,6 +31,13 @@ ratio_of_change <- function(
 #' @aliases ratio_of_change
 ROCR <- ratio_of_change
 
+#' @export
+#' @usage NULL
+#' @rdname ratio_of_change
+#'
+#' @aliases ratio_of_change
+ratioOfChange <- ratio_of_change
+
 #' @usage NULL
 #' @aliases ratio_of_change
 #'
@@ -120,7 +127,7 @@ ratio_of_change.matrix <- function(
 }
 
 #' @usage NULL
-ROCR_lookback <- ratio_of_change_lookback <- function(
+ROCR_lookback <- ratioOfChange_lookback <- ratio_of_change_lookback <- function(
 	x,
 	cols,
 	timePeriod = 10,

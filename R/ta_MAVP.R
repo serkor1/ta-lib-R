@@ -39,6 +39,13 @@ variable_moving_average_period <- function(
 #' @aliases variable_moving_average_period
 MAVP <- variable_moving_average_period
 
+#' @export
+#' @usage NULL
+#' @rdname variable_moving_average_period
+#'
+#' @aliases variable_moving_average_period
+variableMovingAveragePeriod <- variable_moving_average_period
+
 #' @usage NULL
 #' @aliases variable_moving_average_period
 #'
@@ -146,7 +153,7 @@ variable_moving_average_period.matrix <- function(
 }
 
 #' @usage NULL
-MAVP_lookback <- variable_moving_average_period_lookback <- function(
+MAVP_lookback <- variableMovingAveragePeriod_lookback <- variable_moving_average_period_lookback <- function(
 	x,
 	cols,
 	periods,

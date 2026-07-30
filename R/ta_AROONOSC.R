@@ -31,6 +31,13 @@ aroon_oscillator <- function(
 #' @aliases aroon_oscillator
 AROONOSC <- aroon_oscillator
 
+#' @export
+#' @usage NULL
+#' @rdname aroon_oscillator
+#'
+#' @aliases aroon_oscillator
+aroonOscillator <- aroon_oscillator
+
 #' @usage NULL
 #' @aliases aroon_oscillator
 #'
@@ -121,7 +128,7 @@ aroon_oscillator.matrix <- function(
 }
 
 #' @usage NULL
-AROONOSC_lookback <- aroon_oscillator_lookback <- function(
+AROONOSC_lookback <- aroonOscillator_lookback <- aroon_oscillator_lookback <- function(
 	x,
 	cols,
 	timePeriod = 14,

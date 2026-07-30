@@ -33,6 +33,13 @@ parabolic_stop_and_reverse <- function(
 #' @aliases parabolic_stop_and_reverse
 SAR <- parabolic_stop_and_reverse
 
+#' @export
+#' @usage NULL
+#' @rdname parabolic_stop_and_reverse
+#'
+#' @aliases parabolic_stop_and_reverse
+parabolicStopAndReverse <- parabolic_stop_and_reverse
+
 #' @usage NULL
 #' @aliases parabolic_stop_and_reverse
 #'
@@ -129,7 +136,7 @@ parabolic_stop_and_reverse.matrix <- function(
 }
 
 #' @usage NULL
-SAR_lookback <- parabolic_stop_and_reverse_lookback <- function(
+SAR_lookback <- parabolicStopAndReverse_lookback <- parabolic_stop_and_reverse_lookback <- function(
 	x,
 	cols,
 	accelerationFactor = 0.02,

@@ -31,6 +31,13 @@ triple_exponential_average <- function(
 #' @aliases triple_exponential_average
 TRIX <- triple_exponential_average
 
+#' @export
+#' @usage NULL
+#' @rdname triple_exponential_average
+#'
+#' @aliases triple_exponential_average
+tripleExponentialAverage <- triple_exponential_average
+
 #' @usage NULL
 #' @aliases triple_exponential_average
 #'
@@ -120,7 +127,7 @@ triple_exponential_average.matrix <- function(
 }
 
 #' @usage NULL
-TRIX_lookback <- triple_exponential_average_lookback <- function(
+TRIX_lookback <- tripleExponentialAverage_lookback <- triple_exponential_average_lookback <- function(
 	x,
 	cols,
 	timePeriod = 30,

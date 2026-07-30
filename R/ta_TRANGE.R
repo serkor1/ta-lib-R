@@ -30,6 +30,13 @@ true_range <- function(
 #' @aliases true_range
 TRANGE <- true_range
 
+#' @export
+#' @usage NULL
+#' @rdname true_range
+#'
+#' @aliases true_range
+trueRange <- true_range
+
 #' @usage NULL
 #' @aliases true_range
 #'
@@ -115,7 +122,7 @@ true_range.matrix <- function(
 }
 
 #' @usage NULL
-TRANGE_lookback <- true_range_lookback <- function(
+TRANGE_lookback <- trueRange_lookback <- true_range_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

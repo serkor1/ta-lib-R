@@ -31,6 +31,13 @@ acceleration_bands <- function(
 #' @aliases acceleration_bands
 ACCBANDS <- acceleration_bands
 
+#' @export
+#' @usage NULL
+#' @rdname acceleration_bands
+#'
+#' @aliases acceleration_bands
+accelerationBands <- acceleration_bands
+
 #' @usage NULL
 #' @aliases acceleration_bands
 #'
@@ -122,7 +129,7 @@ acceleration_bands.matrix <- function(
 }
 
 #' @usage NULL
-ACCBANDS_lookback <- acceleration_bands_lookback <- function(
+ACCBANDS_lookback <- accelerationBands_lookback <- acceleration_bands_lookback <- function(
 	x,
 	cols,
 	timePeriod = 20,

@@ -35,6 +35,13 @@ ultimate_oscillator <- function(
 #' @aliases ultimate_oscillator
 ULTOSC <- ultimate_oscillator
 
+#' @export
+#' @usage NULL
+#' @rdname ultimate_oscillator
+#'
+#' @aliases ultimate_oscillator
+ultimateOscillator <- ultimate_oscillator
+
 #' @usage NULL
 #' @aliases ultimate_oscillator
 #'
@@ -138,7 +145,7 @@ ultimate_oscillator.matrix <- function(
 }
 
 #' @usage NULL
-ULTOSC_lookback <- ultimate_oscillator_lookback <- function(
+ULTOSC_lookback <- ultimateOscillator_lookback <- ultimate_oscillator_lookback <- function(
 	x,
 	cols,
 	firstPeriod = 7,

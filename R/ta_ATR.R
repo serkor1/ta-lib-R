@@ -31,6 +31,13 @@ average_true_range <- function(
 #' @aliases average_true_range
 ATR <- average_true_range
 
+#' @export
+#' @usage NULL
+#' @rdname average_true_range
+#'
+#' @aliases average_true_range
+averageTrueRange <- average_true_range
+
 #' @usage NULL
 #' @aliases average_true_range
 #'
@@ -122,7 +129,7 @@ average_true_range.matrix <- function(
 }
 
 #' @usage NULL
-ATR_lookback <- average_true_range_lookback <- function(
+ATR_lookback <- averageTrueRange_lookback <- average_true_range_lookback <- function(
 	x,
 	cols,
 	timePeriod = 14,

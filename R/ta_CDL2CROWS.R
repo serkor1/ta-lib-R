@@ -39,6 +39,13 @@ two_crows <- function(
 #' @aliases two_crows
 CDL2CROWS <- two_crows
 
+#' @export
+#' @usage NULL
+#' @rdname two_crows
+#'
+#' @aliases two_crows
+twoCrows <- two_crows
+
 #' @usage NULL
 #' @aliases two_crows
 #'
@@ -143,7 +150,7 @@ two_crows.matrix <- function(
 }
 
 #' @usage NULL
-CDL2CROWS_lookback <- two_crows_lookback <- function(
+CDL2CROWS_lookback <- twoCrows_lookback <- two_crows_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

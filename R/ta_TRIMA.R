@@ -57,6 +57,13 @@ triangular_moving_average <- function(
 #' @aliases triangular_moving_average
 TRIMA <- triangular_moving_average
 
+#' @export
+#' @usage NULL
+#' @rdname triangular_moving_average
+#'
+#' @aliases triangular_moving_average
+triangularMovingAverage <- triangular_moving_average
+
 #' @usage NULL
 #' @aliases triangular_moving_average
 #'
@@ -181,7 +188,7 @@ triangular_moving_average.numeric <- function(
 }
 
 #' @usage NULL
-TRIMA_lookback <- triangular_moving_average_lookback <- function(
+TRIMA_lookback <- triangularMovingAverage_lookback <- triangular_moving_average_lookback <- function(
 	x,
 	cols,
 	timePeriod = 30,

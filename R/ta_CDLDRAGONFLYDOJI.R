@@ -39,6 +39,13 @@ dragonfly_doji <- function(
 #' @aliases dragonfly_doji
 CDLDRAGONFLYDOJI <- dragonfly_doji
 
+#' @export
+#' @usage NULL
+#' @rdname dragonfly_doji
+#'
+#' @aliases dragonfly_doji
+dragonflyDoji <- dragonfly_doji
+
 #' @usage NULL
 #' @aliases dragonfly_doji
 #'
@@ -143,7 +150,7 @@ dragonfly_doji.matrix <- function(
 }
 
 #' @usage NULL
-CDLDRAGONFLYDOJI_lookback <- dragonfly_doji_lookback <- function(
+CDLDRAGONFLYDOJI_lookback <- dragonflyDoji_lookback <- dragonfly_doji_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

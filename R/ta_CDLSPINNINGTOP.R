@@ -39,6 +39,13 @@ spinning_top <- function(
 #' @aliases spinning_top
 CDLSPINNINGTOP <- spinning_top
 
+#' @export
+#' @usage NULL
+#' @rdname spinning_top
+#'
+#' @aliases spinning_top
+spinningTop <- spinning_top
+
 #' @usage NULL
 #' @aliases spinning_top
 #'
@@ -143,7 +150,7 @@ spinning_top.matrix <- function(
 }
 
 #' @usage NULL
-CDLSPINNINGTOP_lookback <- spinning_top_lookback <- function(
+CDLSPINNINGTOP_lookback <- spinningTop_lookback <- spinning_top_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

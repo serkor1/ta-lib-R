@@ -40,6 +40,13 @@ morning_doji_star <- function(
 #' @aliases morning_doji_star
 CDLMORNINGDOJISTAR <- morning_doji_star
 
+#' @export
+#' @usage NULL
+#' @rdname morning_doji_star
+#'
+#' @aliases morning_doji_star
+morningDojiStar <- morning_doji_star
+
 #' @usage NULL
 #' @aliases morning_doji_star
 #'
@@ -150,7 +157,7 @@ morning_doji_star.matrix <- function(
 }
 
 #' @usage NULL
-CDLMORNINGDOJISTAR_lookback <- morning_doji_star_lookback <- function(
+CDLMORNINGDOJISTAR_lookback <- morningDojiStar_lookback <- morning_doji_star_lookback <- function(
 	x,
 	cols,
 	penetration = 0.3,

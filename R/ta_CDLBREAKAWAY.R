@@ -39,6 +39,13 @@ break_away <- function(
 #' @aliases break_away
 CDLBREAKAWAY <- break_away
 
+#' @export
+#' @usage NULL
+#' @rdname break_away
+#'
+#' @aliases break_away
+breakAway <- break_away
+
 #' @usage NULL
 #' @aliases break_away
 #'
@@ -143,7 +150,7 @@ break_away.matrix <- function(
 }
 
 #' @usage NULL
-CDLBREAKAWAY_lookback <- break_away_lookback <- function(
+CDLBREAKAWAY_lookback <- breakAway_lookback <- break_away_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

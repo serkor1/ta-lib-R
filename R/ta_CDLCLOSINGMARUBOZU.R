@@ -39,6 +39,13 @@ closing_marubozu <- function(
 #' @aliases closing_marubozu
 CDLCLOSINGMARUBOZU <- closing_marubozu
 
+#' @export
+#' @usage NULL
+#' @rdname closing_marubozu
+#'
+#' @aliases closing_marubozu
+closingMarubozu <- closing_marubozu
+
 #' @usage NULL
 #' @aliases closing_marubozu
 #'
@@ -143,7 +150,7 @@ closing_marubozu.matrix <- function(
 }
 
 #' @usage NULL
-CDLCLOSINGMARUBOZU_lookback <- closing_marubozu_lookback <- function(
+CDLCLOSINGMARUBOZU_lookback <- closingMarubozu_lookback <- closing_marubozu_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

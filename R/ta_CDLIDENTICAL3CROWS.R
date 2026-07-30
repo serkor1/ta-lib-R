@@ -39,6 +39,13 @@ three_identical_crows <- function(
 #' @aliases three_identical_crows
 CDLIDENTICAL3CROWS <- three_identical_crows
 
+#' @export
+#' @usage NULL
+#' @rdname three_identical_crows
+#'
+#' @aliases three_identical_crows
+threeIdenticalCrows <- three_identical_crows
+
 #' @usage NULL
 #' @aliases three_identical_crows
 #'
@@ -143,7 +150,7 @@ three_identical_crows.matrix <- function(
 }
 
 #' @usage NULL
-CDLIDENTICAL3CROWS_lookback <- three_identical_crows_lookback <- function(
+CDLIDENTICAL3CROWS_lookback <- threeIdenticalCrows_lookback <- three_identical_crows_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

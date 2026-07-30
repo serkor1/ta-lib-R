@@ -31,6 +31,13 @@ commodity_channel_index <- function(
 #' @aliases commodity_channel_index
 CCI <- commodity_channel_index
 
+#' @export
+#' @usage NULL
+#' @rdname commodity_channel_index
+#'
+#' @aliases commodity_channel_index
+commodityChannelIndex <- commodity_channel_index
+
 #' @usage NULL
 #' @aliases commodity_channel_index
 #'
@@ -122,7 +129,7 @@ commodity_channel_index.matrix <- function(
 }
 
 #' @usage NULL
-CCI_lookback <- commodity_channel_index_lookback <- function(
+CCI_lookback <- commodityChannelIndex_lookback <- commodity_channel_index_lookback <- function(
 	x,
 	cols,
 	timePeriod = 14,

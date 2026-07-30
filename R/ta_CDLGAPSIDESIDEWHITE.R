@@ -39,6 +39,13 @@ gaps_side_white <- function(
 #' @aliases gaps_side_white
 CDLGAPSIDESIDEWHITE <- gaps_side_white
 
+#' @export
+#' @usage NULL
+#' @rdname gaps_side_white
+#'
+#' @aliases gaps_side_white
+gapsSideWhite <- gaps_side_white
+
 #' @usage NULL
 #' @aliases gaps_side_white
 #'
@@ -143,7 +150,7 @@ gaps_side_white.matrix <- function(
 }
 
 #' @usage NULL
-CDLGAPSIDESIDEWHITE_lookback <- gaps_side_white_lookback <- function(
+CDLGAPSIDESIDEWHITE_lookback <- gapsSideWhite_lookback <- gaps_side_white_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

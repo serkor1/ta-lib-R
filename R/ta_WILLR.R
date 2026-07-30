@@ -31,6 +31,13 @@ williams_oscillator <- function(
 #' @aliases williams_oscillator
 WILLR <- williams_oscillator
 
+#' @export
+#' @usage NULL
+#' @rdname williams_oscillator
+#'
+#' @aliases williams_oscillator
+williamsOscillator <- williams_oscillator
+
 #' @usage NULL
 #' @aliases williams_oscillator
 #'
@@ -122,7 +129,7 @@ williams_oscillator.matrix <- function(
 }
 
 #' @usage NULL
-WILLR_lookback <- williams_oscillator_lookback <- function(
+WILLR_lookback <- williamsOscillator_lookback <- williams_oscillator_lookback <- function(
 	x,
 	cols,
 	timePeriod = 14,

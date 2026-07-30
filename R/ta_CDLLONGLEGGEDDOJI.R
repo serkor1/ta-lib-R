@@ -39,6 +39,13 @@ long_legged_doji <- function(
 #' @aliases long_legged_doji
 CDLLONGLEGGEDDOJI <- long_legged_doji
 
+#' @export
+#' @usage NULL
+#' @rdname long_legged_doji
+#'
+#' @aliases long_legged_doji
+longLeggedDoji <- long_legged_doji
+
 #' @usage NULL
 #' @aliases long_legged_doji
 #'
@@ -143,7 +150,7 @@ long_legged_doji.matrix <- function(
 }
 
 #' @usage NULL
-CDLLONGLEGGEDDOJI_lookback <- long_legged_doji_lookback <- function(
+CDLLONGLEGGEDDOJI_lookback <- longLeggedDoji_lookback <- long_legged_doji_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

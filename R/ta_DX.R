@@ -31,6 +31,13 @@ directional_movement_index <- function(
 #' @aliases directional_movement_index
 DX <- directional_movement_index
 
+#' @export
+#' @usage NULL
+#' @rdname directional_movement_index
+#'
+#' @aliases directional_movement_index
+directionalMovementIndex <- directional_movement_index
+
 #' @usage NULL
 #' @aliases directional_movement_index
 #'
@@ -122,7 +129,7 @@ directional_movement_index.matrix <- function(
 }
 
 #' @usage NULL
-DX_lookback <- directional_movement_index_lookback <- function(
+DX_lookback <- directionalMovementIndex_lookback <- directional_movement_index_lookback <- function(
 	x,
 	cols,
 	timePeriod = 14,

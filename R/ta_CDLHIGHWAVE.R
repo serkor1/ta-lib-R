@@ -39,6 +39,13 @@ high_wave <- function(
 #' @aliases high_wave
 CDLHIGHWAVE <- high_wave
 
+#' @export
+#' @usage NULL
+#' @rdname high_wave
+#'
+#' @aliases high_wave
+highWave <- high_wave
+
 #' @usage NULL
 #' @aliases high_wave
 #'
@@ -143,7 +150,7 @@ high_wave.matrix <- function(
 }
 
 #' @usage NULL
-CDLHIGHWAVE_lookback <- high_wave_lookback <- function(
+CDLHIGHWAVE_lookback <- highWave_lookback <- high_wave_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,

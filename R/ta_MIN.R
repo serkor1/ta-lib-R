@@ -28,6 +28,13 @@ rolling_minimum <- function(
 #' @aliases rolling_minimum
 MIN <- rolling_minimum
 
+#' @export
+#' @usage NULL
+#' @rdname rolling_minimum
+#'
+#' @aliases rolling_minimum
+rollingMinimum <- rolling_minimum
+
 #' @usage NULL
 #' @aliases rolling_minimum
 #'
@@ -86,7 +93,7 @@ rolling_minimum.numeric <- function(
 }
 
 #' @usage NULL
-MIN_lookback <- rolling_minimum_lookback <- function(
+MIN_lookback <- rollingMinimum_lookback <- rolling_minimum_lookback <- function(
 	x,
 	timePeriod = 30,
 	na.bridge = FALSE,

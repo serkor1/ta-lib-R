@@ -174,6 +174,8 @@ both variants in one file; `render_backend()` renders it once per backend
 |---------------------------|----------------------------------------------------|-----------------------------------------|
 | `${FUN}`                  | snake_case R name (via `FUNCTION_NAMES`)           | `bollinger_bands`                       |
 | `${ALIAS}`                | TA-Lib abbreviation (uppercase alias, C symbol)    | `BBANDS`                                |
+| `${CAMEL}`                | camelCase alias (derived from `${FUN}`); its `#camel#`-prefixed block is dropped when identical to `${FUN}` (single-word names like `doji`) | `bollingerBands`                        |
+| `${CAMEL_LOOKBACK}`       | camelCase link of the chained lookback assignment, trailing `<- `; empty when `${CAMEL}` is not distinct | `bollingerBands_lookback <- `           |
 | `${TITLE}`                | `<ShortDescription>`                               | `Bollinger Bands`                       |
 | `${FAMILY}`               | `<GroupId>`                                        | `Overlap Studies`                       |
 | `${FORMULA}`              | Default column formula                             | `~close`                                |

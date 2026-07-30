@@ -39,6 +39,13 @@ kicking_baby_length <- function(
 #' @aliases kicking_baby_length
 CDLKICKINGBYLENGTH <- kicking_baby_length
 
+#' @export
+#' @usage NULL
+#' @rdname kicking_baby_length
+#'
+#' @aliases kicking_baby_length
+kickingBabyLength <- kicking_baby_length
+
 #' @usage NULL
 #' @aliases kicking_baby_length
 #'
@@ -143,7 +150,7 @@ kicking_baby_length.matrix <- function(
 }
 
 #' @usage NULL
-CDLKICKINGBYLENGTH_lookback <- kicking_baby_length_lookback <- function(
+CDLKICKINGBYLENGTH_lookback <- kickingBabyLength_lookback <- kicking_baby_length_lookback <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
