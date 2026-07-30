@@ -230,20 +230,22 @@
 <div class="section level2">
 <h2 id="implementation-talib-vs-upstream-ta-lib-core">Implementation: {talib} vs upstream (TA-Lib Core)<a class="anchor" aria-label="anchor" href="#implementation-talib-vs-upstream-ta-lib-core"></a>
 </h2>
-<p>Functions use descriptive snake_case names, but every function is aliased to its <a href="https://github.com/TA-Lib/ta-lib" class="external-link">TA-Lib</a> shorthand for compatibility with the broader ecosystem:</p>
+<p>Functions use descriptive snake_case names; each is aliased to its <a href="https://github.com/TA-Lib/ta-lib" class="external-link">TA-Lib</a> shorthand for compatibility with the broader ecosystem, and to a camelCase name for consistency across R’s finance ecosystem:</p>
 <div align="center">
 <table class="table">
 <colgroup>
-<col width="25%">
-<col width="25%">
-<col width="25%">
-<col width="25%">
+<col width="20%">
+<col width="20%">
+<col width="20%">
+<col width="20%">
+<col width="20%">
 </colgroup>
 <thead><tr>
 <th align="left">Category</th>
 <th align="left">TA-Lib (C)</th>
 <th align="left">{talib}</th>
 <th align="left">{talib} alias</th>
+<th align="left">{talib} camelCase alias</th>
 </tr></thead>
 <tbody>
 <tr>
@@ -251,42 +253,49 @@
 <td align="left"><code>TA_BBANDS()</code></td>
 <td align="left"><code><a href="reference/bollinger_bands.html">bollinger_bands()</a></code></td>
 <td align="left"><code><a href="reference/bollinger_bands.html">BBANDS()</a></code></td>
+<td align="left"><code><a href="reference/bollinger_bands.html">bollingerBands()</a></code></td>
 </tr>
 <tr>
 <td align="left">Momentum Indicators</td>
 <td align="left"><code>TA_CCI()</code></td>
 <td align="left"><code><a href="reference/commodity_channel_index.html">commodity_channel_index()</a></code></td>
 <td align="left"><code><a href="reference/commodity_channel_index.html">CCI()</a></code></td>
+<td align="left"><code><a href="reference/commodity_channel_index.html">commodityChannelIndex()</a></code></td>
 </tr>
 <tr>
 <td align="left">Volume Indicators</td>
 <td align="left"><code>TA_OBV()</code></td>
 <td align="left"><code><a href="reference/on_balance_volume.html">on_balance_volume()</a></code></td>
 <td align="left"><code><a href="reference/on_balance_volume.html">OBV()</a></code></td>
+<td align="left"><code><a href="reference/on_balance_volume.html">onBalanceVolume()</a></code></td>
 </tr>
 <tr>
 <td align="left">Volatility Indicators</td>
 <td align="left"><code>TA_ATR()</code></td>
 <td align="left"><code><a href="reference/average_true_range.html">average_true_range()</a></code></td>
 <td align="left"><code><a href="reference/average_true_range.html">ATR()</a></code></td>
+<td align="left"><code><a href="reference/average_true_range.html">averageTrueRange()</a></code></td>
 </tr>
 <tr>
 <td align="left">Price Transform</td>
 <td align="left"><code>TA_AVGPRICE()</code></td>
 <td align="left"><code><a href="reference/average_price.html">average_price()</a></code></td>
 <td align="left"><code><a href="reference/average_price.html">AVGPRICE()</a></code></td>
+<td align="left"><code><a href="reference/average_price.html">averagePrice()</a></code></td>
 </tr>
 <tr>
 <td align="left">Cycle Indicators</td>
 <td align="left"><code>TA_HT_SINE()</code></td>
 <td align="left"><code><a href="reference/sine_wave.html">sine_wave()</a></code></td>
 <td align="left"><code><a href="reference/sine_wave.html">HT_SINE()</a></code></td>
+<td align="left"><code><a href="reference/sine_wave.html">sineWave()</a></code></td>
 </tr>
 <tr>
 <td align="left">Pattern Recognition</td>
 <td align="left"><code>TA_CDLHANGINGMAN()</code></td>
 <td align="left"><code><a href="reference/hanging_man.html">hanging_man()</a></code></td>
 <td align="left"><code><a href="reference/hanging_man.html">CDLHANGINGMAN()</a></code></td>
+<td align="left"><code><a href="reference/hanging_man.html">hangingMan()</a></code></td>
 </tr>
 </tbody>
 </table>

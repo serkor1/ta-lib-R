@@ -79,12 +79,18 @@
 <span><span class="co">#&gt;  [1]  NA  NA  NA  NA 1.2 1.2 1.2 1.2 1.2 1.2</span></span>
 <span><span class="co">#&gt; attr(,"lookback")</span></span>
 <span><span class="co">#&gt; [1] 4</span></span></code></pre></div>
+<ul><li>All indicators have gotten a <code>camelCase</code> alias to introduce a form of consistency across R’s finance ecosystem and oldschool coding schemes. The indicators below produces the same output:</li>
+</ul><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="../reference/bollinger_bands.html">bollinger_bands</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="../reference/bollinger_bands.html">BBANDS</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="../reference/bollinger_bands.html">bollingerBands</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>Each <code>UPPERCASE</code> and <code>camelCase</code> function is an alias of its underlying <code>snake_case</code> function, so the functions behaves the same.</p>
 </div>
 <div class="section level3">
 <h3 id="breaking-changes-0-9-3">breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-9-3"></a></h3>
 <ul><li>
 <strong>General:</strong> All functions now follows the naming convention of TA-Lib. All function signatures are on the following form:</li>
-</ul><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+</ul><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/indicator.html">indicator</a></span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,          <span class="co">## unchanged</span></span>
 <span>  <span class="va">cols</span>,       <span class="co">## unchanged</span></span>
@@ -98,20 +104,20 @@
 <p>This has the benefit of being transparent when comparing or reading the source code.</p>
 <ul><li>
 <strong>MATypes:</strong> Functions that used MATypes in the indicator function are now significantly different. See the <code><a href="../reference/bollinger_bands.html">bollinger_bands()</a></code> below:</li>
-</ul><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+</ul><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="../reference/bollinger_bands.html">bollinger_bands</a></span><span class="op">(</span></span>
 <span>        <span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="../reference/BTC.html">BTC</a></span>,</span>
 <span>        timePeriod <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>        maType <span class="op">=</span> <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="../reference/exponential_moving_average.html">EMA</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Prior to this update, the correct call was:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="../reference/bollinger_bands.html">bollinger_bands</a></span><span class="op">(</span></span>
 <span>        <span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="../reference/BTC.html">BTC</a></span>,</span>
 <span>    ma <span class="op">=</span> <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="../reference/exponential_moving_average.html">EMA</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>While the above function call is aestethically pleasing, it did introduce some ambigiuites in other calls. See, for example, <code><a href="../reference/absolute_price_oscillator.html">APO()</a></code> (v0.9.2) below:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/absolute_price_oscillator.html">absolute_price_oscillator</a></span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
 <span>  <span class="va">cols</span>,</span>
@@ -122,7 +128,7 @@
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>In this specific case the function has three different <code>n</code> - the underlying function were discarding <code>n = 9</code> while keeping the MAType. The new call is given as:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/absolute_price_oscillator.html">absolute_price_oscillator</a></span><span class="op">(</span></span>
 <span>    <span class="va">x</span>,</span>
 <span>    <span class="va">cols</span>,</span>

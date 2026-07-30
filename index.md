@@ -155,19 +155,20 @@ BTC <- talib::BTC[1:75, ]
 
 ## Implementation: {talib} vs upstream (TA-Lib Core)
 
-Functions use descriptive snake_case names, but every function is
-aliased to its [TA-Lib](https://github.com/TA-Lib/ta-lib) shorthand for
-compatibility with the broader ecosystem:
+Functions use descriptive snake_case names; each is aliased to its
+[TA-Lib](https://github.com/TA-Lib/ta-lib) shorthand for compatibility
+with the broader ecosystem, and to a camelCase name for consistency
+across R’s finance ecosystem:
 
-| Category | TA-Lib (C) | {talib} | {talib} alias |
-|:---|:---|:---|:---|
-| Overlap Studies | `TA_BBANDS()` | [`bollinger_bands()`](https://serkor1.github.io/ta-lib-R/reference/bollinger_bands.md) | [`BBANDS()`](https://serkor1.github.io/ta-lib-R/reference/bollinger_bands.md) |
-| Momentum Indicators | `TA_CCI()` | [`commodity_channel_index()`](https://serkor1.github.io/ta-lib-R/reference/commodity_channel_index.md) | [`CCI()`](https://serkor1.github.io/ta-lib-R/reference/commodity_channel_index.md) |
-| Volume Indicators | `TA_OBV()` | [`on_balance_volume()`](https://serkor1.github.io/ta-lib-R/reference/on_balance_volume.md) | [`OBV()`](https://serkor1.github.io/ta-lib-R/reference/on_balance_volume.md) |
-| Volatility Indicators | `TA_ATR()` | [`average_true_range()`](https://serkor1.github.io/ta-lib-R/reference/average_true_range.md) | [`ATR()`](https://serkor1.github.io/ta-lib-R/reference/average_true_range.md) |
-| Price Transform | `TA_AVGPRICE()` | [`average_price()`](https://serkor1.github.io/ta-lib-R/reference/average_price.md) | [`AVGPRICE()`](https://serkor1.github.io/ta-lib-R/reference/average_price.md) |
-| Cycle Indicators | `TA_HT_SINE()` | [`sine_wave()`](https://serkor1.github.io/ta-lib-R/reference/sine_wave.md) | [`HT_SINE()`](https://serkor1.github.io/ta-lib-R/reference/sine_wave.md) |
-| Pattern Recognition | `TA_CDLHANGINGMAN()` | [`hanging_man()`](https://serkor1.github.io/ta-lib-R/reference/hanging_man.md) | [`CDLHANGINGMAN()`](https://serkor1.github.io/ta-lib-R/reference/hanging_man.md) |
+| Category | TA-Lib (C) | {talib} | {talib} alias | {talib} camelCase alias |
+|:---|:---|:---|:---|:---|
+| Overlap Studies | `TA_BBANDS()` | [`bollinger_bands()`](https://serkor1.github.io/ta-lib-R/reference/bollinger_bands.md) | [`BBANDS()`](https://serkor1.github.io/ta-lib-R/reference/bollinger_bands.md) | [`bollingerBands()`](https://serkor1.github.io/ta-lib-R/reference/bollinger_bands.md) |
+| Momentum Indicators | `TA_CCI()` | [`commodity_channel_index()`](https://serkor1.github.io/ta-lib-R/reference/commodity_channel_index.md) | [`CCI()`](https://serkor1.github.io/ta-lib-R/reference/commodity_channel_index.md) | [`commodityChannelIndex()`](https://serkor1.github.io/ta-lib-R/reference/commodity_channel_index.md) |
+| Volume Indicators | `TA_OBV()` | [`on_balance_volume()`](https://serkor1.github.io/ta-lib-R/reference/on_balance_volume.md) | [`OBV()`](https://serkor1.github.io/ta-lib-R/reference/on_balance_volume.md) | [`onBalanceVolume()`](https://serkor1.github.io/ta-lib-R/reference/on_balance_volume.md) |
+| Volatility Indicators | `TA_ATR()` | [`average_true_range()`](https://serkor1.github.io/ta-lib-R/reference/average_true_range.md) | [`ATR()`](https://serkor1.github.io/ta-lib-R/reference/average_true_range.md) | [`averageTrueRange()`](https://serkor1.github.io/ta-lib-R/reference/average_true_range.md) |
+| Price Transform | `TA_AVGPRICE()` | [`average_price()`](https://serkor1.github.io/ta-lib-R/reference/average_price.md) | [`AVGPRICE()`](https://serkor1.github.io/ta-lib-R/reference/average_price.md) | [`averagePrice()`](https://serkor1.github.io/ta-lib-R/reference/average_price.md) |
+| Cycle Indicators | `TA_HT_SINE()` | [`sine_wave()`](https://serkor1.github.io/ta-lib-R/reference/sine_wave.md) | [`HT_SINE()`](https://serkor1.github.io/ta-lib-R/reference/sine_wave.md) | [`sineWave()`](https://serkor1.github.io/ta-lib-R/reference/sine_wave.md) |
+| Pattern Recognition | `TA_CDLHANGINGMAN()` | [`hanging_man()`](https://serkor1.github.io/ta-lib-R/reference/hanging_man.md) | [`CDLHANGINGMAN()`](https://serkor1.github.io/ta-lib-R/reference/hanging_man.md) | [`hangingMan()`](https://serkor1.github.io/ta-lib-R/reference/hanging_man.md) |
 
 ### Interface: R vs Python
 

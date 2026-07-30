@@ -61,6 +61,20 @@ timePeriod = 5
 #> [1] 4
 ```
 
+- All indicators have gotten a `camelCase` alias to introduce a form of
+  consistency across R’s finance ecosystem and oldschool coding schemes.
+  The indicators below produces the same output:
+
+``` r
+
+talib::bollinger_bands()
+talib::BBANDS()
+talib::bollingerBands()
+```
+
+Each `UPPERCASE` and `camelCase` function is an alias of its underlying
+`snake_case` function, so the functions behaves the same.
+
 ### breaking changes
 
 - **General:** All functions now follows the naming convention of
