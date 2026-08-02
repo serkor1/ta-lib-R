@@ -8,6 +8,7 @@
 #define WRAPPER_H
 
 #include "NA-handling.h"
+#include "Rinternals.h"
 #include "attributes.h"
 #include "names.h"
 #include "normalize.h"
@@ -233,6 +234,14 @@
       Rf_ScalarInteger(lookback_value),                                         \
       &protection_counter                                                       \
     );                                                                          \
+                                                                                \
+    /* Attach classes to output so its easier to work with downstream */        \
+    SEXP TA_CLASS = PROTECT(Rf_allocVector(STRSXP, 3));                         \
+    protection_counter++;                                                       \
+    SET_STRING_ELT(TA_CLASS, 0, Rf_mkChar("ta_object"));                        \
+    SET_STRING_ELT(TA_CLASS, 1, Rf_mkChar("matrix"));                           \
+    SET_STRING_ELT(TA_CLASS, 2, Rf_mkChar("array"));                            \
+    Rf_setAttrib(out, R_ClassSymbol, TA_CLASS);                                 \
                                                                                 \
     UNPROTECT(protection_counter);                                              \
     return out;                                                                 \
