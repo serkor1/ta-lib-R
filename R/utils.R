@@ -298,6 +298,59 @@ candlestick_setting <- function() {
 	invisible(NULL)
 }
 
+index <- function(x) {
+	UseMethod("index")
+}
+
+#' @export
+index.default <- function(x) {
+	rownames(x)
+}
+
+#' @export
+index.xts <- function(x) {
+	attr(
+		x = x,
+		which = "index"
+	)
+}
+
+## Index
+set_index <- function(x, value) {
+	UseMethod("set_index", object = value)
+}
+
+#' @export
+set_index.character <- function(x, value) {
+	if (is.matrix(x)) {
+		.Call(
+			C_index_matrix,
+			x,
+			value,
+			colnames(x)
+		)
+	} else {
+		## set the rownames
+		.Call(
+			C_index_data_frame,
+			x,
+			value
+		)
+	}
+
+	return(invisible(NULL))
+}
+
+#' @export
+set_index.numeric <- function(x, value) {
+	.Call(
+		C_index_xts,
+		x,
+		value
+	)
+
+	return(invisible(NULL))
+}
 
 ## rownaming
 set_rownames <- function(x, x_names) {
@@ -308,7 +361,7 @@ set_rownames <- function(x, x_names) {
 set_rownames.data.frame <- function(x, x_names) {
 	## set the rownames
 	.Call(
-		C_rownames_data_frame,
+		C_index_data_frame,
 		x,
 		x_names
 	)
@@ -320,7 +373,7 @@ set_rownames.data.frame <- function(x, x_names) {
 set_rownames.matrix <- function(x, x_names) {
 	## set the rownames
 	.Call(
-		C_rownames_matrix,
+		C_index_matrix,
 		x,
 		x_names,
 		colnames(x)
