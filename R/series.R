@@ -146,9 +146,28 @@ series.plotly <- function(
 			dn <- rep("", length(dots_quoted))
 		}
 		names(dots_quoted) <- dn
+
+		## force every argument except 'subset' through its own
+		## promise so caller-local objects (data = my_local)
+		## resolve in the caller's frame; 'subset' stays quoted
+		## for the single model.frame() evaluation downstream
+		dots_quoted[] <- lapply(seq_along(dots_quoted), function(i) {
+			if (identical(dn[[i]], "subset")) {
+				dots_quoted[[i]]
+			} else {
+				...elt(i)
+			}
+		})
 	} else {
 		dots_quoted <- list()
 	}
+
+	## model.frame() falls back to the formula environment for
+	## subset symbols that are not columns; re-parent it to the
+	## frame that called the wrapper so caller-local objects
+	## resolve (three frames up: series method -> wrapper method
+	## -> the wrapper's caller)
+	environment(formula) <- parent.frame(3L)
 
 	## Inject the chart's data only when the caller did NOT pass data
 	## explicitly. This preserves the per-indicator data override -
@@ -172,7 +191,9 @@ series.plotly <- function(
 	data_arg <- dots_quoted$data
 	dots_quoted$data <- NULL
 
-	output <- as.data.frame(
+	## the subset attribute travels on the series result - set
+	## once by series.data.frame from what model.frame() kept
+	as.data.frame(
 		do.call(
 			series,
 			c(
@@ -186,9 +207,6 @@ series.plotly <- function(
 			quote = FALSE
 		)
 	)
-
-	attr(output, "subset") <- eval(dots_quoted$subset)
-	output
 }
 
 #' Formula method - the main column-resolution path.
@@ -258,9 +276,14 @@ series.data.frame <- function(
 			c(list(formula = formula, data = x), dots_quoted),
 			quote = FALSE
 		)
-	}
 
-	attr(output, "subset") <- eval(dots_quoted$subset)
+		## the rows model.frame() actually kept - evaluated once,
+		## in the data context. Consumers (add_idx, the chart
+		## builders) index the chart axis with these positions.
+		if ("subset" %in% names(dots_quoted)) {
+			attr(output, "subset") <- match(rownames(output), rownames(x))
+		}
+	}
 
 	output
 }

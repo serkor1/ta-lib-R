@@ -221,8 +221,11 @@ indicator.function <- function(FUN, ...) {
 				match.call()[["idx"]]
 			)
 		} else {
+			## rownames of the coerced frame so index-bearing
+			## classes (xts) keep their time axis - a bare
+			## rownames(data) is NULL for those
 			idx <- rownames(
-				data
+				as.data.frame(data)
 			)
 		}
 
@@ -235,14 +238,29 @@ indicator.function <- function(FUN, ...) {
 		state$x <- as.data.frame(data)
 	}
 
-	## dispatch to the appropriate backend method
-	## based on the class of 'plt'
-	outcome <- do.call(
-		what = FUN,
-		args = list(
-			x = plt,
-			...
-		)
+	## dispatch to the appropriate backend method based on the
+	## class of 'plt'. Everything except 'subset' is forced
+	## through its own promise; 'subset' stays quoted and the
+	## call evaluates in the caller's frame, so model.frame()
+	## sees it once, data-first, with the caller's objects as
+	## fallback - identical to a direct wrapper call
+	dots_expr <- as.list(substitute(list(...)))[-1L]
+	dots_names <- names(dots_expr)
+	if (is.null(dots_names)) {
+		dots_names <- rep("", length(dots_expr))
+	}
+
+	dots_expr[] <- lapply(seq_along(dots_expr), function(i) {
+		if (identical(dots_names[[i]], "subset")) {
+			dots_expr[[i]]
+		} else {
+			...elt(i)
+		}
+	})
+
+	outcome <- eval(
+		as.call(c(list(FUN), list(x = plt), dots_expr)),
+		parent.frame()
 	)
 
 	## verify return type
