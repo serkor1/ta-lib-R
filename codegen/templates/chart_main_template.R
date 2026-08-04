@@ -28,7 +28,7 @@ ${FUN}.${METHOD} <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ${FORMULA},
+		formula.default = ${FORMULA},
 		...
 	)
 

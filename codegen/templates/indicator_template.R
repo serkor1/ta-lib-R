@@ -57,15 +57,15 @@ ${FUN}.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ${FORMULA},
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ${FORMULA},
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -76,7 +76,7 @@ ${FUN}.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -93,7 +93,7 @@ ${FUN}.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		${FUN}.default(
 			x = x,
 			cols = cols,
@@ -115,14 +115,39 @@ ${FUN}.matrix <- function(
 	${ARGS}
 	na.bridge = FALSE,
 	...) {
-
-	${FUN}.default(
+		as.matrix(
+${FUN}.default(
 			x = x,
 			cols = cols ,
 			${PARGS}
 			na.bridge = na.bridge,
 			...
 		)
+		)
+	
+}
+
+#' @usage NULL
+#' @aliases ${FUN}
+#'
+#' @export
+${FUN}.xts <- function(
+	x,
+	cols,
+	${ARGS}
+	na.bridge = FALSE,
+	...) {
+
+		as.xts(
+			${FUN}.default(
+				x = x,
+				cols = cols,
+				${PARGS}
+				na.bridge = na.bridge,
+				...
+			)
+		)
+	
 }
 
 #' @usage NULL
