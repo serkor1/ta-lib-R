@@ -56,15 +56,15 @@ positive_volume_index.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ close + volume,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ close + volume,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -76,7 +76,7 @@ positive_volume_index.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -92,7 +92,7 @@ positive_volume_index.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		positive_volume_index.default(
 			x = x,
 			cols = cols,
@@ -112,11 +112,33 @@ positive_volume_index.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	positive_volume_index.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		positive_volume_index.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases positive_volume_index
+#'
+#' @export
+positive_volume_index.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		positive_volume_index.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -160,7 +182,7 @@ positive_volume_index.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ close + volume,
+		formula.default = ~ close + volume,
 		...
 	)
 
@@ -258,7 +280,7 @@ positive_volume_index.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ close + volume,
+		formula.default = ~ close + volume,
 		...
 	)
 
