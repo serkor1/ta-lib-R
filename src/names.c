@@ -62,7 +62,7 @@ void set_colnames(
 //       it will crash.
 
 // clang-format off
-void index_data_frame(
+SEXP index_data_frame(
   SEXP x,
   SEXP rownames
 )
@@ -70,13 +70,13 @@ void index_data_frame(
 {
   Rf_setAttrib(x, R_RowNamesSymbol, rownames);
 
-  return;
+  return R_NilValue;
 }
 
 // clang-format off
-void index_matrix(
-  SEXP x, 
-  SEXP rownames, 
+SEXP index_matrix(
+  SEXP x,
+  SEXP rownames,
   SEXP colnames
 )
 // clang-format on
@@ -94,7 +94,7 @@ void index_matrix(
 
   UNPROTECT(1);
 
-  return;
+  return R_NilValue;
 }
 
 // Index of the <xts>-object
@@ -103,7 +103,7 @@ void index_matrix(
 // index of the input <xts>-object, i.e. zoo::index(x),
 // and is attached as-is.
 // clang-format off
-void index_xts(
+SEXP index_xts(
   SEXP x,
   SEXP index
 )
@@ -111,5 +111,5 @@ void index_xts(
 {
   Rf_setAttrib(x, Rf_install("index"), index);
 
-  return;
+  return R_NilValue;
 }
