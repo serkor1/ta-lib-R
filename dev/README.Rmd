@@ -46,12 +46,11 @@ The API covers 150+ [TA-Lib](https://github.com/TA-Lib/ta-lib)-backed functions 
 
 | Need | {talib}|
 |:----------------------|:-----------------------------------------------------------------------------------------|
-| Technical indicators | TA-Lib-backed moving averages, momentum, volatility, volume, cycle, and overlap studies |
-| Candlestick patterns | Built-in Japanese candlestick pattern recognition                                       |
-| OHLCV workflows      | Works directly with open, high, low, close, and volume columns                          |
-| Performance          | Computation delegated to C routines through `.Call()`                                   |
-| Dependencies         | Minimal required R dependencies; plotting packages are optional                         |
-| Charts               | Composable financial charts with optional `{plotly}` and `{ggplot2}` support                |
+| Technical indicators | TA-Lib-backed moving averages, momentum, volatility, volume, cycle, and overlap studies   |
+| Candlestick patterns | Built-in Japanese candlestick pattern recognition                                         |
+| OHLCV workflows      | Works directly with open, high, low, close, and volume columns                            |
+| Performance          | Computation delegated to C routines through `.Call()`                                     |
+| Charts               | Composable financial charts with optional `{plotly}` and `{ggplot2}` support              |
 
 </div>
 
@@ -71,13 +70,19 @@ pak::pak("serkor1/ta-lib-R")
 
 ## Quick start
 
-All functions provide S3 methods for `<data.frame>`, `<matrix>`, and---where applicable---`<vector>` inputs. The general convention is simple: the output uses the same container type as the input.
+All functions provide S3 methods for `<xts>`, `<data.frame>`, `<matrix>`, and---where applicable---`<vector>` inputs. The general convention is simple: the output uses the same container type as the input.
 
 ```{r quick-start, echo=TRUE}
 ## calculate the
 ## relative strength index
 relative_strength_index <- talib::RSI(
-	talib::BTC
+	talib::GOOGL
+)
+
+## check class equivalence
+inherits(
+	relative_strength_index, 
+	class(talib::GOOGL)
 )
 
 ## display results
@@ -93,9 +98,9 @@ original OHLCV rows.
 ## combine multiple
 ## indicators
 features <- cbind(
-    talib::relative_strength_index(talib::BTC),
-    talib::bollinger_bands(talib::BTC),
-    talib::engulfing(talib::BTC)
+    talib::relative_strength_index(talib::GOOGL),
+    talib::bollinger_bands(talib::GOOGL),
+    talib::engulfing(talib::GOOGL)
 )
 
 tail(features)
@@ -107,16 +112,16 @@ tail(features)
 
 ```{r charting-example, echo=TRUE}
 ## subset data and
-## store as 'BTC'
-BTC <- talib::BTC[1:75, ]
+## store as 'GOOGL'
+GOOGL <- talib::GOOGL[1:75, ]
 
 ## construct chart in a brace block
 ## alternatively use `|>`
 {
 	## initialize main chart
     talib::chart(
-		x     = BTC,
-		title = "Bitcoin"
+		x     = GOOGL,
+		title = "Alphabet Inc."
 	)
 
 	## add Bollinger Bands to
