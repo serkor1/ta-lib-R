@@ -58,15 +58,15 @@ commodity_channel_index.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low + close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low + close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -80,7 +80,7 @@ commodity_channel_index.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -97,7 +97,7 @@ commodity_channel_index.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		commodity_channel_index.default(
 			x = x,
 			cols = cols,
@@ -119,12 +119,36 @@ commodity_channel_index.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	commodity_channel_index.default(
-		x = x,
-		cols = cols,
-		timePeriod = timePeriod,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		commodity_channel_index.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases commodity_channel_index
+#'
+#' @export
+commodity_channel_index.xts <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		commodity_channel_index.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -173,7 +197,7 @@ commodity_channel_index.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 
@@ -270,7 +294,7 @@ commodity_channel_index.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 

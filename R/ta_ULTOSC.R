@@ -64,15 +64,15 @@ ultimate_oscillator.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low + close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low + close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -88,7 +88,7 @@ ultimate_oscillator.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -107,7 +107,7 @@ ultimate_oscillator.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		ultimate_oscillator.default(
 			x = x,
 			cols = cols,
@@ -133,14 +133,42 @@ ultimate_oscillator.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	ultimate_oscillator.default(
-		x = x,
-		cols = cols,
-		firstPeriod = firstPeriod,
-		secondPeriod = secondPeriod,
-		thirdPeriod = thirdPeriod,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		ultimate_oscillator.default(
+			x = x,
+			cols = cols,
+			firstPeriod = firstPeriod,
+			secondPeriod = secondPeriod,
+			thirdPeriod = thirdPeriod,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases ultimate_oscillator
+#'
+#' @export
+ultimate_oscillator.xts <- function(
+	x,
+	cols,
+	firstPeriod = 7,
+	secondPeriod = 14,
+	thirdPeriod = 28,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		ultimate_oscillator.default(
+			x = x,
+			cols = cols,
+			firstPeriod = firstPeriod,
+			secondPeriod = secondPeriod,
+			thirdPeriod = thirdPeriod,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -195,7 +223,7 @@ ultimate_oscillator.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 
@@ -303,7 +331,7 @@ ultimate_oscillator.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 

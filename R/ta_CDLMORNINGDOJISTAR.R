@@ -79,36 +79,34 @@ morning_doji_star.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
+		x = x,
+		formula.default = ~ open + high + low + close,
+		formula = cols,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
-	x <- as.matrix(
-		.Call(
-			C_impl_ta_CDLMORNINGDOJISTAR,
-			constructed_series[[1]],
-			constructed_series[[2]],
-			constructed_series[[3]],
-			constructed_series[[4]],
-			as.double(penetration),
-			normalize,
-			as.logical(na.bridge)
-		)
+	x <- .Call(
+		C_impl_ta_CDLMORNINGDOJISTAR,
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
+		as.double(penetration),
+		normalize,
+		as.logical(na.bridge)
 	)
 
 	## add column name
 	colnames(x) <- "CDLMORNINGDOJISTAR"
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -125,7 +123,7 @@ morning_doji_star.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		morning_doji_star.default(
 			x = x,
 			cols = cols,
@@ -147,14 +145,39 @@ morning_doji_star.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	morning_doji_star.default(
-		x = x,
-		cols = cols,
-		penetration = penetration,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		morning_doji_star.default(
+			x = x,
+			cols = cols,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
+
+#' @usage NULL
+#' @aliases morning_doji_star
+#'
+#' @export
+morning_doji_star.xts <- function(
+	x,
+	cols,
+	penetration = 0.3,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		morning_doji_star.default(
+			x = x,
+			cols = cols,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
 
 #' @usage NULL
 CDLMORNINGDOJISTAR_lookback <- morningDojiStar_lookback <- morning_doji_star_lookback <- function(
@@ -196,7 +219,7 @@ morning_doji_star.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -256,7 +279,7 @@ morning_doji_star.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 

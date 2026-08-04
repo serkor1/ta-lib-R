@@ -79,36 +79,34 @@ mat_hold.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
+		x = x,
+		formula.default = ~ open + high + low + close,
+		formula = cols,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
-	x <- as.matrix(
-		.Call(
-			C_impl_ta_CDLMATHOLD,
-			constructed_series[[1]],
-			constructed_series[[2]],
-			constructed_series[[3]],
-			constructed_series[[4]],
-			as.double(penetration),
-			normalize,
-			as.logical(na.bridge)
-		)
+	x <- .Call(
+		C_impl_ta_CDLMATHOLD,
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
+		as.double(penetration),
+		normalize,
+		as.logical(na.bridge)
 	)
 
 	## add column name
 	colnames(x) <- "CDLMATHOLD"
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -125,7 +123,7 @@ mat_hold.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		mat_hold.default(
 			x = x,
 			cols = cols,
@@ -147,14 +145,39 @@ mat_hold.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	mat_hold.default(
-		x = x,
-		cols = cols,
-		penetration = penetration,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		mat_hold.default(
+			x = x,
+			cols = cols,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
+
+#' @usage NULL
+#' @aliases mat_hold
+#'
+#' @export
+mat_hold.xts <- function(
+	x,
+	cols,
+	penetration = 0.5,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		mat_hold.default(
+			x = x,
+			cols = cols,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
 
 #' @usage NULL
 CDLMATHOLD_lookback <- matHold_lookback <- mat_hold_lookback <- function(
@@ -196,7 +219,7 @@ mat_hold.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -256,7 +279,7 @@ mat_hold.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 

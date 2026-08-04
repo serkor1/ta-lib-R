@@ -56,15 +56,15 @@ chaikin_accumulation_distribution_line.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low + close + volume,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low + close + volume,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -78,7 +78,7 @@ chaikin_accumulation_distribution_line.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -94,7 +94,7 @@ chaikin_accumulation_distribution_line.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		chaikin_accumulation_distribution_line.default(
 			x = x,
 			cols = cols,
@@ -114,11 +114,33 @@ chaikin_accumulation_distribution_line.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	chaikin_accumulation_distribution_line.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		chaikin_accumulation_distribution_line.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases chaikin_accumulation_distribution_line
+#'
+#' @export
+chaikin_accumulation_distribution_line.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		chaikin_accumulation_distribution_line.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -162,7 +184,7 @@ chaikin_accumulation_distribution_line.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close + volume,
+		formula.default = ~ high + low + close + volume,
 		...
 	)
 
@@ -253,7 +275,7 @@ chaikin_accumulation_distribution_line.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close + volume,
+		formula.default = ~ high + low + close + volume,
 		...
 	)
 

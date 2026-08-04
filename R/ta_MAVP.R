@@ -69,15 +69,15 @@ variable_moving_average_period.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -92,7 +92,7 @@ variable_moving_average_period.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -112,7 +112,7 @@ variable_moving_average_period.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		variable_moving_average_period.default(
 			x = x,
 			cols = cols,
@@ -140,15 +140,45 @@ variable_moving_average_period.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	variable_moving_average_period.default(
-		x = x,
-		cols = cols,
-		periods = periods,
-		minimumPeriod = minimumPeriod,
-		maximumPeriod = maximumPeriod,
-		maType = maType,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		variable_moving_average_period.default(
+			x = x,
+			cols = cols,
+			periods = periods,
+			minimumPeriod = minimumPeriod,
+			maximumPeriod = maximumPeriod,
+			maType = maType,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases variable_moving_average_period
+#'
+#' @export
+variable_moving_average_period.xts <- function(
+	x,
+	cols,
+	periods,
+	minimumPeriod = 2,
+	maximumPeriod = 30,
+	maType = 0,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		variable_moving_average_period.default(
+			x = x,
+			cols = cols,
+			periods = periods,
+			minimumPeriod = minimumPeriod,
+			maximumPeriod = maximumPeriod,
+			maType = maType,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -243,7 +273,7 @@ variable_moving_average_period.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 
@@ -333,7 +363,7 @@ variable_moving_average_period.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 

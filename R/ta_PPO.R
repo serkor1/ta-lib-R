@@ -64,15 +64,15 @@ percentage_price_oscillator.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -86,7 +86,7 @@ percentage_price_oscillator.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -105,7 +105,7 @@ percentage_price_oscillator.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		percentage_price_oscillator.default(
 			x = x,
 			cols = cols,
@@ -131,14 +131,42 @@ percentage_price_oscillator.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	percentage_price_oscillator.default(
-		x = x,
-		cols = cols,
-		fastPeriod = fastPeriod,
-		slowPeriod = slowPeriod,
-		maType = maType,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		percentage_price_oscillator.default(
+			x = x,
+			cols = cols,
+			fastPeriod = fastPeriod,
+			slowPeriod = slowPeriod,
+			maType = maType,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases percentage_price_oscillator
+#'
+#' @export
+percentage_price_oscillator.xts <- function(
+	x,
+	cols,
+	fastPeriod = 12,
+	slowPeriod = 26,
+	maType = 1,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		percentage_price_oscillator.default(
+			x = x,
+			cols = cols,
+			fastPeriod = fastPeriod,
+			slowPeriod = slowPeriod,
+			maType = maType,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -230,7 +258,7 @@ percentage_price_oscillator.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 
@@ -331,7 +359,7 @@ percentage_price_oscillator.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 

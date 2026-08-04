@@ -79,15 +79,15 @@ extended_parabolic_stop_and_reverse.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -107,7 +107,7 @@ extended_parabolic_stop_and_reverse.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -131,7 +131,7 @@ extended_parabolic_stop_and_reverse.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		extended_parabolic_stop_and_reverse.default(
 			x = x,
 			cols = cols,
@@ -167,19 +167,57 @@ extended_parabolic_stop_and_reverse.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	extended_parabolic_stop_and_reverse.default(
-		x = x,
-		cols = cols,
-		startValue = startValue,
-		offsetOnReverse = offsetOnReverse,
-		afInitLong = afInitLong,
-		afLong = afLong,
-		afMaxLong = afMaxLong,
-		afInitShort = afInitShort,
-		afShort = afShort,
-		afMaxShort = afMaxShort,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		extended_parabolic_stop_and_reverse.default(
+			x = x,
+			cols = cols,
+			startValue = startValue,
+			offsetOnReverse = offsetOnReverse,
+			afInitLong = afInitLong,
+			afLong = afLong,
+			afMaxLong = afMaxLong,
+			afInitShort = afInitShort,
+			afShort = afShort,
+			afMaxShort = afMaxShort,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases extended_parabolic_stop_and_reverse
+#'
+#' @export
+extended_parabolic_stop_and_reverse.xts <- function(
+	x,
+	cols,
+	startValue = 0,
+	offsetOnReverse = 0,
+	afInitLong = 0.02,
+	afLong = 0.02,
+	afMaxLong = 0.2,
+	afInitShort = 0.02,
+	afShort = 0.02,
+	afMaxShort = 0.2,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		extended_parabolic_stop_and_reverse.default(
+			x = x,
+			cols = cols,
+			startValue = startValue,
+			offsetOnReverse = offsetOnReverse,
+			afInitLong = afInitLong,
+			afLong = afLong,
+			afMaxLong = afMaxLong,
+			afInitShort = afInitShort,
+			afShort = afShort,
+			afMaxShort = afMaxShort,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -246,7 +284,7 @@ extended_parabolic_stop_and_reverse.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low,
+		formula.default = ~ high + low,
 		...
 	)
 
@@ -364,7 +402,7 @@ extended_parabolic_stop_and_reverse.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low,
+		formula.default = ~ high + low,
 		...
 	)
 

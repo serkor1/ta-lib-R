@@ -58,9 +58,9 @@ trading_volume.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ volume + open + close,
-		data = x,
+		x = x,
+		formula.default = ~ volume + open + close,
+		formula = cols,
 		...
 	)
 
@@ -203,7 +203,7 @@ trading_volume.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ volume + open + close,
+		formula.default = ~ volume + open + close,
 		...
 	)
 
@@ -339,7 +339,7 @@ trading_volume.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ volume + open + close,
+		formula.default = ~ volume + open + close,
 		...
 	)
 

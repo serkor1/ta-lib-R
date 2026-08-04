@@ -58,15 +58,15 @@ aroon_oscillator.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -79,7 +79,7 @@ aroon_oscillator.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -96,7 +96,7 @@ aroon_oscillator.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		aroon_oscillator.default(
 			x = x,
 			cols = cols,
@@ -118,12 +118,36 @@ aroon_oscillator.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	aroon_oscillator.default(
-		x = x,
-		cols = cols,
-		timePeriod = timePeriod,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		aroon_oscillator.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases aroon_oscillator
+#'
+#' @export
+aroon_oscillator.xts <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		aroon_oscillator.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -170,7 +194,7 @@ aroon_oscillator.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low,
+		formula.default = ~ high + low,
 		...
 	)
 
@@ -268,7 +292,7 @@ aroon_oscillator.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low,
+		formula.default = ~ high + low,
 		...
 	)
 

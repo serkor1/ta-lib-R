@@ -58,15 +58,15 @@ intraday_movement_index.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ open + close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -79,7 +79,7 @@ intraday_movement_index.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -96,7 +96,7 @@ intraday_movement_index.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		intraday_movement_index.default(
 			x = x,
 			cols = cols,
@@ -118,12 +118,36 @@ intraday_movement_index.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	intraday_movement_index.default(
-		x = x,
-		cols = cols,
-		timePeriod = timePeriod,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		intraday_movement_index.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases intraday_movement_index
+#'
+#' @export
+intraday_movement_index.xts <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		intraday_movement_index.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -170,7 +194,7 @@ intraday_movement_index.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + close,
+		formula.default = ~ open + close,
 		...
 	)
 
@@ -268,7 +292,7 @@ intraday_movement_index.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + close,
+		formula.default = ~ open + close,
 		...
 	)
 

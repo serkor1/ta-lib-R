@@ -64,15 +64,15 @@ moving_average_convergence_divergence.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -86,7 +86,7 @@ moving_average_convergence_divergence.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -105,7 +105,7 @@ moving_average_convergence_divergence.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		moving_average_convergence_divergence.default(
 			x = x,
 			cols = cols,
@@ -131,14 +131,42 @@ moving_average_convergence_divergence.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	moving_average_convergence_divergence.default(
-		x = x,
-		cols = cols,
-		fastPeriod = fastPeriod,
-		slowPeriod = slowPeriod,
-		signalPeriod = signalPeriod,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		moving_average_convergence_divergence.default(
+			x = x,
+			cols = cols,
+			fastPeriod = fastPeriod,
+			slowPeriod = slowPeriod,
+			signalPeriod = signalPeriod,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases moving_average_convergence_divergence
+#'
+#' @export
+moving_average_convergence_divergence.xts <- function(
+	x,
+	cols,
+	fastPeriod = 12,
+	slowPeriod = 26,
+	signalPeriod = 9,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		moving_average_convergence_divergence.default(
+			x = x,
+			cols = cols,
+			fastPeriod = fastPeriod,
+			slowPeriod = slowPeriod,
+			signalPeriod = signalPeriod,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -230,7 +258,7 @@ moving_average_convergence_divergence.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 
@@ -365,7 +393,7 @@ moving_average_convergence_divergence.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 

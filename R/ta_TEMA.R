@@ -84,15 +84,15 @@ triple_exponential_moving_average.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~close,
-		data = x,
+		x = x,
+		formula.default = ~close,
+		formula = cols,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -104,7 +104,7 @@ triple_exponential_moving_average.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -121,7 +121,7 @@ triple_exponential_moving_average.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		triple_exponential_moving_average.default(
 			x = x,
 			cols = cols,
@@ -143,14 +143,39 @@ triple_exponential_moving_average.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	triple_exponential_moving_average.default(
-		x = x,
-		cols = cols,
-		timePeriod = timePeriod,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		triple_exponential_moving_average.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
+
+#' @usage NULL
+#' @aliases triple_exponential_moving_average
+#'
+#' @export
+triple_exponential_moving_average.xts <- function(
+	x,
+	cols,
+	timePeriod = 30,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		triple_exponential_moving_average.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
 
 #' @usage NULL
 #' @aliases triple_exponential_moving_average
@@ -228,7 +253,7 @@ triple_exponential_moving_average.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 
@@ -297,7 +322,7 @@ triple_exponential_moving_average.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 

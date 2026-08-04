@@ -73,15 +73,15 @@ extended_moving_average_convergence_divergence.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -98,7 +98,7 @@ extended_moving_average_convergence_divergence.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -120,7 +120,7 @@ extended_moving_average_convergence_divergence.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		extended_moving_average_convergence_divergence.default(
 			x = x,
 			cols = cols,
@@ -152,17 +152,51 @@ extended_moving_average_convergence_divergence.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	extended_moving_average_convergence_divergence.default(
-		x = x,
-		cols = cols,
-		fastPeriod = fastPeriod,
-		fastMa = fastMa,
-		slowPeriod = slowPeriod,
-		slowMa = slowMa,
-		signalPeriod = signalPeriod,
-		signalMa = signalMa,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		extended_moving_average_convergence_divergence.default(
+			x = x,
+			cols = cols,
+			fastPeriod = fastPeriod,
+			fastMa = fastMa,
+			slowPeriod = slowPeriod,
+			slowMa = slowMa,
+			signalPeriod = signalPeriod,
+			signalMa = signalMa,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases extended_moving_average_convergence_divergence
+#'
+#' @export
+extended_moving_average_convergence_divergence.xts <- function(
+	x,
+	cols,
+	fastPeriod = 12,
+	fastMa = 0,
+	slowPeriod = 26,
+	slowMa = 0,
+	signalPeriod = 9,
+	signalMa = 0,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		extended_moving_average_convergence_divergence.default(
+			x = x,
+			cols = cols,
+			fastPeriod = fastPeriod,
+			fastMa = fastMa,
+			slowPeriod = slowPeriod,
+			slowMa = slowMa,
+			signalPeriod = signalPeriod,
+			signalMa = signalMa,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -269,7 +303,7 @@ extended_moving_average_convergence_divergence.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 
@@ -410,7 +444,7 @@ extended_moving_average_convergence_divergence.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 
