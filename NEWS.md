@@ -21,6 +21,28 @@ Its use-case is customized control-flows for downstream wrappers and/or packages
 
 * The source code have been re-written so it generates the underlying TA-Lib wrappers using preprocessors and X-Macros, which compiles much faster than before. 
 
+* _**\<xts\>**-methods:_—All indicators now supports \<xts\>-objects. These methods are considered the primary entry point for *all* indicators, and can be considered stable from v1.0.0, where changes—if any—will be implemented gradually after a deprecation period. The method uses the same signature as before, see the example below:
+
+``` r
+library(xts)
+
+tail(
+  x <- talib::bollinger_bands(
+    talib::GOOGL
+  )
+)
+#>            UpperBand MiddleBand LowerBand
+#> 2021-12-22  149.1432   144.4920  139.8408
+#> 2021-12-23  149.2513   144.5318  139.8124
+#> 2021-12-27  149.6263   144.8180  140.0097
+#> 2021-12-28  149.7444   144.8758  140.0072
+#> 2021-12-29  149.8398   145.1137  140.3876
+#> 2021-12-30  149.7308   145.3711  141.0115
+
+class(x)
+#> [1] "xts" "zoo"
+```
+
 * _**MAVP:** Moving Average Variable Periods_—The function calculates a moving average with variable periods between candles. See below:
 
 ```R
