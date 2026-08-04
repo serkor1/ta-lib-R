@@ -88,6 +88,8 @@ pub const FUNCTION_NAMES: &[(&str, &str)] = &[
     ("CDLUPSIDEGAP2CROWS", "upside_gap_2_crows"),
     ("CDLXSIDEGAP3METHODS", "xside_gap_3_methods"),
     ("CMO", "chande_momentum_oscillator"),
+    ("CMOU", "unsmoothed_chande_momentum_oscillator"),
+    ("CMF", "chaikin_money_flow"),
     ("CORREL", "rolling_correlation"),
     ("DEMA", "double_exponential_moving_average"),
     ("DX", "directional_movement_index"),
@@ -98,6 +100,7 @@ pub const FUNCTION_NAMES: &[(&str, &str)] = &[
     ("HT_SINE", "sine_wave"),
     ("HT_TRENDLINE", "trendline"),
     ("HT_TRENDMODE", "trend_cycle_mode"),
+    ("HMA", "hull_moving_average"),
     ("IMI", "intraday_movement_index"),
     ("KAMA", "kaufman_adaptive_moving_average"),
     ("MAVP", "variable_moving_average_period"),
@@ -115,9 +118,12 @@ pub const FUNCTION_NAMES: &[(&str, &str)] = &[
     ("MINUS_DM", "minus_directional_movement"),
     ("MOM", "momentum"),
     ("NATR", "normalized_average_true_range"),
+    ("NVI", "negative_volume_index"),
     ("OBV", "on_balance_volume"),
     ("PLUS_DI", "plus_directional_indicator"),
     ("PLUS_DM", "plus_directional_movement"),
+    ("PVI", "positive_volume_index"),
+    ("PVO", "percentage_volume_oscillator"),
     ("PPO", "percentage_price_oscillator"),
     ("ROC", "rate_of_change"),
     ("ROCR", "ratio_of_change"),
@@ -139,6 +145,7 @@ pub const FUNCTION_NAMES: &[(&str, &str)] = &[
     ("ULTOSC", "ultimate_oscillator"),
     ("VAR", "rolling_variance"),
     ("VOLUME", "trading_volume"),
+    ("VWMA", "volume_weighted_moving_average"),
     ("WCLPRICE", "weighted_close_price"),
     ("WILLR", "williams_oscillator"),
     ("WMA", "weighted_moving_average"),
@@ -183,6 +190,7 @@ pub const CHART_TYPES: &[(&str, ChartType)] = &[
     ("BOP", ChartType::Sub),
     ("CCI", ChartType::Sub),
     ("CMO", ChartType::Sub),
+    ("CMOU", ChartType::Sub),
     ("DX", ChartType::Sub),
     ("HT_DCPERIOD", ChartType::Sub),
     ("HT_DCPHASE", ChartType::Sub),
@@ -219,6 +227,10 @@ pub const CHART_TYPES: &[(&str, ChartType)] = &[
     ("ULTOSC", ChartType::Sub),
     ("VOLUME", ChartType::Sub),
     ("WILLR", ChartType::Sub),
+    ("CMF", ChartType::Sub),
+    ("PVI", ChartType::Sub),
+    ("PVO", ChartType::Sub),
+    ("NVI", ChartType::Sub),
 ];
 
 pub fn chart_type(abbreviation: &str) -> Option<&'static ChartType> {
@@ -243,6 +255,8 @@ pub const MOVING_AVERAGES: &[(&str, &str)] = &[
     ("KAMA", "6L"),
     ("MAMA", "7L"),
     ("T3", "8L"),
+    ("HMA", "9L"),
+    ("VWMA", "10L"),
 ];
 
 /// The TA_MAType index literal of a moving average;

@@ -375,6 +375,8 @@ mapMaType <- function(x) {
 		`7` = "KAMA",
 		`8` = "MAMA",
 		`9` = "T3",
+		`10` = "HMA",
+		`11` = "VWMA",
 		"Unkown"
 	)
 }
