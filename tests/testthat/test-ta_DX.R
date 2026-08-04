@@ -53,12 +53,41 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 	)
 })
 
-## <data.frame> object
+## <xts> object
 testthat::test_that(desc = 'Class in, class out (<xts>)', code = {
+	testthat::skip_if_not_installed("xts")
+
 	## 1) check that the output class
 	##    matches the input class
 	testthat::expect_true(
 		inherits(directional_movement_index(GOOGL), class(GOOGL))
+	)
+})
+
+## the <xts> path must select the same columns in the
+## same order as the <data.frame> reference, regardless
+## of the physical column layout
+testthat::test_that(desc = 'Value parity with <data.frame> (<xts>)', code = {
+	testthat::skip_if_not_installed("xts")
+
+	## lowercase <data.frame> reference
+	## from the GOOGL fixture
+	reference <- as.data.frame(GOOGL)
+	colnames(reference) <- tolower(sub("^GOOGL\\.", "", colnames(reference)))
+	reference <- unname(as.matrix(directional_movement_index(reference)))
+
+	testthat::expect_equal(
+		object = unname(zoo::coredata(directional_movement_index(GOOGL))),
+		expected = reference
+	)
+
+	## alphabetically sorted columns place 'Adjusted'
+	## first and must resolve identically
+	testthat::expect_equal(
+		object = unname(zoo::coredata(directional_movement_index(GOOGL[, sort(colnames(
+			GOOGL
+		))]))),
+		expected = reference
 	)
 })
 
