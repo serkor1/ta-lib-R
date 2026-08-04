@@ -64,15 +64,15 @@ percentage_volume_oscillator.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~volume,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~volume,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -86,7 +86,7 @@ percentage_volume_oscillator.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -105,7 +105,7 @@ percentage_volume_oscillator.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		percentage_volume_oscillator.default(
 			x = x,
 			cols = cols,
@@ -131,14 +131,42 @@ percentage_volume_oscillator.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	percentage_volume_oscillator.default(
-		x = x,
-		cols = cols,
-		fastPeriod = fastPeriod,
-		slowPeriod = slowPeriod,
-		maType = maType,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		percentage_volume_oscillator.default(
+			x = x,
+			cols = cols,
+			fastPeriod = fastPeriod,
+			slowPeriod = slowPeriod,
+			maType = maType,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases percentage_volume_oscillator
+#'
+#' @export
+percentage_volume_oscillator.xts <- function(
+	x,
+	cols,
+	fastPeriod = 12,
+	slowPeriod = 26,
+	maType = 1,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		percentage_volume_oscillator.default(
+			x = x,
+			cols = cols,
+			fastPeriod = fastPeriod,
+			slowPeriod = slowPeriod,
+			maType = maType,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -230,7 +258,7 @@ percentage_volume_oscillator.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~volume,
+		formula.default = ~volume,
 		...
 	)
 
@@ -334,7 +362,7 @@ percentage_volume_oscillator.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~volume,
+		formula.default = ~volume,
 		...
 	)
 
