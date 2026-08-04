@@ -47,6 +47,16 @@ rolling_variance.default <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	## rolling statistics are univariate -
+	## multi-column input is rejected instead
+	## of being flattened column-major
+	assert(
+		x = NCOL(x) == 1L,
+		call = sys.call(sys.parent()),
+		"Expected 'x' to be univariate.",
+		paste0("Got ", NCOL(x), " columns.")
+	)
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -63,6 +73,7 @@ rolling_variance.default <- function(
 	## while preserving
 	## attributes
 	dim(x) <- NULL
+	class(x) <- NULL
 
 	## return indicator
 	x
@@ -95,6 +106,50 @@ rolling_variance.numeric <- function(
 
 	## return indicator
 	x
+}
+
+#' @usage NULL
+#' @aliases rolling_variance
+#'
+#' @export
+rolling_variance.xts <- function(
+	x,
+	timePeriod = 5,
+	deviations = 1,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	## rolling statistics are univariate -
+	## multi-column input is rejected instead
+	## of being flattened column-major
+	assert(
+		x = NCOL(x) == 1L,
+		call = sys.call(sys.parent()),
+		"Expected 'x' to be univariate.",
+		paste0("Got ", NCOL(x), " columns.")
+	)
+
+	## extract the index
+	## for later attachment
+	x_names <- index(x)
+
+	## calculate indicator and
+	## return as <xts>
+	x <- .Call(
+		C_impl_ta_VAR,
+		as.double(x),
+		as.integer(timePeriod),
+		as.double(deviations),
+		as.logical(na.bridge)
+	)
+
+	## readd the index
+	set_index(x, x_names)
+
+	## return indicator
+	as.xts(x)
 }
 
 #' @usage NULL

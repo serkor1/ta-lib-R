@@ -60,3 +60,29 @@ testthat::test_that(desc = 'Lookback equivalence', code = {
 		expected = lookback(FUN = rolling_correlation, x = SPY[, 1])
 	)
 })
+
+## <xts> object
+testthat::test_that(desc = 'Class in, class out (<xts>)', code = {
+	testthat::skip_if_not_installed("xts")
+
+	output <- rolling_correlation(x = GOOGL[, 1], y = GOOGL[, 2])
+
+	testthat::expect_true(inherits(output, "xts"))
+	testthat::expect_equal(zoo::index(output), zoo::index(GOOGL))
+	testthat::expect_equal(
+		object = as.numeric(output),
+		expected = as.numeric(rolling_correlation(
+			x = as.numeric(GOOGL[, 1]),
+			y = as.numeric(GOOGL[, 2])
+		))
+	)
+})
+
+## multi-column input must error
+## instead of being flattened
+testthat::test_that(desc = 'Multivariate input errors', code = {
+	testthat::skip_if_not_installed("xts")
+
+	testthat::expect_error(rolling_correlation(x = GOOGL, y = GOOGL[, 2]))
+	testthat::expect_error(rolling_correlation(x = SPY, y = SPY[, 2]))
+})

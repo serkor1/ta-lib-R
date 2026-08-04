@@ -86,6 +86,29 @@ testthat::expect_equal(
 
 }
 )
+
+## <xts> object
+testthat::test_that(desc = 'Class in, class out (<xts>)', code = {
+	testthat::skip_if_not_installed("xts")
+
+	output <- ${FUN}(x = GOOGL[, 1]${ADDITIONAL_XTS})
+
+	testthat::expect_true(inherits(output, "xts"))
+	testthat::expect_equal(zoo::index(output), zoo::index(GOOGL))
+	testthat::expect_equal(
+		object = as.numeric(output),
+		expected = as.numeric(${FUN}(x = as.numeric(GOOGL[, 1])${ADDITIONAL_NUMERIC}))
+	)
+})
+
+## multi-column input must error
+## instead of being flattened
+testthat::test_that(desc = 'Multivariate input errors', code = {
+	testthat::skip_if_not_installed("xts")
+
+	testthat::expect_error(${FUN}(x = GOOGL${ADDITIONAL_XTS}))
+	testthat::expect_error(${FUN}(x = SPY${ADDITIONAL}))
+})
 "#;
 
 const STANDARD_TESTS: &str = r#"
@@ -397,12 +420,23 @@ pub fn render_test(f: &MetaData) -> String {
     // rolling statistics fast-track: a short univariate file,
     // with the second input series of BETA/CORREL passed as 'y'
     if f.family == "Statistic Functions" || f.family == "Math Operators" {
-        let additional = if f.input.len() > 1 { ",y=SPY[,2]" } else { "" };
+        let bivariate = f.input.len() > 1;
+        let additional = if bivariate { ",y=SPY[,2]" } else { "" };
+        let additional_xts = if bivariate { ", y = GOOGL[, 2]" } else { "" };
+        let additional_numeric = if bivariate {
+            ", y = as.numeric(GOOGL[, 2])"
+        } else {
+            ""
+        };
 
+        // ${ADDITIONAL} is a prefix of the two variants:
+        // replace the longer placeholders first
         return format!(
             "{HEADER}{}",
             ROLLING_TESTS
                 .replace("${FUN}", fun)
+                .replace("${ADDITIONAL_XTS}", additional_xts)
+                .replace("${ADDITIONAL_NUMERIC}", additional_numeric)
                 .replace("${ADDITIONAL}", additional)
         );
     }
@@ -535,9 +569,20 @@ mod tests {
         assert!(!rendered.contains("y=SPY[,2]"));
         assert!(!rendered.contains("Alias and function similarity"));
 
+        // the xts blocks: class round-trip with value parity
+        // against the vector path, and the multivariate guard
+        assert!(rendered.contains("Class in, class out (<xts>)"));
+        assert!(rendered.contains("Multivariate input errors"));
+        assert!(rendered.contains("x = GOOGL[, 1])"));
+        assert!(!rendered.contains("y = GOOGL[, 2]"));
+        assert!(!rendered.contains("${"), "unreplaced placeholder");
+
         // the bivariate rolling statistics pass
         // the second column as 'y'
         let rendered = render_test(&meta("BETA", "Statistic Functions", &["close", "close"]));
         assert!(rendered.contains("x = SPY[,1],y=SPY[,2]"));
+        assert!(rendered.contains("x = GOOGL[, 1], y = GOOGL[, 2]"));
+        assert!(rendered.contains("y = as.numeric(GOOGL[, 2])"));
+        assert!(!rendered.contains("${"), "unreplaced placeholder");
     }
 }

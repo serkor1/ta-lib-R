@@ -45,6 +45,16 @@ rolling_minimum.default <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	## rolling statistics are univariate -
+	## multi-column input is rejected instead
+	## of being flattened column-major
+	assert(
+		x = NCOL(x) == 1L,
+		call = sys.call(sys.parent()),
+		"Expected 'x' to be univariate.",
+		paste0("Got ", NCOL(x), " columns.")
+	)
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -60,6 +70,7 @@ rolling_minimum.default <- function(
 	## while preserving
 	## attributes
 	dim(x) <- NULL
+	class(x) <- NULL
 
 	## return indicator
 	x
@@ -90,6 +101,48 @@ rolling_minimum.numeric <- function(
 
 	## return indicator
 	x
+}
+
+#' @usage NULL
+#' @aliases rolling_minimum
+#'
+#' @export
+rolling_minimum.xts <- function(
+	x,
+	timePeriod = 30,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	## rolling statistics are univariate -
+	## multi-column input is rejected instead
+	## of being flattened column-major
+	assert(
+		x = NCOL(x) == 1L,
+		call = sys.call(sys.parent()),
+		"Expected 'x' to be univariate.",
+		paste0("Got ", NCOL(x), " columns.")
+	)
+
+	## extract the index
+	## for later attachment
+	x_names <- index(x)
+
+	## calculate indicator and
+	## return as <xts>
+	x <- .Call(
+		C_impl_ta_MIN,
+		as.double(x),
+		as.integer(timePeriod),
+		as.logical(na.bridge)
+	)
+
+	## readd the index
+	set_index(x, x_names)
+
+	## return indicator
+	as.xts(x)
 }
 
 #' @usage NULL
