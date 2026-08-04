@@ -192,6 +192,14 @@ SEXP impl_ta_VOLUME(
   set_colnames(out, colname, n_cols);
   set_attribute(out, LOOKBACK, Rf_ScalarInteger(lookback), &protection_counter);
 
+  /* Attach classes to output so its easier to work with downstream */
+  SEXP TA_CLASS = PROTECT(Rf_allocVector(STRSXP, 3));
+  protection_counter++;
+  SET_STRING_ELT(TA_CLASS, 0, Rf_mkChar("ta_object"));
+  SET_STRING_ELT(TA_CLASS, 1, Rf_mkChar("matrix"));
+  SET_STRING_ELT(TA_CLASS, 2, Rf_mkChar("array"));
+  Rf_setAttrib(out, R_ClassSymbol, TA_CLASS);
+
   UNPROTECT(protection_counter);
   return out;
 }

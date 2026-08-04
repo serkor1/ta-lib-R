@@ -132,6 +132,8 @@ on_balance_volume.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		on_balance_volume.default(
 			x = x,

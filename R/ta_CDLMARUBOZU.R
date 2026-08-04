@@ -152,6 +152,8 @@ marubozu.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		marubozu.default(
 			x = x,

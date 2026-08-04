@@ -165,6 +165,8 @@ double_exponential_moving_average.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		double_exponential_moving_average.default(
 			x = x,

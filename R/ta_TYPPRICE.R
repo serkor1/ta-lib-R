@@ -133,6 +133,8 @@ typical_price.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		typical_price.default(
 			x = x,

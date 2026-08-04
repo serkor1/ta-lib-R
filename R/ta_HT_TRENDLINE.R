@@ -124,6 +124,8 @@ trendline.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		trendline.default(
 			x = x,

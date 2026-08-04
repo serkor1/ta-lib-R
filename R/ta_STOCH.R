@@ -170,6 +170,8 @@ stochastic.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		stochastic.default(
 			x = x,

@@ -132,6 +132,8 @@ momentum.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		momentum.default(
 			x = x,

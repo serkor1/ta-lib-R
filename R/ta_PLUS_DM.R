@@ -140,6 +140,8 @@ plus_directional_movement.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		plus_directional_movement.default(
 			x = x,

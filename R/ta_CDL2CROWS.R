@@ -159,6 +159,8 @@ two_crows.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		two_crows.default(
 			x = x,

@@ -159,6 +159,8 @@ unique_3_river.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		unique_3_river.default(
 			x = x,

@@ -167,6 +167,8 @@ mat_hold.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		mat_hold.default(
 			x = x,

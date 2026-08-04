@@ -167,6 +167,8 @@ abandoned_baby.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		abandoned_baby.default(
 			x = x,

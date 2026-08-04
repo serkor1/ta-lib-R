@@ -139,6 +139,8 @@ midpoint_period.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		midpoint_period.default(
 			x = x,

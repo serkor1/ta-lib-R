@@ -152,6 +152,8 @@ doji.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		doji.default(
 			x = x,

@@ -141,6 +141,8 @@ acceleration_bands.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		acceleration_bands.default(
 			x = x,

@@ -159,6 +159,8 @@ upside_gap_2_crows.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		upside_gap_2_crows.default(
 			x = x,

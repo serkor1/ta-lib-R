@@ -157,6 +157,8 @@ moving_average_convergence_divergence.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		moving_average_convergence_divergence.default(
 			x = x,

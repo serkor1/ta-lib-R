@@ -191,6 +191,8 @@ mesa_adaptive_moving_average.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		mesa_adaptive_moving_average.default(
 			x = x,

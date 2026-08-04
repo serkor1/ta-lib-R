@@ -131,6 +131,8 @@ sine_wave.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		sine_wave.default(
 			x = x,

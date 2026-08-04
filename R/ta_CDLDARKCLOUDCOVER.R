@@ -167,6 +167,8 @@ dark_cloud_cover.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		dark_cloud_cover.default(
 			x = x,

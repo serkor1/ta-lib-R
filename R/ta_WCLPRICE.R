@@ -133,6 +133,8 @@ weighted_close_price.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		weighted_close_price.default(
 			x = x,

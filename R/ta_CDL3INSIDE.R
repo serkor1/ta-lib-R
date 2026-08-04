@@ -159,6 +159,8 @@ three_inside.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		three_inside.default(
 			x = x,

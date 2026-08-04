@@ -141,6 +141,8 @@ commodity_channel_index.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		commodity_channel_index.default(
 			x = x,

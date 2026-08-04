@@ -159,6 +159,8 @@ break_away.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		break_away.default(
 			x = x,

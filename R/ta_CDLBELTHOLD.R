@@ -159,6 +159,8 @@ belt_hold.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		belt_hold.default(
 			x = x,

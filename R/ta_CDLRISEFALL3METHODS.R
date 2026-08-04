@@ -159,6 +159,8 @@ rise_fall_3_methods.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		rise_fall_3_methods.default(
 			x = x,

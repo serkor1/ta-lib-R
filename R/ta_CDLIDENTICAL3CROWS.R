@@ -159,6 +159,8 @@ three_identical_crows.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		three_identical_crows.default(
 			x = x,

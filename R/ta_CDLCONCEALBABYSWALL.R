@@ -159,6 +159,8 @@ concealing_baby_swallow.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		concealing_baby_swallow.default(
 			x = x,

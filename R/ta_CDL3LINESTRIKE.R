@@ -159,6 +159,8 @@ three_line_strike.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		three_line_strike.default(
 			x = x,

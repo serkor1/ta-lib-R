@@ -152,6 +152,8 @@ engulfing.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		engulfing.default(
 			x = x,

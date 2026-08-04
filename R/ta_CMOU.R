@@ -139,6 +139,8 @@ unsmoothed_chande_momentum_oscillator.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		unsmoothed_chande_momentum_oscillator.default(
 			x = x,

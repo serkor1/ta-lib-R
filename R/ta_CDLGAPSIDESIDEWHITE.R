@@ -159,6 +159,8 @@ gaps_side_white.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		gaps_side_white.default(
 			x = x,

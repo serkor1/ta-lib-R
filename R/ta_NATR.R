@@ -141,6 +141,8 @@ normalized_average_true_range.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		normalized_average_true_range.default(
 			x = x,

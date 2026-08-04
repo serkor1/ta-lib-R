@@ -159,6 +159,8 @@ high_wave.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		high_wave.default(
 			x = x,

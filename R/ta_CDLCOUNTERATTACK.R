@@ -159,6 +159,8 @@ counter_attack.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		counter_attack.default(
 			x = x,

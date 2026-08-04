@@ -167,6 +167,8 @@ morning_doji_star.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		morning_doji_star.default(
 			x = x,

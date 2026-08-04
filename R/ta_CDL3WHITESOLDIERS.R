@@ -159,6 +159,8 @@ three_white_soldiers.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		three_white_soldiers.default(
 			x = x,

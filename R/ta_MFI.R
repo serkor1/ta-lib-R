@@ -142,6 +142,8 @@ money_flow_index.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		money_flow_index.default(
 			x = x,

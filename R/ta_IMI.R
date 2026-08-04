@@ -140,6 +140,8 @@ intraday_movement_index.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		intraday_movement_index.default(
 			x = x,

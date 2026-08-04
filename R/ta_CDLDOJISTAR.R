@@ -159,6 +159,8 @@ doji_star.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		doji_star.default(
 			x = x,

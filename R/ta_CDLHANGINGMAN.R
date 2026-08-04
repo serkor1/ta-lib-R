@@ -159,6 +159,8 @@ hanging_man.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		hanging_man.default(
 			x = x,

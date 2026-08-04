@@ -159,6 +159,8 @@ three_stars_in_the_south.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		three_stars_in_the_south.default(
 			x = x,

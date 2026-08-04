@@ -159,6 +159,8 @@ three_black_crows.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		three_black_crows.default(
 			x = x,
