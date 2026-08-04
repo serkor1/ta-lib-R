@@ -382,9 +382,47 @@ set_rownames.matrix <- function(x, x_names) {
 	return(invisible(NULL))
 }
 
+#' @export
+as.data.frame.ta_object <- function(x, row.names, optional, ...) {
+	## extract 'lookback' attribute
+	lookback_attribute <- attr(x, "lookback", TRUE)
+
+	if (is.matrix(x)) {
+		if (is.double(x)) {
+			x <- .Call(
+				C_map_dfr_double,
+				x
+			)
+		}
+		if (is.integer(x)) {
+			x <- .Call(
+				C_map_dfr_integer,
+				x
+			)
+		}
+	}
+
+	attr(x, "lookback") <- lookback_attribute
+
+	return(x)
+}
+
+#' @export
+as.matrix.ta_object <- function(x, ...) {
+	class(x) <- c("matrix", "array")
+
+	return(x)
+}
+
+
 ## map <matrix> to <data.frames>
 map_dfr <- function(x) {
 	UseMethod("map_dfr")
+}
+
+#' @export
+map_dfr.ta_object <- function(x) {
+	as.data.frame(x)
 }
 
 #' @export
@@ -456,3 +494,13 @@ as.maType.double <- function(x, ...) {
 
 #' @export
 as.maType.integer <- as.maType.double
+
+as.xts <- function(x) {
+	UseMethod("as.xts")
+}
+
+#' @export
+as.xts.ta_object <- function(x) {
+	class(x) <- c("xts", "zoo")
+	x
+}

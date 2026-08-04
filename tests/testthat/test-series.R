@@ -1,52 +1,97 @@
+library(talib)
 ## tests for the formula-based column selector
 ## series() is internal; we exercise it via the indicator pipeline
+testthat::test_that(desc = "Output is <data.frame>", code = {
+	## check <matrix>
+	x <- talib:::series(
+		x = SPY,
+		formula = ~open,
+		formula.default = ~open
+	)
 
-series <- talib:::series
+	testthat::expect_s3_class(
+		x,
+		"data.frame"
+	)
 
-testthat::test_that("series() requires data", {
-	testthat::expect_error(
-		series(x = ~close, default_formula = ~close),
-		"data"
+	## check <data.frame>
+	x <- talib:::series(
+		x = ATOM,
+		formula = ~open,
+		formula.default = ~open
+	)
+
+	testthat::expect_s3_class(
+		x,
+		"data.frame"
 	)
 })
 
-testthat::test_that("series() falls back to default formula when x is missing", {
-	df <- data.frame(close = 1:5)
-	out <- series(default_formula = ~close, data = df)
+testthat::test_that(desc = "formula has precedence over formula.default", code = {
+	## check ATOM by passing
+	## formula explicitly different
+	## from the default
+	x <- talib:::series(
+		x = ATOM,
+		formula = ~open,
+		formula.default = ~close
+	)
 
-	testthat::expect_s3_class(out, "data.frame")
-	testthat::expect_equal(out$close, 1:5)
-})
+	## check that the colnames
+	## are are open
+	testthat::expect_equal(
+		colnames(x),
+		"open"
+	)
 
-testthat::test_that("series() honours explicit formula over default", {
-	df <- data.frame(close = 1:5, open = 6:10)
-	out <- series(x = ~open, default_formula = ~close, data = df)
-
-	testthat::expect_equal(names(out)[1L], "open")
-})
-
-testthat::test_that("series() rejects shorter formula than default", {
-	df <- data.frame(close = 1:5, high = 6:10, low = 11:15)
-
-	## default expects 3 vars - we pass 1
-	testthat::expect_error(
-		series(x = ~close, default_formula = ~ high + low + close, data = df)
+	## check that there are no
+	## implicit renaming
+	testthat::expect_equal(
+		x$open,
+		ATOM$open
 	)
 })
 
-testthat::test_that("series() errors on unknown column", {
-	df <- data.frame(close = 1:5)
+testthat::test_that(desc = "Missing formula does not error", code = {
+	## <data.frame>
+	testthat::expect_no_condition(
+		talib:::series(
+			x = ATOM,
+			formula.default = ~close
+		)
+	)
 
-	testthat::expect_error(
-		series(x = ~missing_col, default_formula = ~close, data = df)
+	## <matrix>
+	testthat::expect_no_condition(
+		talib:::series(
+			x = SPY,
+			formula.default = ~close
+		)
 	)
 })
 
-testthat::test_that("series() coerces non-data.frame to data.frame", {
-	mat <- matrix(1:10, ncol = 2, dimnames = list(NULL, c("close", "open")))
-
-	testthat::expect_no_error(
-		out <- series(default_formula = ~close, data = mat)
+testthat::test_that(desc = "Attributes are respected", code = {
+	## <data.frame>
+	x <- talib:::series(
+		x = ATOM,
+		formula.default = ~ open + high + low + close + volume
 	)
-	testthat::expect_s3_class(out, "data.frame")
+
+	testthat::expect_equal(
+		x,
+		ATOM
+	)
+
+	## <matrix>
+	x <- talib:::series(
+		x = SPY,
+		formula.default = ~ open + high + low + close + volume
+	)
+
+	## NOTE: x is a <data.frame>
+	##       but SPY are a matrix
+	testthat::expect_equal(
+		as.matrix(x),
+		SPY
+	)
 })

@@ -196,3 +196,18 @@ is.empty.list <- function(x) {
 is.empty.character <- function(x) {
 	identical(x, character(0)) | grepl("^[[:space:]]*$", x)
 }
+
+
+as.title_case <- function(x) {
+	gsub(
+		pattern = "(^|_)([[:alpha:]])",
+		replacement = "\\1\\U\\2",
+		x = x,
+		perl = TRUE
+	)
+}
+
+#' @export
+`[[.ta_series` <- function(x, i, ...) {
+	x[, i]
+}
