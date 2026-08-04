@@ -217,3 +217,28 @@ testthat::test_that(desc = "<xts> input works without {xts} attached", code = {
 
 	testthat::expect_true(any(grepl("vanilla-ok", output)))
 })
+
+## coercible inputs (zoo, ...) defer to
+## as.data.frame() via series.default
+testthat::test_that(desc = "coercible inputs defer to as.data.frame()", code = {
+	testthat::skip_if_not_installed("zoo")
+
+	idx <- as.Date("2024-01-01") + 0:9
+	z <- zoo::zoo(
+		cbind(high = 2:11, low = 0:9, close = 1:10),
+		order.by = idx
+	)
+
+	output <- talib:::series(x = z, formula.default = ~ high + low + close)
+
+	testthat::expect_s3_class(output, "data.frame")
+	testthat::expect_equal(colnames(output), c("high", "low", "close"))
+	testthat::expect_equal(rownames(output), as.character(idx))
+
+	## the indicator path computes on the coerced
+	## <data.frame> and matches its reference values
+	testthat::expect_equal(
+		as.data.frame(relative_strength_index(z)),
+		relative_strength_index(as.data.frame(z))
+	)
+})

@@ -35,6 +35,23 @@ series <- function(
 	UseMethod("series", x)
 }
 
+#' @export
+series.default <- function(
+	x,
+	formula,
+	formula.default,
+	...
+) {
+	## classed inputs (zoo, tibble-likes, ...) defer to
+	## as.data.frame() for proper method dispatch
+	series(
+		x = as.data.frame(x),
+		formula = formula,
+		formula.default = formula.default,
+		...
+	)
+}
+
 #' Chart-pipeline entry for ggplot backends. Resolves `formula` against
 #' `formula.default` and delegates to [.series_chart_dispatch()].
 #'
