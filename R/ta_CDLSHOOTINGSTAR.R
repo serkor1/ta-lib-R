@@ -159,6 +159,8 @@ shooting_star.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		shooting_star.default(
 			x = x,

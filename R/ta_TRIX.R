@@ -139,6 +139,8 @@ triple_exponential_average.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		triple_exponential_average.default(
 			x = x,

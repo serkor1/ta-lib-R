@@ -159,6 +159,8 @@ gravestone_doji.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		gravestone_doji.default(
 			x = x,

@@ -159,6 +159,8 @@ fast_stochastic.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		fast_stochastic.default(
 			x = x,

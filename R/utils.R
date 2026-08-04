@@ -67,6 +67,20 @@ assert_plotly_object <- function(x) {
 	)
 }
 
+## assert_xts(): assert that the xts PACKAGE is installed, and load
+## its namespace so the [.xts / index machinery is registered even in
+## sessions that never attached xts (deserialized objects, LazyData
+## fixtures like GOOGL). Mirrors assert_plotly_pkg()/assert_ggplot2().
+assert_xts <- function() {
+	if (!requireNamespace("xts", quietly = TRUE)) {
+		stop(
+			"Package 'xts' is required for <xts> input. ",
+			"Install it with install.packages('xts').",
+			call. = FALSE
+		)
+	}
+}
+
 assert_column_names <- function(formula, available_variables) {
 	## this assert function will give an error
 	## if the variables are not found. If it finds
@@ -318,6 +332,16 @@ index.xts <- function(x) {
 ## Index
 set_index <- function(x, value) {
 	UseMethod("set_index", object = value)
+}
+
+#' @export
+set_index.default <- function(x, value) {
+	stop(
+		"Cannot set the index from <",
+		class(value)[1L],
+		">. Expected <character> rownames or a <numeric> <xts>-index.",
+		call. = FALSE
+	)
 }
 
 #' @export

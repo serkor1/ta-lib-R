@@ -139,6 +139,8 @@ relative_strength_index.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		relative_strength_index.default(
 			x = x,

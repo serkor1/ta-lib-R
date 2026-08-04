@@ -140,6 +140,8 @@ midpoint_price.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		midpoint_price.default(
 			x = x,

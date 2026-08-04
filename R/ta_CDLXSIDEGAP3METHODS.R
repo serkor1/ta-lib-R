@@ -159,6 +159,8 @@ xside_gap_3_methods.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		xside_gap_3_methods.default(
 			x = x,

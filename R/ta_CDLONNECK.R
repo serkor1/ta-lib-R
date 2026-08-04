@@ -159,6 +159,8 @@ on_neck.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		on_neck.default(
 			x = x,

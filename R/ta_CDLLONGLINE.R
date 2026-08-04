@@ -159,6 +159,8 @@ long_line.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		long_line.default(
 			x = x,

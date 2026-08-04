@@ -131,6 +131,8 @@ trend_cycle_mode.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		trend_cycle_mode.default(
 			x = x,

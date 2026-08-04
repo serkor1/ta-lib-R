@@ -152,6 +152,8 @@ thrusting.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		thrusting.default(
 			x = x,

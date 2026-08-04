@@ -151,6 +151,8 @@ chaikin_accumulation_distribution_oscillator.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		chaikin_accumulation_distribution_oscillator.default(
 			x = x,

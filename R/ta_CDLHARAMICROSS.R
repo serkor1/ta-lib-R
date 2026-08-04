@@ -159,6 +159,8 @@ harami_cross.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		harami_cross.default(
 			x = x,

@@ -139,6 +139,8 @@ average_deviation.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		average_deviation.default(
 			x = x,

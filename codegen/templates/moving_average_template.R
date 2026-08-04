@@ -161,6 +161,8 @@ ${FUN}.xts <- function(
 	na.bridge = FALSE,
 	...) {
 
+		assert_xts()
+
 		as.xts(
 			${FUN}.default(
 				x = x,

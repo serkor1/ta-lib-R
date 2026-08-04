@@ -167,6 +167,8 @@ evening_star.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		evening_star.default(
 			x = x,

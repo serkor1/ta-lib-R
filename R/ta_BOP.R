@@ -134,6 +134,8 @@ balance_of_power.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		balance_of_power.default(
 			x = x,

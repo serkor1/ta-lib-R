@@ -159,6 +159,8 @@ tasuki_gap.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		tasuki_gap.default(
 			x = x,

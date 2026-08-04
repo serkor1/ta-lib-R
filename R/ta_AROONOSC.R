@@ -140,6 +140,8 @@ aroon_oscillator.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		aroon_oscillator.default(
 			x = x,

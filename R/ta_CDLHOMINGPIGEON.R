@@ -159,6 +159,8 @@ homing_pigeon.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		homing_pigeon.default(
 			x = x,

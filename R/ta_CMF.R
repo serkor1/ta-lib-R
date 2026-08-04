@@ -142,6 +142,8 @@ chaikin_money_flow.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		chaikin_money_flow.default(
 			x = x,

@@ -159,6 +159,8 @@ spinning_top.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		spinning_top.default(
 			x = x,

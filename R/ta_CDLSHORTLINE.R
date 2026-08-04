@@ -159,6 +159,8 @@ short_line.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		short_line.default(
 			x = x,

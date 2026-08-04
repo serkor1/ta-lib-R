@@ -165,6 +165,8 @@ stochastic_relative_strength_index.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		stochastic_relative_strength_index.default(
 			x = x,

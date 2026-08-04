@@ -159,6 +159,8 @@ kicking_baby_length.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		kicking_baby_length.default(
 			x = x,

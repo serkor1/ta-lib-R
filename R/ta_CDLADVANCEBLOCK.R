@@ -159,6 +159,8 @@ advance_block.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		advance_block.default(
 			x = x,

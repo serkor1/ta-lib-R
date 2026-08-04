@@ -159,6 +159,8 @@ stalled_pattern.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		stalled_pattern.default(
 			x = x,

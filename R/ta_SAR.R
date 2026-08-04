@@ -149,6 +149,8 @@ parabolic_stop_and_reverse.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		parabolic_stop_and_reverse.default(
 			x = x,

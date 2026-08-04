@@ -132,6 +132,8 @@ median_price.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		median_price.default(
 			x = x,

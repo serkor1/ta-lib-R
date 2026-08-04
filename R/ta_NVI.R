@@ -132,6 +132,8 @@ negative_volume_index.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		negative_volume_index.default(
 			x = x,

@@ -152,6 +152,8 @@ hammer.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		hammer.default(
 			x = x,

@@ -141,6 +141,8 @@ minus_directional_indicator.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		minus_directional_indicator.default(
 			x = x,

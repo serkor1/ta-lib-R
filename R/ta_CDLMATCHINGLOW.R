@@ -159,6 +159,8 @@ matching_low.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		matching_low.default(
 			x = x,

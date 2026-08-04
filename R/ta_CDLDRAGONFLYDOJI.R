@@ -159,6 +159,8 @@ dragonfly_doji.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		dragonfly_doji.default(
 			x = x,

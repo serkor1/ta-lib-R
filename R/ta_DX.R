@@ -141,6 +141,8 @@ directional_movement_index.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		directional_movement_index.default(
 			x = x,

@@ -159,6 +159,8 @@ hikakke_mod.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		hikakke_mod.default(
 			x = x,

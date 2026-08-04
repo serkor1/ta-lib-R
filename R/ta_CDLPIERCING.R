@@ -152,6 +152,8 @@ piercing.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		piercing.default(
 			x = x,

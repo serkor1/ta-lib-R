@@ -141,6 +141,8 @@ average_directional_movement_index_rating.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		average_directional_movement_index_rating.default(
 			x = x,

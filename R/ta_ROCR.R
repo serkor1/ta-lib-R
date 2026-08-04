@@ -139,6 +139,8 @@ ratio_of_change.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		ratio_of_change.default(
 			x = x,

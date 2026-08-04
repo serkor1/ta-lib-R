@@ -159,6 +159,8 @@ long_legged_doji.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		long_legged_doji.default(
 			x = x,

@@ -165,6 +165,8 @@ hull_moving_average.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		hull_moving_average.default(
 			x = x,

@@ -66,7 +66,7 @@ trading_volume.default <- function(
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -87,7 +87,7 @@ trading_volume.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -126,12 +126,38 @@ trading_volume.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	trading_volume.default(
-		x = x,
-		cols = cols,
-		maType = maType,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		trading_volume.default(
+			x = x,
+			cols = cols,
+			maType = maType,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases trading_volume
+#'
+#' @export
+trading_volume.xts <- function(
+	x,
+	cols,
+	maType = list(SMA(timePeriod = 7), SMA(timePeriod = 15)),
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		trading_volume.default(
+			x = x,
+			cols = cols,
+			maType = maType,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 

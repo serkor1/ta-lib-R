@@ -157,6 +157,8 @@ percentage_volume_oscillator.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		percentage_volume_oscillator.default(
 			x = x,

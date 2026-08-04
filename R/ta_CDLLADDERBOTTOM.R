@@ -159,6 +159,8 @@ ladder_bottom.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		ladder_bottom.default(
 			x = x,

@@ -159,6 +159,8 @@ stick_sandwich.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		stick_sandwich.default(
 			x = x,

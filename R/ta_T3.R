@@ -178,6 +178,8 @@ t3_exponential_moving_average.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		t3_exponential_moving_average.default(
 			x = x,

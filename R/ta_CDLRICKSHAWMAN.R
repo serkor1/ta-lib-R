@@ -159,6 +159,8 @@ rickshaw_man.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		rickshaw_man.default(
 			x = x,

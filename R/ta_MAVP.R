@@ -168,6 +168,8 @@ variable_moving_average_period.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		variable_moving_average_period.default(
 			x = x,

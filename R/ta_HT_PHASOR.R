@@ -131,6 +131,8 @@ phasor_components.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		phasor_components.default(
 			x = x,

@@ -152,6 +152,8 @@ takuri.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		takuri.default(
 			x = x,

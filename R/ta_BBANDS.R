@@ -165,6 +165,8 @@ bollinger_bands.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		bollinger_bands.default(
 			x = x,

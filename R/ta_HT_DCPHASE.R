@@ -131,6 +131,8 @@ dominant_cycle_phase.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		dominant_cycle_phase.default(
 			x = x,

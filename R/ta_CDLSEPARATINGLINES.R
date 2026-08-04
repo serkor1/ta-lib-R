@@ -159,6 +159,8 @@ separating_lines.xts <- function(
 	na.bridge = FALSE,
 	...
 ) {
+	assert_xts()
+
 	as.xts(
 		separating_lines.default(
 			x = x,
