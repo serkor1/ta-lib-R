@@ -687,7 +687,7 @@ assemble_ggplot2 <- function() {
 	## convert to grobs and align column widths
 	## so that y-axes line up across panels
 	## use a null device to prevent Rplots.pdf
-	grDevices::pdf(nullfile())
+	grDevices::pdf(.nullfile())
 	dev_null <- grDevices::dev.cur()
 	on.exit(grDevices::dev.off(dev_null), add = TRUE)
 	grobs <- lapply(panels, ggplot2::ggplotGrob)
@@ -733,7 +733,7 @@ wrap_gg <- function(x) {
 #' @export
 print.talib_gg_chart <- function(x, ...) {
 	if (grDevices::dev.cur() == 1L) {
-		grDevices::pdf(nullfile())
+		grDevices::pdf(.nullfile())
 		on.exit(grDevices::dev.off(), add = TRUE)
 	}
 	NextMethod()
@@ -746,7 +746,7 @@ print.talib_chart <- function(x, ...) {
 	## avoid Rplots.pdf when no device is open
 	## (e.g., R CMD check, tests, vignette knit)
 	if (grDevices::dev.cur() == 1L) {
-		grDevices::pdf(nullfile())
+		grDevices::pdf(.nullfile())
 		on.exit(grDevices::dev.off(), add = TRUE)
 	}
 
