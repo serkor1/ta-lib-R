@@ -53,6 +53,18 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 	)
 })
 
+## <data.frame> object
+testthat::test_that(desc = 'Class in, class out (<xts>)', code = {
+	## 1) check that the output class
+	##    matches the input class
+	testthat::expect_true(
+		inherits(
+			chaikin_accumulation_distribution_oscillator(GOOGL),
+			class(GOOGL)
+		)
+	)
+})
+
 ## check that the default calls
 ## matches that of the constructed call
 ## with default values.
@@ -177,8 +189,8 @@ testthat::test_that(desc = 'Lookback equivalence', code = {
 	## the camelCase lookback alias
 	## is the function itself
 	testthat::expect_identical(
-		object = chaikinAccumulationDistributionOscillator_lookback,
-		expected = chaikin_accumulation_distribution_oscillator_lookback
+		object = talib:::chaikinAccumulationDistributionOscillator_lookback,
+		expected = talib:::chaikin_accumulation_distribution_oscillator_lookback
 	)
 })
 

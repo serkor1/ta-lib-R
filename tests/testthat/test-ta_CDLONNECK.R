@@ -53,6 +53,15 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 	)
 })
 
+## <data.frame> object
+testthat::test_that(desc = 'Class in, class out (<xts>)', code = {
+	## 1) check that the output class
+	##    matches the input class
+	testthat::expect_true(
+		inherits(on_neck(GOOGL), class(GOOGL))
+	)
+})
+
 ## check that the default calls
 ## matches that of the constructed call
 ## with default values.
@@ -171,8 +180,8 @@ testthat::test_that(desc = 'Lookback equivalence', code = {
 	## the camelCase lookback alias
 	## is the function itself
 	testthat::expect_identical(
-		object = onNeck_lookback,
-		expected = on_neck_lookback
+		object = talib:::onNeck_lookback,
+		expected = talib:::on_neck_lookback
 	)
 })
 

@@ -53,6 +53,15 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 	)
 })
 
+## <data.frame> object
+testthat::test_that(desc = 'Class in, class out (<xts>)', code = {
+	## 1) check that the output class
+	##    matches the input class
+	testthat::expect_true(
+		inherits(median_price(GOOGL), class(GOOGL))
+	)
+})
+
 ## check that the default calls
 ## matches that of the constructed call
 ## with default values.
@@ -171,7 +180,7 @@ testthat::test_that(desc = 'Lookback equivalence', code = {
 	## the camelCase lookback alias
 	## is the function itself
 	testthat::expect_identical(
-		object = medianPrice_lookback,
-		expected = median_price_lookback
+		object = talib:::medianPrice_lookback,
+		expected = talib:::median_price_lookback
 	)
 })

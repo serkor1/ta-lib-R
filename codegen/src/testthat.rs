@@ -141,6 +141,15 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 	)
 })
 
+## <data.frame> object
+testthat::test_that(desc = 'Class in, class out (<xts>)', code = {
+	## 1) check that the output class
+	##    matches the input class
+	testthat::expect_true(
+		inherits(${FUN}(GOOGL${PASS_GOOGL}), class(GOOGL))
+	)
+})
+
 ## check that the default calls
 ## matches that of the constructed call
 ## with default values.
@@ -260,8 +269,8 @@ testthat::expect_equal(
 #camel### the camelCase lookback alias
 #camel### is the function itself
 #camel#testthat::expect_identical(
-#camel#		object = ${CAMEL}_lookback,
-#camel#		expected = ${FUN}_lookback
+#camel#		object = talib:::${CAMEL}_lookback,
+#camel#		expected = talib:::${FUN}_lookback
 #camel#	)
 
 }
@@ -422,6 +431,7 @@ pub fn render_test(f: &MetaData) -> String {
             .replace("${PASS_SPY}", &pass("SPY"))
             .replace("${PASS_BTC}", &pass("BTC"))
             .replace("${PASS_ATOM}", &pass("ATOM"))
+            .replace("${PASS_GOOGL}", &pass("GOOGL"))
     };
 
     let mut out = format!("{HEADER}{}", fill(STANDARD_TESTS));
@@ -465,7 +475,7 @@ mod tests {
         assert!(rendered.contains("output <- bollinger_bands(SPY)"));
         assert!(rendered.contains("alias  <- BBANDS(SPY)"));
         assert!(rendered.contains("camel <- bollingerBands(SPY)"));
-        assert!(rendered.contains("object = bollingerBands_lookback,"));
+        assert!(rendered.contains("object = talib:::bollingerBands_lookback,"));
         assert!(!rendered.contains("#camel#"), "unstripped camel prefix");
         assert!(rendered.contains("cols = ~close"));
         assert!(rendered.contains("<plotly>-methods for <data.frame>"));
