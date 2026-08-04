@@ -63,15 +63,15 @@ stochastic.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low + close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low + close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -89,7 +89,7 @@ stochastic.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -110,7 +110,7 @@ stochastic.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		stochastic.default(
 			x = x,
 			cols = cols,
@@ -140,16 +140,48 @@ stochastic.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	stochastic.default(
-		x = x,
-		cols = cols,
-		fastKPeriod = fastKPeriod,
-		slowKPeriod = slowKPeriod,
-		slowKMa = slowKMa,
-		slowDPeriod = slowDPeriod,
-		slowDMa = slowDMa,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		stochastic.default(
+			x = x,
+			cols = cols,
+			fastKPeriod = fastKPeriod,
+			slowKPeriod = slowKPeriod,
+			slowKMa = slowKMa,
+			slowDPeriod = slowDPeriod,
+			slowDMa = slowDMa,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases stochastic
+#'
+#' @export
+stochastic.xts <- function(
+	x,
+	cols,
+	fastKPeriod = 5,
+	slowKPeriod = 3,
+	slowKMa = 0,
+	slowDPeriod = 3,
+	slowDMa = 0,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		stochastic.default(
+			x = x,
+			cols = cols,
+			fastKPeriod = fastKPeriod,
+			slowKPeriod = slowKPeriod,
+			slowKMa = slowKMa,
+			slowDPeriod = slowDPeriod,
+			slowDMa = slowDMa,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -210,7 +242,7 @@ stochastic.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 
@@ -321,7 +353,7 @@ stochastic.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 

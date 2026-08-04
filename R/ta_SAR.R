@@ -61,15 +61,15 @@ parabolic_stop_and_reverse.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -83,7 +83,7 @@ parabolic_stop_and_reverse.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -101,7 +101,7 @@ parabolic_stop_and_reverse.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		parabolic_stop_and_reverse.default(
 			x = x,
 			cols = cols,
@@ -125,13 +125,39 @@ parabolic_stop_and_reverse.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	parabolic_stop_and_reverse.default(
-		x = x,
-		cols = cols,
-		accelerationFactor = accelerationFactor,
-		afMaximum = afMaximum,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		parabolic_stop_and_reverse.default(
+			x = x,
+			cols = cols,
+			accelerationFactor = accelerationFactor,
+			afMaximum = afMaximum,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases parabolic_stop_and_reverse
+#'
+#' @export
+parabolic_stop_and_reverse.xts <- function(
+	x,
+	cols,
+	accelerationFactor = 0.02,
+	afMaximum = 0.2,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		parabolic_stop_and_reverse.default(
+			x = x,
+			cols = cols,
+			accelerationFactor = accelerationFactor,
+			afMaximum = afMaximum,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -180,7 +206,7 @@ parabolic_stop_and_reverse.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low,
+		formula.default = ~ high + low,
 		...
 	)
 
@@ -286,7 +312,7 @@ parabolic_stop_and_reverse.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low,
+		formula.default = ~ high + low,
 		...
 	)
 

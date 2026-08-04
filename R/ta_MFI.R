@@ -58,15 +58,15 @@ money_flow_index.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low + close + volume,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low + close + volume,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -81,7 +81,7 @@ money_flow_index.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -98,7 +98,7 @@ money_flow_index.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		money_flow_index.default(
 			x = x,
 			cols = cols,
@@ -120,12 +120,36 @@ money_flow_index.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	money_flow_index.default(
-		x = x,
-		cols = cols,
-		timePeriod = timePeriod,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		money_flow_index.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases money_flow_index
+#'
+#' @export
+money_flow_index.xts <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		money_flow_index.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -174,7 +198,7 @@ money_flow_index.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close + volume,
+		formula.default = ~ high + low + close + volume,
 		...
 	)
 
@@ -272,7 +296,7 @@ money_flow_index.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close + volume,
+		formula.default = ~ high + low + close + volume,
 		...
 	)
 

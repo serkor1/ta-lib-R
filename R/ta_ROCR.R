@@ -58,15 +58,15 @@ ratio_of_change.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -78,7 +78,7 @@ ratio_of_change.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -95,7 +95,7 @@ ratio_of_change.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		ratio_of_change.default(
 			x = x,
 			cols = cols,
@@ -117,12 +117,36 @@ ratio_of_change.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	ratio_of_change.default(
-		x = x,
-		cols = cols,
-		timePeriod = timePeriod,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		ratio_of_change.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases ratio_of_change
+#'
+#' @export
+ratio_of_change.xts <- function(
+	x,
+	cols,
+	timePeriod = 10,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		ratio_of_change.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -204,7 +228,7 @@ ratio_of_change.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 
@@ -304,7 +328,7 @@ ratio_of_change.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 

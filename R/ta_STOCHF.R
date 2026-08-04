@@ -64,15 +64,15 @@ fast_stochastic.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low + close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low + close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -88,7 +88,7 @@ fast_stochastic.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -107,7 +107,7 @@ fast_stochastic.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		fast_stochastic.default(
 			x = x,
 			cols = cols,
@@ -133,14 +133,42 @@ fast_stochastic.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	fast_stochastic.default(
-		x = x,
-		cols = cols,
-		fastKPeriod = fastKPeriod,
-		fastDPeriod = fastDPeriod,
-		fastDMa = fastDMa,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		fast_stochastic.default(
+			x = x,
+			cols = cols,
+			fastKPeriod = fastKPeriod,
+			fastDPeriod = fastDPeriod,
+			fastDMa = fastDMa,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases fast_stochastic
+#'
+#' @export
+fast_stochastic.xts <- function(
+	x,
+	cols,
+	fastKPeriod = 5,
+	fastDPeriod = 3,
+	fastDMa = 0,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		fast_stochastic.default(
+			x = x,
+			cols = cols,
+			fastKPeriod = fastKPeriod,
+			fastDPeriod = fastDPeriod,
+			fastDMa = fastDMa,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -195,7 +223,7 @@ fast_stochastic.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 
@@ -300,7 +328,7 @@ fast_stochastic.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 

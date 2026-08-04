@@ -70,35 +70,33 @@ takuri.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
+		x = x,
+		formula.default = ~ open + high + low + close,
+		formula = cols,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
-	x <- as.matrix(
-		.Call(
-			C_impl_ta_CDLTAKURI,
-			constructed_series[[1]],
-			constructed_series[[2]],
-			constructed_series[[3]],
-			constructed_series[[4]],
-			normalize,
-			as.logical(na.bridge)
-		)
+	x <- .Call(
+		C_impl_ta_CDLTAKURI,
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
+		normalize,
+		as.logical(na.bridge)
 	)
 
 	## add column name
 	colnames(x) <- "CDLTAKURI"
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -114,7 +112,7 @@ takuri.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		takuri.default(
 			x = x,
 			cols = cols,
@@ -134,13 +132,36 @@ takuri.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	takuri.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		takuri.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
+
+#' @usage NULL
+#' @aliases takuri
+#'
+#' @export
+takuri.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		takuri.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
 
 #' @usage NULL
 CDLTAKURI_lookback <- takuri_lookback <- function(
@@ -179,7 +200,7 @@ takuri.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -237,7 +258,7 @@ takuri.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 

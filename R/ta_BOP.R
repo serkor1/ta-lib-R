@@ -56,15 +56,15 @@ balance_of_power.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -78,7 +78,7 @@ balance_of_power.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -94,7 +94,7 @@ balance_of_power.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		balance_of_power.default(
 			x = x,
 			cols = cols,
@@ -114,11 +114,33 @@ balance_of_power.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	balance_of_power.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		balance_of_power.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases balance_of_power
+#'
+#' @export
+balance_of_power.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		balance_of_power.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -162,7 +184,7 @@ balance_of_power.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -264,7 +286,7 @@ balance_of_power.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 

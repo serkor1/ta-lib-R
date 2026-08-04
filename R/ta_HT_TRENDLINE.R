@@ -49,15 +49,15 @@ trendline.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -68,7 +68,7 @@ trendline.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -84,7 +84,7 @@ trendline.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		trendline.default(
 			x = x,
 			cols = cols,
@@ -104,11 +104,33 @@ trendline.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	trendline.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		trendline.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases trendline
+#'
+#' @export
+trendline.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		trendline.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -184,7 +206,7 @@ trendline.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 
@@ -253,7 +275,7 @@ trendline.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 

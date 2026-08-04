@@ -77,35 +77,33 @@ unique_3_river.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
+		x = x,
+		formula.default = ~ open + high + low + close,
+		formula = cols,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
-	x <- as.matrix(
-		.Call(
-			C_impl_ta_CDLUNIQUE3RIVER,
-			constructed_series[[1]],
-			constructed_series[[2]],
-			constructed_series[[3]],
-			constructed_series[[4]],
-			normalize,
-			as.logical(na.bridge)
-		)
+	x <- .Call(
+		C_impl_ta_CDLUNIQUE3RIVER,
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
+		normalize,
+		as.logical(na.bridge)
 	)
 
 	## add column name
 	colnames(x) <- "CDLUNIQUE3RIVER"
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -121,7 +119,7 @@ unique_3_river.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		unique_3_river.default(
 			x = x,
 			cols = cols,
@@ -141,13 +139,36 @@ unique_3_river.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	unique_3_river.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		unique_3_river.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
+
+#' @usage NULL
+#' @aliases unique_3_river
+#'
+#' @export
+unique_3_river.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		unique_3_river.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
 
 #' @usage NULL
 CDLUNIQUE3RIVER_lookback <- unique3River_lookback <- unique_3_river_lookback <- function(
@@ -186,7 +207,7 @@ unique_3_river.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -244,7 +265,7 @@ unique_3_river.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 

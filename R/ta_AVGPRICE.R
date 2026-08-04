@@ -56,15 +56,15 @@ average_price.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -78,7 +78,7 @@ average_price.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -94,7 +94,7 @@ average_price.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		average_price.default(
 			x = x,
 			cols = cols,
@@ -114,11 +114,33 @@ average_price.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	average_price.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		average_price.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases average_price
+#'
+#' @export
+average_price.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		average_price.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 

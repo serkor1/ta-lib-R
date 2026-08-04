@@ -66,15 +66,15 @@ bollinger_bands.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -89,7 +89,7 @@ bollinger_bands.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -109,7 +109,7 @@ bollinger_bands.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		bollinger_bands.default(
 			x = x,
 			cols = cols,
@@ -137,15 +137,45 @@ bollinger_bands.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	bollinger_bands.default(
-		x = x,
-		cols = cols,
-		timePeriod = timePeriod,
-		deviationsUp = deviationsUp,
-		deviationsDown = deviationsDown,
-		maType = maType,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		bollinger_bands.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			deviationsUp = deviationsUp,
+			deviationsDown = deviationsDown,
+			maType = maType,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases bollinger_bands
+#'
+#' @export
+bollinger_bands.xts <- function(
+	x,
+	cols,
+	timePeriod = 20,
+	deviationsUp = 2,
+	deviationsDown = 2,
+	maType = 0,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		bollinger_bands.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			deviationsUp = deviationsUp,
+			deviationsDown = deviationsDown,
+			maType = maType,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -243,7 +273,7 @@ bollinger_bands.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 
@@ -375,7 +405,7 @@ bollinger_bands.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 

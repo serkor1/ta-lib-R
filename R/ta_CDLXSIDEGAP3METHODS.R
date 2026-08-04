@@ -77,35 +77,33 @@ xside_gap_3_methods.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
+		x = x,
+		formula.default = ~ open + high + low + close,
+		formula = cols,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
-	x <- as.matrix(
-		.Call(
-			C_impl_ta_CDLXSIDEGAP3METHODS,
-			constructed_series[[1]],
-			constructed_series[[2]],
-			constructed_series[[3]],
-			constructed_series[[4]],
-			normalize,
-			as.logical(na.bridge)
-		)
+	x <- .Call(
+		C_impl_ta_CDLXSIDEGAP3METHODS,
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
+		normalize,
+		as.logical(na.bridge)
 	)
 
 	## add column name
 	colnames(x) <- "CDLXSIDEGAP3METHODS"
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -121,7 +119,7 @@ xside_gap_3_methods.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		xside_gap_3_methods.default(
 			x = x,
 			cols = cols,
@@ -141,13 +139,36 @@ xside_gap_3_methods.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	xside_gap_3_methods.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		xside_gap_3_methods.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
+
+#' @usage NULL
+#' @aliases xside_gap_3_methods
+#'
+#' @export
+xside_gap_3_methods.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		xside_gap_3_methods.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
 
 #' @usage NULL
 CDLXSIDEGAP3METHODS_lookback <- xsideGap3Methods_lookback <- xside_gap_3_methods_lookback <- function(
@@ -186,7 +207,7 @@ xside_gap_3_methods.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -244,7 +265,7 @@ xside_gap_3_methods.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 

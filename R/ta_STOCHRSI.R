@@ -66,15 +66,15 @@ stochastic_relative_strength_index.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -89,7 +89,7 @@ stochastic_relative_strength_index.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -109,7 +109,7 @@ stochastic_relative_strength_index.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		stochastic_relative_strength_index.default(
 			x = x,
 			cols = cols,
@@ -137,15 +137,45 @@ stochastic_relative_strength_index.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	stochastic_relative_strength_index.default(
-		x = x,
-		cols = cols,
-		timePeriod = timePeriod,
-		fastKPeriod = fastKPeriod,
-		fastDPeriod = fastDPeriod,
-		fastDMa = fastDMa,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		stochastic_relative_strength_index.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			fastKPeriod = fastKPeriod,
+			fastDPeriod = fastDPeriod,
+			fastDMa = fastDMa,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases stochastic_relative_strength_index
+#'
+#' @export
+stochastic_relative_strength_index.xts <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	fastKPeriod = 5,
+	fastDPeriod = 3,
+	fastDMa = 0,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		stochastic_relative_strength_index.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			fastKPeriod = fastKPeriod,
+			fastDPeriod = fastDPeriod,
+			fastDMa = fastDMa,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -244,7 +274,7 @@ stochastic_relative_strength_index.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 
@@ -350,7 +380,7 @@ stochastic_relative_strength_index.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 

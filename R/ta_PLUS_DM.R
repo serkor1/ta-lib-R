@@ -58,15 +58,15 @@ plus_directional_movement.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -79,7 +79,7 @@ plus_directional_movement.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -96,7 +96,7 @@ plus_directional_movement.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		plus_directional_movement.default(
 			x = x,
 			cols = cols,
@@ -118,12 +118,36 @@ plus_directional_movement.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	plus_directional_movement.default(
-		x = x,
-		cols = cols,
-		timePeriod = timePeriod,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		plus_directional_movement.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases plus_directional_movement
+#'
+#' @export
+plus_directional_movement.xts <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		plus_directional_movement.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -170,7 +194,7 @@ plus_directional_movement.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low,
+		formula.default = ~ high + low,
 		...
 	)
 
@@ -263,7 +287,7 @@ plus_directional_movement.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low,
+		formula.default = ~ high + low,
 		...
 	)
 

@@ -56,15 +56,15 @@ on_balance_volume.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ close + volume,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ close + volume,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -76,7 +76,7 @@ on_balance_volume.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -92,7 +92,7 @@ on_balance_volume.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		on_balance_volume.default(
 			x = x,
 			cols = cols,
@@ -112,11 +112,33 @@ on_balance_volume.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	on_balance_volume.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		on_balance_volume.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases on_balance_volume
+#'
+#' @export
+on_balance_volume.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		on_balance_volume.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -160,7 +182,7 @@ on_balance_volume.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ close + volume,
+		formula.default = ~ close + volume,
 		...
 	)
 
@@ -248,7 +270,7 @@ on_balance_volume.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ close + volume,
+		formula.default = ~ close + volume,
 		...
 	)
 

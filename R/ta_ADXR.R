@@ -58,15 +58,15 @@ average_directional_movement_index_rating.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low + close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low + close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -80,7 +80,7 @@ average_directional_movement_index_rating.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -97,7 +97,7 @@ average_directional_movement_index_rating.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		average_directional_movement_index_rating.default(
 			x = x,
 			cols = cols,
@@ -119,12 +119,36 @@ average_directional_movement_index_rating.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	average_directional_movement_index_rating.default(
-		x = x,
-		cols = cols,
-		timePeriod = timePeriod,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		average_directional_movement_index_rating.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases average_directional_movement_index_rating
+#'
+#' @export
+average_directional_movement_index_rating.xts <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		average_directional_movement_index_rating.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -174,7 +198,7 @@ average_directional_movement_index_rating.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 
@@ -277,7 +301,7 @@ average_directional_movement_index_rating.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 

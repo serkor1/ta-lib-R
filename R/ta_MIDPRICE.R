@@ -58,15 +58,15 @@ midpoint_price.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -79,7 +79,7 @@ midpoint_price.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -96,7 +96,7 @@ midpoint_price.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		midpoint_price.default(
 			x = x,
 			cols = cols,
@@ -118,12 +118,36 @@ midpoint_price.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	midpoint_price.default(
-		x = x,
-		cols = cols,
-		timePeriod = timePeriod,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		midpoint_price.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases midpoint_price
+#'
+#' @export
+midpoint_price.xts <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		midpoint_price.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -169,7 +193,7 @@ midpoint_price.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low,
+		formula.default = ~ high + low,
 		...
 	)
 
@@ -248,7 +272,7 @@ midpoint_price.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low,
+		formula.default = ~ high + low,
 		...
 	)
 

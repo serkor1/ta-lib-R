@@ -58,15 +58,15 @@ williams_oscillator.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low + close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low + close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -80,7 +80,7 @@ williams_oscillator.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -97,7 +97,7 @@ williams_oscillator.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		williams_oscillator.default(
 			x = x,
 			cols = cols,
@@ -119,12 +119,36 @@ williams_oscillator.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	williams_oscillator.default(
-		x = x,
-		cols = cols,
-		timePeriod = timePeriod,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		williams_oscillator.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases williams_oscillator
+#'
+#' @export
+williams_oscillator.xts <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		williams_oscillator.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -173,7 +197,7 @@ williams_oscillator.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 
@@ -272,7 +296,7 @@ williams_oscillator.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 

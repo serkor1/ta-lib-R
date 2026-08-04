@@ -77,35 +77,33 @@ three_identical_crows.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
+		x = x,
+		formula.default = ~ open + high + low + close,
+		formula = cols,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
-	x <- as.matrix(
-		.Call(
-			C_impl_ta_CDLIDENTICAL3CROWS,
-			constructed_series[[1]],
-			constructed_series[[2]],
-			constructed_series[[3]],
-			constructed_series[[4]],
-			normalize,
-			as.logical(na.bridge)
-		)
+	x <- .Call(
+		C_impl_ta_CDLIDENTICAL3CROWS,
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
+		normalize,
+		as.logical(na.bridge)
 	)
 
 	## add column name
 	colnames(x) <- "CDLIDENTICAL3CROWS"
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -121,7 +119,7 @@ three_identical_crows.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		three_identical_crows.default(
 			x = x,
 			cols = cols,
@@ -141,13 +139,36 @@ three_identical_crows.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	three_identical_crows.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		three_identical_crows.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
+
+#' @usage NULL
+#' @aliases three_identical_crows
+#'
+#' @export
+three_identical_crows.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		three_identical_crows.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
 
 #' @usage NULL
 CDLIDENTICAL3CROWS_lookback <- threeIdenticalCrows_lookback <- three_identical_crows_lookback <- function(
@@ -186,7 +207,7 @@ three_identical_crows.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -244,7 +265,7 @@ three_identical_crows.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 

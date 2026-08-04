@@ -79,36 +79,34 @@ dark_cloud_cover.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
+		x = x,
+		formula.default = ~ open + high + low + close,
+		formula = cols,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
-	x <- as.matrix(
-		.Call(
-			C_impl_ta_CDLDARKCLOUDCOVER,
-			constructed_series[[1]],
-			constructed_series[[2]],
-			constructed_series[[3]],
-			constructed_series[[4]],
-			as.double(penetration),
-			normalize,
-			as.logical(na.bridge)
-		)
+	x <- .Call(
+		C_impl_ta_CDLDARKCLOUDCOVER,
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
+		as.double(penetration),
+		normalize,
+		as.logical(na.bridge)
 	)
 
 	## add column name
 	colnames(x) <- "CDLDARKCLOUDCOVER"
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -125,7 +123,7 @@ dark_cloud_cover.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		dark_cloud_cover.default(
 			x = x,
 			cols = cols,
@@ -147,14 +145,39 @@ dark_cloud_cover.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	dark_cloud_cover.default(
-		x = x,
-		cols = cols,
-		penetration = penetration,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		dark_cloud_cover.default(
+			x = x,
+			cols = cols,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
+
+#' @usage NULL
+#' @aliases dark_cloud_cover
+#'
+#' @export
+dark_cloud_cover.xts <- function(
+	x,
+	cols,
+	penetration = 0.5,
+	na.bridge = FALSE,
+	...
+) {
+	as.xts(
+		dark_cloud_cover.default(
+			x = x,
+			cols = cols,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
 
 #' @usage NULL
 CDLDARKCLOUDCOVER_lookback <- darkCloudCover_lookback <- dark_cloud_cover_lookback <- function(
@@ -196,7 +219,7 @@ dark_cloud_cover.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -256,7 +279,7 @@ dark_cloud_cover.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
