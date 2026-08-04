@@ -1,3 +1,3 @@
 #' @returns
 #'
-#' A [double] vector with the same [length] of `x`
+#' A [double] vector (or single-column `xts`) with the same [length] of `x`

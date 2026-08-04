@@ -360,6 +360,19 @@ pub fn render_indicator(f: &MetaData, t: &Templates) -> String {
         .collect::<Vec<String>>()
         .join("\n\t\t");
 
+    // the univariate guard of the rolling .default/.xts methods:
+    // one assert per input series, rejecting multi-column input
+    // instead of flattening it column-major
+    let series_guard = series
+        .iter()
+        .map(|s| {
+            format!(
+                "assert(\n\t\tx = NCOL({s}) == 1L,\n\t\tcall = sys.call(sys.parent()),\n\t\t\"Expected '{s}' to be univariate.\",\n\t\tpaste0(\"Got \", NCOL({s}), \" columns.\")\n\t)"
+            )
+        })
+        .collect::<Vec<String>>()
+        .join("\n\n\t");
+
     let c_numeric = series
         .iter()
         .map(|s| format!("as.double({s})"))
@@ -412,6 +425,7 @@ pub fn render_indicator(f: &MetaData, t: &Templates) -> String {
             .replace("${C_SIGNATURE}", &c_signature)
             .replace("${C_NUMERIC}", &c_numeric)
             .replace("${SERIES}", &series_args)
+            .replace("${SERIES_GUARD}", &series_guard)
             .replace("${PSERIES}", &pseries)
             .replace("${SPEC_FIELDS}", &spec_fields)
             .replace("${MA_TYPE}", ma_index.unwrap_or("-1L"))
