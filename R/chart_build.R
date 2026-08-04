@@ -173,12 +173,18 @@ build_ggplot <- function(
 		data <- data[-(1:lookback), , drop = FALSE]
 	}
 
-	## add position column aligned
-	## with main chart x-axis
-	data$.chart_pos <- seq.int(
-		lookback + 1L,
-		lookback + nrow(data)
-	)
+	## add position column aligned with the main chart x-axis.
+	## Aligning by label places subset indicators on their own
+	## rows of the shared axis - mirroring the plotly backend,
+	## which aligns by the idx labels themselves
+	chart_positions <- match(data$idx, .chart_state()$idx$label)
+	if (length(chart_positions) != nrow(data) || anyNA(chart_positions)) {
+		chart_positions <- seq.int(
+			lookback + 1L,
+			lookback + nrow(data)
+		)
+	}
+	data$.chart_pos <- chart_positions
 
 	## replace missing name
 	if (missing(name) || is.null(name)) {
