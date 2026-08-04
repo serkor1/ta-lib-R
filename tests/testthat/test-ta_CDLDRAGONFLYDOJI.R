@@ -53,6 +53,15 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 	)
 })
 
+## <data.frame> object
+testthat::test_that(desc = 'Class in, class out (<xts>)', code = {
+	## 1) check that the output class
+	##    matches the input class
+	testthat::expect_true(
+		inherits(dragonfly_doji(GOOGL), class(GOOGL))
+	)
+})
+
 ## check that the default calls
 ## matches that of the constructed call
 ## with default values.
@@ -171,8 +180,8 @@ testthat::test_that(desc = 'Lookback equivalence', code = {
 	## the camelCase lookback alias
 	## is the function itself
 	testthat::expect_identical(
-		object = dragonflyDoji_lookback,
-		expected = dragonfly_doji_lookback
+		object = talib:::dragonflyDoji_lookback,
+		expected = talib:::dragonfly_doji_lookback
 	)
 })
 

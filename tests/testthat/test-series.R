@@ -1,4 +1,3 @@
-library(talib)
 ## tests for the formula-based column selector
 ## series() is internal; we exercise it via the indicator pipeline
 testthat::test_that(desc = "Output is <data.frame>", code = {
