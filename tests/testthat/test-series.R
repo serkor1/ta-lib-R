@@ -94,3 +94,126 @@ testthat::test_that(desc = "Attributes are respected", code = {
 		SPY
 	)
 })
+
+## tests for the <xts> column-resolution path:
+## columns resolve per formula variable, in formula
+## order - never by physical layout
+testthat::test_that(desc = "<xts> columns resolve in formula order", code = {
+	testthat::skip_if_not_installed("xts")
+
+	idx <- as.Date("2024-01-01") + 0:9
+
+	## physical order must not dictate
+	## the selection order
+	x <- xts::xts(
+		cbind(Low = 0:9, Close = 1:10, High = 2:11),
+		order.by = idx
+	)
+
+	testthat::expect_equal(
+		colnames(talib:::series(x = x, formula.default = ~ high + low + close)),
+		c("High", "Low", "Close")
+	)
+
+	## quantmod-style names resolve
+	## by suffix
+	colnames(x) <- paste0("GOOGL.", c("Low", "Close", "High"))
+
+	testthat::expect_equal(
+		colnames(talib:::series(x = x, formula.default = ~ high + low + close)),
+		paste0("GOOGL.", c("High", "Low", "Close"))
+	)
+
+	## lowercase names resolve exactly
+	colnames(x) <- c("low", "close", "high")
+
+	testthat::expect_equal(
+		colnames(talib:::series(x = x, formula.default = ~ high + low + close)),
+		c("high", "low", "close")
+	)
+
+	## an explicit formula is selected
+	## exactly as passed
+	testthat::expect_equal(
+		colnames(talib:::series(
+			x = x,
+			formula = ~ low + high + close,
+			formula.default = ~ high + low + close
+		)),
+		c("low", "high", "close")
+	)
+})
+
+testthat::test_that(desc = "<xts> column-resolution failures", code = {
+	testthat::skip_if_not_installed("xts")
+
+	idx <- as.Date("2024-01-01") + 0:9
+	x <- xts::xts(
+		cbind(high = 2:11, low = 0:9, close = 1:10),
+		order.by = idx
+	)
+
+	## no matching columns
+	testthat::expect_error(
+		talib:::series(
+			x = xts::xts(cbind(a = 1:10, b = 1:10), order.by = idx),
+			formula.default = ~close
+		)
+	)
+
+	## ambiguous matches
+	ambiguous <- xts::xts(cbind(1:10, 1:10), order.by = idx)
+	colnames(ambiguous) <- c("Close", "close")
+
+	testthat::expect_error(
+		talib:::series(
+			x = ambiguous,
+			formula.default = ~close
+		)
+	)
+
+	## an explicit formula shorter than
+	## the default
+	testthat::expect_error(
+		talib:::series(
+			x = x,
+			formula = ~close,
+			formula.default = ~ high + low + close
+		)
+	)
+
+	## 'subset' and the remaining
+	## model.frame-arguments are unused
+	testthat::expect_warning(
+		talib:::series(
+			x = x,
+			formula.default = ~ high + low + close,
+			subset = 1:5
+		)
+	)
+})
+
+## the <xts> methods must work without {xts} attached:
+## assert_xts() loads the namespace on demand
+testthat::test_that(desc = "<xts> input works without {xts} attached", code = {
+	testthat::skip_if_not_installed("xts")
+	testthat::skip_on_cran()
+
+	script <- paste0(
+		".libPaths(",
+		paste(deparse(.libPaths()), collapse = ""),
+		"); library(talib); ",
+		"x <- relative_strength_index(GOOGL); ",
+		"stopifnot(inherits(x, 'xts'), !all(is.na(x))); ",
+		"cat('vanilla-ok')"
+	)
+
+	output <- suppressWarnings(system2(
+		file.path(R.home("bin"), "Rscript"),
+		args = c("--vanilla", "-e", shQuote(script)),
+		stdout = TRUE,
+		stderr = TRUE
+	))
+
+	testthat::expect_true(any(grepl("vanilla-ok", output)))
+})

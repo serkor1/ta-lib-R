@@ -164,12 +164,39 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 	)
 })
 
-## <data.frame> object
+## <xts> object
 testthat::test_that(desc = 'Class in, class out (<xts>)', code = {
+	testthat::skip_if_not_installed("xts")
+
 	## 1) check that the output class
 	##    matches the input class
 	testthat::expect_true(
 		inherits(${FUN}(GOOGL${PASS_GOOGL}), class(GOOGL))
+	)
+})
+
+## the <xts> path must select the same columns in the
+## same order as the <data.frame> reference, regardless
+## of the physical column layout
+testthat::test_that(desc = 'Value parity with <data.frame> (<xts>)', code = {
+	testthat::skip_if_not_installed("xts")
+
+	## lowercase <data.frame> reference
+	## from the GOOGL fixture
+	reference <- as.data.frame(GOOGL)
+	colnames(reference) <- tolower(sub("^GOOGL\\.", "", colnames(reference)))
+	reference <- unname(as.matrix(${FUN}(reference${PASS_GOOGL})))
+
+	testthat::expect_equal(
+		object = unname(zoo::coredata(${FUN}(GOOGL${PASS_GOOGL}))),
+		expected = reference
+	)
+
+	## alphabetically sorted columns place 'Adjusted'
+	## first and must resolve identically
+	testthat::expect_equal(
+		object = unname(zoo::coredata(${FUN}(GOOGL[, sort(colnames(GOOGL))]${PASS_GOOGL}))),
+		expected = reference
 	)
 })
 
@@ -517,6 +544,8 @@ mod tests {
         assert!(rendered.contains("<plotly>-methods for <data.frame>"));
         assert!(rendered.contains("<ggplot>-methods for <matrix>"));
         assert!(rendered.contains("<numeric> methods"));
+        assert!(rendered.contains("Value parity with <data.frame> (<xts>)"));
+        assert!(rendered.contains(r#"skip_if_not_installed("xts")"#));
         assert!(!rendered.contains("${"), "unreplaced placeholder");
     }
 
