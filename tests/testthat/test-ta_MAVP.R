@@ -328,9 +328,11 @@ testthat::test_that(desc = '<numeric> methods', code = {
 	if (NCOL(x) == 1L) {
 		testthat::expect_true(is.double(x) || is.integer(x))
 		testthat::expect_false(is.matrix(x))
+		testthat::expect_false(inherits(x, "matrix"))
 		testthat::expect_equal(length(x), target_length)
 	} else {
 		testthat::expect_true(is.matrix(x))
+		testthat::expect_identical(class(x), c("matrix", "array"))
 		testthat::expect_equal(nrow(x), target_length)
 	}
 })

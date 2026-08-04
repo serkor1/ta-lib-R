@@ -178,6 +178,10 @@ momentum.numeric <- function(
 		warning("'cols' is passed but is unused for vectors.")
 	}
 
+	if (...length()) {
+		warning("'...' is passed but is unused for vectors.")
+	}
+
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
@@ -190,6 +194,7 @@ momentum.numeric <- function(
 	if (dim(x)[2] == 1L) {
 		dim(x) <- NULL
 	}
+	class(x) <- NULL
 
 	x
 }
