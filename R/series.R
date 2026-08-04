@@ -138,7 +138,9 @@ series.plotly <- function(
 			list(...)
 		)
 	)[-1L]
-	dn <- ...names()
+	## substitute() captures the argument names alongside the
+	## expressions - base::...names() exists only from R 4.1
+	dn <- names(dots_quoted)
 	if (length(dots_quoted)) {
 		if (is.null(dn)) {
 			dn <- rep("", length(dots_quoted))

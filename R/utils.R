@@ -166,6 +166,11 @@ assert_column_names <- function(formula, available_variables) {
 	x
 }
 
+## base::nullfile() exists only from R 4.0
+.nullfile <- function() {
+	if (.Platform$OS.type == "windows") "nul:" else "/dev/null"
+}
+
 ## class related utility
 ## functions
 is.formula <- function(x) {
