@@ -19,7 +19,7 @@
 bollinger_bands <- function(
 	x,
 	cols,
-	timePeriod = 5,
+	timePeriod = 20,
 	deviationsUp = 2,
 	deviationsDown = 2,
 	maType = 0,
@@ -50,7 +50,7 @@ bollingerBands <- bollinger_bands
 bollinger_bands.default <- function(
 	x,
 	cols,
-	timePeriod = 5,
+	timePeriod = 20,
 	deviationsUp = 2,
 	deviationsDown = 2,
 	maType = 0,
@@ -102,7 +102,7 @@ bollinger_bands.default <- function(
 bollinger_bands.data.frame <- function(
 	x,
 	cols,
-	timePeriod = 5,
+	timePeriod = 20,
 	deviationsUp = 2,
 	deviationsDown = 2,
 	maType = 0,
@@ -130,7 +130,7 @@ bollinger_bands.data.frame <- function(
 bollinger_bands.matrix <- function(
 	x,
 	cols,
-	timePeriod = 5,
+	timePeriod = 20,
 	deviationsUp = 2,
 	deviationsDown = 2,
 	maType = 0,
@@ -153,7 +153,7 @@ bollinger_bands.matrix <- function(
 BBANDS_lookback <- bollingerBands_lookback <- bollinger_bands_lookback <- function(
 	x,
 	cols,
-	timePeriod = 5,
+	timePeriod = 20,
 	deviationsUp = 2,
 	deviationsDown = 2,
 	maType = 0,
@@ -176,7 +176,7 @@ BBANDS_lookback <- bollingerBands_lookback <- bollinger_bands_lookback <- functi
 bollinger_bands.numeric <- function(
 	x,
 	cols,
-	timePeriod = 5,
+	timePeriod = 20,
 	deviationsUp = 2,
 	deviationsDown = 2,
 	maType = 0,
@@ -217,7 +217,7 @@ bollinger_bands.numeric <- function(
 bollinger_bands.plotly <- function(
 	x,
 	cols,
-	timePeriod = 5,
+	timePeriod = 20,
 	deviationsUp = 2,
 	deviationsDown = 2,
 	maType = 0,
@@ -352,7 +352,7 @@ bollinger_bands.plotly <- function(
 bollinger_bands.ggplot <- function(
 	x,
 	cols,
-	timePeriod = 5,
+	timePeriod = 20,
 	deviationsUp = 2,
 	deviationsDown = 2,
 	maType = 0,

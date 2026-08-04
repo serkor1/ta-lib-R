@@ -12,7 +12,7 @@
 ## splice:documentation:end
 #'
 #' @template description
-#' @param signalPeriod ([integer]). Smoothing for the signal line (nb of period). Defaults to `9`.
+#' @param signalPeriod ([integer]). Smoothing for the signal line (period length). Defaults to `9`.
 #' @template returns
 fixed_moving_average_convergence_divergence <- function(
 	x,

@@ -12,8 +12,8 @@
 ## splice:documentation:end
 #'
 #' @template description
-#' @param fastPeriod ([integer]). Number of period for the fast MA. Defaults to `3`.
-#' @param slowPeriod ([integer]). Number of period for the slow MA. Defaults to `10`.
+#' @param fastPeriod ([integer]). Period of the fast MA. Defaults to `3`.
+#' @param slowPeriod ([integer]). Period of the slow MA. Defaults to `10`.
 #' @template returns
 chaikin_accumulation_distribution_oscillator <- function(
 	x,

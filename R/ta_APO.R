@@ -12,16 +12,16 @@
 ## splice:documentation:end
 #'
 #' @template description
-#' @param fastPeriod ([integer]). Number of period for the fast MA. Defaults to `12`.
-#' @param slowPeriod ([integer]). Number of period for the slow MA. Defaults to `26`.
-#' @param maType ([integer]). Type of Moving Average. Defaults to `0` ([SMA]). Can also be passed as talib::SMA.
+#' @param fastPeriod ([integer]). Period of the fast MA. Defaults to `12`.
+#' @param slowPeriod ([integer]). Period of the slow MA. Defaults to `26`.
+#' @param maType ([integer]). Type of Moving Average. Defaults to `1` ([EMA]). Can also be passed as talib::EMA.
 #' @template returns
 absolute_price_oscillator <- function(
 	x,
 	cols,
 	fastPeriod = 12,
 	slowPeriod = 26,
-	maType = 0,
+	maType = 1,
 	na.bridge = FALSE,
 	...
 ) {
@@ -51,7 +51,7 @@ absolute_price_oscillator.default <- function(
 	cols,
 	fastPeriod = 12,
 	slowPeriod = 26,
-	maType = 0,
+	maType = 1,
 	na.bridge = FALSE,
 	...
 ) {
@@ -101,7 +101,7 @@ absolute_price_oscillator.data.frame <- function(
 	cols,
 	fastPeriod = 12,
 	slowPeriod = 26,
-	maType = 0,
+	maType = 1,
 	na.bridge = FALSE,
 	...
 ) {
@@ -127,7 +127,7 @@ absolute_price_oscillator.matrix <- function(
 	cols,
 	fastPeriod = 12,
 	slowPeriod = 26,
-	maType = 0,
+	maType = 1,
 	na.bridge = FALSE,
 	...
 ) {
@@ -148,7 +148,7 @@ APO_lookback <- absolutePriceOscillator_lookback <- absolute_price_oscillator_lo
 	cols,
 	fastPeriod = 12,
 	slowPeriod = 26,
-	maType = 0,
+	maType = 1,
 	na.bridge = FALSE,
 	...
 ) {
@@ -169,7 +169,7 @@ absolute_price_oscillator.numeric <- function(
 	cols,
 	fastPeriod = 12,
 	slowPeriod = 26,
-	maType = 0,
+	maType = 1,
 	na.bridge = FALSE,
 	...
 ) {
@@ -208,7 +208,7 @@ absolute_price_oscillator.plotly <- function(
 	cols,
 	fastPeriod = 12,
 	slowPeriod = 26,
-	maType = 0,
+	maType = 1,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -313,7 +313,7 @@ absolute_price_oscillator.ggplot <- function(
 	cols,
 	fastPeriod = 12,
 	slowPeriod = 26,
-	maType = 0,
+	maType = 1,
 	na.bridge = FALSE,
 	title,
 	## splice:optional-ggplot:start

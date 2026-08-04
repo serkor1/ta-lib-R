@@ -12,11 +12,11 @@
 ## splice:documentation:end
 #'
 #' @template description
-#' @param fastPeriod ([integer]). Number of period for the fast MA. Defaults to `12`.
+#' @param fastPeriod ([integer]). Period of the fast MA. Defaults to `12`.
 #' @param fastMa ([integer]). Type of Moving Average for fast MA. Defaults to `0` ([SMA]). Can also be passed as talib::SMA.
-#' @param slowPeriod ([integer]). Number of period for the slow MA. Defaults to `26`.
+#' @param slowPeriod ([integer]). Period of the slow MA. Defaults to `26`.
 #' @param slowMa ([integer]). Type of Moving Average for slow MA. Defaults to `0` ([SMA]). Can also be passed as talib::SMA.
-#' @param signalPeriod ([integer]). Smoothing for the signal line (nb of period). Defaults to `9`.
+#' @param signalPeriod ([integer]). Smoothing for the signal line (period length). Defaults to `9`.
 #' @param signalMa ([integer]). Type of Moving Average for signal line. Defaults to `0` ([SMA]). Can also be passed as talib::SMA.
 #' @template returns
 extended_moving_average_convergence_divergence <- function(
