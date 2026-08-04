@@ -32,6 +32,7 @@
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/break_away.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/chaikin_accumulation_distribution_line.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/chaikin_accumulation_distribution_oscillator.html</loc></url>
+<url><loc>https://serkor1.github.io/ta-lib-R/reference/chaikin_money_flow.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/chande_momentum_oscillator.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/chart.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/chart_themes.html</loc></url>
@@ -65,6 +66,7 @@
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/hikakke.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/hikakke_mod.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/homing_pigeon.html</loc></url>
+<url><loc>https://serkor1.github.io/ta-lib-R/reference/hull_moving_average.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/in_neck.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/index.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/indicator.html</loc></url>
@@ -91,15 +93,18 @@
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/morning_doji_star.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/morning_star.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/moving_average_convergence_divergence.html</loc></url>
+<url><loc>https://serkor1.github.io/ta-lib-R/reference/negative_volume_index.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/normalized_average_true_range.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/on_balance_volume.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/on_neck.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/parabolic_stop_and_reverse.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/percentage_price_oscillator.html</loc></url>
+<url><loc>https://serkor1.github.io/ta-lib-R/reference/percentage_volume_oscillator.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/phasor_components.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/piercing.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/plus_directional_indicator.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/plus_directional_movement.html</loc></url>
+<url><loc>https://serkor1.github.io/ta-lib-R/reference/positive_volume_index.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/ratio_of_change.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/relative_strength_index.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/rickshaw_man.html</loc></url>
@@ -145,8 +150,10 @@
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/typical_price.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/ultimate_oscillator.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/unique_3_river.html</loc></url>
+<url><loc>https://serkor1.github.io/ta-lib-R/reference/unsmoothed_chande_momentum_oscillator.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/upside_gap_2_crows.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/variable_moving_average_period.html</loc></url>
+<url><loc>https://serkor1.github.io/ta-lib-R/reference/volume_weighted_moving_average.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/weighted_close_price.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/weighted_moving_average.html</loc></url>
 <url><loc>https://serkor1.github.io/ta-lib-R/reference/williams_oscillator.html</loc></url>

@@ -189,6 +189,8 @@ Williams %R, and ADX.
   : 1-day Rate-Of-Change (ROC) of a Triple Smooth EMA
 - [`ultimate_oscillator()`](https://serkor1.github.io/ta-lib-R/reference/ultimate_oscillator.md)
   : Ultimate Oscillator
+- [`unsmoothed_chande_momentum_oscillator()`](https://serkor1.github.io/ta-lib-R/reference/unsmoothed_chande_momentum_oscillator.md)
+  : Chande Momentum Oscillator (Unsmoothed)
 - [`williams_oscillator()`](https://serkor1.github.io/ta-lib-R/reference/williams_oscillator.md)
   : Williams' %R
 
@@ -208,6 +210,8 @@ trend-following overlays.
   : Exponential Moving Average
 - [`extended_parabolic_stop_and_reverse()`](https://serkor1.github.io/ta-lib-R/reference/extended_parabolic_stop_and_reverse.md)
   : Parabolic SAR - Extended
+- [`hull_moving_average()`](https://serkor1.github.io/ta-lib-R/reference/hull_moving_average.md)
+  : Hull Moving Average
 - [`kaufman_adaptive_moving_average()`](https://serkor1.github.io/ta-lib-R/reference/kaufman_adaptive_moving_average.md)
   : Kaufman Adaptive Moving Average
 - [`mesa_adaptive_moving_average()`](https://serkor1.github.io/ta-lib-R/reference/mesa_adaptive_moving_average.md)
@@ -230,6 +234,8 @@ trend-following overlays.
   : Triple Exponential Moving Average
 - [`variable_moving_average_period()`](https://serkor1.github.io/ta-lib-R/reference/variable_moving_average_period.md)
   : Moving average with variable period
+- [`volume_weighted_moving_average()`](https://serkor1.github.io/ta-lib-R/reference/volume_weighted_moving_average.md)
+  : Volume Weighted Moving Average
 - [`weighted_moving_average()`](https://serkor1.github.io/ta-lib-R/reference/weighted_moving_average.md)
   : Weighted Moving Average
 
@@ -259,8 +265,16 @@ Includes On-Balance Volume (OBV), Chaikin A/D Line, and A/D Oscillator.
   : Chaikin A/D Line
 - [`chaikin_accumulation_distribution_oscillator()`](https://serkor1.github.io/ta-lib-R/reference/chaikin_accumulation_distribution_oscillator.md)
   : Chaikin A/D Oscillator
+- [`chaikin_money_flow()`](https://serkor1.github.io/ta-lib-R/reference/chaikin_money_flow.md)
+  : Chaikin Money Flow
+- [`negative_volume_index()`](https://serkor1.github.io/ta-lib-R/reference/negative_volume_index.md)
+  : Negative Volume Index
 - [`on_balance_volume()`](https://serkor1.github.io/ta-lib-R/reference/on_balance_volume.md)
   : On Balance Volume
+- [`percentage_volume_oscillator()`](https://serkor1.github.io/ta-lib-R/reference/percentage_volume_oscillator.md)
+  : Percentage Volume Oscillator
+- [`positive_volume_index()`](https://serkor1.github.io/ta-lib-R/reference/positive_volume_index.md)
+  : Positive Volume Index
 - [`trading_volume()`](https://serkor1.github.io/ta-lib-R/reference/trading_volume.md)
   : Trading Volume
 

@@ -43,5 +43,5 @@ talib::lookback(
   talib::bollinger_bands,
  x = talib::BTC
 )
-#> [1] 4
+#> [1] 19
 ```
