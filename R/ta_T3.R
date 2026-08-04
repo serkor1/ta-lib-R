@@ -213,6 +213,10 @@ t3_exponential_moving_average.numeric <- function(
 		warning("'cols' is passed but is unused for vectors.")
 	}
 
+	if (...length()) {
+		warning("'...' is passed but is unused for vectors.")
+	}
+
 	## pass to 'C' directly
 	## with the input vector
 	x <- .Call(
@@ -226,6 +230,7 @@ t3_exponential_moving_average.numeric <- function(
 	if (dim(x)[2] == 1L) {
 		dim(x) <- NULL
 	}
+	class(x) <- NULL
 
 	x
 }

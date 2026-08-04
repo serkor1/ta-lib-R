@@ -250,6 +250,10 @@ extended_moving_average_convergence_divergence.numeric <- function(
 		warning("'cols' is passed but is unused for vectors.")
 	}
 
+	if (...length()) {
+		warning("'...' is passed but is unused for vectors.")
+	}
+
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
@@ -267,6 +271,7 @@ extended_moving_average_convergence_divergence.numeric <- function(
 	if (dim(x)[2] == 1L) {
 		dim(x) <- NULL
 	}
+	class(x) <- NULL
 
 	x
 }
