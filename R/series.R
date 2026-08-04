@@ -278,55 +278,110 @@ series.xts <- function(
 		"ta_series"
 	)
 
-	## fast-track to returning values
-	## if the 'x' is correctly just one column
-	if (NCOL(x) == 1L && length(all.vars(formula.default)) == 1L) {
-		return(x)
-	}
-
-	## assert correctness of the passed
-	## formulas
+	## fast-track univariate input: a single-column <xts>
+	## is consumed as-is when the indicator expects a single
+	## series, regardless of its column name
 	if (missing(formula)) {
-		## the core assumption is that the default
-		## formula never matches the actual names of
-		## the passed <xts> because it returns as
-		## TICKER.Open, TICKER.High, ..., TICKER.Adjusted
-		##
-		## So the first step is to convert the default formula
-		## to to title case
-		formula.default <- stats::reformulate(
-			as.title_case(
-				grep(
-					pattern = paste(all.vars(formula.default), collapse = "|"),
-					x = names(x),
-					value = TRUE,
-					ignore.case = TRUE
-				)
-			)
-		)
+		if (NCOL(x) == 1L && length(all.vars(formula.default)) == 1L) {
+			return(x)
+		}
+
 		## if the formula is not passed
 		## it should be replaced by the default
 		formula <- formula.default
 	}
 
-	## assert that columns exists
-	## and emit message if not
-	assert_column_names(
-		formula = formula,
-		available_variables = names(x)
+	if (...length()) {
+		warning(
+			"'...' is passed but is unused for <xts>.",
+			call. = FALSE
+		)
+	}
+
+	## an explicit formula must cover at least the variables
+	## expected by the indicator's default. A longer formula is
+	## allowed - downstream code only consumes what it needs.
+	formula_length <- length(all.vars(formula))
+	default_length <- length(all.vars(formula.default))
+
+	assert(
+		x = formula_length >= default_length,
+		call = sys.call(sys.parent()),
+		paste0("Expected 'cols' length to be ", default_length, "."),
+		paste0("Got length ", formula_length, "."),
+		paste0(
+			"Uses ",
+			paste0("'", all.vars(formula.default), "'", collapse = ", "),
+			" by default."
+		)
 	)
 
-	## extract all matching column
-	## names
-	##
-	## NOTE: This step is not necessary if the
-	##       cols are not passed as its already been
-	##       identified an asserted
-	identified_columns <- grep(
-		pattern = paste(all.vars(formula), collapse = "|"),
-		x = names(x),
-		value = TRUE
+	passed_variables <- all.vars(formula)
+	available_variables <- colnames(x)
+
+	lowered_passed <- tolower(passed_variables)
+	lowered_available <- tolower(available_variables)
+
+	## match matrix: one row per formula variable, one column
+	## per <xts> column. Exact name matches win over
+	## quantmod-style suffix matches (close -> TICKER.Close) so
+	## a plain 'Close' column is preferred over 'Adj.Close';
+	## columns are resolved in formula order because the C layer
+	## consumes them positionally
+	exact_hits <- outer(
+		lowered_passed,
+		lowered_available,
+		`==`
 	)
 
-	return(x[[match(identified_columns, names(x))]])
+	suffix_hits <- outer(
+		paste0(".", lowered_passed),
+		lowered_available,
+		function(suffix, name) endsWith(name, suffix)
+	)
+
+	suffix_hits[rowSums(exact_hits) > 0L, ] <- FALSE
+
+	hits <- exact_hits | suffix_hits
+	matches <- rowSums(hits)
+
+	assert(
+		x = all(matches > 0L),
+		call = sys.call(sys.parent()),
+		paste(
+			"Expected to find columns",
+			paste0("'", passed_variables, "'", collapse = ", ")
+		),
+		paste0(
+			"available columns: ",
+			paste0("'", available_variables, "'", collapse = ", ")
+		)
+	)
+
+	assert(
+		x = all(matches == 1L),
+		call = sys.call(sys.parent()),
+		paste(
+			"Ambiguous columns",
+			paste0("'", passed_variables[matches > 1L], "'", collapse = ", "),
+			"."
+		),
+		paste0(
+			"Matches: ",
+			paste0(
+				"'",
+				available_variables[
+					colSums(hits[matches > 1L, , drop = FALSE]) > 0L
+				],
+				"'",
+				collapse = ", "
+			),
+			"."
+		)
+	)
+
+	## the single TRUE per row is the resolved column
+	identified_columns <- max.col(hits, ties.method = "first")
+
+	x[, identified_columns, drop = FALSE]
 }
