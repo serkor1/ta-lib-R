@@ -191,7 +191,14 @@ trading_volume.numeric <- function(
 		C_impl_ta_VOLUME,
 		## splice:numeric:start
 		as.double(x),
-		maType,
+		lapply(
+			maType,
+			function(x) {
+				as.integer(
+					x
+				)
+			}
+		),
 		## splice:numeric:end
 		as.logical(na.bridge)
 	)
