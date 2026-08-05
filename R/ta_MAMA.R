@@ -23,10 +23,10 @@
 #' @template returns
 mesa_adaptive_moving_average <- function(
 	x,
-	cols,
 	timePeriod = 30,
 	fastLimit = 0.5,
 	slowLimit = 0.05,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -83,10 +83,10 @@ mesaAdaptiveMovingAverage <- mesa_adaptive_moving_average
 #' @export
 mesa_adaptive_moving_average.default <- function(
 	x,
-	cols,
 	timePeriod = 30,
 	fastLimit = 0.5,
 	slowLimit = 0.05,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -132,20 +132,20 @@ mesa_adaptive_moving_average.default <- function(
 #' @export
 mesa_adaptive_moving_average.data.frame <- function(
 	x,
-	cols,
 	timePeriod = 30,
 	fastLimit = 0.5,
 	slowLimit = 0.05,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
 	as.data.frame(
 		mesa_adaptive_moving_average.default(
 			x = x,
-			cols = cols,
 			timePeriod = timePeriod,
 			fastLimit = fastLimit,
 			slowLimit = slowLimit,
+			cols = cols,
 			na.bridge = na.bridge,
 			...
 		)
@@ -158,20 +158,20 @@ mesa_adaptive_moving_average.data.frame <- function(
 #' @export
 mesa_adaptive_moving_average.matrix <- function(
 	x,
-	cols,
 	timePeriod = 30,
 	fastLimit = 0.5,
 	slowLimit = 0.05,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
 	as.matrix(
 		mesa_adaptive_moving_average.default(
 			x = x,
-			cols = cols,
 			timePeriod = timePeriod,
 			fastLimit = fastLimit,
 			slowLimit = slowLimit,
+			cols = cols,
 			na.bridge = na.bridge,
 			...
 		)
@@ -184,10 +184,10 @@ mesa_adaptive_moving_average.matrix <- function(
 #' @export
 mesa_adaptive_moving_average.xts <- function(
 	x,
-	cols,
 	timePeriod = 30,
 	fastLimit = 0.5,
 	slowLimit = 0.05,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -196,10 +196,10 @@ mesa_adaptive_moving_average.xts <- function(
 	as.xts(
 		mesa_adaptive_moving_average.default(
 			x = x,
-			cols = cols,
 			timePeriod = timePeriod,
 			fastLimit = fastLimit,
 			slowLimit = slowLimit,
+			cols = cols,
 			na.bridge = na.bridge,
 			...
 		)
@@ -213,10 +213,10 @@ mesa_adaptive_moving_average.xts <- function(
 #' @export
 mesa_adaptive_moving_average.numeric <- function(
 	x,
-	cols,
 	timePeriod = 30,
 	fastLimit = 0.5,
 	slowLimit = 0.05,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -253,10 +253,10 @@ mesa_adaptive_moving_average.numeric <- function(
 #' @usage NULL
 MAMA_lookback <- mesaAdaptiveMovingAverage_lookback <- mesa_adaptive_moving_average_lookback <- function(
 	x,
-	cols,
 	timePeriod = 30,
 	fastLimit = 0.5,
 	slowLimit = 0.05,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -267,17 +267,16 @@ MAMA_lookback <- mesaAdaptiveMovingAverage_lookback <- mesa_adaptive_moving_aver
 	)
 }
 
-
 #' @usage NULL
 #' @aliases mesa_adaptive_moving_average
 #'
 #' @export
 mesa_adaptive_moving_average.plotly <- function(
 	x,
-	cols,
 	timePeriod = 30,
 	fastLimit = 0.5,
 	slowLimit = 0.05,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -348,10 +347,10 @@ mesa_adaptive_moving_average.plotly <- function(
 #' @export
 mesa_adaptive_moving_average.ggplot <- function(
 	x,
-	cols,
 	timePeriod = 30,
 	fastLimit = 0.5,
 	slowLimit = 0.05,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {

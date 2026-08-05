@@ -18,12 +18,13 @@
 #' indicators that supports various Moving Average specifications.
 #'
 #' @template description
-#'
+#' @param volume ([numeric]). The volume series. Defaults to the 'volume' column of the 'cols' selection.
 #' @template returns
 volume_weighted_moving_average <- function(
 	x,
-	cols,
+	volume,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -70,8 +71,9 @@ volumeWeightedMovingAverage <- volume_weighted_moving_average
 #' @export
 volume_weighted_moving_average.default <- function(
 	x,
-	cols,
+	volume,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -85,7 +87,7 @@ volume_weighted_moving_average.default <- function(
 	## from input
 	constructed_series <- series(
 		x = x,
-		formula.default = ~ close + volume,
+		formula.default = if (missing(volume)) ~ close + volume else ~close,
 		formula = cols,
 		...
 	)
@@ -94,12 +96,19 @@ volume_weighted_moving_average.default <- function(
 	## for later attachment
 	x_names <- index(constructed_series)
 
+	## fall back to the formula
+	## column when 'volume' is
+	## not explicitly passed
+	if (missing(volume)) {
+		volume <- constructed_series[[2]]
+	}
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_VWMA,
 		constructed_series[[1]],
-		constructed_series[[2]],
+		as.double(volume),
 		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
@@ -117,16 +126,18 @@ volume_weighted_moving_average.default <- function(
 #' @export
 volume_weighted_moving_average.data.frame <- function(
 	x,
-	cols,
+	volume,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
 	as.data.frame(
 		volume_weighted_moving_average.default(
 			x = x,
-			cols = cols,
+			volume = volume,
 			timePeriod = timePeriod,
+			cols = cols,
 			na.bridge = na.bridge,
 			...
 		)
@@ -139,16 +150,18 @@ volume_weighted_moving_average.data.frame <- function(
 #' @export
 volume_weighted_moving_average.matrix <- function(
 	x,
-	cols,
+	volume,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
 	as.matrix(
 		volume_weighted_moving_average.default(
 			x = x,
-			cols = cols,
+			volume = volume,
 			timePeriod = timePeriod,
+			cols = cols,
 			na.bridge = na.bridge,
 			...
 		)
@@ -161,8 +174,9 @@ volume_weighted_moving_average.matrix <- function(
 #' @export
 volume_weighted_moving_average.xts <- function(
 	x,
-	cols,
+	volume,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -171,8 +185,9 @@ volume_weighted_moving_average.xts <- function(
 	as.xts(
 		volume_weighted_moving_average.default(
 			x = x,
-			cols = cols,
+			volume = volume,
 			timePeriod = timePeriod,
+			cols = cols,
 			na.bridge = na.bridge,
 			...
 		)
@@ -186,8 +201,9 @@ volume_weighted_moving_average.xts <- function(
 #' @export
 volume_weighted_moving_average.numeric <- function(
 	x,
-	cols,
+	volume,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -208,6 +224,7 @@ volume_weighted_moving_average.numeric <- function(
 	x <- .Call(
 		C_impl_ta_VWMA,
 		as.double(x),
+		as.double(volume),
 		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
@@ -223,8 +240,9 @@ volume_weighted_moving_average.numeric <- function(
 #' @usage NULL
 VWMA_lookback <- volumeWeightedMovingAverage_lookback <- volume_weighted_moving_average_lookback <- function(
 	x,
-	cols,
+	volume,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -234,15 +252,15 @@ VWMA_lookback <- volumeWeightedMovingAverage_lookback <- volume_weighted_moving_
 	)
 }
 
-
 #' @usage NULL
 #' @aliases volume_weighted_moving_average
 #'
 #' @export
 volume_weighted_moving_average.plotly <- function(
 	x,
-	cols,
+	volume,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -261,7 +279,7 @@ volume_weighted_moving_average.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		formula.default = ~ close + volume,
+		formula.default = if (missing(volume)) ~ close + volume else ~close,
 		...
 	)
 
@@ -269,6 +287,7 @@ volume_weighted_moving_average.plotly <- function(
 	## from the series
 	constructed_indicator <- volume_weighted_moving_average(
 		x = constructed_series,
+		volume = volume,
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
@@ -311,8 +330,9 @@ volume_weighted_moving_average.plotly <- function(
 #' @export
 volume_weighted_moving_average.ggplot <- function(
 	x,
-	cols,
+	volume,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -330,7 +350,7 @@ volume_weighted_moving_average.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		formula.default = ~ close + volume,
+		formula.default = if (missing(volume)) ~ close + volume else ~close,
 		...
 	)
 
@@ -338,6 +358,7 @@ volume_weighted_moving_average.ggplot <- function(
 	## from the series
 	constructed_indicator <- volume_weighted_moving_average(
 		x = constructed_series,
+		volume = volume,
 		cols = rebuild_formula(
 			names(constructed_series)
 		),

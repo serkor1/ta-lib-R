@@ -22,9 +22,9 @@
 #' @template returns
 t3_exponential_moving_average <- function(
 	x,
-	cols,
 	timePeriod = 5,
 	volumeFactor = 0.7,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -76,9 +76,9 @@ t3ExponentialMovingAverage <- t3_exponential_moving_average
 #' @export
 t3_exponential_moving_average.default <- function(
 	x,
-	cols,
 	timePeriod = 5,
 	volumeFactor = 0.7,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -124,18 +124,18 @@ t3_exponential_moving_average.default <- function(
 #' @export
 t3_exponential_moving_average.data.frame <- function(
 	x,
-	cols,
 	timePeriod = 5,
 	volumeFactor = 0.7,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
 	as.data.frame(
 		t3_exponential_moving_average.default(
 			x = x,
-			cols = cols,
 			timePeriod = timePeriod,
 			volumeFactor = volumeFactor,
+			cols = cols,
 			na.bridge = na.bridge,
 			...
 		)
@@ -148,18 +148,18 @@ t3_exponential_moving_average.data.frame <- function(
 #' @export
 t3_exponential_moving_average.matrix <- function(
 	x,
-	cols,
 	timePeriod = 5,
 	volumeFactor = 0.7,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
 	as.matrix(
 		t3_exponential_moving_average.default(
 			x = x,
-			cols = cols,
 			timePeriod = timePeriod,
 			volumeFactor = volumeFactor,
+			cols = cols,
 			na.bridge = na.bridge,
 			...
 		)
@@ -172,9 +172,9 @@ t3_exponential_moving_average.matrix <- function(
 #' @export
 t3_exponential_moving_average.xts <- function(
 	x,
-	cols,
 	timePeriod = 5,
 	volumeFactor = 0.7,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -183,9 +183,9 @@ t3_exponential_moving_average.xts <- function(
 	as.xts(
 		t3_exponential_moving_average.default(
 			x = x,
-			cols = cols,
 			timePeriod = timePeriod,
 			volumeFactor = volumeFactor,
+			cols = cols,
 			na.bridge = na.bridge,
 			...
 		)
@@ -199,9 +199,9 @@ t3_exponential_moving_average.xts <- function(
 #' @export
 t3_exponential_moving_average.numeric <- function(
 	x,
-	cols,
 	timePeriod = 5,
 	volumeFactor = 0.7,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -238,9 +238,9 @@ t3_exponential_moving_average.numeric <- function(
 #' @usage NULL
 T3_lookback <- t3ExponentialMovingAverage_lookback <- t3_exponential_moving_average_lookback <- function(
 	x,
-	cols,
 	timePeriod = 5,
 	volumeFactor = 0.7,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -251,16 +251,15 @@ T3_lookback <- t3ExponentialMovingAverage_lookback <- t3_exponential_moving_aver
 	)
 }
 
-
 #' @usage NULL
 #' @aliases t3_exponential_moving_average
 #'
 #' @export
 t3_exponential_moving_average.plotly <- function(
 	x,
-	cols,
 	timePeriod = 5,
 	volumeFactor = 0.7,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -330,9 +329,9 @@ t3_exponential_moving_average.plotly <- function(
 #' @export
 t3_exponential_moving_average.ggplot <- function(
 	x,
-	cols,
 	timePeriod = 5,
 	volumeFactor = 0.7,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {

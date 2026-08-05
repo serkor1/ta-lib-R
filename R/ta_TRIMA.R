@@ -22,8 +22,8 @@
 #' @template returns
 triangular_moving_average <- function(
 	x,
-	cols,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -70,8 +70,8 @@ triangularMovingAverage <- triangular_moving_average
 #' @export
 triangular_moving_average.default <- function(
 	x,
-	cols,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -116,16 +116,16 @@ triangular_moving_average.default <- function(
 #' @export
 triangular_moving_average.data.frame <- function(
 	x,
-	cols,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
 	as.data.frame(
 		triangular_moving_average.default(
 			x = x,
-			cols = cols,
 			timePeriod = timePeriod,
+			cols = cols,
 			na.bridge = na.bridge,
 			...
 		)
@@ -138,16 +138,16 @@ triangular_moving_average.data.frame <- function(
 #' @export
 triangular_moving_average.matrix <- function(
 	x,
-	cols,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
 	as.matrix(
 		triangular_moving_average.default(
 			x = x,
-			cols = cols,
 			timePeriod = timePeriod,
+			cols = cols,
 			na.bridge = na.bridge,
 			...
 		)
@@ -160,8 +160,8 @@ triangular_moving_average.matrix <- function(
 #' @export
 triangular_moving_average.xts <- function(
 	x,
-	cols,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -170,8 +170,8 @@ triangular_moving_average.xts <- function(
 	as.xts(
 		triangular_moving_average.default(
 			x = x,
-			cols = cols,
 			timePeriod = timePeriod,
+			cols = cols,
 			na.bridge = na.bridge,
 			...
 		)
@@ -185,8 +185,8 @@ triangular_moving_average.xts <- function(
 #' @export
 triangular_moving_average.numeric <- function(
 	x,
-	cols,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -222,8 +222,8 @@ triangular_moving_average.numeric <- function(
 #' @usage NULL
 TRIMA_lookback <- triangularMovingAverage_lookback <- triangular_moving_average_lookback <- function(
 	x,
-	cols,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -233,15 +233,14 @@ TRIMA_lookback <- triangularMovingAverage_lookback <- triangular_moving_average_
 	)
 }
 
-
 #' @usage NULL
 #' @aliases triangular_moving_average
 #'
 #' @export
 triangular_moving_average.plotly <- function(
 	x,
-	cols,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -310,8 +309,8 @@ triangular_moving_average.plotly <- function(
 #' @export
 triangular_moving_average.ggplot <- function(
 	x,
-	cols,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {

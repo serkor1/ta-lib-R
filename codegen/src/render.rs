@@ -155,7 +155,11 @@ pub fn render_camel(template: &str, keep: bool) -> String {
 ///     the chart methods from 'chart_candlestick_template.R'
 ///   - moving averages (see MOVING_AVERAGES): the spec-mode
 ///     'moving_average_template.R' (.numeric baked in) with the
-///     chart methods from 'chart_moving_average_template.R'
+///     chart methods from 'chart_moving_average_template.R'.
+///     MAs order their formals (x, extra series, options, cols,
+///     na.bridge, ...) — extra input series beyond the first
+///     (VWMA: volume) are formals of every method, falling back
+///     to their formula column when not explicitly passed
 ///   - rolling statistics (GroupId 'Statistic Functions'):
 ///     'rolling_template.R', not plotable, .numeric baked in
 ///   - everything else: 'indicator_template.R'; univariate
@@ -207,15 +211,30 @@ pub fn render_indicator(f: &MetaData, t: &Templates) -> String {
     // by the man-roxygen templates ('description.R' and
     // 'rolling_description.R'). An empty result renders a blank
     // roxygen line so the block stays contiguous
+    // the extra input series of the moving averages (VWMA:
+    // volume) are formals of the generic and carry their own
+    // @param line ahead of the optional inputs
+    let ma_extra: &[String] = if ma_index.is_some() {
+        &f.input[1..]
+    } else {
+        &[]
+    };
+
     let param_docs = {
-        let docs = f
-            .passthrough
+        let docs = ma_extra
+            .iter()
+            .map(|s| {
+                format!(
+                    "#' @param {s} ([numeric]). The {s} series. Defaults to the '{s}' column of the 'cols' selection."
+                )
+            })
+            .chain(f.passthrough
             .iter()
             .map(|p| {
                 format!(
                     "#' @param {p} ([numeric]). Vector of periods, one per observation of the input series."
                 )
-            })
+            }))
             .chain(formals
             .iter()
             .filter(|a| a.name != "timePeriod" && a.name != "penetration")
@@ -338,15 +357,14 @@ pub fn render_indicator(f: &MetaData, t: &Templates) -> String {
         .join(",\n\t\t");
 
     // the raw-vector series of the numeric/rolling path: the
-    // bivariate rolling statistics (BETA, CORREL: inReal0/inReal1,
-    // mined as x/y) take a pair of vectors, everything else a
-    // single 'x'. ${SERIES}/${PSERIES} render the formals and the
-    // forwarded arguments, one per line with a trailing comma
-    let series: &[&str] = if f.input == ["x", "y"] {
-        &["x", "y"]
-    } else {
-        &["x"]
-    };
+    // first input series is the dispatching 'x', every further
+    // input keeps its mined name as a required formal (BETA,
+    // CORREL: y; VWMA: volume). ${SERIES}/${PSERIES} render the
+    // formals and the forwarded arguments, one per line with a
+    // trailing comma
+    let series: Vec<String> = std::iter::once("x".to_string())
+        .chain(f.input.iter().skip(1).cloned())
+        .collect();
 
     let series_args = series
         .iter()
@@ -377,6 +395,60 @@ pub fn render_indicator(f: &MetaData, t: &Templates) -> String {
         .iter()
         .map(|s| format!("as.double({s})"))
         .chain(passthrough.iter().cloned())
+        .chain(coercions.iter().cloned())
+        .collect::<Vec<String>>()
+        .join(",\n\t\t");
+
+    // the extra input series of the moving averages beyond the
+    // dispatching 'x' (VWMA: volume): formals of the generic and
+    // every method, leading right after 'x', falling back to
+    // their formula column when not explicitly passed
+    let ma_series = series[1..]
+        .iter()
+        .map(|s| format!("{s},"))
+        .collect::<Vec<String>>()
+        .join("\n\t");
+
+    let ma_pseries = series[1..]
+        .iter()
+        .map(|s| format!("{s} = {s},"))
+        .collect::<Vec<String>>()
+        .join("\n\t\t\t");
+
+    // the default formula of the MA .default/chart methods: when
+    // every extra series is passed explicitly only the first
+    // column is selected, otherwise the full formula feeds the
+    // fallback
+    let ma_formula = if series.len() > 1 {
+        let cond = series[1..]
+            .iter()
+            .map(|s| format!("missing({s})"))
+            .collect::<Vec<String>>()
+            .join(" && ");
+
+        format!("if ({cond}) {formula} else ~{}", f.input[0])
+    } else {
+        formula.clone()
+    };
+
+    // the missing()-fallback of the MA .default: extra series
+    // not explicitly passed are taken from their formula column
+    let ma_fallback = series[1..]
+        .iter()
+        .enumerate()
+        .map(|(i, s)| {
+            format!(
+                "\n\t## fall back to the formula\n\t## column when '{s}' is\n\t## not explicitly passed\n\tif (missing({s})) {{\n\t\t{s} <- constructed_series[[{}]]\n\t}}\n",
+                i + 2
+            )
+        })
+        .collect::<String>();
+
+    // the .Call() arguments of the MA .default: the first series
+    // column, the coerced extra series and the coerced optional
+    // inputs
+    let ma_c_series = std::iter::once("constructed_series[[1]]".to_string())
+        .chain(series[1..].iter().map(|s| format!("as.double({s})")))
         .chain(coercions.iter().cloned())
         .collect::<Vec<String>>()
         .join(",\n\t\t");
@@ -424,6 +496,11 @@ pub fn render_indicator(f: &MetaData, t: &Templates) -> String {
             .replace("${C_SIGNATURE_LOOKBACK}", &c_lookback)
             .replace("${C_SIGNATURE}", &c_signature)
             .replace("${C_NUMERIC}", &c_numeric)
+            .replace("${MA_SERIES}", &ma_series)
+            .replace("${MA_PSERIES}", &ma_pseries)
+            .replace("${MA_FORMULA}", &ma_formula)
+            .replace("${MA_FALLBACK}", &ma_fallback)
+            .replace("${MA_C_SERIES}", &ma_c_series)
             .replace("${SERIES}", &series_args)
             .replace("${SERIES_GUARD}", &series_guard)
             .replace("${PSERIES}", &pseries)
@@ -837,6 +914,34 @@ tail
         assert!(sma.contains("label(\"SMA\", timePeriod)"));
         assert!(sma.contains("simple_moving_average.plotly <- function("));
         assert!(sma.contains("simple_moving_average.ggplot <- function("));
+        assert!(sma.contains("simple_moving_average.numeric <- function("));
+
+        // the MA formal ordering: x, extra series, options,
+        // cols, na.bridge
+        assert!(sma.contains("\tx,\n\ttimePeriod = 30,\n\tcols,\n\tna.bridge = FALSE,"));
+        assert!(sma.contains("formula.default = ~close,"));
+
+        // VWMA: volume is a formal of every method, coerced into
+        // the .Call() next to the price column, with the formula
+        // column as its fallback when not explicitly passed
+        let vwma = render("VWMA");
+        assert!(
+            vwma.contains("\tx,\n\tvolume,\n\ttimePeriod = 30,\n\tcols,\n\tna.bridge = FALSE,")
+        );
+        assert!(
+            vwma.contains("formula.default = if (missing(volume)) ~close + volume else ~close,")
+        );
+        assert!(
+            vwma.contains("if (missing(volume)) {\n\t\tvolume <- constructed_series[[2]]\n\t}")
+        );
+        assert!(vwma.contains(
+            "constructed_series[[1]],\n\t\tas.double(volume),\n\t\tas.integer(timePeriod)"
+        ));
+        assert!(vwma.contains("volume_weighted_moving_average.numeric <- function("));
+        assert!(vwma.contains("as.double(x),\n\t\tas.double(volume),\n\t\tas.integer(timePeriod)"));
+        assert!(vwma.contains(
+            "#' @param volume ([numeric]). The volume series. Defaults to the 'volume' column of the 'cols' selection."
+        ));
 
         // MAMA: the injected spec-only timePeriod is a formal and
         // a spec field but is absent from the .Call() arguments

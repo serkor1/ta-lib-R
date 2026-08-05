@@ -424,7 +424,7 @@ testthat::test_that(desc = '<numeric> methods', code = {
 	## check that the <numeric> method
 	## runs
 	x <- testthat::expect_no_condition(
-		${FUN}(BTC[[1]]${PASS_BTC})
+		${FUN}(BTC[[1]]${SERIES_BTC}${PASS_BTC})
 	)
 
 	target_length <- length(BTC[[1]])
@@ -485,12 +485,23 @@ pub fn render_test(f: &MetaData) -> String {
     let camel = camel_case_name(&f.indicator);
     let has_camel = camel != fun;
 
+    // extra input series beyond the first are required formals of
+    // the .numeric method (VWMA: volume), fed from the matching
+    // BTC column
+    let series_btc = f
+        .input
+        .iter()
+        .skip(1)
+        .map(|s| format!(", {s} = BTC[[\"{s}\"]]"))
+        .collect::<String>();
+
     let fill = |template: &str| {
         render_camel(template, has_camel)
             .replace("${FUN}", fun)
             .replace("${ALIAS}", &f.indicator)
             .replace("${CAMEL}", &camel)
             .replace("${FORMULA}", &f.default_formula())
+            .replace("${SERIES_BTC}", &series_btc)
             .replace("${PASS_SPY}", &pass("SPY"))
             .replace("${PASS_BTC}", &pass("BTC"))
             .replace("${PASS_ATOM}", &pass("ATOM"))
@@ -510,8 +521,9 @@ pub fn render_test(f: &MetaData) -> String {
         out.push_str(&fill(GGPLOT_TESTS));
     }
 
-    // univariate indicators carry a .numeric method
-    if f.input.len() == 1 {
+    // univariate indicators and moving averages carry a
+    // .numeric method
+    if f.input.len() == 1 || ma_type(&f.indicator).is_some() {
         out.push_str(&fill(NUMERIC_TESTS));
     }
 

@@ -22,8 +22,9 @@ ${PARAM_DOCS}
 #' @template returns
 ${FUN} <- function(
 	x,
-	cols,
+	${MA_SERIES}
 	${ARGS}
+	cols,
 	na.bridge = FALSE,
 	...) {
 
@@ -66,8 +67,9 @@ ${ALIAS} <- ${FUN}
 #' @export
 ${FUN}.default <- function(
 	x,
-	cols,
+	${MA_SERIES}
 	${ARGS}
+	cols,
 	na.bridge = FALSE,
 	...) {
 
@@ -81,7 +83,7 @@ ${FUN}.default <- function(
 	## from input
 	constructed_series <- series(
 		x = x,
-		formula.default = ${FORMULA},
+		formula.default = ${MA_FORMULA},
 		formula = cols,
 		...
 	)
@@ -89,12 +91,12 @@ ${FUN}.default <- function(
 	## extract rownames
 	## for later attachment
 	x_names <- index(constructed_series)
-
+${MA_FALLBACK}
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_${ALIAS},
-		${C_SIGNATURE},
+		${MA_C_SERIES},
 		as.logical(na.bridge)
 	)
 
@@ -111,16 +113,18 @@ ${FUN}.default <- function(
 #' @export
 ${FUN}.data.frame <- function(
 	x,
-	cols,
+	${MA_SERIES}
 	${ARGS}
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
 	as.data.frame(
 		${FUN}.default(
 			x = x,
-			cols = cols,
+			${MA_PSERIES}
 			${PARGS}
+			cols = cols,
 			na.bridge = na.bridge,
 			...
 		)
@@ -134,20 +138,22 @@ ${FUN}.data.frame <- function(
 #' @export
 ${FUN}.matrix <- function(
 	x,
-	cols,
+	${MA_SERIES}
 	${ARGS}
+	cols,
 	na.bridge = FALSE,
 	...) {
 as.matrix(
 ${FUN}.default(
 			x = x,
-			cols = cols ,
+			${MA_PSERIES}
 			${PARGS}
+			cols = cols,
 			na.bridge = na.bridge,
 			...
 		)
 )
-	
+
 }
 
 #' @usage NULL
@@ -156,8 +162,9 @@ ${FUN}.default(
 #' @export
 ${FUN}.xts <- function(
 	x,
-	cols,
+	${MA_SERIES}
 	${ARGS}
+	cols,
 	na.bridge = FALSE,
 	...) {
 
@@ -166,13 +173,14 @@ ${FUN}.xts <- function(
 		as.xts(
 			${FUN}.default(
 				x = x,
-				cols = cols,
+				${MA_PSERIES}
 				${PARGS}
+				cols = cols,
 				na.bridge = na.bridge,
 				...
 			)
 		)
-	
+
 }
 
 
@@ -182,8 +190,9 @@ ${FUN}.xts <- function(
 #' @export
 ${FUN}.numeric <- function(
 	x,
-	cols,
+	${MA_SERIES}
 	${ARGS}
+	cols,
 	na.bridge = FALSE,
 	...) {
 
@@ -218,8 +227,9 @@ ${FUN}.numeric <- function(
 #' @usage NULL
 ${ALIAS}_lookback <- ${CAMEL_LOOKBACK}${FUN}_lookback <- function(
 	x,
-	cols,
+	${MA_SERIES}
 	${ARGS}
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -228,4 +238,3 @@ ${ALIAS}_lookback <- ${CAMEL_LOOKBACK}${FUN}_lookback <- function(
 		C_impl_ta_${ALIAS}_lookback${C_SIGNATURE_LOOKBACK}
 	)
 }
-

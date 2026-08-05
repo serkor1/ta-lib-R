@@ -299,3 +299,26 @@ testthat::test_that(desc = '<ggplot>-methods for <matrix>', code = {
 		inherits(output, "gg") || inherits(output, "talib_chart")
 	)
 })
+
+## check that <numeric> methods runs without
+## issues and returns proper lengths
+testthat::test_that(desc = '<numeric> methods', code = {
+	## check that the <numeric> method
+	## runs
+	x <- testthat::expect_no_condition(
+		volume_weighted_moving_average(BTC[[1]], volume = BTC[["volume"]])
+	)
+
+	target_length <- length(BTC[[1]])
+
+	if (NCOL(x) == 1L) {
+		testthat::expect_true(is.double(x) || is.integer(x))
+		testthat::expect_false(is.matrix(x))
+		testthat::expect_false(inherits(x, "matrix"))
+		testthat::expect_equal(length(x), target_length)
+	} else {
+		testthat::expect_true(is.matrix(x))
+		testthat::expect_identical(class(x), c("matrix", "array"))
+		testthat::expect_equal(nrow(x), target_length)
+	}
+})

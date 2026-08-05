@@ -22,8 +22,8 @@
 #' @template returns
 hull_moving_average <- function(
 	x,
-	cols,
 	timePeriod = 20,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -70,8 +70,8 @@ hullMovingAverage <- hull_moving_average
 #' @export
 hull_moving_average.default <- function(
 	x,
-	cols,
 	timePeriod = 20,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -116,16 +116,16 @@ hull_moving_average.default <- function(
 #' @export
 hull_moving_average.data.frame <- function(
 	x,
-	cols,
 	timePeriod = 20,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
 	as.data.frame(
 		hull_moving_average.default(
 			x = x,
-			cols = cols,
 			timePeriod = timePeriod,
+			cols = cols,
 			na.bridge = na.bridge,
 			...
 		)
@@ -138,16 +138,16 @@ hull_moving_average.data.frame <- function(
 #' @export
 hull_moving_average.matrix <- function(
 	x,
-	cols,
 	timePeriod = 20,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
 	as.matrix(
 		hull_moving_average.default(
 			x = x,
-			cols = cols,
 			timePeriod = timePeriod,
+			cols = cols,
 			na.bridge = na.bridge,
 			...
 		)
@@ -160,8 +160,8 @@ hull_moving_average.matrix <- function(
 #' @export
 hull_moving_average.xts <- function(
 	x,
-	cols,
 	timePeriod = 20,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -170,8 +170,8 @@ hull_moving_average.xts <- function(
 	as.xts(
 		hull_moving_average.default(
 			x = x,
-			cols = cols,
 			timePeriod = timePeriod,
+			cols = cols,
 			na.bridge = na.bridge,
 			...
 		)
@@ -185,8 +185,8 @@ hull_moving_average.xts <- function(
 #' @export
 hull_moving_average.numeric <- function(
 	x,
-	cols,
 	timePeriod = 20,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -222,8 +222,8 @@ hull_moving_average.numeric <- function(
 #' @usage NULL
 HMA_lookback <- hullMovingAverage_lookback <- hull_moving_average_lookback <- function(
 	x,
-	cols,
 	timePeriod = 20,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -233,15 +233,14 @@ HMA_lookback <- hullMovingAverage_lookback <- hull_moving_average_lookback <- fu
 	)
 }
 
-
 #' @usage NULL
 #' @aliases hull_moving_average
 #'
 #' @export
 hull_moving_average.plotly <- function(
 	x,
-	cols,
 	timePeriod = 20,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -310,8 +309,8 @@ hull_moving_average.plotly <- function(
 #' @export
 hull_moving_average.ggplot <- function(
 	x,
-	cols,
 	timePeriod = 20,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {

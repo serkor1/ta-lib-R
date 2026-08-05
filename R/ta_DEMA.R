@@ -22,8 +22,8 @@
 #' @template returns
 double_exponential_moving_average <- function(
 	x,
-	cols,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -70,8 +70,8 @@ doubleExponentialMovingAverage <- double_exponential_moving_average
 #' @export
 double_exponential_moving_average.default <- function(
 	x,
-	cols,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -116,16 +116,16 @@ double_exponential_moving_average.default <- function(
 #' @export
 double_exponential_moving_average.data.frame <- function(
 	x,
-	cols,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
 	as.data.frame(
 		double_exponential_moving_average.default(
 			x = x,
-			cols = cols,
 			timePeriod = timePeriod,
+			cols = cols,
 			na.bridge = na.bridge,
 			...
 		)
@@ -138,16 +138,16 @@ double_exponential_moving_average.data.frame <- function(
 #' @export
 double_exponential_moving_average.matrix <- function(
 	x,
-	cols,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
 	as.matrix(
 		double_exponential_moving_average.default(
 			x = x,
-			cols = cols,
 			timePeriod = timePeriod,
+			cols = cols,
 			na.bridge = na.bridge,
 			...
 		)
@@ -160,8 +160,8 @@ double_exponential_moving_average.matrix <- function(
 #' @export
 double_exponential_moving_average.xts <- function(
 	x,
-	cols,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -170,8 +170,8 @@ double_exponential_moving_average.xts <- function(
 	as.xts(
 		double_exponential_moving_average.default(
 			x = x,
-			cols = cols,
 			timePeriod = timePeriod,
+			cols = cols,
 			na.bridge = na.bridge,
 			...
 		)
@@ -185,8 +185,8 @@ double_exponential_moving_average.xts <- function(
 #' @export
 double_exponential_moving_average.numeric <- function(
 	x,
-	cols,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -222,8 +222,8 @@ double_exponential_moving_average.numeric <- function(
 #' @usage NULL
 DEMA_lookback <- doubleExponentialMovingAverage_lookback <- double_exponential_moving_average_lookback <- function(
 	x,
-	cols,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -233,15 +233,14 @@ DEMA_lookback <- doubleExponentialMovingAverage_lookback <- double_exponential_m
 	)
 }
 
-
 #' @usage NULL
 #' @aliases double_exponential_moving_average
 #'
 #' @export
 double_exponential_moving_average.plotly <- function(
 	x,
-	cols,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -310,8 +309,8 @@ double_exponential_moving_average.plotly <- function(
 #' @export
 double_exponential_moving_average.ggplot <- function(
 	x,
-	cols,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {

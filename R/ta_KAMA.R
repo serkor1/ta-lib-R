@@ -22,8 +22,8 @@
 #' @template returns
 kaufman_adaptive_moving_average <- function(
 	x,
-	cols,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -70,8 +70,8 @@ kaufmanAdaptiveMovingAverage <- kaufman_adaptive_moving_average
 #' @export
 kaufman_adaptive_moving_average.default <- function(
 	x,
-	cols,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -116,16 +116,16 @@ kaufman_adaptive_moving_average.default <- function(
 #' @export
 kaufman_adaptive_moving_average.data.frame <- function(
 	x,
-	cols,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
 	as.data.frame(
 		kaufman_adaptive_moving_average.default(
 			x = x,
-			cols = cols,
 			timePeriod = timePeriod,
+			cols = cols,
 			na.bridge = na.bridge,
 			...
 		)
@@ -138,16 +138,16 @@ kaufman_adaptive_moving_average.data.frame <- function(
 #' @export
 kaufman_adaptive_moving_average.matrix <- function(
 	x,
-	cols,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
 	as.matrix(
 		kaufman_adaptive_moving_average.default(
 			x = x,
-			cols = cols,
 			timePeriod = timePeriod,
+			cols = cols,
 			na.bridge = na.bridge,
 			...
 		)
@@ -160,8 +160,8 @@ kaufman_adaptive_moving_average.matrix <- function(
 #' @export
 kaufman_adaptive_moving_average.xts <- function(
 	x,
-	cols,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -170,8 +170,8 @@ kaufman_adaptive_moving_average.xts <- function(
 	as.xts(
 		kaufman_adaptive_moving_average.default(
 			x = x,
-			cols = cols,
 			timePeriod = timePeriod,
+			cols = cols,
 			na.bridge = na.bridge,
 			...
 		)
@@ -185,8 +185,8 @@ kaufman_adaptive_moving_average.xts <- function(
 #' @export
 kaufman_adaptive_moving_average.numeric <- function(
 	x,
-	cols,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -222,8 +222,8 @@ kaufman_adaptive_moving_average.numeric <- function(
 #' @usage NULL
 KAMA_lookback <- kaufmanAdaptiveMovingAverage_lookback <- kaufman_adaptive_moving_average_lookback <- function(
 	x,
-	cols,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -233,15 +233,14 @@ KAMA_lookback <- kaufmanAdaptiveMovingAverage_lookback <- kaufman_adaptive_movin
 	)
 }
 
-
 #' @usage NULL
 #' @aliases kaufman_adaptive_moving_average
 #'
 #' @export
 kaufman_adaptive_moving_average.plotly <- function(
 	x,
-	cols,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {
@@ -310,8 +309,8 @@ kaufman_adaptive_moving_average.plotly <- function(
 #' @export
 kaufman_adaptive_moving_average.ggplot <- function(
 	x,
-	cols,
 	timePeriod = 30,
+	cols,
 	na.bridge = FALSE,
 	...
 ) {

@@ -4,8 +4,9 @@
 #' @export
 ${FUN}.${METHOD} <- function(
 	x,
-	cols,
+	${MA_SERIES}
 	${ARGS}
+	cols,
 	na.bridge = FALSE,
 	...) {
 
@@ -26,7 +27,7 @@ ${FUN}.${METHOD} <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		formula.default = ${FORMULA},
+		formula.default = ${MA_FORMULA},
 		...
 	)
 
@@ -34,6 +35,7 @@ ${FUN}.${METHOD} <- function(
 	## from the series
 	constructed_indicator <- ${FUN}(
 		x = constructed_series,
+		${MA_PSERIES}
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
