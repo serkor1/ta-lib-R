@@ -39,6 +39,13 @@ three_identical_crows <- function(
 #' @aliases three_identical_crows
 CDLIDENTICAL3CROWS <- three_identical_crows
 
+#' @export
+#' @usage NULL
+#' @rdname three_identical_crows
+#'
+#' @aliases three_identical_crows
+threeIdenticalCrows <- three_identical_crows
+
 #' @usage NULL
 #' @aliases three_identical_crows
 #'
@@ -70,35 +77,33 @@ three_identical_crows.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
+		x = x,
+		formula.default = ~ open + high + low + close,
+		formula = cols,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
-	x <- as.matrix(
-		.Call(
-			C_impl_ta_CDLIDENTICAL3CROWS,
-			constructed_series[[1]],
-			constructed_series[[2]],
-			constructed_series[[3]],
-			constructed_series[[4]],
-			normalize,
-			as.logical(na.bridge)
-		)
+	x <- .Call(
+		C_impl_ta_CDLIDENTICAL3CROWS,
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
+		normalize,
+		as.logical(na.bridge)
 	)
 
 	## add column name
 	colnames(x) <- "CDLIDENTICAL3CROWS"
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -114,8 +119,13 @@ three_identical_crows.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
-		NextMethod()
+	as.data.frame(
+		three_identical_crows.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +139,49 @@ three_identical_crows.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	as.matrix(
+		three_identical_crows.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases three_identical_crows
+#'
+#' @export
+three_identical_crows.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		three_identical_crows.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+
+#' @usage NULL
+CDLIDENTICAL3CROWS_lookback <- threeIdenticalCrows_lookback <- three_identical_crows_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_CDLIDENTICAL3CROWS_lookback
+	)
 }
 
 #' @usage NULL
@@ -157,7 +209,7 @@ three_identical_crows.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -167,7 +219,8 @@ three_identical_crows.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +242,6 @@ three_identical_crows.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases three_identical_crows
@@ -215,7 +267,7 @@ three_identical_crows.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -225,7 +277,8 @@ three_identical_crows.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

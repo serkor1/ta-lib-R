@@ -1,17 +1,18 @@
 #' @export
-#' @family Volatility Indicator
+#' @family Volatility Indicators
 #'
 #' @title True Range
 #' @templateVar .title True Range
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun true_range
-#' @templateVar .family Volatility Indicator
+#' @templateVar .family Volatility Indicators
 #' @templateVar .formula ~high + low + close
 #'
 ## splice:documentation:start
 ## splice:documentation:end
 #'
 #' @template description
+#'
 #' @template returns
 true_range <- function(
 	x,
@@ -28,6 +29,13 @@ true_range <- function(
 #'
 #' @aliases true_range
 TRANGE <- true_range
+
+#' @export
+#' @usage NULL
+#' @rdname true_range
+#'
+#' @aliases true_range
+trueRange <- true_range
 
 #' @usage NULL
 #' @aliases true_range
@@ -48,30 +56,28 @@ true_range.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low + close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low + close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_TRANGE,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		## splice:call:end
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -87,7 +93,7 @@ true_range.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		true_range.default(
 			x = x,
 			cols = cols,
@@ -107,14 +113,49 @@ true_range.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	true_range.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		true_range.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
+#' @usage NULL
+#' @aliases true_range
+#'
+#' @export
+true_range.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		true_range.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+TRANGE_lookback <- trueRange_lookback <- true_range_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_TRANGE_lookback
+	)
+}
 
 #' @usage NULL
 #' @aliases true_range
@@ -144,7 +185,7 @@ true_range.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 
@@ -198,7 +239,8 @@ true_range.plotly <- function(
 			}
 		),
 		data = constructed_indicator[, values_to_extract, drop = FALSE],
-		values_to_extract = values_to_extract
+		values_to_extract = values_to_extract,
+		name = get0(x = "name", ifnotfound = NULL)
 	)
 
 	state <- .chart_state()
@@ -215,9 +257,9 @@ true_range.ggplot <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -234,7 +276,7 @@ true_range.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 

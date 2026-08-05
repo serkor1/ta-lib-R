@@ -1,15 +1,14 @@
 #' @export
-#' @family Overlap Study
+#' @family Overlap Studies
 #'
 #' @title Triple Exponential Moving Average (T3)
 #' @templateVar .title Triple Exponential Moving Average (T3)
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun t3_exponential_moving_average
-#' @templateVar .family Overlap Study
+#' @templateVar .family Overlap Studies
 #' @templateVar .formula ~close
 #'
 ## splice:documentation:start
-#' @param vfactor ([double]). Volume Factor controlling the smoothing weight of the T3 curve. A [double] in `[0, 1]`: `0` collapses T3 to a standard triple EMA, larger values shift the curve closer to a DEMA. `0.7` by default, following Tillson (1998).
 ## splice:documentation:end
 #'
 #' @details
@@ -19,12 +18,13 @@
 #' indicators that supports various Moving Average specifications.
 #'
 #' @template description
+#' @param volumeFactor ([double]). Volume Factor. Defaults to `0.7`.
 #' @template returns
 t3_exponential_moving_average <- function(
 	x,
+	timePeriod = 5,
+	volumeFactor = 0.7,
 	cols,
-	n = 5,
-	vfactor = 0.7,
 	na.bridge = FALSE,
 	...
 ) {
@@ -35,14 +35,24 @@ t3_exponential_moving_average <- function(
 		## from call
 		x <- structure(
 			list(
-				n = if (missing(n)) 5L else as.integer(n),
-				vfactor = if (missing(vfactor)) 0.7 else as.double(vfactor),
+				timePeriod = if (missing(timePeriod)) {
+					5L
+				} else {
+					as.integer(timePeriod)
+				},
+				volumeFactor = if (missing(volumeFactor)) {
+					0.7
+				} else {
+					as.double(volumeFactor)
+				},
 				maType = 8L
-			)
+			),
+			class = "maType"
 		)
 
 		return(x)
 	}
+
 	UseMethod("t3_exponential_moving_average")
 }
 
@@ -53,15 +63,22 @@ t3_exponential_moving_average <- function(
 #' @aliases t3_exponential_moving_average
 T3 <- t3_exponential_moving_average
 
+#' @export
+#' @usage NULL
+#' @rdname t3_exponential_moving_average
+#'
+#' @aliases t3_exponential_moving_average
+t3ExponentialMovingAverage <- t3_exponential_moving_average
+
 #' @usage NULL
 #' @aliases t3_exponential_moving_average
 #'
 #' @export
 t3_exponential_moving_average.default <- function(
 	x,
+	timePeriod = 5,
+	volumeFactor = 0.7,
 	cols,
-	n = 5,
-	vfactor = 0.7,
 	na.bridge = FALSE,
 	...
 ) {
@@ -74,28 +91,28 @@ t3_exponential_moving_average.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~close,
-		data = x,
+		x = x,
+		formula.default = ~close,
+		formula = cols,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_T3,
-		as.double(constructed_series[[1]]),
-		as.integer(n),
-		as.double(vfactor),
+		constructed_series[[1]],
+		as.integer(timePeriod),
+		as.double(volumeFactor),
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -107,14 +124,21 @@ t3_exponential_moving_average.default <- function(
 #' @export
 t3_exponential_moving_average.data.frame <- function(
 	x,
+	timePeriod = 5,
+	volumeFactor = 0.7,
 	cols,
-	n = 5,
-	vfactor = 0.7,
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
-		NextMethod()
+	as.data.frame(
+		t3_exponential_moving_average.default(
+			x = x,
+			timePeriod = timePeriod,
+			volumeFactor = volumeFactor,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -124,22 +148,21 @@ t3_exponential_moving_average.data.frame <- function(
 #' @export
 t3_exponential_moving_average.matrix <- function(
 	x,
+	timePeriod = 5,
+	volumeFactor = 0.7,
 	cols,
-	n = 5,
-	vfactor = 0.7,
 	na.bridge = FALSE,
 	...
 ) {
-	## pass directly to
-	## t3_exponential_moving_average.default to avoid
-	## shenanigans with NextMethod()
-	t3_exponential_moving_average.default(
-		x = x,
-		cols = cols,
-		n = n,
-		vfactor = vfactor,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		t3_exponential_moving_average.default(
+			x = x,
+			timePeriod = timePeriod,
+			volumeFactor = volumeFactor,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -147,11 +170,38 @@ t3_exponential_moving_average.matrix <- function(
 #' @aliases t3_exponential_moving_average
 #'
 #' @export
+t3_exponential_moving_average.xts <- function(
+	x,
+	timePeriod = 5,
+	volumeFactor = 0.7,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		t3_exponential_moving_average.default(
+			x = x,
+			timePeriod = timePeriod,
+			volumeFactor = volumeFactor,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+
+#' @usage NULL
+#' @aliases t3_exponential_moving_average
+#'
+#' @export
 t3_exponential_moving_average.numeric <- function(
 	x,
+	timePeriod = 5,
+	volumeFactor = 0.7,
 	cols,
-	n = 5,
-	vfactor = 0.7,
 	na.bridge = FALSE,
 	...
 ) {
@@ -163,29 +213,42 @@ t3_exponential_moving_average.numeric <- function(
 		warning("'cols' is passed but is unused for vectors.")
 	}
 
+	if (...length()) {
+		warning("'...' is passed but is unused for vectors.")
+	}
+
 	## pass to 'C' directly
 	## with the input vector
 	x <- .Call(
 		C_impl_ta_T3,
 		as.double(x),
-		as.integer(n),
-		as.double(vfactor),
+		as.integer(timePeriod),
+		as.double(volumeFactor),
 		as.logical(na.bridge)
 	)
 
-	## check if it has 'dims'
-	## and convert to double if
-	## not to honor the 'type-safety'-esque
-	## approach
-	##
-	## NOTE: this adds a few ns overhead but
-	##       its a robust alternative to code it
-	##       manually. Any suggestions are welcome
-	if (is.null(dim(x))) {
-		x <- as.double(x)
+	if (dim(x)[2] == 1L) {
+		dim(x) <- NULL
 	}
+	class(x) <- NULL
 
 	x
+}
+
+#' @usage NULL
+T3_lookback <- t3ExponentialMovingAverage_lookback <- t3_exponential_moving_average_lookback <- function(
+	x,
+	timePeriod = 5,
+	volumeFactor = 0.7,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_T3_lookback,
+		as.integer(timePeriod),
+		as.double(volumeFactor)
+	)
 }
 
 #' @usage NULL
@@ -194,9 +257,9 @@ t3_exponential_moving_average.numeric <- function(
 #' @export
 t3_exponential_moving_average.plotly <- function(
 	x,
+	timePeriod = 5,
+	volumeFactor = 0.7,
 	cols,
-	n = 5,
-	vfactor = 0.7,
 	na.bridge = FALSE,
 	...
 ) {
@@ -215,7 +278,7 @@ t3_exponential_moving_average.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 
@@ -226,8 +289,9 @@ t3_exponential_moving_average.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
-		vfactor = vfactor
+		timePeriod = timePeriod,
+		volumeFactor = volumeFactor,
+		na.bridge = TRUE
 	)
 
 	## add conditional idx
@@ -250,14 +314,14 @@ t3_exponential_moving_average.plotly <- function(
 				)
 			)
 		),
-		name = label("T3", n, vfactor),
-		decorators = list()
+		name = label("T3", timePeriod, volumeFactor),
+		decorators = list(),
+		data = constructed_indicator
 	)
 	state[["main"]] <- plotly_object
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases t3_exponential_moving_average
@@ -265,9 +329,9 @@ t3_exponential_moving_average.plotly <- function(
 #' @export
 t3_exponential_moving_average.ggplot <- function(
 	x,
+	timePeriod = 5,
+	volumeFactor = 0.7,
 	cols,
-	n = 5,
-	vfactor = 0.7,
 	na.bridge = FALSE,
 	...
 ) {
@@ -285,7 +349,7 @@ t3_exponential_moving_average.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 
@@ -296,8 +360,9 @@ t3_exponential_moving_average.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
-		vfactor = vfactor
+		timePeriod = timePeriod,
+		volumeFactor = volumeFactor,
+		na.bridge = TRUE
 	)
 
 	## add conditional idx
@@ -314,7 +379,7 @@ t3_exponential_moving_average.ggplot <- function(
 				y = "T3"
 			)
 		),
-		name = label("T3", n, vfactor),
+		name = label("T3", timePeriod, volumeFactor),
 		decorators = list(),
 		data = constructed_indicator
 	)

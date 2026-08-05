@@ -1,22 +1,23 @@
 #' @export
-#' @family Momentum Indicator
+#' @family Momentum Indicators
 #'
 #' @title Minus Directional Indicator
 #' @templateVar .title Minus Directional Indicator
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun minus_directional_indicator
-#' @templateVar .family Momentum Indicator
+#' @templateVar .family Momentum Indicators
 #' @templateVar .formula ~high + low + close
 #'
 ## splice:documentation:start
 ## splice:documentation:end
 #'
 #' @template description
+#'
 #' @template returns
 minus_directional_indicator <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -30,6 +31,13 @@ minus_directional_indicator <- function(
 #' @aliases minus_directional_indicator
 MINUS_DI <- minus_directional_indicator
 
+#' @export
+#' @usage NULL
+#' @rdname minus_directional_indicator
+#'
+#' @aliases minus_directional_indicator
+minusDirectionalIndicator <- minus_directional_indicator
+
 #' @usage NULL
 #' @aliases minus_directional_indicator
 #'
@@ -37,7 +45,7 @@ MINUS_DI <- minus_directional_indicator
 minus_directional_indicator.default <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -50,31 +58,29 @@ minus_directional_indicator.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low + close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low + close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_MINUS_DI,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		as.integer(n),
-		## splice:call:end
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -87,15 +93,15 @@ minus_directional_indicator.default <- function(
 minus_directional_indicator.data.frame <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		minus_directional_indicator.default(
 			x = x,
 			cols = cols,
-			n = n,
+			timePeriod = timePeriod,
 			na.bridge = na.bridge,
 			...
 		)
@@ -109,19 +115,58 @@ minus_directional_indicator.data.frame <- function(
 minus_directional_indicator.matrix <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
-	minus_directional_indicator.default(
-		x = x,
-		cols = cols,
-		n = n,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		minus_directional_indicator.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
+#' @usage NULL
+#' @aliases minus_directional_indicator
+#'
+#' @export
+minus_directional_indicator.xts <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		minus_directional_indicator.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+MINUS_DI_lookback <- minusDirectionalIndicator_lookback <- minus_directional_indicator_lookback <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_MINUS_DI_lookback,
+		as.integer(timePeriod)
+	)
+}
 
 #' @usage NULL
 #' @aliases minus_directional_indicator
@@ -130,7 +175,7 @@ minus_directional_indicator.matrix <- function(
 minus_directional_indicator.plotly <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -152,7 +197,7 @@ minus_directional_indicator.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 
@@ -163,7 +208,7 @@ minus_directional_indicator.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -180,7 +225,7 @@ minus_directional_indicator.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	name <- sprintf("-DI(%d)", n)
+	name <- sprintf("-DI(%d)", timePeriod)
 
 	traces <- list(
 		list(y = ~MINUS_DI)
@@ -207,7 +252,8 @@ minus_directional_indicator.plotly <- function(
 			}
 		),
 		data = constructed_indicator[, values_to_extract, drop = FALSE],
-		values_to_extract = values_to_extract
+		values_to_extract = values_to_extract,
+		name = get0(x = "name", ifnotfound = NULL)
 	)
 
 	state <- .chart_state()
@@ -223,11 +269,11 @@ minus_directional_indicator.plotly <- function(
 minus_directional_indicator.ggplot <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -244,7 +290,7 @@ minus_directional_indicator.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 
@@ -255,7 +301,7 @@ minus_directional_indicator.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -276,7 +322,7 @@ minus_directional_indicator.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- sprintf("-DI(%d)", n)
+	name <- sprintf("-DI(%d)", timePeriod)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

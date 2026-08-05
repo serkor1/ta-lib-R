@@ -1,25 +1,25 @@
 #' @export
-#' @family Volume Indicator
+#' @family Volume Indicators
 #'
 #' @title Chaikin A/D Oscillator
 #' @templateVar .title Chaikin A/D Oscillator
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun chaikin_accumulation_distribution_oscillator
-#' @templateVar .family Volume Indicator
-#' @templateVar .formula ~high+low+close+volume
+#' @templateVar .family Volume Indicators
+#' @templateVar .formula ~high + low + close + volume
 #'
 ## splice:documentation:start
-#' @param fast ([integer]). Period for the fast Moving Average (MA).
-#' @param slow ([integer]). Period for the slow Moving Average (MA).
 ## splice:documentation:end
 #'
 #' @template description
+#' @param fastPeriod ([integer]). Period of the fast MA. Defaults to `3`.
+#' @param slowPeriod ([integer]). Period of the slow MA. Defaults to `10`.
 #' @template returns
 chaikin_accumulation_distribution_oscillator <- function(
 	x,
 	cols,
-	fast = 3,
-	slow = 10,
+	fastPeriod = 3,
+	slowPeriod = 10,
 	na.bridge = FALSE,
 	...
 ) {
@@ -33,6 +33,13 @@ chaikin_accumulation_distribution_oscillator <- function(
 #' @aliases chaikin_accumulation_distribution_oscillator
 ADOSC <- chaikin_accumulation_distribution_oscillator
 
+#' @export
+#' @usage NULL
+#' @rdname chaikin_accumulation_distribution_oscillator
+#'
+#' @aliases chaikin_accumulation_distribution_oscillator
+chaikinAccumulationDistributionOscillator <- chaikin_accumulation_distribution_oscillator
+
 #' @usage NULL
 #' @aliases chaikin_accumulation_distribution_oscillator
 #'
@@ -40,8 +47,8 @@ ADOSC <- chaikin_accumulation_distribution_oscillator
 chaikin_accumulation_distribution_oscillator.default <- function(
 	x,
 	cols,
-	fast = 3,
-	slow = 10,
+	fastPeriod = 3,
+	slowPeriod = 10,
 	na.bridge = FALSE,
 	...
 ) {
@@ -54,33 +61,31 @@ chaikin_accumulation_distribution_oscillator.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low + close + volume,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low + close + volume,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_ADOSC,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
 		constructed_series[[4]],
-		as.integer(fast),
-		as.integer(slow),
-		## splice:call:end
+		as.integer(fastPeriod),
+		as.integer(slowPeriod),
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -93,17 +98,17 @@ chaikin_accumulation_distribution_oscillator.default <- function(
 chaikin_accumulation_distribution_oscillator.data.frame <- function(
 	x,
 	cols,
-	fast = 3,
-	slow = 10,
+	fastPeriod = 3,
+	slowPeriod = 10,
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		chaikin_accumulation_distribution_oscillator.default(
 			x = x,
 			cols = cols,
-			fast = fast,
-			slow = slow,
+			fastPeriod = fastPeriod,
+			slowPeriod = slowPeriod,
 			na.bridge = na.bridge,
 			...
 		)
@@ -117,21 +122,64 @@ chaikin_accumulation_distribution_oscillator.data.frame <- function(
 chaikin_accumulation_distribution_oscillator.matrix <- function(
 	x,
 	cols,
-	fast = 3,
-	slow = 10,
+	fastPeriod = 3,
+	slowPeriod = 10,
 	na.bridge = FALSE,
 	...
 ) {
-	chaikin_accumulation_distribution_oscillator.default(
-		x = x,
-		cols = cols,
-		fast = fast,
-		slow = slow,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		chaikin_accumulation_distribution_oscillator.default(
+			x = x,
+			cols = cols,
+			fastPeriod = fastPeriod,
+			slowPeriod = slowPeriod,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
+#' @usage NULL
+#' @aliases chaikin_accumulation_distribution_oscillator
+#'
+#' @export
+chaikin_accumulation_distribution_oscillator.xts <- function(
+	x,
+	cols,
+	fastPeriod = 3,
+	slowPeriod = 10,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		chaikin_accumulation_distribution_oscillator.default(
+			x = x,
+			cols = cols,
+			fastPeriod = fastPeriod,
+			slowPeriod = slowPeriod,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+ADOSC_lookback <- chaikinAccumulationDistributionOscillator_lookback <- chaikin_accumulation_distribution_oscillator_lookback <- function(
+	x,
+	cols,
+	fastPeriod = 3,
+	slowPeriod = 10,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_ADOSC_lookback,
+		as.integer(fastPeriod),
+		as.integer(slowPeriod)
+	)
+}
 
 #' @usage NULL
 #' @aliases chaikin_accumulation_distribution_oscillator
@@ -140,8 +188,8 @@ chaikin_accumulation_distribution_oscillator.matrix <- function(
 chaikin_accumulation_distribution_oscillator.plotly <- function(
 	x,
 	cols,
-	fast = 3,
-	slow = 10,
+	fastPeriod = 3,
+	slowPeriod = 10,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -163,7 +211,7 @@ chaikin_accumulation_distribution_oscillator.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close + volume,
+		formula.default = ~ high + low + close + volume,
 		...
 	)
 
@@ -174,8 +222,8 @@ chaikin_accumulation_distribution_oscillator.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		fast = fast,
-		slow = slow,
+		fastPeriod = fastPeriod,
+		slowPeriod = slowPeriod,
 		na.bridge = TRUE
 	)
 
@@ -192,7 +240,7 @@ chaikin_accumulation_distribution_oscillator.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	name <- sprintf("ADOSC(%d, %d)", fast, slow)
+	name <- sprintf("ADOSC(%d, %d)", fastPeriod, slowPeriod)
 	decorators <- list()
 	traces <- list(
 		list(y = ~ADOSC)
@@ -219,7 +267,8 @@ chaikin_accumulation_distribution_oscillator.plotly <- function(
 			}
 		),
 		data = constructed_indicator[, values_to_extract, drop = FALSE],
-		values_to_extract = values_to_extract
+		values_to_extract = values_to_extract,
+		name = get0(x = "name", ifnotfound = NULL)
 	)
 
 	state <- .chart_state()
@@ -235,12 +284,12 @@ chaikin_accumulation_distribution_oscillator.plotly <- function(
 chaikin_accumulation_distribution_oscillator.ggplot <- function(
 	x,
 	cols,
-	fast = 3,
-	slow = 10,
+	fastPeriod = 3,
+	slowPeriod = 10,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -257,7 +306,7 @@ chaikin_accumulation_distribution_oscillator.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close + volume,
+		formula.default = ~ high + low + close + volume,
 		...
 	)
 
@@ -268,8 +317,8 @@ chaikin_accumulation_distribution_oscillator.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		fast = fast,
-		slow = slow,
+		fastPeriod = fastPeriod,
+		slowPeriod = slowPeriod,
 		na.bridge = TRUE
 	)
 
@@ -290,7 +339,7 @@ chaikin_accumulation_distribution_oscillator.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- sprintf("ADOSC(%d, %d)", fast, slow)
+	name <- sprintf("ADOSC(%d, %d)", fastPeriod, slowPeriod)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

@@ -1,17 +1,18 @@
 #' @export
-#' @family Cycle Indicator
+#' @family Cycle Indicators
 #'
 #' @title Hilbert Transform - Phasor Components
 #' @templateVar .title Hilbert Transform - Phasor Components
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun phasor_components
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Cycle Indicators
 #' @templateVar .formula ~close
 #'
 ## splice:documentation:start
 ## splice:documentation:end
 #'
 #' @template description
+#'
 #' @template returns
 phasor_components <- function(
 	x,
@@ -28,6 +29,13 @@ phasor_components <- function(
 #'
 #' @aliases phasor_components
 HT_PHASOR <- phasor_components
+
+#' @export
+#' @usage NULL
+#' @rdname phasor_components
+#'
+#' @aliases phasor_components
+phasorComponents <- phasor_components
 
 #' @usage NULL
 #' @aliases phasor_components
@@ -48,28 +56,26 @@ phasor_components.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_HT_PHASOR,
-		## splice:call:start
 		constructed_series[[1]],
-		## splice:call:end
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -85,7 +91,7 @@ phasor_components.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		phasor_components.default(
 			x = x,
 			cols = cols,
@@ -105,14 +111,49 @@ phasor_components.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	phasor_components.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		phasor_components.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
+#' @usage NULL
+#' @aliases phasor_components
+#'
+#' @export
+phasor_components.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		phasor_components.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+HT_PHASOR_lookback <- phasorComponents_lookback <- phasor_components_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_HT_PHASOR_lookback
+	)
+}
 
 #' @usage NULL
 #' @aliases phasor_components
@@ -132,31 +173,25 @@ phasor_components.numeric <- function(
 		warning("'cols' is passed but is unused for vectors.")
 	}
 
+	if (...length()) {
+		warning("'...' is passed but is unused for vectors.")
+	}
+
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
 		C_impl_ta_HT_PHASOR,
-		## splice:numeric:start
 		as.double(x),
-		## splice:numeric:end
 		as.logical(na.bridge)
 	)
 
-	## check if it has 'dims'
-	## and convert to double if
-	## not to honor the 'type-safety'-esque
-	## approach
-	##
-	## NOTE: this adds a few ns overhead but
-	##       its a robust alternative to code it
-	##       manually. Any suggestions are welcome
-	if (is.null(dim(x))) {
-		x <- as.double(x)
+	if (dim(x)[2] == 1L) {
+		dim(x) <- NULL
 	}
+	class(x) <- NULL
 
 	x
 }
-
 
 #' @usage NULL
 #' @aliases phasor_components
@@ -186,7 +221,7 @@ phasor_components.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 
@@ -257,7 +292,8 @@ phasor_components.plotly <- function(
 			}
 		),
 		data = constructed_indicator[, values_to_extract, drop = FALSE],
-		values_to_extract = values_to_extract
+		values_to_extract = values_to_extract,
+		name = get0(x = "name", ifnotfound = NULL)
 	)
 
 	state <- .chart_state()
@@ -274,9 +310,9 @@ phasor_components.ggplot <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -293,7 +329,7 @@ phasor_components.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 

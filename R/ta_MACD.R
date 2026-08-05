@@ -1,27 +1,27 @@
 #' @export
-#' @family Momentum Indicator
+#' @family Momentum Indicators
 #'
-#' @title Moving Average Convergence Divergence
-#' @templateVar .title Moving Average Convergence Divergence
+#' @title Moving Average Convergence/Divergence
+#' @templateVar .title Moving Average Convergence/Divergence
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun moving_average_convergence_divergence
-#' @templateVar .family Momentum Indicator
+#' @templateVar .family Momentum Indicators
 #' @templateVar .formula ~close
 #'
 ## splice:documentation:start
-#' @param fast ([integer]). Period for the fast Moving Average (MA).
-#' @param slow ([integer]). Period for the slow Moving Average (MA).
-#' @param signal ([integer]). Period for the signal Moving Average (MA).
 ## splice:documentation:end
 #'
 #' @template description
+#' @param fastPeriod ([integer]). Period of the fast MA. Defaults to `12`.
+#' @param slowPeriod ([integer]). Period of the slow MA. Defaults to `26`.
+#' @param signalPeriod ([integer]). Smoothing for the signal line (period length). Defaults to `9`.
 #' @template returns
 moving_average_convergence_divergence <- function(
 	x,
 	cols,
-	fast = 12,
-	slow = 26,
-	signal = 9,
+	fastPeriod = 12,
+	slowPeriod = 26,
+	signalPeriod = 9,
 	na.bridge = FALSE,
 	...
 ) {
@@ -35,6 +35,13 @@ moving_average_convergence_divergence <- function(
 #' @aliases moving_average_convergence_divergence
 MACD <- moving_average_convergence_divergence
 
+#' @export
+#' @usage NULL
+#' @rdname moving_average_convergence_divergence
+#'
+#' @aliases moving_average_convergence_divergence
+movingAverageConvergenceDivergence <- moving_average_convergence_divergence
+
 #' @usage NULL
 #' @aliases moving_average_convergence_divergence
 #'
@@ -42,9 +49,9 @@ MACD <- moving_average_convergence_divergence
 moving_average_convergence_divergence.default <- function(
 	x,
 	cols,
-	fast = 12,
-	slow = 26,
-	signal = 9,
+	fastPeriod = 12,
+	slowPeriod = 26,
+	signalPeriod = 9,
 	na.bridge = FALSE,
 	...
 ) {
@@ -57,31 +64,29 @@ moving_average_convergence_divergence.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_MACD,
-		## splice:call:start
 		constructed_series[[1]],
-		as.integer(fast),
-		as.integer(slow),
-		as.integer(signal),
-		## splice:call:end
+		as.integer(fastPeriod),
+		as.integer(slowPeriod),
+		as.integer(signalPeriod),
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -94,19 +99,19 @@ moving_average_convergence_divergence.default <- function(
 moving_average_convergence_divergence.data.frame <- function(
 	x,
 	cols,
-	fast = 12,
-	slow = 26,
-	signal = 9,
+	fastPeriod = 12,
+	slowPeriod = 26,
+	signalPeriod = 9,
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		moving_average_convergence_divergence.default(
 			x = x,
 			cols = cols,
-			fast = fast,
-			slow = slow,
-			signal = signal,
+			fastPeriod = fastPeriod,
+			slowPeriod = slowPeriod,
+			signalPeriod = signalPeriod,
 			na.bridge = na.bridge,
 			...
 		)
@@ -120,23 +125,70 @@ moving_average_convergence_divergence.data.frame <- function(
 moving_average_convergence_divergence.matrix <- function(
 	x,
 	cols,
-	fast = 12,
-	slow = 26,
-	signal = 9,
+	fastPeriod = 12,
+	slowPeriod = 26,
+	signalPeriod = 9,
 	na.bridge = FALSE,
 	...
 ) {
-	moving_average_convergence_divergence.default(
-		x = x,
-		cols = cols,
-		fast = fast,
-		slow = slow,
-		signal = signal,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		moving_average_convergence_divergence.default(
+			x = x,
+			cols = cols,
+			fastPeriod = fastPeriod,
+			slowPeriod = slowPeriod,
+			signalPeriod = signalPeriod,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
+#' @usage NULL
+#' @aliases moving_average_convergence_divergence
+#'
+#' @export
+moving_average_convergence_divergence.xts <- function(
+	x,
+	cols,
+	fastPeriod = 12,
+	slowPeriod = 26,
+	signalPeriod = 9,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		moving_average_convergence_divergence.default(
+			x = x,
+			cols = cols,
+			fastPeriod = fastPeriod,
+			slowPeriod = slowPeriod,
+			signalPeriod = signalPeriod,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+MACD_lookback <- movingAverageConvergenceDivergence_lookback <- moving_average_convergence_divergence_lookback <- function(
+	x,
+	cols,
+	fastPeriod = 12,
+	slowPeriod = 26,
+	signalPeriod = 9,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_MACD_lookback,
+		as.integer(fastPeriod),
+		as.integer(slowPeriod),
+		as.integer(signalPeriod)
+	)
+}
 
 #' @usage NULL
 #' @aliases moving_average_convergence_divergence
@@ -145,9 +197,9 @@ moving_average_convergence_divergence.matrix <- function(
 moving_average_convergence_divergence.numeric <- function(
 	x,
 	cols,
-	fast = 12,
-	slow = 26,
-	signal = 9,
+	fastPeriod = 12,
+	slowPeriod = 26,
+	signalPeriod = 9,
 	na.bridge = FALSE,
 	...
 ) {
@@ -159,34 +211,28 @@ moving_average_convergence_divergence.numeric <- function(
 		warning("'cols' is passed but is unused for vectors.")
 	}
 
+	if (...length()) {
+		warning("'...' is passed but is unused for vectors.")
+	}
+
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
 		C_impl_ta_MACD,
-		## splice:numeric:start
 		as.double(x),
-		as.integer(fast),
-		as.integer(slow),
-		as.integer(signal),
-		## splice:numeric:end
+		as.integer(fastPeriod),
+		as.integer(slowPeriod),
+		as.integer(signalPeriod),
 		as.logical(na.bridge)
 	)
 
-	## check if it has 'dims'
-	## and convert to double if
-	## not to honor the 'type-safety'-esque
-	## approach
-	##
-	## NOTE: this adds a few ns overhead but
-	##       its a robust alternative to code it
-	##       manually. Any suggestions are welcome
-	if (is.null(dim(x))) {
-		x <- as.double(x)
+	if (dim(x)[2] == 1L) {
+		dim(x) <- NULL
 	}
+	class(x) <- NULL
 
 	x
 }
-
 
 #' @usage NULL
 #' @aliases moving_average_convergence_divergence
@@ -195,9 +241,9 @@ moving_average_convergence_divergence.numeric <- function(
 moving_average_convergence_divergence.plotly <- function(
 	x,
 	cols,
-	fast = 12,
-	slow = 26,
-	signal = 9,
+	fastPeriod = 12,
+	slowPeriod = 26,
+	signalPeriod = 9,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -219,7 +265,7 @@ moving_average_convergence_divergence.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 
@@ -230,9 +276,9 @@ moving_average_convergence_divergence.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		fast = fast,
-		slow = slow,
-		signal = signal,
+		fastPeriod = fastPeriod,
+		slowPeriod = slowPeriod,
+		signalPeriod = signalPeriod,
 		na.bridge = TRUE
 	)
 
@@ -257,9 +303,9 @@ moving_average_convergence_divergence.plotly <- function(
 	## construct plotly object
 	name <- sprintf(
 		"MACD(%d, %d, %d)",
-		fast,
-		slow,
-		signal
+		fastPeriod,
+		slowPeriod,
+		signalPeriod
 	)
 
 	traces <- list(
@@ -279,7 +325,7 @@ moving_average_convergence_divergence.plotly <- function(
 			inherit = FALSE,
 			name = sprintf(
 				fmt = "Signal(%d)",
-				if (is.list(signal)) signal$n else signal
+				signalPeriod
 			)
 		),
 		list(
@@ -287,8 +333,8 @@ moving_average_convergence_divergence.plotly <- function(
 			inherit = FALSE,
 			name = sprintf(
 				fmt = "MACD(%d, %d)",
-				if (is.list(fast)) fast$n else fast,
-				if (is.list(slow)) slow$n else slow
+				fastPeriod,
+				slowPeriod
 			)
 		)
 	)
@@ -308,13 +354,14 @@ moving_average_convergence_divergence.plotly <- function(
 			),
 			data = constructed_indicator,
 			title = if (missing(title)) {
-				"Moving Average Convergence Divergence"
+				"Moving Average Convergence/Divergence"
 			} else {
 				title
 			}
 		),
 		data = constructed_indicator[, values_to_extract, drop = FALSE],
-		values_to_extract = values_to_extract
+		values_to_extract = values_to_extract,
+		name = get0(x = "name", ifnotfound = NULL)
 	)
 
 	state <- .chart_state()
@@ -330,13 +377,13 @@ moving_average_convergence_divergence.plotly <- function(
 moving_average_convergence_divergence.ggplot <- function(
 	x,
 	cols,
-	fast = 12,
-	slow = 26,
-	signal = 9,
+	fastPeriod = 12,
+	slowPeriod = 26,
+	signalPeriod = 9,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -353,7 +400,7 @@ moving_average_convergence_divergence.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 
@@ -364,9 +411,9 @@ moving_average_convergence_divergence.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		fast = fast,
-		slow = slow,
-		signal = signal,
+		fastPeriod = fastPeriod,
+		slowPeriod = slowPeriod,
+		signalPeriod = signalPeriod,
 		na.bridge = TRUE
 	)
 
@@ -383,6 +430,8 @@ moving_average_convergence_divergence.ggplot <- function(
 
 	## construct {ggplot2}-object
 	## splice:ggplot-assembly:start
+	## calculate directions for bull
+	## and bear candles
 	constructed_indicator$direction <- constructed_indicator$MACDSignal >=
 		constructed_indicator$MACD
 	layers <- list(
@@ -395,10 +444,10 @@ moving_average_convergence_divergence.ggplot <- function(
 				.chart_variables$bearish_body
 			)
 		),
-		list(y = "MACDSignal", name = sprintf("Signal(%d)", signal)),
-		list(y = "MACD", name = sprintf("MACD(%d, %d)", fast, slow))
+		list(y = "MACDSignal", name = sprintf("Signal(%d)", signalPeriod)),
+		list(y = "MACD", name = sprintf("MACD(%d, %d)", fastPeriod, slowPeriod))
 	)
-	name <- sprintf("MACD(%d, %d, %d)", fast, slow, signal)
+	name <- sprintf("MACD(%d, %d, %d)", fastPeriod, slowPeriod, signalPeriod)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(
@@ -415,7 +464,7 @@ moving_average_convergence_divergence.ggplot <- function(
 			),
 			data = constructed_indicator,
 			title = if (missing(title)) {
-				"Moving Average Convergence Divergence"
+				"Moving Average Convergence/Divergence"
 			} else {
 				title
 			}

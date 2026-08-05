@@ -1,22 +1,23 @@
 #' @export
-#' @family Volatility Indicator
+#' @family Volatility Indicators
 #'
 #' @title Normalized Average True Range
 #' @templateVar .title Normalized Average True Range
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun normalized_average_true_range
-#' @templateVar .family Volatility Indicator
+#' @templateVar .family Volatility Indicators
 #' @templateVar .formula ~high + low + close
 #'
 ## splice:documentation:start
 ## splice:documentation:end
 #'
 #' @template description
+#'
 #' @template returns
 normalized_average_true_range <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -30,6 +31,13 @@ normalized_average_true_range <- function(
 #' @aliases normalized_average_true_range
 NATR <- normalized_average_true_range
 
+#' @export
+#' @usage NULL
+#' @rdname normalized_average_true_range
+#'
+#' @aliases normalized_average_true_range
+normalizedAverageTrueRange <- normalized_average_true_range
+
 #' @usage NULL
 #' @aliases normalized_average_true_range
 #'
@@ -37,7 +45,7 @@ NATR <- normalized_average_true_range
 normalized_average_true_range.default <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -50,31 +58,29 @@ normalized_average_true_range.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low + close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low + close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_NATR,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		as.integer(n),
-		## splice:call:end
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -87,15 +93,15 @@ normalized_average_true_range.default <- function(
 normalized_average_true_range.data.frame <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		normalized_average_true_range.default(
 			x = x,
 			cols = cols,
-			n = n,
+			timePeriod = timePeriod,
 			na.bridge = na.bridge,
 			...
 		)
@@ -109,19 +115,58 @@ normalized_average_true_range.data.frame <- function(
 normalized_average_true_range.matrix <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
-	normalized_average_true_range.default(
-		x = x,
-		cols = cols,
-		n = n,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		normalized_average_true_range.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
+#' @usage NULL
+#' @aliases normalized_average_true_range
+#'
+#' @export
+normalized_average_true_range.xts <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		normalized_average_true_range.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+NATR_lookback <- normalizedAverageTrueRange_lookback <- normalized_average_true_range_lookback <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_NATR_lookback,
+		as.integer(timePeriod)
+	)
+}
 
 #' @usage NULL
 #' @aliases normalized_average_true_range
@@ -130,7 +175,7 @@ normalized_average_true_range.matrix <- function(
 normalized_average_true_range.plotly <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -152,7 +197,7 @@ normalized_average_true_range.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 
@@ -163,7 +208,7 @@ normalized_average_true_range.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -180,7 +225,7 @@ normalized_average_true_range.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	name <- sprintf("NATR(%d)", n)
+	name <- sprintf("NATR(%d)", timePeriod)
 	traces <- list(
 		list(y = ~NATR)
 	)
@@ -206,7 +251,8 @@ normalized_average_true_range.plotly <- function(
 			}
 		),
 		data = constructed_indicator[, values_to_extract, drop = FALSE],
-		values_to_extract = values_to_extract
+		values_to_extract = values_to_extract,
+		name = get0(x = "name", ifnotfound = NULL)
 	)
 
 	state <- .chart_state()
@@ -222,11 +268,11 @@ normalized_average_true_range.plotly <- function(
 normalized_average_true_range.ggplot <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -243,7 +289,7 @@ normalized_average_true_range.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 
@@ -254,7 +300,7 @@ normalized_average_true_range.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -275,7 +321,7 @@ normalized_average_true_range.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- sprintf("NATR(%d)", n)
+	name <- sprintf("NATR(%d)", timePeriod)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

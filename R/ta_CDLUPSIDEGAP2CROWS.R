@@ -39,6 +39,13 @@ upside_gap_2_crows <- function(
 #' @aliases upside_gap_2_crows
 CDLUPSIDEGAP2CROWS <- upside_gap_2_crows
 
+#' @export
+#' @usage NULL
+#' @rdname upside_gap_2_crows
+#'
+#' @aliases upside_gap_2_crows
+upsideGap2Crows <- upside_gap_2_crows
+
 #' @usage NULL
 #' @aliases upside_gap_2_crows
 #'
@@ -70,35 +77,33 @@ upside_gap_2_crows.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
+		x = x,
+		formula.default = ~ open + high + low + close,
+		formula = cols,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
-	x <- as.matrix(
-		.Call(
-			C_impl_ta_CDLUPSIDEGAP2CROWS,
-			constructed_series[[1]],
-			constructed_series[[2]],
-			constructed_series[[3]],
-			constructed_series[[4]],
-			normalize,
-			as.logical(na.bridge)
-		)
+	x <- .Call(
+		C_impl_ta_CDLUPSIDEGAP2CROWS,
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
+		normalize,
+		as.logical(na.bridge)
 	)
 
 	## add column name
 	colnames(x) <- "CDLUPSIDEGAP2CROWS"
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -114,8 +119,13 @@ upside_gap_2_crows.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
-		NextMethod()
+	as.data.frame(
+		upside_gap_2_crows.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +139,49 @@ upside_gap_2_crows.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	as.matrix(
+		upside_gap_2_crows.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases upside_gap_2_crows
+#'
+#' @export
+upside_gap_2_crows.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		upside_gap_2_crows.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+
+#' @usage NULL
+CDLUPSIDEGAP2CROWS_lookback <- upsideGap2Crows_lookback <- upside_gap_2_crows_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_CDLUPSIDEGAP2CROWS_lookback
+	)
 }
 
 #' @usage NULL
@@ -157,7 +209,7 @@ upside_gap_2_crows.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -167,7 +219,8 @@ upside_gap_2_crows.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +242,6 @@ upside_gap_2_crows.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases upside_gap_2_crows
@@ -215,7 +267,7 @@ upside_gap_2_crows.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -225,7 +277,8 @@ upside_gap_2_crows.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

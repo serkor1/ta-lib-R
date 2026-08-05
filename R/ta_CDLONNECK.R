@@ -1,8 +1,8 @@
 #' @export
 #' @family Pattern Recognition
 #'
-#' @title On-Neck
-#' @templateVar .title On-Neck
+#' @title On-Neck Pattern
+#' @templateVar .title On-Neck Pattern
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun on_neck
 #' @templateVar .family Pattern Recognition
@@ -39,6 +39,13 @@ on_neck <- function(
 #' @aliases on_neck
 CDLONNECK <- on_neck
 
+#' @export
+#' @usage NULL
+#' @rdname on_neck
+#'
+#' @aliases on_neck
+onNeck <- on_neck
+
 #' @usage NULL
 #' @aliases on_neck
 #'
@@ -70,35 +77,33 @@ on_neck.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
+		x = x,
+		formula.default = ~ open + high + low + close,
+		formula = cols,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
-	x <- as.matrix(
-		.Call(
-			C_impl_ta_CDLONNECK,
-			constructed_series[[1]],
-			constructed_series[[2]],
-			constructed_series[[3]],
-			constructed_series[[4]],
-			normalize,
-			as.logical(na.bridge)
-		)
+	x <- .Call(
+		C_impl_ta_CDLONNECK,
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
+		normalize,
+		as.logical(na.bridge)
 	)
 
 	## add column name
 	colnames(x) <- "CDLONNECK"
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -114,8 +119,13 @@ on_neck.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
-		NextMethod()
+	as.data.frame(
+		on_neck.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +139,49 @@ on_neck.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	as.matrix(
+		on_neck.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases on_neck
+#'
+#' @export
+on_neck.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		on_neck.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+
+#' @usage NULL
+CDLONNECK_lookback <- onNeck_lookback <- on_neck_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_CDLONNECK_lookback
+	)
 }
 
 #' @usage NULL
@@ -157,7 +209,7 @@ on_neck.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -167,7 +219,8 @@ on_neck.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +242,6 @@ on_neck.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases on_neck
@@ -215,7 +267,7 @@ on_neck.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -225,7 +277,8 @@ on_neck.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

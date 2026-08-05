@@ -1,22 +1,27 @@
 #' @export
-#' @family Momentum Indicator
+#' @family Momentum Indicators
 #'
 #' @title Ultimate Oscillator
 #' @templateVar .title Ultimate Oscillator
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun ultimate_oscillator
-#' @templateVar .family Momentum Indicator
-#' @templateVar .formula ~ high + low + close
+#' @templateVar .family Momentum Indicators
+#' @templateVar .formula ~high + low + close
 #'
 ## splice:documentation:start
 ## splice:documentation:end
 #'
 #' @template description
+#' @param firstPeriod ([integer]). Number of bars for 1st period. Defaults to `7`.
+#' @param secondPeriod ([integer]). Number of bars for 2nd period. Defaults to `14`.
+#' @param thirdPeriod ([integer]). Number of bars for 3rd period. Defaults to `28`.
 #' @template returns
 ultimate_oscillator <- function(
 	x,
 	cols,
-	n = c(7, 14, 28),
+	firstPeriod = 7,
+	secondPeriod = 14,
+	thirdPeriod = 28,
 	na.bridge = FALSE,
 	...
 ) {
@@ -30,6 +35,13 @@ ultimate_oscillator <- function(
 #' @aliases ultimate_oscillator
 ULTOSC <- ultimate_oscillator
 
+#' @export
+#' @usage NULL
+#' @rdname ultimate_oscillator
+#'
+#' @aliases ultimate_oscillator
+ultimateOscillator <- ultimate_oscillator
+
 #' @usage NULL
 #' @aliases ultimate_oscillator
 #'
@@ -37,7 +49,9 @@ ULTOSC <- ultimate_oscillator
 ultimate_oscillator.default <- function(
 	x,
 	cols,
-	n = c(7, 14, 28),
+	firstPeriod = 7,
+	secondPeriod = 14,
+	thirdPeriod = 28,
 	na.bridge = FALSE,
 	...
 ) {
@@ -50,33 +64,31 @@ ultimate_oscillator.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low + close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low + close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_ULTOSC,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		as.integer(n[1]),
-		as.integer(n[2]),
-		as.integer(n[3]),
-		## splice:call:end
+		as.integer(firstPeriod),
+		as.integer(secondPeriod),
+		as.integer(thirdPeriod),
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -89,15 +101,19 @@ ultimate_oscillator.default <- function(
 ultimate_oscillator.data.frame <- function(
 	x,
 	cols,
-	n = c(7, 14, 28),
+	firstPeriod = 7,
+	secondPeriod = 14,
+	thirdPeriod = 28,
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		ultimate_oscillator.default(
 			x = x,
 			cols = cols,
-			n = n,
+			firstPeriod = firstPeriod,
+			secondPeriod = secondPeriod,
+			thirdPeriod = thirdPeriod,
 			na.bridge = na.bridge,
 			...
 		)
@@ -111,19 +127,70 @@ ultimate_oscillator.data.frame <- function(
 ultimate_oscillator.matrix <- function(
 	x,
 	cols,
-	n = c(7, 14, 28),
+	firstPeriod = 7,
+	secondPeriod = 14,
+	thirdPeriod = 28,
 	na.bridge = FALSE,
 	...
 ) {
-	ultimate_oscillator.default(
-		x = x,
-		cols = cols,
-		n = n,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		ultimate_oscillator.default(
+			x = x,
+			cols = cols,
+			firstPeriod = firstPeriod,
+			secondPeriod = secondPeriod,
+			thirdPeriod = thirdPeriod,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
+#' @usage NULL
+#' @aliases ultimate_oscillator
+#'
+#' @export
+ultimate_oscillator.xts <- function(
+	x,
+	cols,
+	firstPeriod = 7,
+	secondPeriod = 14,
+	thirdPeriod = 28,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		ultimate_oscillator.default(
+			x = x,
+			cols = cols,
+			firstPeriod = firstPeriod,
+			secondPeriod = secondPeriod,
+			thirdPeriod = thirdPeriod,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+ULTOSC_lookback <- ultimateOscillator_lookback <- ultimate_oscillator_lookback <- function(
+	x,
+	cols,
+	firstPeriod = 7,
+	secondPeriod = 14,
+	thirdPeriod = 28,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_ULTOSC_lookback,
+		as.integer(firstPeriod),
+		as.integer(secondPeriod),
+		as.integer(thirdPeriod)
+	)
+}
 
 #' @usage NULL
 #' @aliases ultimate_oscillator
@@ -132,7 +199,9 @@ ultimate_oscillator.matrix <- function(
 ultimate_oscillator.plotly <- function(
 	x,
 	cols,
-	n = c(7, 14, 28),
+	firstPeriod = 7,
+	secondPeriod = 14,
+	thirdPeriod = 28,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 30,
@@ -156,7 +225,7 @@ ultimate_oscillator.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 
@@ -167,7 +236,9 @@ ultimate_oscillator.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		firstPeriod = firstPeriod,
+		secondPeriod = secondPeriod,
+		thirdPeriod = thirdPeriod,
 		na.bridge = TRUE
 	)
 
@@ -186,9 +257,9 @@ ultimate_oscillator.plotly <- function(
 	## splice:plotly-assembly:start
 	name <- sprintf(
 		"UltOsc(%d, %d, %d)",
-		n[1],
-		n[2],
-		n[3]
+		firstPeriod,
+		secondPeriod,
+		thirdPeriod
 	)
 
 	decorators <- list(
@@ -222,7 +293,8 @@ ultimate_oscillator.plotly <- function(
 			}
 		),
 		data = constructed_indicator[, values_to_extract, drop = FALSE],
-		values_to_extract = values_to_extract
+		values_to_extract = values_to_extract,
+		name = get0(x = "name", ifnotfound = NULL)
 	)
 
 	state <- .chart_state()
@@ -238,11 +310,13 @@ ultimate_oscillator.plotly <- function(
 ultimate_oscillator.ggplot <- function(
 	x,
 	cols,
-	n = c(7, 14, 28),
+	firstPeriod = 7,
+	secondPeriod = 14,
+	thirdPeriod = 28,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -259,7 +333,7 @@ ultimate_oscillator.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 
@@ -270,7 +344,9 @@ ultimate_oscillator.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		firstPeriod = firstPeriod,
+		secondPeriod = secondPeriod,
+		thirdPeriod = thirdPeriod,
 		na.bridge = TRUE
 	)
 
@@ -291,7 +367,12 @@ ultimate_oscillator.ggplot <- function(
 		setdiff(colnames(constructed_indicator), "idx"),
 		function(col) list(y = col)
 	)
-	name <- sprintf("UltOsc(%d, %d, %d)", n[1], n[2], n[3])
+	name <- sprintf(
+		"UltOsc(%d, %d, %d)",
+		firstPeriod,
+		secondPeriod,
+		thirdPeriod
+	)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

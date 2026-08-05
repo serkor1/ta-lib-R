@@ -1,22 +1,23 @@
 #' @export
-#' @family Momentum Indicator
+#' @family Momentum Indicators
 #'
 #' @title Aroon Oscillator
 #' @templateVar .title Aroon Oscillator
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun aroon_oscillator
-#' @templateVar .family Momentum Indicator
-#' @templateVar .formula ~ high + low
+#' @templateVar .family Momentum Indicators
+#' @templateVar .formula ~high + low
 #'
 ## splice:documentation:start
 ## splice:documentation:end
 #'
 #' @template description
+#'
 #' @template returns
 aroon_oscillator <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -30,6 +31,13 @@ aroon_oscillator <- function(
 #' @aliases aroon_oscillator
 AROONOSC <- aroon_oscillator
 
+#' @export
+#' @usage NULL
+#' @rdname aroon_oscillator
+#'
+#' @aliases aroon_oscillator
+aroonOscillator <- aroon_oscillator
+
 #' @usage NULL
 #' @aliases aroon_oscillator
 #'
@@ -37,7 +45,7 @@ AROONOSC <- aroon_oscillator
 aroon_oscillator.default <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -50,30 +58,28 @@ aroon_oscillator.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_AROONOSC,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
-		as.integer(n),
-		## splice:call:end
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -86,15 +92,15 @@ aroon_oscillator.default <- function(
 aroon_oscillator.data.frame <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		aroon_oscillator.default(
 			x = x,
 			cols = cols,
-			n = n,
+			timePeriod = timePeriod,
 			na.bridge = na.bridge,
 			...
 		)
@@ -108,19 +114,58 @@ aroon_oscillator.data.frame <- function(
 aroon_oscillator.matrix <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
-	aroon_oscillator.default(
-		x = x,
-		cols = cols,
-		n = n,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		aroon_oscillator.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
+#' @usage NULL
+#' @aliases aroon_oscillator
+#'
+#' @export
+aroon_oscillator.xts <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		aroon_oscillator.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+AROONOSC_lookback <- aroonOscillator_lookback <- aroon_oscillator_lookback <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_AROONOSC_lookback,
+		as.integer(timePeriod)
+	)
+}
 
 #' @usage NULL
 #' @aliases aroon_oscillator
@@ -129,7 +174,7 @@ aroon_oscillator.matrix <- function(
 aroon_oscillator.plotly <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -151,7 +196,7 @@ aroon_oscillator.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low,
+		formula.default = ~ high + low,
 		...
 	)
 
@@ -162,7 +207,7 @@ aroon_oscillator.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -179,7 +224,7 @@ aroon_oscillator.plotly <- function(
 
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
-	name <- sprintf("AroonOsc(%d)", n)
+	name <- sprintf("AroonOsc(%d)", timePeriod)
 
 	decorators <- list(
 		function(p) add_limit_ly(p, y_range = c(0, 100))
@@ -211,7 +256,8 @@ aroon_oscillator.plotly <- function(
 			}
 		),
 		data = constructed_indicator[, values_to_extract, drop = FALSE],
-		values_to_extract = values_to_extract
+		values_to_extract = values_to_extract,
+		name = get0(x = "name", ifnotfound = NULL)
 	)
 
 	state <- .chart_state()
@@ -227,11 +273,11 @@ aroon_oscillator.plotly <- function(
 aroon_oscillator.ggplot <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -248,7 +294,7 @@ aroon_oscillator.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low,
+		formula.default = ~ high + low,
 		...
 	)
 
@@ -259,7 +305,7 @@ aroon_oscillator.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -283,7 +329,7 @@ aroon_oscillator.ggplot <- function(
 		ggplot_line(0),
 		list(y = "AROONOSC")
 	)
-	name <- sprintf("AroonOsc(%d)", n)
+	name <- sprintf("AroonOsc(%d)", timePeriod)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

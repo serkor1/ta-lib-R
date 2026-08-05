@@ -26,7 +26,7 @@
 evening_star <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
@@ -40,6 +40,13 @@ evening_star <- function(
 #' @aliases evening_star
 CDLEVENINGSTAR <- evening_star
 
+#' @export
+#' @usage NULL
+#' @rdname evening_star
+#'
+#' @aliases evening_star
+eveningStar <- evening_star
+
 #' @usage NULL
 #' @aliases evening_star
 #'
@@ -47,7 +54,7 @@ CDLEVENINGSTAR <- evening_star
 evening_star.default <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
@@ -72,36 +79,34 @@ evening_star.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
+		x = x,
+		formula.default = ~ open + high + low + close,
+		formula = cols,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
-	x <- as.matrix(
-		.Call(
-			C_impl_ta_CDLEVENINGSTAR,
-			constructed_series[[1]],
-			constructed_series[[2]],
-			constructed_series[[3]],
-			constructed_series[[4]],
-			eps,
-			normalize,
-			as.logical(na.bridge)
-		)
+	x <- .Call(
+		C_impl_ta_CDLEVENINGSTAR,
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
+		as.double(penetration),
+		normalize,
+		as.logical(na.bridge)
 	)
 
 	## add column name
 	colnames(x) <- "CDLEVENINGSTAR"
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -114,12 +119,18 @@ evening_star.default <- function(
 evening_star.data.frame <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
-		NextMethod()
+	as.data.frame(
+		evening_star.default(
+			x = x,
+			cols = cols,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -130,11 +141,58 @@ evening_star.data.frame <- function(
 evening_star.matrix <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	as.matrix(
+		evening_star.default(
+			x = x,
+			cols = cols,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases evening_star
+#'
+#' @export
+evening_star.xts <- function(
+	x,
+	cols,
+	penetration = 0.3,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		evening_star.default(
+			x = x,
+			cols = cols,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+
+#' @usage NULL
+CDLEVENINGSTAR_lookback <- eveningStar_lookback <- evening_star_lookback <- function(
+	x,
+	cols,
+	penetration = 0.3,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_CDLEVENINGSTAR_lookback,
+		as.double(penetration)
+	)
 }
 
 #' @usage NULL
@@ -144,7 +202,7 @@ evening_star.matrix <- function(
 evening_star.plotly <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
@@ -163,7 +221,7 @@ evening_star.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -174,7 +232,8 @@ evening_star.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		eps = eps
+		penetration = penetration,
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -197,7 +256,6 @@ evening_star.plotly <- function(
 	plotly_object
 }
 
-
 #' @usage NULL
 #' @aliases evening_star
 #'
@@ -205,7 +263,7 @@ evening_star.plotly <- function(
 evening_star.ggplot <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
@@ -223,7 +281,7 @@ evening_star.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -234,7 +292,8 @@ evening_star.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		eps = eps
+		penetration = penetration,
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

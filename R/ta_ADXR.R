@@ -1,22 +1,23 @@
 #' @export
-#' @family Momentum Indicator
+#' @family Momentum Indicators
 #'
 #' @title Average Directional Movement Index Rating
 #' @templateVar .title Average Directional Movement Index Rating
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun average_directional_movement_index_rating
-#' @templateVar .family Momentum Indicator
-#' @templateVar .formula ~ high + low + close
+#' @templateVar .family Momentum Indicators
+#' @templateVar .formula ~high + low + close
 #'
 ## splice:documentation:start
 ## splice:documentation:end
 #'
 #' @template description
+#'
 #' @template returns
 average_directional_movement_index_rating <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -30,6 +31,13 @@ average_directional_movement_index_rating <- function(
 #' @aliases average_directional_movement_index_rating
 ADXR <- average_directional_movement_index_rating
 
+#' @export
+#' @usage NULL
+#' @rdname average_directional_movement_index_rating
+#'
+#' @aliases average_directional_movement_index_rating
+averageDirectionalMovementIndexRating <- average_directional_movement_index_rating
+
 #' @usage NULL
 #' @aliases average_directional_movement_index_rating
 #'
@@ -37,7 +45,7 @@ ADXR <- average_directional_movement_index_rating
 average_directional_movement_index_rating.default <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -50,31 +58,29 @@ average_directional_movement_index_rating.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low + close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low + close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_ADXR,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		as.integer(n),
-		## splice:call:end
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -87,15 +93,15 @@ average_directional_movement_index_rating.default <- function(
 average_directional_movement_index_rating.data.frame <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		average_directional_movement_index_rating.default(
 			x = x,
 			cols = cols,
-			n = n,
+			timePeriod = timePeriod,
 			na.bridge = na.bridge,
 			...
 		)
@@ -109,19 +115,58 @@ average_directional_movement_index_rating.data.frame <- function(
 average_directional_movement_index_rating.matrix <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
-	average_directional_movement_index_rating.default(
-		x = x,
-		cols = cols,
-		n = n,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		average_directional_movement_index_rating.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
+#' @usage NULL
+#' @aliases average_directional_movement_index_rating
+#'
+#' @export
+average_directional_movement_index_rating.xts <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		average_directional_movement_index_rating.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+ADXR_lookback <- averageDirectionalMovementIndexRating_lookback <- average_directional_movement_index_rating_lookback <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_ADXR_lookback,
+		as.integer(timePeriod)
+	)
+}
 
 #' @usage NULL
 #' @aliases average_directional_movement_index_rating
@@ -130,7 +175,7 @@ average_directional_movement_index_rating.matrix <- function(
 average_directional_movement_index_rating.plotly <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 25,
@@ -155,7 +200,7 @@ average_directional_movement_index_rating.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 
@@ -166,7 +211,7 @@ average_directional_movement_index_rating.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -185,7 +230,7 @@ average_directional_movement_index_rating.plotly <- function(
 	## splice:plotly-assembly:start
 	name <- sprintf(
 		"ADXR(%d)",
-		n
+		timePeriod
 	)
 
 	decorators <- list(
@@ -220,7 +265,8 @@ average_directional_movement_index_rating.plotly <- function(
 			}
 		),
 		data = constructed_indicator[, values_to_extract, drop = FALSE],
-		values_to_extract = values_to_extract
+		values_to_extract = values_to_extract,
+		name = get0(x = "name", ifnotfound = NULL)
 	)
 
 	state <- .chart_state()
@@ -236,11 +282,11 @@ average_directional_movement_index_rating.plotly <- function(
 average_directional_movement_index_rating.ggplot <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -257,7 +303,7 @@ average_directional_movement_index_rating.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 
@@ -268,7 +314,7 @@ average_directional_movement_index_rating.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -294,7 +340,7 @@ average_directional_movement_index_rating.ggplot <- function(
 		ggplot_line(75),
 		list(y = "ADXR")
 	)
-	name <- sprintf("ADXR(%d)", n)
+	name <- sprintf("ADXR(%d)", timePeriod)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

@@ -39,6 +39,13 @@ concealing_baby_swallow <- function(
 #' @aliases concealing_baby_swallow
 CDLCONCEALBABYSWALL <- concealing_baby_swallow
 
+#' @export
+#' @usage NULL
+#' @rdname concealing_baby_swallow
+#'
+#' @aliases concealing_baby_swallow
+concealingBabySwallow <- concealing_baby_swallow
+
 #' @usage NULL
 #' @aliases concealing_baby_swallow
 #'
@@ -70,35 +77,33 @@ concealing_baby_swallow.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
+		x = x,
+		formula.default = ~ open + high + low + close,
+		formula = cols,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
-	x <- as.matrix(
-		.Call(
-			C_impl_ta_CDLCONCEALBABYSWALL,
-			constructed_series[[1]],
-			constructed_series[[2]],
-			constructed_series[[3]],
-			constructed_series[[4]],
-			normalize,
-			as.logical(na.bridge)
-		)
+	x <- .Call(
+		C_impl_ta_CDLCONCEALBABYSWALL,
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
+		normalize,
+		as.logical(na.bridge)
 	)
 
 	## add column name
 	colnames(x) <- "CDLCONCEALBABYSWALL"
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -114,8 +119,13 @@ concealing_baby_swallow.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
-		NextMethod()
+	as.data.frame(
+		concealing_baby_swallow.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +139,49 @@ concealing_baby_swallow.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	as.matrix(
+		concealing_baby_swallow.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases concealing_baby_swallow
+#'
+#' @export
+concealing_baby_swallow.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		concealing_baby_swallow.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+
+#' @usage NULL
+CDLCONCEALBABYSWALL_lookback <- concealingBabySwallow_lookback <- concealing_baby_swallow_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_CDLCONCEALBABYSWALL_lookback
+	)
 }
 
 #' @usage NULL
@@ -157,7 +209,7 @@ concealing_baby_swallow.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -167,7 +219,8 @@ concealing_baby_swallow.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +242,6 @@ concealing_baby_swallow.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases concealing_baby_swallow
@@ -215,7 +267,7 @@ concealing_baby_swallow.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -225,7 +277,8 @@ concealing_baby_swallow.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

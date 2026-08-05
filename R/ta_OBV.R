@@ -1,17 +1,18 @@
 #' @export
-#' @family Volume Indicator
+#' @family Volume Indicators
 #'
-#' @title On-Balance Volume
-#' @templateVar .title On-Balance Volume
+#' @title On Balance Volume
+#' @templateVar .title On Balance Volume
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun on_balance_volume
-#' @templateVar .family Volume Indicator
-#' @templateVar .formula ~close+volume
+#' @templateVar .family Volume Indicators
+#' @templateVar .formula ~close + volume
 #'
 ## splice:documentation:start
 ## splice:documentation:end
 #'
 #' @template description
+#'
 #' @template returns
 on_balance_volume <- function(
 	x,
@@ -28,6 +29,13 @@ on_balance_volume <- function(
 #'
 #' @aliases on_balance_volume
 OBV <- on_balance_volume
+
+#' @export
+#' @usage NULL
+#' @rdname on_balance_volume
+#'
+#' @aliases on_balance_volume
+onBalanceVolume <- on_balance_volume
 
 #' @usage NULL
 #' @aliases on_balance_volume
@@ -48,29 +56,27 @@ on_balance_volume.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ close + volume,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ close + volume,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_OBV,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
-		## splice:call:end
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -86,7 +92,7 @@ on_balance_volume.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		on_balance_volume.default(
 			x = x,
 			cols = cols,
@@ -106,14 +112,49 @@ on_balance_volume.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	on_balance_volume.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		on_balance_volume.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
+#' @usage NULL
+#' @aliases on_balance_volume
+#'
+#' @export
+on_balance_volume.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		on_balance_volume.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+OBV_lookback <- onBalanceVolume_lookback <- on_balance_volume_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_OBV_lookback
+	)
+}
 
 #' @usage NULL
 #' @aliases on_balance_volume
@@ -143,7 +184,7 @@ on_balance_volume.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ close + volume,
+		formula.default = ~ close + volume,
 		...
 	)
 
@@ -188,13 +229,14 @@ on_balance_volume.plotly <- function(
 			),
 			data = constructed_indicator,
 			title = if (missing(title)) {
-				"On-Balance Volume"
+				"On Balance Volume"
 			} else {
 				title
 			}
 		),
 		data = constructed_indicator[, values_to_extract, drop = FALSE],
-		values_to_extract = values_to_extract
+		values_to_extract = values_to_extract,
+		name = get0(x = "name", ifnotfound = NULL)
 	)
 
 	state <- .chart_state()
@@ -211,9 +253,9 @@ on_balance_volume.ggplot <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -230,7 +272,7 @@ on_balance_volume.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ close + volume,
+		formula.default = ~ close + volume,
 		...
 	)
 
@@ -278,7 +320,7 @@ on_balance_volume.ggplot <- function(
 			),
 			data = constructed_indicator,
 			title = if (missing(title)) {
-				"On-Balance Volume"
+				"On Balance Volume"
 			} else {
 				title
 			}

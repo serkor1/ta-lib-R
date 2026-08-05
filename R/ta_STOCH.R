@@ -1,27 +1,31 @@
 #' @export
-#' @family Momentum Indicator
+#' @family Momentum Indicators
 #'
 #' @title Stochastic
 #' @templateVar .title Stochastic
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun stochastic
-#' @templateVar .family Momentum Indicator
-#' @templateVar .formula ~ high + low + close
+#' @templateVar .family Momentum Indicators
+#' @templateVar .formula ~high + low + close
 #'
 ## splice:documentation:start
-#' @param fastk ([integer]). Period for the fast-k line.
-#' @param slowk ([list]). Period and Moving Average (MA) type  for the slow-k line. [SMA] by default.
-#' @param slowd ([list]). Period and Moving Average (MA) type  for the slow-d line. [SMA] by default.
 ## splice:documentation:end
 #'
 #' @template description
+#' @param fastKPeriod ([integer]). Time period for building the Fast-K line. Defaults to `5`.
+#' @param slowKPeriod ([integer]). Smoothing for making the Slow-K line. Usually set to 3. Defaults to `3`.
+#' @param slowKMa ([integer]). Type of Moving Average for Slow-K. Defaults to `0` ([SMA]). Can also be passed as talib::SMA.
+#' @param slowDPeriod ([integer]). Smoothing for making the Slow-D line. Defaults to `3`.
+#' @param slowDMa ([integer]). Type of Moving Average for Slow-D. Defaults to `0` ([SMA]). Can also be passed as talib::SMA.
 #' @template returns
 stochastic <- function(
 	x,
 	cols,
-	fastk = 5,
-	slowk = SMA(n = 3),
-	slowd = SMA(n = 3),
+	fastKPeriod = 5,
+	slowKPeriod = 3,
+	slowKMa = 0,
+	slowDPeriod = 3,
+	slowDMa = 0,
 	na.bridge = FALSE,
 	...
 ) {
@@ -42,9 +46,11 @@ STOCH <- stochastic
 stochastic.default <- function(
 	x,
 	cols,
-	fastk = 5,
-	slowk = SMA(n = 3),
-	slowd = SMA(n = 3),
+	fastKPeriod = 5,
+	slowKPeriod = 3,
+	slowKMa = 0,
+	slowDPeriod = 3,
+	slowDMa = 0,
 	na.bridge = FALSE,
 	...
 ) {
@@ -57,35 +63,33 @@ stochastic.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low + close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low + close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_STOCH,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		as.integer(fastk),
-		as.integer(slowk$n),
-		as.integer(slowk$maType),
-		as.integer(slowd$n),
-		as.integer(slowd$maType),
-		## splice:call:end
+		as.integer(fastKPeriod),
+		as.integer(slowKPeriod),
+		as.maType(slowKMa),
+		as.integer(slowDPeriod),
+		as.maType(slowDMa),
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -98,19 +102,23 @@ stochastic.default <- function(
 stochastic.data.frame <- function(
 	x,
 	cols,
-	fastk = 5,
-	slowk = SMA(n = 3),
-	slowd = SMA(n = 3),
+	fastKPeriod = 5,
+	slowKPeriod = 3,
+	slowKMa = 0,
+	slowDPeriod = 3,
+	slowDMa = 0,
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		stochastic.default(
 			x = x,
 			cols = cols,
-			fastk = fastk,
-			slowk = slowk,
-			slowd = slowd,
+			fastKPeriod = fastKPeriod,
+			slowKPeriod = slowKPeriod,
+			slowKMa = slowKMa,
+			slowDPeriod = slowDPeriod,
+			slowDMa = slowDMa,
 			na.bridge = na.bridge,
 			...
 		)
@@ -124,23 +132,82 @@ stochastic.data.frame <- function(
 stochastic.matrix <- function(
 	x,
 	cols,
-	fastk = 5,
-	slowk = SMA(n = 3),
-	slowd = SMA(n = 3),
+	fastKPeriod = 5,
+	slowKPeriod = 3,
+	slowKMa = 0,
+	slowDPeriod = 3,
+	slowDMa = 0,
 	na.bridge = FALSE,
 	...
 ) {
-	stochastic.default(
-		x = x,
-		cols = cols,
-		fastk = fastk,
-		slowk = slowk,
-		slowd = slowd,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		stochastic.default(
+			x = x,
+			cols = cols,
+			fastKPeriod = fastKPeriod,
+			slowKPeriod = slowKPeriod,
+			slowKMa = slowKMa,
+			slowDPeriod = slowDPeriod,
+			slowDMa = slowDMa,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
+#' @usage NULL
+#' @aliases stochastic
+#'
+#' @export
+stochastic.xts <- function(
+	x,
+	cols,
+	fastKPeriod = 5,
+	slowKPeriod = 3,
+	slowKMa = 0,
+	slowDPeriod = 3,
+	slowDMa = 0,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		stochastic.default(
+			x = x,
+			cols = cols,
+			fastKPeriod = fastKPeriod,
+			slowKPeriod = slowKPeriod,
+			slowKMa = slowKMa,
+			slowDPeriod = slowDPeriod,
+			slowDMa = slowDMa,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+STOCH_lookback <- stochastic_lookback <- function(
+	x,
+	cols,
+	fastKPeriod = 5,
+	slowKPeriod = 3,
+	slowKMa = 0,
+	slowDPeriod = 3,
+	slowDMa = 0,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_STOCH_lookback,
+		as.integer(fastKPeriod),
+		as.integer(slowKPeriod),
+		as.maType(slowKMa),
+		as.integer(slowDPeriod),
+		as.maType(slowDMa)
+	)
+}
 
 #' @usage NULL
 #' @aliases stochastic
@@ -149,9 +216,11 @@ stochastic.matrix <- function(
 stochastic.plotly <- function(
 	x,
 	cols,
-	fastk = 5,
-	slowk = SMA(n = 3),
-	slowd = SMA(n = 3),
+	fastKPeriod = 5,
+	slowKPeriod = 3,
+	slowKMa = 0,
+	slowDPeriod = 3,
+	slowDMa = 0,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 20,
@@ -175,7 +244,7 @@ stochastic.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 
@@ -186,9 +255,11 @@ stochastic.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		fastk = fastk,
-		slowk = slowk,
-		slowd = slowd,
+		fastKPeriod = fastKPeriod,
+		slowKPeriod = slowKPeriod,
+		slowKMa = slowKMa,
+		slowDPeriod = slowDPeriod,
+		slowDMa = slowDMa,
 		na.bridge = TRUE
 	)
 
@@ -207,7 +278,7 @@ stochastic.plotly <- function(
 	## splice:plotly-assembly:start
 	name <- sprintf(
 		"Stochastic(%d)",
-		fastk
+		fastKPeriod
 	)
 
 	decorators <- list(
@@ -242,7 +313,8 @@ stochastic.plotly <- function(
 			}
 		),
 		data = constructed_indicator[, values_to_extract, drop = FALSE],
-		values_to_extract = values_to_extract
+		values_to_extract = values_to_extract,
+		name = get0(x = "name", ifnotfound = NULL)
 	)
 
 	state <- .chart_state()
@@ -258,13 +330,15 @@ stochastic.plotly <- function(
 stochastic.ggplot <- function(
 	x,
 	cols,
-	fastk = 5,
-	slowk = SMA(n = 3),
-	slowd = SMA(n = 3),
+	fastKPeriod = 5,
+	slowKPeriod = 3,
+	slowKMa = 0,
+	slowDPeriod = 3,
+	slowDMa = 0,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -281,7 +355,7 @@ stochastic.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 
@@ -292,9 +366,11 @@ stochastic.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		fastk = fastk,
-		slowk = slowk,
-		slowd = slowd,
+		fastKPeriod = fastKPeriod,
+		slowKPeriod = slowKPeriod,
+		slowKMa = slowKMa,
+		slowDPeriod = slowDPeriod,
+		slowDMa = slowDMa,
 		na.bridge = TRUE
 	)
 
@@ -320,7 +396,7 @@ stochastic.ggplot <- function(
 		list(y = "SlowK"),
 		list(y = "SlowD")
 	)
-	name <- sprintf("Stochastic(%d)", fastk)
+	name <- sprintf("Stochastic(%d)", fastKPeriod)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

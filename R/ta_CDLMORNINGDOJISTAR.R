@@ -26,7 +26,7 @@
 morning_doji_star <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
@@ -40,6 +40,13 @@ morning_doji_star <- function(
 #' @aliases morning_doji_star
 CDLMORNINGDOJISTAR <- morning_doji_star
 
+#' @export
+#' @usage NULL
+#' @rdname morning_doji_star
+#'
+#' @aliases morning_doji_star
+morningDojiStar <- morning_doji_star
+
 #' @usage NULL
 #' @aliases morning_doji_star
 #'
@@ -47,7 +54,7 @@ CDLMORNINGDOJISTAR <- morning_doji_star
 morning_doji_star.default <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
@@ -72,36 +79,34 @@ morning_doji_star.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
+		x = x,
+		formula.default = ~ open + high + low + close,
+		formula = cols,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
-	x <- as.matrix(
-		.Call(
-			C_impl_ta_CDLMORNINGDOJISTAR,
-			constructed_series[[1]],
-			constructed_series[[2]],
-			constructed_series[[3]],
-			constructed_series[[4]],
-			eps,
-			normalize,
-			as.logical(na.bridge)
-		)
+	x <- .Call(
+		C_impl_ta_CDLMORNINGDOJISTAR,
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
+		as.double(penetration),
+		normalize,
+		as.logical(na.bridge)
 	)
 
 	## add column name
 	colnames(x) <- "CDLMORNINGDOJISTAR"
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -114,12 +119,18 @@ morning_doji_star.default <- function(
 morning_doji_star.data.frame <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
-		NextMethod()
+	as.data.frame(
+		morning_doji_star.default(
+			x = x,
+			cols = cols,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -130,11 +141,58 @@ morning_doji_star.data.frame <- function(
 morning_doji_star.matrix <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	as.matrix(
+		morning_doji_star.default(
+			x = x,
+			cols = cols,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases morning_doji_star
+#'
+#' @export
+morning_doji_star.xts <- function(
+	x,
+	cols,
+	penetration = 0.3,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		morning_doji_star.default(
+			x = x,
+			cols = cols,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+
+#' @usage NULL
+CDLMORNINGDOJISTAR_lookback <- morningDojiStar_lookback <- morning_doji_star_lookback <- function(
+	x,
+	cols,
+	penetration = 0.3,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_CDLMORNINGDOJISTAR_lookback,
+		as.double(penetration)
+	)
 }
 
 #' @usage NULL
@@ -144,7 +202,7 @@ morning_doji_star.matrix <- function(
 morning_doji_star.plotly <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
@@ -163,7 +221,7 @@ morning_doji_star.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -174,7 +232,8 @@ morning_doji_star.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		eps = eps
+		penetration = penetration,
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -197,7 +256,6 @@ morning_doji_star.plotly <- function(
 	plotly_object
 }
 
-
 #' @usage NULL
 #' @aliases morning_doji_star
 #'
@@ -205,7 +263,7 @@ morning_doji_star.plotly <- function(
 morning_doji_star.ggplot <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
@@ -223,7 +281,7 @@ morning_doji_star.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -234,7 +292,8 @@ morning_doji_star.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		eps = eps
+		penetration = penetration,
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

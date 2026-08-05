@@ -1,25 +1,27 @@
 #' @export
-#' @family Momentum Indicator
+#' @family Momentum Indicators
 #'
-#' @title Fast Stochastic
-#' @templateVar .title Fast Stochastic
+#' @title Stochastic Fast
+#' @templateVar .title Stochastic Fast
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun fast_stochastic
-#' @templateVar .family Momentum Indicator
-#' @templateVar .formula ~ high + low + close
+#' @templateVar .family Momentum Indicators
+#' @templateVar .formula ~high + low + close
 #'
 ## splice:documentation:start
-#' @param fastk ([integer]). Period for the fast-k line.
-#' @param fastd ([list]). Period and Moving Average (MA) type  for the fast-d line. [SMA] by default.
 ## splice:documentation:end
 #'
 #' @template description
+#' @param fastKPeriod ([integer]). Time period for building the Fast-K line. Defaults to `5`.
+#' @param fastDPeriod ([integer]). Smoothing for making the Fast-D line. Usually set to 3. Defaults to `3`.
+#' @param fastDMa ([integer]). Type of Moving Average for Fast-D. Defaults to `0` ([SMA]). Can also be passed as talib::SMA.
 #' @template returns
 fast_stochastic <- function(
 	x,
 	cols,
-	fastk = 5,
-	fastd = SMA(n = 3),
+	fastKPeriod = 5,
+	fastDPeriod = 3,
+	fastDMa = 0,
 	na.bridge = FALSE,
 	...
 ) {
@@ -33,6 +35,13 @@ fast_stochastic <- function(
 #' @aliases fast_stochastic
 STOCHF <- fast_stochastic
 
+#' @export
+#' @usage NULL
+#' @rdname fast_stochastic
+#'
+#' @aliases fast_stochastic
+fastStochastic <- fast_stochastic
+
 #' @usage NULL
 #' @aliases fast_stochastic
 #'
@@ -40,8 +49,9 @@ STOCHF <- fast_stochastic
 fast_stochastic.default <- function(
 	x,
 	cols,
-	fastk = 5,
-	fastd = SMA(n = 3),
+	fastKPeriod = 5,
+	fastDPeriod = 3,
+	fastDMa = 0,
 	na.bridge = FALSE,
 	...
 ) {
@@ -54,33 +64,31 @@ fast_stochastic.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low + close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low + close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_STOCHF,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		as.integer(fastk),
-		as.integer(fastd$n),
-		as.integer(fastd$maType),
-		## splice:call:end
+		as.integer(fastKPeriod),
+		as.integer(fastDPeriod),
+		as.maType(fastDMa),
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -93,17 +101,19 @@ fast_stochastic.default <- function(
 fast_stochastic.data.frame <- function(
 	x,
 	cols,
-	fastk = 5,
-	fastd = SMA(n = 3),
+	fastKPeriod = 5,
+	fastDPeriod = 3,
+	fastDMa = 0,
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		fast_stochastic.default(
 			x = x,
 			cols = cols,
-			fastk = fastk,
-			fastd = fastd,
+			fastKPeriod = fastKPeriod,
+			fastDPeriod = fastDPeriod,
+			fastDMa = fastDMa,
 			na.bridge = na.bridge,
 			...
 		)
@@ -117,21 +127,70 @@ fast_stochastic.data.frame <- function(
 fast_stochastic.matrix <- function(
 	x,
 	cols,
-	fastk = 5,
-	fastd = SMA(n = 3),
+	fastKPeriod = 5,
+	fastDPeriod = 3,
+	fastDMa = 0,
 	na.bridge = FALSE,
 	...
 ) {
-	fast_stochastic.default(
-		x = x,
-		cols = cols,
-		fastk = fastk,
-		fastd = fastd,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		fast_stochastic.default(
+			x = x,
+			cols = cols,
+			fastKPeriod = fastKPeriod,
+			fastDPeriod = fastDPeriod,
+			fastDMa = fastDMa,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
+#' @usage NULL
+#' @aliases fast_stochastic
+#'
+#' @export
+fast_stochastic.xts <- function(
+	x,
+	cols,
+	fastKPeriod = 5,
+	fastDPeriod = 3,
+	fastDMa = 0,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		fast_stochastic.default(
+			x = x,
+			cols = cols,
+			fastKPeriod = fastKPeriod,
+			fastDPeriod = fastDPeriod,
+			fastDMa = fastDMa,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+STOCHF_lookback <- fastStochastic_lookback <- fast_stochastic_lookback <- function(
+	x,
+	cols,
+	fastKPeriod = 5,
+	fastDPeriod = 3,
+	fastDMa = 0,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_STOCHF_lookback,
+		as.integer(fastKPeriod),
+		as.integer(fastDPeriod),
+		as.maType(fastDMa)
+	)
+}
 
 #' @usage NULL
 #' @aliases fast_stochastic
@@ -140,8 +199,9 @@ fast_stochastic.matrix <- function(
 fast_stochastic.plotly <- function(
 	x,
 	cols,
-	fastk = 5,
-	fastd = SMA(n = 3),
+	fastKPeriod = 5,
+	fastDPeriod = 3,
+	fastDMa = 0,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = 20,
@@ -165,7 +225,7 @@ fast_stochastic.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 
@@ -176,8 +236,9 @@ fast_stochastic.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		fastk = fastk,
-		fastd = fastd,
+		fastKPeriod = fastKPeriod,
+		fastDPeriod = fastDPeriod,
+		fastDMa = fastDMa,
 		na.bridge = TRUE
 	)
 
@@ -195,7 +256,7 @@ fast_stochastic.plotly <- function(
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
 
-	name <- ""
+	name <- sprintf("StochF(%d)", fastKPeriod)
 
 	decorators <- list(
 		function(p) add_limit_ly(p, y_range = c(0, 100))
@@ -223,13 +284,14 @@ fast_stochastic.plotly <- function(
 			),
 			data = constructed_indicator,
 			title = if (missing(title)) {
-				"Fast Stochastic"
+				"Stochastic Fast"
 			} else {
 				title
 			}
 		),
 		data = constructed_indicator[, values_to_extract, drop = FALSE],
-		values_to_extract = values_to_extract
+		values_to_extract = values_to_extract,
+		name = get0(x = "name", ifnotfound = NULL)
 	)
 
 	state <- .chart_state()
@@ -245,12 +307,13 @@ fast_stochastic.plotly <- function(
 fast_stochastic.ggplot <- function(
 	x,
 	cols,
-	fastk = 5,
-	fastd = SMA(n = 3),
+	fastKPeriod = 5,
+	fastDPeriod = 3,
+	fastDMa = 0,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -267,7 +330,7 @@ fast_stochastic.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 
@@ -278,8 +341,9 @@ fast_stochastic.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		fastk = fastk,
-		fastd = fastd,
+		fastKPeriod = fastKPeriod,
+		fastDPeriod = fastDPeriod,
+		fastDMa = fastDMa,
 		na.bridge = TRUE
 	)
 
@@ -305,7 +369,7 @@ fast_stochastic.ggplot <- function(
 		list(y = "FastK"),
 		list(y = "FastD")
 	)
-	name <- sprintf("StochF(%d)", fastk)
+	name <- sprintf("StochF(%d)", fastKPeriod)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(
@@ -322,7 +386,7 @@ fast_stochastic.ggplot <- function(
 			),
 			data = constructed_indicator,
 			title = if (missing(title)) {
-				"Fast Stochastic"
+				"Stochastic Fast"
 			} else {
 				title
 			}

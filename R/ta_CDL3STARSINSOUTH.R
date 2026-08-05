@@ -1,8 +1,8 @@
 #' @export
 #' @family Pattern Recognition
 #'
-#' @title Three Stars in the South
-#' @templateVar .title Three Stars in the South
+#' @title Three Stars In The South
+#' @templateVar .title Three Stars In The South
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun three_stars_in_the_south
 #' @templateVar .family Pattern Recognition
@@ -39,6 +39,13 @@ three_stars_in_the_south <- function(
 #' @aliases three_stars_in_the_south
 CDL3STARSINSOUTH <- three_stars_in_the_south
 
+#' @export
+#' @usage NULL
+#' @rdname three_stars_in_the_south
+#'
+#' @aliases three_stars_in_the_south
+threeStarsInTheSouth <- three_stars_in_the_south
+
 #' @usage NULL
 #' @aliases three_stars_in_the_south
 #'
@@ -70,35 +77,33 @@ three_stars_in_the_south.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
+		x = x,
+		formula.default = ~ open + high + low + close,
+		formula = cols,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
-	x <- as.matrix(
-		.Call(
-			C_impl_ta_CDL3STARSINSOUTH,
-			constructed_series[[1]],
-			constructed_series[[2]],
-			constructed_series[[3]],
-			constructed_series[[4]],
-			normalize,
-			as.logical(na.bridge)
-		)
+	x <- .Call(
+		C_impl_ta_CDL3STARSINSOUTH,
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
+		normalize,
+		as.logical(na.bridge)
 	)
 
 	## add column name
 	colnames(x) <- "CDL3STARSINSOUTH"
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -114,8 +119,13 @@ three_stars_in_the_south.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
-		NextMethod()
+	as.data.frame(
+		three_stars_in_the_south.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +139,49 @@ three_stars_in_the_south.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	as.matrix(
+		three_stars_in_the_south.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases three_stars_in_the_south
+#'
+#' @export
+three_stars_in_the_south.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		three_stars_in_the_south.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+
+#' @usage NULL
+CDL3STARSINSOUTH_lookback <- threeStarsInTheSouth_lookback <- three_stars_in_the_south_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_CDL3STARSINSOUTH_lookback
+	)
 }
 
 #' @usage NULL
@@ -157,7 +209,7 @@ three_stars_in_the_south.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -167,7 +219,8 @@ three_stars_in_the_south.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +242,6 @@ three_stars_in_the_south.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases three_stars_in_the_south
@@ -215,7 +267,7 @@ three_stars_in_the_south.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -225,7 +277,8 @@ three_stars_in_the_south.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

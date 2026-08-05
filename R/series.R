@@ -15,9 +15,9 @@
 #' Effectively a thin wrapper around [stats::model.frame()].
 #'
 #' @param x Dispatch target: a `formula`, `ggplot`, or `plotly` object.
-#'   May be omitted by the caller, in which case `default_formula` is
+#'   May be omitted by the caller, in which case `formula.default` is
 #'   substituted in so dispatch always has a real target.
-#' @param default_formula The indicator's default formula
+#' @param formula.default The indicator's default formula
 #'   (e.g. `~close`, `~high + low + close`). Used as the fallback for
 #'   `x` and as the minimum-length check in [series.formula()].
 #' @param ... Forwarded to the dispatched method - typically `data`
@@ -28,43 +28,54 @@
 #' @noRd
 series <- function(
 	x,
-	default_formula,
+	formula, ## passed formula
+	formula.default, ## default formula
 	...
 ) {
-	## Callers may omit `x` when they want the default formula used
-	## wholesale (e.g. indicator(RSI, data = df) with no cols). Populate
-	## `x` early so dispatch always has a real target.
-	if (missing(x)) {
-		x <- default_formula
-	}
-
 	UseMethod("series", x)
 }
 
+#' @export
+series.default <- function(
+	x,
+	formula,
+	formula.default,
+	...
+) {
+	## classed inputs (zoo, tibble-likes, ...) defer to
+	## as.data.frame() for proper method dispatch
+	series(
+		x = as.data.frame(x),
+		formula = formula,
+		formula.default = formula.default,
+		...
+	)
+}
+
 #' Chart-pipeline entry for ggplot backends. Resolves `formula` against
-#' `default_formula` and delegates to [.series_chart_dispatch()].
+#' `formula.default` and delegates to [.series_chart_dispatch()].
 #'
 #' @param x The active `ggplot` chart object dispatched on.
-#' @param default_formula The indicator's default formula (e.g.
+#' @param formula.default The indicator's default formula (e.g.
 #'   `~close`).
 #' @param formula Optional explicit column formula; falls back to
-#'   `default_formula` when missing.
+#'   `formula.default` when missing.
 #' @param ... Quoted by the dispatcher and forwarded to
 #'   [stats::model.frame()] - typically `data` and optional `subset`.
 #' @noRd
 #' @export
 series.ggplot <- function(
 	x,
-	default_formula,
 	formula,
+	formula.default,
 	...
 ) {
 	if (missing(formula)) {
-		formula <- default_formula
+		formula <- formula.default
 	}
 	.series_chart_dispatch(
 		x = x,
-		default_formula = default_formula,
+		formula.default = formula.default,
 		formula = formula,
 		...
 	)
@@ -74,26 +85,26 @@ series.ggplot <- function(
 #' [series.ggplot()].
 #'
 #' @param x The active `plotly` chart object dispatched on.
-#' @param default_formula The indicator's default formula (e.g.
+#' @param formula.default The indicator's default formula (e.g.
 #'   `~close`).
 #' @param formula Optional explicit column formula; falls back to
-#'   `default_formula` when missing.
+#'   `formula.default` when missing.
 #' @param ... Quoted by the dispatcher and forwarded to
 #'   [stats::model.frame()] - typically `data` and optional `subset`.
 #' @noRd
 #' @export
 series.plotly <- function(
 	x,
-	default_formula,
 	formula,
+	formula.default,
 	...
 ) {
 	if (missing(formula)) {
-		formula <- default_formula
+		formula <- formula.default
 	}
 	.series_chart_dispatch(
 		x = x,
-		default_formula = default_formula,
+		formula.default = formula.default,
 		formula = formula,
 		...
 	)
@@ -110,7 +121,7 @@ series.plotly <- function(
 #' on ETH while computing RSI on BTC).
 #'
 #' @param x The chart object dispatched on (`ggplot` / `plotly`).
-#' @param default_formula The indicator's default formula.
+#' @param formula.default The indicator's default formula.
 #' @param formula Resolved column formula (already defaulted by the
 #'   caller).
 #' @param ... Caller dots; quoted here so [stats::model.frame()] can
@@ -118,8 +129,8 @@ series.plotly <- function(
 #' @noRd
 .series_chart_dispatch <- function(
 	x,
-	default_formula,
 	formula,
+	formula.default,
 	...
 ) {
 	dots_quoted <- as.list(
@@ -127,15 +138,36 @@ series.plotly <- function(
 			list(...)
 		)
 	)[-1L]
-	dn <- ...names()
+	## substitute() captures the argument names alongside the
+	## expressions - base::...names() exists only from R 4.1
+	dn <- names(dots_quoted)
 	if (length(dots_quoted)) {
 		if (is.null(dn)) {
 			dn <- rep("", length(dots_quoted))
 		}
 		names(dots_quoted) <- dn
+
+		## force every argument except 'subset' through its own
+		## promise so caller-local objects (data = my_local)
+		## resolve in the caller's frame; 'subset' stays quoted
+		## for the single model.frame() evaluation downstream
+		dots_quoted[] <- lapply(seq_along(dots_quoted), function(i) {
+			if (identical(dn[[i]], "subset")) {
+				dots_quoted[[i]]
+			} else {
+				...elt(i)
+			}
+		})
 	} else {
 		dots_quoted <- list()
 	}
+
+	## model.frame() falls back to the formula environment for
+	## subset symbols that are not columns; re-parent it to the
+	## frame that called the wrapper so caller-local objects
+	## resolve (three frames up: series method -> wrapper method
+	## -> the wrapper's caller)
+	environment(formula) <- parent.frame(3L)
 
 	## Inject the chart's data only when the caller did NOT pass data
 	## explicitly. This preserves the per-indicator data override -
@@ -156,25 +188,31 @@ series.plotly <- function(
 		dots_quoted$data <- state$x
 	}
 
-	output <- as.data.frame(
+	data_arg <- dots_quoted$data
+	dots_quoted$data <- NULL
+
+	## the subset attribute travels on the series result - set
+	## once by series.data.frame from what model.frame() kept
+	as.data.frame(
 		do.call(
-			series.formula,
+			series,
 			c(
-				list(x = formula, default_formula = default_formula),
+				list(
+					x = data_arg,
+					formula = formula,
+					formula.default = formula.default
+				),
 				dots_quoted
 			),
 			quote = FALSE
 		)
 	)
-
-	attr(output, "subset") <- eval(dots_quoted$subset)
-	output
 }
 
 #' Formula method - the main column-resolution path.
 #'
 #' Validates that an explicit `x` covers at least the variables
-#' expected by `default_formula`, fast-coerces plain numeric matrices
+#' expected by `formula.default`, fast-coerces plain numeric matrices
 #' via the C helper in `src/dataframe.c`, defers classed inputs (xts,
 #' zoo, tibble, ...) to [as.data.frame()] for proper method dispatch,
 #' then builds the model frame. Skips [stats::model.frame()] entirely
@@ -182,34 +220,34 @@ series.plotly <- function(
 #' bare-data path.
 #'
 #' @param x A `formula` selecting OHLCV columns (e.g. `~close`,
-#'   `~high + low + close`). Falls back to `default_formula` when
+#'   `~high + low + close`). Falls back to `formula.default` when
 #'   missing - the generic populates `x`, but `UseMethod()` re-invokes
 #'   with the original args, so the missing check has to repeat here.
-#' @param default_formula The indicator's default formula. Sets the
+#' @param formula.default The indicator's default formula. Sets the
 #'   minimum acceptable length for an explicit `x`.
 #' @param data A data frame, plain numeric matrix, or any object with
 #'   an [as.data.frame()] method.
 #' @param ... Forwarded to [stats::model.frame()] - typically `subset`.
 #' @noRd
 #' @export
-series.formula <- function(
+series.data.frame <- function(
 	x,
-	default_formula,
-	data,
+	formula,
+	formula.default,
 	...
 ) {
-	## UseMethod re-invokes the method with the *original* arguments,
-	## so a missing `x` in the generic stays missing here even though
-	## the generic assigned it. Re-resolve before touching `x`.
-	if (missing(x)) {
-		x <- default_formula
+	# ## UseMethod re-invokes the method with the *original* arguments,
+	# ## so a missing `x` in the generic stays missing here even though
+	# ## the generic assigned it. Re-resolve before touching `x`.
+	if (missing(formula)) {
+		formula <- formula.default
 	}
 
 	## An explicit formula must cover at least the variables expected by
 	## the indicator's default. A longer formula is allowed - downstream
 	## code only consumes what it needs.
-	formula_length <- length(all.vars(x))
-	default_length <- length(all.vars(default_formula))
+	formula_length <- length(all.vars(formula))
+	default_length <- length(all.vars(formula.default))
 
 	assert(
 		x = formula_length >= default_length,
@@ -218,47 +256,174 @@ series.formula <- function(
 		paste0("Got length ", formula_length, "."),
 		paste0(
 			"Uses ",
-			paste0("'", all.vars(default_formula), "'", collapse = ", "),
+			paste0("'", all.vars(formula.default), "'", collapse = ", "),
 			" by default."
 		)
 	)
 
-	## Fast matrix -> data.frame coercion via the C helper in
-	## src/dataframe.c. Restricted to *plain* numeric matrices: an
-	## explicit class (xts, zoo, tibble, ...) is left to as.data.frame
-	## so the dispatch system picks the correct coercion method.
-	if (
-		is.matrix(data) &&
-			is.null(oldClass(data)) &&
-			typeof(data) %in% c("double", "integer")
-	) {
-		data <- map_dfr(data)
-	} else if (!is.data.frame(data)) {
-		## map_dfr only registers methods for plain double / integer
-		## matrices, so anything carrying an explicit class (xts, zoo,
-		## tibble, ...) or a non-numeric type has to go through
-		## as.data.frame so its method-dispatched coercion runs.
-		data <- as.data.frame(data)
-	}
-
 	assert_column_names(
-		formula = x,
-		available_variables = colnames(data)
+		formula = formula,
+		available_variables = colnames(x)
 	)
 
 	dots_quoted <- as.list(substitute(list(...)))[-1L]
 
 	if (length(dots_quoted) == 0L) {
-		output <- data[, all.vars(x), drop = FALSE]
+		output <- x[, all.vars(formula), drop = FALSE]
 	} else {
 		output <- do.call(
 			stats::model.frame,
-			c(list(formula = x, data = data), dots_quoted),
+			c(list(formula = formula, data = x), dots_quoted),
 			quote = FALSE
+		)
+
+		## the rows model.frame() actually kept - evaluated once,
+		## in the data context. Consumers (add_idx, the chart
+		## builders) index the chart axis with these positions.
+		if ("subset" %in% names(dots_quoted)) {
+			attr(output, "subset") <- match(rownames(output), rownames(x))
+		}
+	}
+
+	output
+}
+
+#' @export
+series.matrix <- function(
+	x,
+	formula,
+	formula.default,
+	...
+) {
+	## convert to <data.frame>
+	## and pass into series
+	x <- map_dfr(x)
+
+	series(
+		x = x,
+		formula = formula,
+		formula.default = formula.default
+	)
+}
+
+#' @export
+series.xts <- function(
+	x,
+	formula,
+	formula.default,
+	...
+) {
+	## reclass 'x' so downstream can
+	## can handle the output
+	class(x) <- c(
+		class(x),
+		"ta_series"
+	)
+
+	## fast-track univariate input: a single-column <xts>
+	## is consumed as-is when the indicator expects a single
+	## series, regardless of its column name
+	if (missing(formula)) {
+		if (NCOL(x) == 1L && length(all.vars(formula.default)) == 1L) {
+			return(x)
+		}
+
+		## if the formula is not passed
+		## it should be replaced by the default
+		formula <- formula.default
+	}
+
+	if (...length()) {
+		warning(
+			"'...' is passed but is unused for <xts>.",
+			call. = FALSE
 		)
 	}
 
-	attr(output, "subset") <- eval(dots_quoted$subset)
+	## an explicit formula must cover at least the variables
+	## expected by the indicator's default. A longer formula is
+	## allowed - downstream code only consumes what it needs.
+	formula_length <- length(all.vars(formula))
+	default_length <- length(all.vars(formula.default))
 
-	output
+	assert(
+		x = formula_length >= default_length,
+		call = sys.call(sys.parent()),
+		paste0("Expected 'cols' length to be ", default_length, "."),
+		paste0("Got length ", formula_length, "."),
+		paste0(
+			"Uses ",
+			paste0("'", all.vars(formula.default), "'", collapse = ", "),
+			" by default."
+		)
+	)
+
+	passed_variables <- all.vars(formula)
+	available_variables <- colnames(x)
+
+	lowered_passed <- tolower(passed_variables)
+	lowered_available <- tolower(available_variables)
+
+	## match matrix: one row per formula variable, one column
+	## per <xts> column. Exact name matches win over
+	## quantmod-style suffix matches (close -> TICKER.Close) so
+	## a plain 'Close' column is preferred over 'Adj.Close';
+	## columns are resolved in formula order because the C layer
+	## consumes them positionally
+	exact_hits <- outer(
+		lowered_passed,
+		lowered_available,
+		`==`
+	)
+
+	suffix_hits <- outer(
+		paste0(".", lowered_passed),
+		lowered_available,
+		function(suffix, name) endsWith(name, suffix)
+	)
+
+	suffix_hits[rowSums(exact_hits) > 0L, ] <- FALSE
+
+	hits <- exact_hits | suffix_hits
+	matches <- rowSums(hits)
+
+	assert(
+		x = all(matches > 0L),
+		call = sys.call(sys.parent()),
+		paste(
+			"Expected to find columns",
+			paste0("'", passed_variables, "'", collapse = ", ")
+		),
+		paste0(
+			"available columns: ",
+			paste0("'", available_variables, "'", collapse = ", ")
+		)
+	)
+
+	assert(
+		x = all(matches == 1L),
+		call = sys.call(sys.parent()),
+		paste(
+			"Ambiguous columns",
+			paste0("'", passed_variables[matches > 1L], "'", collapse = ", "),
+			"."
+		),
+		paste0(
+			"Matches: ",
+			paste0(
+				"'",
+				available_variables[
+					colSums(hits[matches > 1L, , drop = FALSE]) > 0L
+				],
+				"'",
+				collapse = ", "
+			),
+			"."
+		)
+	)
+
+	## the single TRUE per row is the resolved column
+	identified_columns <- max.col(hits, ties.method = "first")
+
+	x[, identified_columns, drop = FALSE]
 }

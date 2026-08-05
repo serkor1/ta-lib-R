@@ -1,17 +1,18 @@
 #' @export
-#' @family Cycle Indicator
+#' @family Cycle Indicators
 #'
 #' @title Hilbert Transform - SineWave
 #' @templateVar .title Hilbert Transform - SineWave
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun sine_wave
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Cycle Indicators
 #' @templateVar .formula ~close
 #'
 ## splice:documentation:start
 ## splice:documentation:end
 #'
 #' @template description
+#'
 #' @template returns
 sine_wave <- function(
 	x,
@@ -28,6 +29,13 @@ sine_wave <- function(
 #'
 #' @aliases sine_wave
 HT_SINE <- sine_wave
+
+#' @export
+#' @usage NULL
+#' @rdname sine_wave
+#'
+#' @aliases sine_wave
+sineWave <- sine_wave
 
 #' @usage NULL
 #' @aliases sine_wave
@@ -48,28 +56,26 @@ sine_wave.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_HT_SINE,
-		## splice:call:start
 		constructed_series[[1]],
-		## splice:call:end
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -85,7 +91,7 @@ sine_wave.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		sine_wave.default(
 			x = x,
 			cols = cols,
@@ -105,14 +111,49 @@ sine_wave.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	sine_wave.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		sine_wave.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
+#' @usage NULL
+#' @aliases sine_wave
+#'
+#' @export
+sine_wave.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		sine_wave.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+HT_SINE_lookback <- sineWave_lookback <- sine_wave_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_HT_SINE_lookback
+	)
+}
 
 #' @usage NULL
 #' @aliases sine_wave
@@ -132,31 +173,25 @@ sine_wave.numeric <- function(
 		warning("'cols' is passed but is unused for vectors.")
 	}
 
+	if (...length()) {
+		warning("'...' is passed but is unused for vectors.")
+	}
+
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
 		C_impl_ta_HT_SINE,
-		## splice:numeric:start
 		as.double(x),
-		## splice:numeric:end
 		as.logical(na.bridge)
 	)
 
-	## check if it has 'dims'
-	## and convert to double if
-	## not to honor the 'type-safety'-esque
-	## approach
-	##
-	## NOTE: this adds a few ns overhead but
-	##       its a robust alternative to code it
-	##       manually. Any suggestions are welcome
-	if (is.null(dim(x))) {
-		x <- as.double(x)
+	if (dim(x)[2] == 1L) {
+		dim(x) <- NULL
 	}
+	class(x) <- NULL
 
 	x
 }
-
 
 #' @usage NULL
 #' @aliases sine_wave
@@ -186,7 +221,7 @@ sine_wave.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 
@@ -255,7 +290,8 @@ sine_wave.plotly <- function(
 			}
 		),
 		data = constructed_indicator[, values_to_extract, drop = FALSE],
-		values_to_extract = values_to_extract
+		values_to_extract = values_to_extract,
+		name = get0(x = "name", ifnotfound = NULL)
 	)
 
 	state <- .chart_state()
@@ -272,9 +308,9 @@ sine_wave.ggplot <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -291,7 +327,7 @@ sine_wave.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 

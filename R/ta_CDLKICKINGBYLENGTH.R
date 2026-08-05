@@ -1,8 +1,8 @@
 #' @export
 #' @family Pattern Recognition
 #'
-#' @title Kicking Baby Length
-#' @templateVar .title Kicking Baby Length
+#' @title Kicking - bull/bear determined by the longer marubozu
+#' @templateVar .title Kicking - bull/bear determined by the longer marubozu
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun kicking_baby_length
 #' @templateVar .family Pattern Recognition
@@ -39,6 +39,13 @@ kicking_baby_length <- function(
 #' @aliases kicking_baby_length
 CDLKICKINGBYLENGTH <- kicking_baby_length
 
+#' @export
+#' @usage NULL
+#' @rdname kicking_baby_length
+#'
+#' @aliases kicking_baby_length
+kickingBabyLength <- kicking_baby_length
+
 #' @usage NULL
 #' @aliases kicking_baby_length
 #'
@@ -70,35 +77,33 @@ kicking_baby_length.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
+		x = x,
+		formula.default = ~ open + high + low + close,
+		formula = cols,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
-	x <- as.matrix(
-		.Call(
-			C_impl_ta_CDLKICKINGBYLENGTH,
-			constructed_series[[1]],
-			constructed_series[[2]],
-			constructed_series[[3]],
-			constructed_series[[4]],
-			normalize,
-			as.logical(na.bridge)
-		)
+	x <- .Call(
+		C_impl_ta_CDLKICKINGBYLENGTH,
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
+		normalize,
+		as.logical(na.bridge)
 	)
 
 	## add column name
 	colnames(x) <- "CDLKICKINGBYLENGTH"
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -114,8 +119,13 @@ kicking_baby_length.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
-		NextMethod()
+	as.data.frame(
+		kicking_baby_length.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +139,49 @@ kicking_baby_length.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	as.matrix(
+		kicking_baby_length.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases kicking_baby_length
+#'
+#' @export
+kicking_baby_length.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		kicking_baby_length.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+
+#' @usage NULL
+CDLKICKINGBYLENGTH_lookback <- kickingBabyLength_lookback <- kicking_baby_length_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_CDLKICKINGBYLENGTH_lookback
+	)
 }
 
 #' @usage NULL
@@ -157,7 +209,7 @@ kicking_baby_length.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -167,7 +219,8 @@ kicking_baby_length.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +242,6 @@ kicking_baby_length.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases kicking_baby_length
@@ -215,7 +267,7 @@ kicking_baby_length.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -225,7 +277,8 @@ kicking_baby_length.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

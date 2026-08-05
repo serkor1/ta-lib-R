@@ -1,27 +1,27 @@
 #' @export
-#' @family Momentum Indicator
+#' @family Momentum Indicators
 #'
 #' @title Percentage Price Oscillator
 #' @templateVar .title Percentage Price Oscillator
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun percentage_price_oscillator
-#' @templateVar .family Momentum Indicator
+#' @templateVar .family Momentum Indicators
 #' @templateVar .formula ~close
 #'
 ## splice:documentation:start
-#' @param fast ([integer]). Period for the fast Moving Average (MA).
-#' @param slow ([integer]). Period for the slow Moving Average (MA).
-#' @param ma ([list]). The type of Moving Average (MA) used for the `fast` and `slow` MA. [SMA] by default.
 ## splice:documentation:end
 #'
 #' @template description
+#' @param fastPeriod ([integer]). Period of the fast MA. Defaults to `12`.
+#' @param slowPeriod ([integer]). Period of the slow MA. Defaults to `26`.
+#' @param maType ([integer]). Type of Moving Average. Defaults to `1` ([EMA]). Can also be passed as talib::EMA.
 #' @template returns
 percentage_price_oscillator <- function(
 	x,
 	cols,
-	fast = 12,
-	slow = 26,
-	ma = SMA(n = 9),
+	fastPeriod = 12,
+	slowPeriod = 26,
+	maType = 1,
 	na.bridge = FALSE,
 	...
 ) {
@@ -35,6 +35,13 @@ percentage_price_oscillator <- function(
 #' @aliases percentage_price_oscillator
 PPO <- percentage_price_oscillator
 
+#' @export
+#' @usage NULL
+#' @rdname percentage_price_oscillator
+#'
+#' @aliases percentage_price_oscillator
+percentagePriceOscillator <- percentage_price_oscillator
+
 #' @usage NULL
 #' @aliases percentage_price_oscillator
 #'
@@ -42,9 +49,9 @@ PPO <- percentage_price_oscillator
 percentage_price_oscillator.default <- function(
 	x,
 	cols,
-	fast = 12,
-	slow = 26,
-	ma = SMA(n = 9),
+	fastPeriod = 12,
+	slowPeriod = 26,
+	maType = 1,
 	na.bridge = FALSE,
 	...
 ) {
@@ -57,31 +64,29 @@ percentage_price_oscillator.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_PPO,
-		## splice:call:start
 		constructed_series[[1]],
-		as.integer(fast),
-		as.integer(slow),
-		ma$maType,
-		## splice:call:end
+		as.integer(fastPeriod),
+		as.integer(slowPeriod),
+		as.maType(maType),
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -94,19 +99,19 @@ percentage_price_oscillator.default <- function(
 percentage_price_oscillator.data.frame <- function(
 	x,
 	cols,
-	fast = 12,
-	slow = 26,
-	ma = SMA(n = 9),
+	fastPeriod = 12,
+	slowPeriod = 26,
+	maType = 1,
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		percentage_price_oscillator.default(
 			x = x,
 			cols = cols,
-			fast = fast,
-			slow = slow,
-			ma = ma,
+			fastPeriod = fastPeriod,
+			slowPeriod = slowPeriod,
+			maType = maType,
 			na.bridge = na.bridge,
 			...
 		)
@@ -120,23 +125,70 @@ percentage_price_oscillator.data.frame <- function(
 percentage_price_oscillator.matrix <- function(
 	x,
 	cols,
-	fast = 12,
-	slow = 26,
-	ma = SMA(n = 9),
+	fastPeriod = 12,
+	slowPeriod = 26,
+	maType = 1,
 	na.bridge = FALSE,
 	...
 ) {
-	percentage_price_oscillator.default(
-		x = x,
-		cols = cols,
-		fast = fast,
-		slow = slow,
-		ma = ma,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		percentage_price_oscillator.default(
+			x = x,
+			cols = cols,
+			fastPeriod = fastPeriod,
+			slowPeriod = slowPeriod,
+			maType = maType,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
+#' @usage NULL
+#' @aliases percentage_price_oscillator
+#'
+#' @export
+percentage_price_oscillator.xts <- function(
+	x,
+	cols,
+	fastPeriod = 12,
+	slowPeriod = 26,
+	maType = 1,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		percentage_price_oscillator.default(
+			x = x,
+			cols = cols,
+			fastPeriod = fastPeriod,
+			slowPeriod = slowPeriod,
+			maType = maType,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+PPO_lookback <- percentagePriceOscillator_lookback <- percentage_price_oscillator_lookback <- function(
+	x,
+	cols,
+	fastPeriod = 12,
+	slowPeriod = 26,
+	maType = 1,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_PPO_lookback,
+		as.integer(fastPeriod),
+		as.integer(slowPeriod),
+		as.maType(maType)
+	)
+}
 
 #' @usage NULL
 #' @aliases percentage_price_oscillator
@@ -145,9 +197,9 @@ percentage_price_oscillator.matrix <- function(
 percentage_price_oscillator.numeric <- function(
 	x,
 	cols,
-	fast = 12,
-	slow = 26,
-	ma = SMA(n = 9),
+	fastPeriod = 12,
+	slowPeriod = 26,
+	maType = 1,
 	na.bridge = FALSE,
 	...
 ) {
@@ -159,34 +211,28 @@ percentage_price_oscillator.numeric <- function(
 		warning("'cols' is passed but is unused for vectors.")
 	}
 
+	if (...length()) {
+		warning("'...' is passed but is unused for vectors.")
+	}
+
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
 		C_impl_ta_PPO,
-		## splice:numeric:start
 		as.double(x),
-		as.integer(fast),
-		as.integer(slow),
-		ma$maType,
-		## splice:numeric:end
+		as.integer(fastPeriod),
+		as.integer(slowPeriod),
+		as.maType(maType),
 		as.logical(na.bridge)
 	)
 
-	## check if it has 'dims'
-	## and convert to double if
-	## not to honor the 'type-safety'-esque
-	## approach
-	##
-	## NOTE: this adds a few ns overhead but
-	##       its a robust alternative to code it
-	##       manually. Any suggestions are welcome
-	if (is.null(dim(x))) {
-		x <- as.double(x)
+	if (dim(x)[2] == 1L) {
+		dim(x) <- NULL
 	}
+	class(x) <- NULL
 
 	x
 }
-
 
 #' @usage NULL
 #' @aliases percentage_price_oscillator
@@ -195,9 +241,9 @@ percentage_price_oscillator.numeric <- function(
 percentage_price_oscillator.plotly <- function(
 	x,
 	cols,
-	fast = 12,
-	slow = 26,
-	ma = SMA(n = 9),
+	fastPeriod = 12,
+	slowPeriod = 26,
+	maType = 1,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -219,7 +265,7 @@ percentage_price_oscillator.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 
@@ -230,9 +276,9 @@ percentage_price_oscillator.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		fast = fast,
-		slow = slow,
-		ma = ma,
+		fastPeriod = fastPeriod,
+		slowPeriod = slowPeriod,
+		maType = maType,
 		na.bridge = TRUE
 	)
 
@@ -251,8 +297,8 @@ percentage_price_oscillator.plotly <- function(
 	## splice:plotly-assembly:start
 	name <- sprintf(
 		"PPO(%d, %d)",
-		fast,
-		slow
+		fastPeriod,
+		slowPeriod
 	)
 
 	traces <- list(
@@ -280,7 +326,8 @@ percentage_price_oscillator.plotly <- function(
 			}
 		),
 		data = constructed_indicator[, values_to_extract, drop = FALSE],
-		values_to_extract = values_to_extract
+		values_to_extract = values_to_extract,
+		name = get0(x = "name", ifnotfound = NULL)
 	)
 
 	state <- .chart_state()
@@ -296,13 +343,13 @@ percentage_price_oscillator.plotly <- function(
 percentage_price_oscillator.ggplot <- function(
 	x,
 	cols,
-	fast = 12,
-	slow = 26,
-	ma = SMA(n = 9),
+	fastPeriod = 12,
+	slowPeriod = 26,
+	maType = 1,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -319,7 +366,7 @@ percentage_price_oscillator.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 
@@ -330,9 +377,9 @@ percentage_price_oscillator.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		fast = fast,
-		slow = slow,
-		ma = ma,
+		fastPeriod = fastPeriod,
+		slowPeriod = slowPeriod,
+		maType = maType,
 		na.bridge = TRUE
 	)
 
@@ -353,7 +400,7 @@ percentage_price_oscillator.ggplot <- function(
 		ggplot_line(0),
 		list(y = "PPO")
 	)
-	name <- sprintf("PPO(%d, %d)", fast, slow)
+	name <- sprintf("PPO(%d, %d)", fastPeriod, slowPeriod)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

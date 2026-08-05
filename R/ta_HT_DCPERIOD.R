@@ -1,17 +1,18 @@
 #' @export
-#' @family Cycle Indicator
+#' @family Cycle Indicators
 #'
 #' @title Hilbert Transform - Dominant Cycle Period
 #' @templateVar .title Hilbert Transform - Dominant Cycle Period
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun dominant_cycle_period
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Cycle Indicators
 #' @templateVar .formula ~close
 #'
 ## splice:documentation:start
 ## splice:documentation:end
 #'
 #' @template description
+#'
 #' @template returns
 dominant_cycle_period <- function(
 	x,
@@ -28,6 +29,13 @@ dominant_cycle_period <- function(
 #'
 #' @aliases dominant_cycle_period
 HT_DCPERIOD <- dominant_cycle_period
+
+#' @export
+#' @usage NULL
+#' @rdname dominant_cycle_period
+#'
+#' @aliases dominant_cycle_period
+dominantCyclePeriod <- dominant_cycle_period
 
 #' @usage NULL
 #' @aliases dominant_cycle_period
@@ -48,28 +56,26 @@ dominant_cycle_period.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_HT_DCPERIOD,
-		## splice:call:start
 		constructed_series[[1]],
-		## splice:call:end
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -85,7 +91,7 @@ dominant_cycle_period.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		dominant_cycle_period.default(
 			x = x,
 			cols = cols,
@@ -105,14 +111,49 @@ dominant_cycle_period.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	dominant_cycle_period.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		dominant_cycle_period.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
+#' @usage NULL
+#' @aliases dominant_cycle_period
+#'
+#' @export
+dominant_cycle_period.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		dominant_cycle_period.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+HT_DCPERIOD_lookback <- dominantCyclePeriod_lookback <- dominant_cycle_period_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_HT_DCPERIOD_lookback
+	)
+}
 
 #' @usage NULL
 #' @aliases dominant_cycle_period
@@ -132,31 +173,25 @@ dominant_cycle_period.numeric <- function(
 		warning("'cols' is passed but is unused for vectors.")
 	}
 
+	if (...length()) {
+		warning("'...' is passed but is unused for vectors.")
+	}
+
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
 		C_impl_ta_HT_DCPERIOD,
-		## splice:numeric:start
 		as.double(x),
-		## splice:numeric:end
 		as.logical(na.bridge)
 	)
 
-	## check if it has 'dims'
-	## and convert to double if
-	## not to honor the 'type-safety'-esque
-	## approach
-	##
-	## NOTE: this adds a few ns overhead but
-	##       its a robust alternative to code it
-	##       manually. Any suggestions are welcome
-	if (is.null(dim(x))) {
-		x <- as.double(x)
+	if (dim(x)[2] == 1L) {
+		dim(x) <- NULL
 	}
+	class(x) <- NULL
 
 	x
 }
-
 
 #' @usage NULL
 #' @aliases dominant_cycle_period
@@ -186,7 +221,7 @@ dominant_cycle_period.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 
@@ -249,7 +284,8 @@ dominant_cycle_period.plotly <- function(
 			}
 		),
 		data = constructed_indicator[, values_to_extract, drop = FALSE],
-		values_to_extract = values_to_extract
+		values_to_extract = values_to_extract,
+		name = get0(x = "name", ifnotfound = NULL)
 	)
 
 	state <- .chart_state()
@@ -266,9 +302,9 @@ dominant_cycle_period.ggplot <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -285,7 +321,7 @@ dominant_cycle_period.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 

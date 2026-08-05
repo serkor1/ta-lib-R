@@ -26,7 +26,7 @@
 dark_cloud_cover <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.5,
 	na.bridge = FALSE,
 	...
 ) {
@@ -40,6 +40,13 @@ dark_cloud_cover <- function(
 #' @aliases dark_cloud_cover
 CDLDARKCLOUDCOVER <- dark_cloud_cover
 
+#' @export
+#' @usage NULL
+#' @rdname dark_cloud_cover
+#'
+#' @aliases dark_cloud_cover
+darkCloudCover <- dark_cloud_cover
+
 #' @usage NULL
 #' @aliases dark_cloud_cover
 #'
@@ -47,7 +54,7 @@ CDLDARKCLOUDCOVER <- dark_cloud_cover
 dark_cloud_cover.default <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.5,
 	na.bridge = FALSE,
 	...
 ) {
@@ -72,36 +79,34 @@ dark_cloud_cover.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
+		x = x,
+		formula.default = ~ open + high + low + close,
+		formula = cols,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
-	x <- as.matrix(
-		.Call(
-			C_impl_ta_CDLDARKCLOUDCOVER,
-			constructed_series[[1]],
-			constructed_series[[2]],
-			constructed_series[[3]],
-			constructed_series[[4]],
-			eps,
-			normalize,
-			as.logical(na.bridge)
-		)
+	x <- .Call(
+		C_impl_ta_CDLDARKCLOUDCOVER,
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
+		as.double(penetration),
+		normalize,
+		as.logical(na.bridge)
 	)
 
 	## add column name
 	colnames(x) <- "CDLDARKCLOUDCOVER"
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -114,12 +119,18 @@ dark_cloud_cover.default <- function(
 dark_cloud_cover.data.frame <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.5,
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
-		NextMethod()
+	as.data.frame(
+		dark_cloud_cover.default(
+			x = x,
+			cols = cols,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -130,11 +141,58 @@ dark_cloud_cover.data.frame <- function(
 dark_cloud_cover.matrix <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.5,
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	as.matrix(
+		dark_cloud_cover.default(
+			x = x,
+			cols = cols,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases dark_cloud_cover
+#'
+#' @export
+dark_cloud_cover.xts <- function(
+	x,
+	cols,
+	penetration = 0.5,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		dark_cloud_cover.default(
+			x = x,
+			cols = cols,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+
+#' @usage NULL
+CDLDARKCLOUDCOVER_lookback <- darkCloudCover_lookback <- dark_cloud_cover_lookback <- function(
+	x,
+	cols,
+	penetration = 0.5,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_CDLDARKCLOUDCOVER_lookback,
+		as.double(penetration)
+	)
 }
 
 #' @usage NULL
@@ -144,7 +202,7 @@ dark_cloud_cover.matrix <- function(
 dark_cloud_cover.plotly <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.5,
 	na.bridge = FALSE,
 	...
 ) {
@@ -163,7 +221,7 @@ dark_cloud_cover.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -174,7 +232,8 @@ dark_cloud_cover.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		eps = eps
+		penetration = penetration,
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -197,7 +256,6 @@ dark_cloud_cover.plotly <- function(
 	plotly_object
 }
 
-
 #' @usage NULL
 #' @aliases dark_cloud_cover
 #'
@@ -205,7 +263,7 @@ dark_cloud_cover.plotly <- function(
 dark_cloud_cover.ggplot <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.5,
 	na.bridge = FALSE,
 	...
 ) {
@@ -223,7 +281,7 @@ dark_cloud_cover.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -234,7 +292,8 @@ dark_cloud_cover.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		eps = eps
+		penetration = penetration,
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

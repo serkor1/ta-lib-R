@@ -1,22 +1,23 @@
 #' @export
-#' @family Momentum Indicator
+#' @family Momentum Indicators
 #'
 #' @title Chande Momentum Oscillator
 #' @templateVar .title Chande Momentum Oscillator
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun chande_momentum_oscillator
-#' @templateVar .family Momentum Indicator
-#' @templateVar .formula ~ close
+#' @templateVar .family Momentum Indicators
+#' @templateVar .formula ~close
 #'
 ## splice:documentation:start
 ## splice:documentation:end
 #'
 #' @template description
+#'
 #' @template returns
 chande_momentum_oscillator <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -30,6 +31,13 @@ chande_momentum_oscillator <- function(
 #' @aliases chande_momentum_oscillator
 CMO <- chande_momentum_oscillator
 
+#' @export
+#' @usage NULL
+#' @rdname chande_momentum_oscillator
+#'
+#' @aliases chande_momentum_oscillator
+chandeMomentumOscillator <- chande_momentum_oscillator
+
 #' @usage NULL
 #' @aliases chande_momentum_oscillator
 #'
@@ -37,7 +45,7 @@ CMO <- chande_momentum_oscillator
 chande_momentum_oscillator.default <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -50,29 +58,27 @@ chande_momentum_oscillator.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_CMO,
-		## splice:call:start
 		constructed_series[[1]],
-		as.integer(n),
-		## splice:call:end
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -85,15 +91,15 @@ chande_momentum_oscillator.default <- function(
 chande_momentum_oscillator.data.frame <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		chande_momentum_oscillator.default(
 			x = x,
 			cols = cols,
-			n = n,
+			timePeriod = timePeriod,
 			na.bridge = na.bridge,
 			...
 		)
@@ -107,19 +113,58 @@ chande_momentum_oscillator.data.frame <- function(
 chande_momentum_oscillator.matrix <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
-	chande_momentum_oscillator.default(
-		x = x,
-		cols = cols,
-		n = n,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		chande_momentum_oscillator.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
+#' @usage NULL
+#' @aliases chande_momentum_oscillator
+#'
+#' @export
+chande_momentum_oscillator.xts <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		chande_momentum_oscillator.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+CMO_lookback <- chandeMomentumOscillator_lookback <- chande_momentum_oscillator_lookback <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_CMO_lookback,
+		as.integer(timePeriod)
+	)
+}
 
 #' @usage NULL
 #' @aliases chande_momentum_oscillator
@@ -128,7 +173,7 @@ chande_momentum_oscillator.matrix <- function(
 chande_momentum_oscillator.numeric <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -140,32 +185,26 @@ chande_momentum_oscillator.numeric <- function(
 		warning("'cols' is passed but is unused for vectors.")
 	}
 
+	if (...length()) {
+		warning("'...' is passed but is unused for vectors.")
+	}
+
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
 		C_impl_ta_CMO,
-		## splice:numeric:start
 		as.double(x),
-		as.integer(n),
-		## splice:numeric:end
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
-	## check if it has 'dims'
-	## and convert to double if
-	## not to honor the 'type-safety'-esque
-	## approach
-	##
-	## NOTE: this adds a few ns overhead but
-	##       its a robust alternative to code it
-	##       manually. Any suggestions are welcome
-	if (is.null(dim(x))) {
-		x <- as.double(x)
+	if (dim(x)[2] == 1L) {
+		dim(x) <- NULL
 	}
+	class(x) <- NULL
 
 	x
 }
-
 
 #' @usage NULL
 #' @aliases chande_momentum_oscillator
@@ -174,7 +213,7 @@ chande_momentum_oscillator.numeric <- function(
 chande_momentum_oscillator.plotly <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = -50,
@@ -198,7 +237,7 @@ chande_momentum_oscillator.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 
@@ -209,7 +248,7 @@ chande_momentum_oscillator.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -227,7 +266,7 @@ chande_momentum_oscillator.plotly <- function(
 	## construct {plotly}-object
 	## splice:plotly-assembly:start
 
-	name <- sprintf("CMO(%d)", n)
+	name <- sprintf("CMO(%d)", timePeriod)
 
 	decorators <- list(
 		function(p) add_limit_ly(p, y_range = c(-100, 100))
@@ -267,7 +306,8 @@ chande_momentum_oscillator.plotly <- function(
 			}
 		),
 		data = constructed_indicator[, values_to_extract, drop = FALSE],
-		values_to_extract = values_to_extract
+		values_to_extract = values_to_extract,
+		name = get0(x = "name", ifnotfound = NULL)
 	)
 
 	state <- .chart_state()
@@ -283,11 +323,11 @@ chande_momentum_oscillator.plotly <- function(
 chande_momentum_oscillator.ggplot <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -304,7 +344,7 @@ chande_momentum_oscillator.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 
@@ -315,7 +355,7 @@ chande_momentum_oscillator.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -340,7 +380,7 @@ chande_momentum_oscillator.ggplot <- function(
 		ggplot_line(50),
 		list(y = "CMO")
 	)
-	name <- sprintf("CMO(%d)", n)
+	name <- sprintf("CMO(%d)", timePeriod)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

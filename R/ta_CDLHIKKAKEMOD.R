@@ -1,8 +1,8 @@
 #' @export
 #' @family Pattern Recognition
 #'
-#' @title Hikkake Modified
-#' @templateVar .title Hikkake Modified
+#' @title Modified Hikkake Pattern
+#' @templateVar .title Modified Hikkake Pattern
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun hikakke_mod
 #' @templateVar .family Pattern Recognition
@@ -39,6 +39,13 @@ hikakke_mod <- function(
 #' @aliases hikakke_mod
 CDLHIKKAKEMOD <- hikakke_mod
 
+#' @export
+#' @usage NULL
+#' @rdname hikakke_mod
+#'
+#' @aliases hikakke_mod
+hikakkeMod <- hikakke_mod
+
 #' @usage NULL
 #' @aliases hikakke_mod
 #'
@@ -70,35 +77,33 @@ hikakke_mod.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
+		x = x,
+		formula.default = ~ open + high + low + close,
+		formula = cols,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
-	x <- as.matrix(
-		.Call(
-			C_impl_ta_CDLHIKKAKEMOD,
-			constructed_series[[1]],
-			constructed_series[[2]],
-			constructed_series[[3]],
-			constructed_series[[4]],
-			normalize,
-			as.logical(na.bridge)
-		)
+	x <- .Call(
+		C_impl_ta_CDLHIKKAKEMOD,
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
+		normalize,
+		as.logical(na.bridge)
 	)
 
 	## add column name
 	colnames(x) <- "CDLHIKKAKEMOD"
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -114,8 +119,13 @@ hikakke_mod.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
-		NextMethod()
+	as.data.frame(
+		hikakke_mod.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +139,49 @@ hikakke_mod.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	as.matrix(
+		hikakke_mod.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases hikakke_mod
+#'
+#' @export
+hikakke_mod.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		hikakke_mod.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+
+#' @usage NULL
+CDLHIKKAKEMOD_lookback <- hikakkeMod_lookback <- hikakke_mod_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_CDLHIKKAKEMOD_lookback
+	)
 }
 
 #' @usage NULL
@@ -157,7 +209,7 @@ hikakke_mod.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -167,7 +219,8 @@ hikakke_mod.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +242,6 @@ hikakke_mod.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases hikakke_mod
@@ -215,7 +267,7 @@ hikakke_mod.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -225,7 +277,8 @@ hikakke_mod.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

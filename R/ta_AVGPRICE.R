@@ -12,6 +12,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#'
 #' @template returns
 average_price <- function(
 	x,
@@ -28,6 +29,13 @@ average_price <- function(
 #'
 #' @aliases average_price
 AVGPRICE <- average_price
+
+#' @export
+#' @usage NULL
+#' @rdname average_price
+#'
+#' @aliases average_price
+averagePrice <- average_price
 
 #' @usage NULL
 #' @aliases average_price
@@ -48,31 +56,29 @@ average_price.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_AVGPRICE,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
 		constructed_series[[4]],
-		## splice:call:end
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -88,7 +94,7 @@ average_price.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		average_price.default(
 			x = x,
 			cols = cols,
@@ -108,10 +114,46 @@ average_price.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	average_price.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		average_price.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases average_price
+#'
+#' @export
+average_price.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		average_price.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+AVGPRICE_lookback <- averagePrice_lookback <- average_price_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_AVGPRICE_lookback
 	)
 }

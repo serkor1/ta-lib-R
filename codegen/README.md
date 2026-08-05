@@ -1,267 +1,330 @@
 # codegen/ — Code Generation System
 
-This directory contains the meta-programming infrastructure that generates
-most of the R wrappers, C wrappers, and unit tests in the package. If you are
-reading this because something broke, start at [Quick reference](#quick-reference)
+This directory contains the Rust crate that generates most of the R wrappers,
+the C binding header, and the unit tests in the package. If you are reading
+this because something broke, start at [Quick reference](#quick-reference)
 and work backwards.
 
 ## Quick reference
 
 ```
-make gen-code      # regenerate R/, src/ta_*.c, and tests/ from metadata
-make build         # also runs generate_API.sh + generate_FFI.sh
-make fmt           # format everything (air for R, clang-format for C)
+make gen-code      # cargo run: regenerate src/TA-Lib.h, R/ta_*.R, tests/ — then make fmt
+make build         # document + build + install the package
+cargo test         # unit tests of the generator itself (run from codegen/)
 ```
+
+The crate has **zero dependencies** and is driven entirely by three files
+from the TA-Lib submodule:
+
+- `src/ta-lib/ta_func_api.xml` — machine-generated metadata for every
+  TA-Lib function (names, groups, inputs, optional inputs, outputs)
+- `src/ta-lib/include/ta_func.h` + `src/ta-lib/ta_func_list.txt` — the C
+  prototypes, mined for the binding header
 
 ## How the pieces fit together
 
 ```
-indicators.R            All 128 indicator definitions (one list)
-      |
-      v
-generate.R              Loops over indicators, calls:
-      |
-      +---> utils.R  impl_generate_indicator()
-      |        |
-      |        +---> generate_indicator.sh   (envsubst on R templates)
-      |
-      +---> utils.R  impl_generate_test()
-      |        |
-      |        +---> generate_unit-tests.sh  (heredoc test files)
-      |
-      +---> generate_indicator_core.sh       (parses ta_func.h, envsubst on C template)
-      +---> generate_core_candlestick.sh     (candlestick-specific C generation)
+ta_func_list.txt + ta_func.h          ta_func_api.xml
+      |                                     |
+      v                                     v
+  c_header.rs                           metadata.rs  parse_api() -> Vec<MetaData>
+      |                                     |
+      v                                     v
+  src/TA-Lib.h                          render.rs  render_indicator()
+  (TA_INDICATOR / TA_LOOKBACK               |  template dispatch + placeholder fill
+   X-macro lines, expanded by               +--> preserve_regions()   (splice)
+   src/wrapper.h and src/init.c)            |
+                                            v
+                                        R/ta_<ALIAS>.R
+                                            |
+                                        testthat.rs  render_test()
+                                            |
+                                            v
+                                        tests/testthat/test-ta_<ALIAS>.R
 ```
 
-After generation, `make fmt` runs `air format` (R) and `clang-format` (C) to
-normalize style.
+The exclusions in `tables.rs` filter both paths: excluded indicators get
+neither a C wrapper nor an R wrapper. After generation, `make fmt` runs
+`air format` (R) and `clang-format` (C) to normalize style.
 
 ## Directory layout
 
 ```
 codegen/
-  gen_code/
-    indicators.R        <- THE metadata: every indicator in one place
-    generate.R          <- driver script (make gen-code calls this)
-    utils.R             <- impl_generate_indicator(), impl_generate_test()
+  src/
+    main.rs               Driver: writes src/TA-Lib.h, then runs the
+                          R + test generation loop (with splice preservation)
+    c_header.rs           Mines TA_<NAME>() / TA_<NAME>_Lookback() prototypes
+                          from ta_func.h and renders the X-macro lines
+    metadata.rs           XML mining: parse_api() -> Vec<MetaData>
+    render.rs             The Templates struct, render_indicator(), the
+                          dual-backend chart rendering (render_backend)
+                          and preserve_regions() (splice)
+    testthat.rs           testthat file generation
+    tables.rs             The hand-maintained lookup tables: FUNCTION_NAMES
+                          (BBANDS -> bollinger_bands), CHART_TYPES (Main
+                          overlay vs Sub panel; absent = not chartable),
+                          MOVING_AVERAGES (TA_MAType index, SMA = 0L),
+                          AGNOSTIC_PATTERNS (fills ${AGNOSTIC}) and
+                          EXCLUDED_INDICATORS / EXCLUDED_GROUPS
   templates/
-    indicator_template.R.in         Standard R wrapper (most indicators)
-    indicator_template.c.in         Standard C wrapper (most indicators)
-    candlestick_template.R.in       Candlestick pattern R wrapper
-    candlestick_template.c.in       Candlestick pattern C wrapper
-    moving_average_template.R.in    Moving average R wrapper (includes numeric + plotly)
-    rolling_template.R.in           Rolling statistic R wrapper (simplified)
-    numeric_template.R.in           Appended for univariate .numeric method
-    plotly_main_template.R.in       Plotly method — main chart overlay
-    plotly_subchart_template.R.in   Plotly method — subchart panel
-    ggplot_main_template.R.in       ggplot2 method — main chart overlay
-    ggplot_subchart_template.R.in   ggplot2 method — subchart panel
-    candlestick_ggplot_template.R.in  ggplot2 method for candlesticks
-    moving_average_ggplot_template.R.in  ggplot2 method for moving averages
-  generate_indicator.sh         R template assembler (envsubst + splice)
-  generate_indicator_core.sh    C code generator (parses ta_func.h headers)
-  generate_core_candlestick.sh  C code generator for candlestick patterns
-  generate_unit-tests.sh        Test file generator
-  generate_API.sh               Extracts SEXP prototypes → src/api.h
-  generate_FFI.sh               Builds R_CallMethodDef table → src/init.c
-  validation/
-    validate.R                  Smoke-tests: compares R output vs raw TA-Lib C calls
-    validate.c                  Reference C implementations for validation
+    indicator_template.R             Standard R wrapper (most indicators)
+    numeric_template.R               Appended .numeric method (univariate)
+    rolling_template.R               Rolling statistics (Statistic Functions,
+                                     .numeric baked in, not plotable)
+    moving_average_template.R        Moving averages (spec-mode,
+                                     .numeric baked in)
+    candlestick_template.R           Candlestick patterns
+    chart_main_template.R            Chart methods — main chart overlay
+    chart_subchart_template.R        Chart methods — own subchart panel
+    chart_moving_average_template.R  Chart methods — moving averages
+    chart_candlestick_template.R     Chart methods — candlestick markers
+  parity/
+    btc_to_csv.R, parity_gen.c, csv_to_rds.R, test_parity_template.R
+                          Parity snapshots: R output vs raw TA-Lib C calls
+                          (make parity-prepare; runs in make test / check)
 ```
 
-## Adding a new indicator
+Each `chart_*_template.R` is **dual-backend**: one file describes both the
+`.plotly` and the `.ggplot` method and is rendered once per backend (see
+[Dual-backend chart templates](#dual-backend-chart-templates)).
 
-1. **Add one line to `gen_code/indicators.R`** using the appropriate
-   constructor. Pick the constructor that matches the indicator family:
+## The metadata source
 
-   | Constructor     | Family               | Notes                           |
-   |-----------------|----------------------|---------------------------------|
-   | `momentum()`    | Momentum Indicator   | Most common                     |
-   | `candlestick()` | Pattern Recognition  | OHLC patterns, boolean output   |
-   | `moving_avg()`  | Overlap Study        | Each MA gets its own `src/ta_<ALIAS>.c` |
-   | `overlap()`     | Overlap Study        | Non-MA overlays (BBANDS, SAR)   |
-   | `cycle()`       | Cycle Indicator      | Hilbert transforms              |
-   | `price_xform()` | Price Transform      | No charting, no subchart        |
-   | `volume()`      | Volume Indicator     |                                 |
-   | `volatility()`  | Volatility Indicator |                                 |
-   | `rolling()`     | Rolling Statistic    | Simplified template, no NA handling |
+`metadata::parse_api()` mines `ta_func_api.xml` into one `MetaData` per
+`<FinancialFunction>`:
 
-   Example — adding a new momentum indicator:
+- **Required inputs** become column names: price types map to their OHLCV
+  column (`High` -> `high`), plain double arrays (`inReal`) default to
+  `close`. The deduplicated columns form `${FORMULA}`
+  (`~high + low + close`). Any other required input (MAVP: `inPeriods` ->
+  `periods`) is no price series and becomes a *passthrough*: a required
+  formal without a default, rendered into the `.Call()` arguments as
+  `as.double(<name>)` instead of a formula column. The generated tests
+  supply passthrough vectors at every call site via the
+  `${PASS_SPY}`/`${PASS_BTC}`/`${PASS_ATOM}` placeholders.
+- **Optional inputs** become camelCase formals (`Fast-K Period` ->
+  `fastKPeriod`) with their XML defaults; doubles are reformatted from
+  scientific notation (`2.000000e-2` -> `0.02`).
 
-   ```r
-   momentum("Awesome Oscillator", "awesome_oscillator", "AO",
-            "~high + low", c("fast=5", "slow=34"))
-   ```
+The outputs are not mined from the XML: the C side gets them from the
+header prototypes (see [How C generation works](#how-c-generation-works))
+and the R side does not need them.
 
-2. **Run `make gen-code`**. This generates:
-   - `R/ta_AO.R` — R wrapper with S3 methods
-   - `src/ta_AO.c` — C wrapper calling TA-Lib
-   - `tests/testthat/test-ta_AO.R` — unit tests
-
-3. **Check the splice regions** in the generated R file. If the indicator
-   needs custom `.Call()` arguments (e.g. constructed series columns), edit the
-   content between `## splice:call:start` and `## splice:call:end`. This
-   content is preserved across regenerations.
-
-4. **Run `make build`** to rebuild (also regenerates `api.h` and `init.c`).
+The XML is attribute-free and machine-generated, so the crate uses
+hand-rolled `tag_blocks()`/`tag_text()` mining instead of an XML library.
 
 ## How R wrapper generation works
 
-`generate_indicator.sh` is the core R assembler. It:
+`render_indicator()` picks the templates per indicator:
 
-1. **Receives metadata** as environment variables (`FUN`, `TA_FUN`, `FORMULA`,
-   `ARGS`, `PLOTLY`, `SUBCHART`, `CANDLESTICK`, `maType`, `ROLLING`, etc.)
-   and function arguments as positional parameters.
+| Condition                        | Main template               | Chart template                    |
+|----------------------------------|-----------------------------|-----------------------------------|
+| Abbreviation starts with `CDL`   | `candlestick_template.R`    | `chart_candlestick_template.R`    |
+| Listed in `MOVING_AVERAGES`      | `moving_average_template.R` | `chart_moving_average_template.R` |
+| GroupId `Statistic Functions`    | `rolling_template.R`        | — (not plotable)                  |
+| Otherwise                        | `indicator_template.R`      | `chart_main_template.R` or `chart_subchart_template.R` for indicators in `CHART_TYPES` |
 
-2. **Selects the main template** based on flags:
-   - `CANDLESTICK=1` → `candlestick_template.R.in`
-   - `maType != -1` → `moving_average_template.R.in`
-   - `ROLLING != 0` → `rolling_template.R.in`
-   - Otherwise → `indicator_template.R.in`
+The standard path additionally appends `numeric_template.R` for univariate
+indicators (a single input series); moving averages and rolling statistics
+carry their own `.numeric` method inside their main template.
 
-3. **Runs `envsubst`** to replace `${VAR}` placeholders in the template.
+The rendered output ends with **`strip_blank_indentation()`** — dropping
+whitespace-only lines left behind by empty multi-entry placeholders (e.g.
+the gap between `cols,` and `na.bridge` for argument-less indicators),
+which `air` does not reformat away; truly empty separator lines are kept.
+`main.rs` then applies **`preserve_regions()`** — splicing hand-edited
+content from the existing file on disk back into the fresh render (see
+[The splice mechanism](#the-splice-mechanism)).
 
-4. **Appends optional templates** (if the indicator supports them):
-   - `numeric_template.R.in` — when `NUMERIC=1` (univariate formula)
-   - `plotly_*_template.R.in` — when `PLOTLY=1`
-   - `ggplot_*_template.R.in` — for charting support
+### Dual-backend chart templates
 
-5. **Splices preserved content** from the existing output file. Any code
-   between `## splice:LABEL:start` and `## splice:LABEL:end` markers in the
-   current file on disk is re-inserted into the freshly generated version.
-   This is how hand-written `.Call()` arguments and documentation survive
-   regeneration.
+Every chart method exists in a `.plotly` and a `.ggplot` variant that share
+almost all of their body. Each `chart_*_template.R` therefore describes
+both variants in one file; `render_backend()` renders it once per backend
+(`.plotly` first). Backend divergences are expressed two ways:
 
-### Template variables
+- **Backend placeholders**, filled per render:
 
-The shell script constructs several argument-related variables from the
-positional parameters (the `signature` field in the metadata):
+  | Placeholder | plotly   | ggplot   | Used for                                          |
+  |-------------|----------|----------|---------------------------------------------------|
+  | `${METHOD}` | `plotly` | `ggplot` | S3 class, `build_*`/`*_init` helpers, `*_object` locals, splice-region names |
+  | `${PKG}`    | `plotly` | `ggplot2`| the package name in comments                      |
+  | `${SUFFIX}` | `ly`     | `gg`     | helper suffixes (`add_last_value_ly`, `pattern_gg`) |
 
-| Variable          | Description                                   | Example (`n=10,vfactor=0.7`)             |
-|-------------------|-----------------------------------------------|------------------------------------------|
-| `${ARGS}`         | Signature args with trailing comma            | `n=10,vfactor=0.7,`                      |
-| `${PARGS}`        | Named forwarding: `key=key,`                  | `,n=n ,vfactor=vfactor ,`                |
-| `${CARGS}`        | Bare names for `.Call()`: `,key`              | `,n ,vfactor`                            |
-| `${CARGS_TYPED}`  | Type-coerced names (`as.integer`/`as.double`) | `,as.integer(n) ,as.double(vfactor)`     |
-| `${PPARGS}`       | Named forwarding, no trailing comma (plotly)  | `,n=n ,vfactor=vfactor`                  |
-| `${SPEC_FIELDS}`  | MA spec-mode list fields, one per signature arg | `n = if (missing(n)) 10L else as.integer(n),\n\t\t\t\tvfactor = if (missing(vfactor)) 0.7 else as.double(vfactor)` |
+- **Conditional lines** for structurally different code: a line starting
+  with `#plotly#` or `#ggplot#` (column 0) is kept only when rendering
+  that backend, with the prefix stripped:
 
-## How C wrapper generation works
+  ```r
+  #plotly#	assert_plotly_object(x)
+  #ggplot#	assert_ggplot2()
+  ```
 
-### Standard indicators — `generate_indicator_core.sh`
+  A marker-shaped line that survives filtering (a typo'd prefix, an
+  unknown backend name) makes the render panic instead of shipping as a
+  do-nothing R comment. Note the subchart template's optional-formals
+  splice region is itself backend-conditional (the two backends order
+  `title` and the region differently), so template lines placed inside
+  those markers must carry the backend prefix too.
 
-This 420-line bash script:
+### Template placeholders
 
-1. **Locates `ta_func.h`** in the TA-Lib submodule headers.
-2. **Extracts the `TA_<NAME>(...)` prototype** using awk (skipping `TA_<NAME>_*` variants).
-3. **Classifies each parameter** via regex:
-   - Input arrays (`const double inArray[]`) → `REAL()` extraction
-   - Input scalars (`int`, `double`, `TA_MAType`) → `INTEGER()[0]` / `REAL()[0]`
-   - Output arrays (`double outArray[]`) → allocated in output container
-   - Skip: `startIdx`, `endIdx`, `outBegIdx`, `outNBElement` (TA-Lib internals)
-4. **Extracts the lookback function** `TA_<NAME>_Lookback(...)` parameters.
-5. **Exports 16+ environment variables** and runs `envsubst` on
-   `indicator_template.c.in`.
-6. **Writes to stdout** — the caller redirects to `src/ta_<NAME>.c`.
+| Placeholder               | Description                                        | Example (BBANDS)                        |
+|---------------------------|----------------------------------------------------|-----------------------------------------|
+| `${FUN}`                  | snake_case R name (via `FUNCTION_NAMES`)           | `bollinger_bands`                       |
+| `${ALIAS}`                | TA-Lib abbreviation (uppercase alias, C symbol)    | `BBANDS`                                |
+| `${CAMEL}`                | camelCase alias (derived from `${FUN}`); its `#camel#`-prefixed block is dropped when identical to `${FUN}` (single-word names like `doji`) | `bollingerBands`                        |
+| `${CAMEL_LOOKBACK}`       | camelCase link of the chained lookback assignment, trailing `<- `; empty when `${CAMEL}` is not distinct | `bollingerBands_lookback <- `           |
+| `${TITLE}`                | `<ShortDescription>`                               | `Bollinger Bands`                       |
+| `${FAMILY}`               | `<GroupId>`                                        | `Overlap Studies`                       |
+| `${FORMULA}`              | Default column formula                             | `~close`                                |
+| `${PARAM_DOCS}`           | `@param` roxygen lines for the optional inputs (`timePeriod`/`penetration` excluded — the man-roxygen templates document those; MAType formals carry the TA_MAType → `[SMA]`…`[T3]` legend) | `#' @param fastPeriod ([integer]). Number of period for the fast MA. Defaults to \`12\`. Can also be passed as talib::SMA().` |
+| `${ARGS}`                 | Formals, one per line, trailing comma per entry    | `timePeriod = 5,`                       |
+| `${PARGS}`                | Named forwarding, trailing comma per entry         | `timePeriod = timePeriod,`              |
+| `${C_SIGNATURE}`          | `.Call()` args: series columns + coerced formals   | `constructed_series[[1]],\n as.integer(timePeriod), ...` |
+| `${C_NUMERIC}`            | `.Call()` args of the numeric/rolling path         | `as.double(x),\n as.integer(timePeriod), ...` |
+| `${C_SIGNATURE_LOOKBACK}` | Lookback `.Call()` args, **leading** comma per entry | `,\n as.integer(timePeriod)`          |
+| `${SPEC_FIELDS}`          | MA spec-mode list fields                           | `timePeriod = if (missing(timePeriod)) 5L else as.integer(timePeriod)` |
+| `${MA_TYPE}`              | TA_MAType index literal (MAs only)                 | `0L`                                    |
+| `${CARGS}`                | Bare formals for `label()`, leading comma per entry | `, timePeriod`                         |
+| `${AGNOSTIC}`             | OHLC-order agnosticism (candlesticks only)         | `TRUE` / `FALSE`                        |
 
-### Candlestick patterns — `generate_core_candlestick.sh`
+The comma conventions matter: `${ARGS}`/`${PARGS}` entries carry their own
+**trailing** comma so empty renders leave no dangling comma (the leftover
+blank line is removed by `strip_blank_indentation()`), while the lookback
+entries carry a **leading** comma because the lookback `.Call()` has no
+fixed trailing argument to absorb one.
 
-Simpler variant that:
-1. Checks if the pattern has an `optInPenetration` parameter.
-2. Uses `sed` to convert `{{VAR}}` → `${VAR}` in the candlestick C template.
-3. Runs `envsubst` and writes directly to `src/ta_<NAME>.c`.
+**MAMA quirk**: moving averages whose C signature has no period get a
+spec-only `timePeriod = 30` formal injected — it appears in `${ARGS}`,
+`${PARGS}` and `${SPEC_FIELDS}` so every MA spec carries a period for its
+downstream consumers, but it is deliberately absent from the `.Call()`
+coercions.
 
-### Moving averages
+## Customizing an indicator
 
-Each MA type (SMA, EMA, WMA, DEMA, TEMA, TRIMA, KAMA, MAMA, T3) uses the
-standard `generate_indicator_core.sh` path and gets its own per-function
-`src/ta_<ALIAS>.c` calling the TA-Lib entry point directly (e.g. `TA_SMA`,
-`TA_MAMA`). The `moving_avg()` helper wires per-MA signatures and routes R
-wrappers through `moving_average_template.R.in`, which retains the spec-mode
-`missing(x)` branch so `SMA(n = 5)` still returns `list(n, maType)` for
-downstream consumers (BBANDS, APO, PPO, MACDEXT, STOCH*).
+Everything is mined from the XML, so new TA-Lib functions appear
+automatically on `make gen-code`. The lookup tables in `tables.rs` tune
+the result:
+
+1. **`FUNCTION_NAMES`** — add the `("ABBREV", "snake_case_name")`
+   pair. Unmapped abbreviations fall back to the abbreviation itself,
+   which renders a degenerate `X <- X` alias line.
+2. **`CHART_TYPES`** — add `("ABBREV", ChartType::Main | Sub)` to give the
+   indicator `.plotly`/`.ggplot` methods (and chart-method unit tests).
+3. **`MOVING_AVERAGES` / `AGNOSTIC_PATTERNS`** — family classification for
+   the dedicated templates.
+4. **`EXCLUDED_INDICATORS` / `EXCLUDED_GROUPS`** — add the abbreviation
+   (or its GroupId) to skip generation entirely, in both C and R.
+
+After `make gen-code`, fill the protected regions of the generated file
+(documentation, chart assembly) — the content survives every regeneration.
+
+## How C generation works
+
+There are no per-indicator `.c` files. `c_header.rs` mines each
+`TA_<NAME>(...)` prototype (and its `TA_<NAME>_Lookback(...)` companion)
+from `ta_func.h` — the output names are stripped of their
+`out`/`Real`/`Integer` prefixes (`outRealUpperBand` -> `UpperBand`, a bare
+`outReal` takes the indicator name) and an integer output array flags the
+indicator as `TA_INTEGER` — and renders one X-macro line per indicator
+into `src/TA-Lib.h`:
+
+```c
+TA_INDICATOR(BBANDS, TA_DOUBLE, TA_INPUT(inReal), TA_OPTIONS(...), TA_OUTPUT(...), TA_OUTPUT_NAME(...), NOT_CANDLESTICK)
+...
+TA_LOOKBACK(BBANDS, TA_OPTIONS(...))
+```
+
+The hand-written `src/init.c` `#include`s `"TA-Lib.h"` several times with
+different `TA_INDICATOR`/`TA_LOOKBACK` macro definitions — composed from
+the argument-shape helpers in `src/wrapper.h` — to expand declarations,
+`impl_ta_<NAME>` wrapper definitions and the `.Call()` registration table. Candlesticks (`CANDLESTICK` kind) additionally
+take a normalization flag that maps the `[-200, 200]` integer output onto
+`[-2, 2]`.
 
 ## How test generation works
 
-`generate_unit-tests.sh` writes test files using bash heredocs. Two paths:
+`testthat.rs` writes `tests/testthat/test-ta_<ALIAS>.R` for every
+generated indicator (no protected regions — the files are overwritten on
+every run). What a file contains follows from the metadata:
 
-- **Rolling statistics** (`ROLLING=1`): 3 quick tests — runs without error,
-  length preservation, output type.
-- **Everything else**: 10+ tests covering alias equivalence, class
-  preservation (matrix/data.frame), default formula, row names, NA handling,
-  and optionally plotly/ggplot/numeric methods.
-
-The `NUMERIC` environment variable controls whether a numeric-method test
-block is appended. It is derived from the formula: if the formula references
-exactly one column (e.g. `~close`), `NUMERIC=1`.
-
-## How API registration works (build-time)
-
-These run during `make build`, not `make gen-code`:
-
-1. **`generate_API.sh`** scans all `src/*.c` files for `SEXP` function
-   definitions, extracts their signatures, and writes `src/api.h`
-   (a header with all C function prototypes).
-
-2. **`generate_FFI.sh`** reads `api.h`, counts each function's arguments,
-   and writes `src/init.c` with `R_CallMethodDef` entries so R's `.Call()`
-   interface can find them.
+- **Rolling statistics** (GroupId `Statistic Functions`): a short
+  fast-track file — runs without condition, length preservation, output
+  type — on `SPY[,1]`, with `,y=SPY[,2]` appended for the bivariate
+  BETA/CORREL.
+- **Everything else**: alias equivalence, class preservation
+  (matrix/data.frame), default formula, row names, and `na.bridge` length
+  checks; plus `.plotly`/`.ggplot` method tests for chartable indicators
+  (including candlesticks and moving averages, which are always
+  chartable) and a `.numeric` test for univariate indicators.
 
 ## The splice mechanism
 
-The splice mechanism in `generate_indicator.sh` lets you keep hand-written
-code inside generated files. Any content between matched markers is preserved
-across regenerations:
+`preserve_regions()` keeps hand-written code inside generated files. Any
+content between matched markers in the file **on disk** replaces the
+template's default content in the fresh render:
 
 ```r
-## splice:call:start
-constructed_series[, 1],
-constructed_series[, 2],
-## splice:call:end
+## splice:documentation:start
+#' @param timePeriod [integer] rolling window
+## splice:documentation:end
 ```
 
-The awk script (lines 158-207 of `generate_indicator.sh`) does a two-pass
-process:
-- **Pass 1**: Read the existing output file and harvest the body of each
-  labeled splice region.
-- **Pass 2**: Write the newly generated template, but when a splice region
-  is encountered, substitute the harvested content from pass 1 instead of
-  the template's default content.
+It is name-generic: every `## splice:<name>:start` / `## splice:<name>:end`
+pair discovered in the rendered output is preserved, so new region names
+added to a template work without generator changes. Regions absent from the
+existing file (first generation) keep the template default.
 
-Current splice labels used:
-- `documentation` — custom roxygen2 `@param` documentation
-- `call` — arguments passed to `.Call()` in the `.default` method
-- `numeric` — arguments passed to `.Call()` in the `.numeric` method
+Current labels:
 
-**Warning**: If a generation run produces a file without a splice region that
-previously existed (e.g. due to a bug removing the numeric method), the
-splice content is lost permanently. There is no recovery other than git.
+- `documentation` — custom roxygen2 documentation (indicator, MA, rolling)
+- `call` — the `.Call()` arguments of the rolling `.default` method
+  (prefilled with the univariate default; BETA/CORREL hand-add their `y`)
+- `optional-plotly` / `optional-ggplot` — extra chart-only formals
+  (e.g. `lower_bound = 20,` in RSI)
+- `plotly-assembly` / `ggplot-assembly` — the per-indicator `name` /
+  `decorators` / `traces` (or `layers`) construction
 
-## Validation
+**Warning**: if a generation run produces a file without a region that
+previously existed, the spliced content is lost. There is no recovery
+other than git.
 
-`make validate` compiles `validation/validate.c` against the TA-Lib static
-library and runs `validation/validate.R`, which compares the package's R
-output against direct C calls for a few key indicators (SMA, RSI, BBANDS, ATR).
-This catches regressions where the R↔C binding produces different results
-than calling TA-Lib directly.
+## Parity testing
+
+`make parity-prepare` (run by `make test` / `make check`) compiles
+`parity/parity_gen.c` against the TA-Lib static library, snapshots raw C
+outputs for the BTC dataset, and stages `tests/testthat/test-parity.R` from
+`parity/test_parity_template.R`. The testthat run then compares the
+package's R output against those snapshots, catching regressions where the
+R↔C binding diverges from calling TA-Lib directly.
 
 ## Key design decisions
 
-- **`envsubst` over R templating**: The templates use `${VAR}` substitution
-  via the system `envsubst` command rather than R-based templating (whisker,
-  glue, etc.). This keeps templates as plain R/C files that editors can
-  syntax-highlight, and avoids escaping issues with R string literals.
-
-- **Bash for C header parsing**: `generate_indicator_core.sh` parses
-  `ta_func.h` in bash rather than R. This was a pragmatic choice — the regex
-  classification of C parameter types is direct in bash. The tradeoff is that
-  the script is hard to modify (420 lines of careful bash regex).
-
-- **Formatting as a separate step**: Generated code is intentionally not
-  pretty. `make fmt` (air + clang-format) handles all formatting as a
-  post-processing step, so templates don't need to worry about indentation.
-
-- **Moving averages share one C file**: TA-Lib's `TA_MA()` accepts a
-  `TA_MAType` enum, so all 9 MA variants call the same C function. The R
-  wrappers differ (each sets a different `maType` default) but the C wrapper
-  is shared.
+- **Rust, zero dependencies**: the generator is one `cargo run` with no
+  crates.io footprint. Templates stay plain R files that editors can
+  syntax-highlight; placeholders are filled with simple string replacement
+  rather than a templating engine.
+- **Hand-rolled XML mining**: `ta_func_api.xml` is machine-generated and
+  attribute-free, so `tag_blocks()`/`tag_text()` string scanning is
+  sufficient and keeps the crate dependency-free.
+- **The XML is the metadata**: there is no hand-maintained indicator list;
+  the lookup tables in `tables.rs` (names, chart types, classifications,
+  exclusions) are small Rust consts layered on top of what the XML
+  provides.
+- **One template per chart method, not per backend**: the `.plotly` and
+  `.ggplot` variants of a chart method live in one dual-backend template,
+  so a change to the shared body is made once instead of twice.
+- **X-macros over generated C**: one generated header (`src/TA-Lib.h`)
+  expanded by hand-written macros replaces per-indicator `.c` files, so C
+  binding logic lives in exactly one place (`src/wrapper.h`).
+- **Formatting as a separate step**: generated code is intentionally not
+  pretty. `make gen-code` ends with `make fmt` (air + clang-format);
+  the only whitespace the generator itself fixes is the blank-indentation
+  lines air would leave behind.
+- **Generator is unit-tested**: `cargo test` covers the header and XML
+  mining, the dual-backend line filtering, every template family render
+  (including the full-API sweep asserting no unreplaced `${` placeholders
+  and no unstripped backend prefixes), region preservation, and test-file
+  rendering.

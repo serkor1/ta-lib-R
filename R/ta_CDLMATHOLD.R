@@ -26,7 +26,7 @@
 mat_hold <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.5,
 	na.bridge = FALSE,
 	...
 ) {
@@ -40,6 +40,13 @@ mat_hold <- function(
 #' @aliases mat_hold
 CDLMATHOLD <- mat_hold
 
+#' @export
+#' @usage NULL
+#' @rdname mat_hold
+#'
+#' @aliases mat_hold
+matHold <- mat_hold
+
 #' @usage NULL
 #' @aliases mat_hold
 #'
@@ -47,7 +54,7 @@ CDLMATHOLD <- mat_hold
 mat_hold.default <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.5,
 	na.bridge = FALSE,
 	...
 ) {
@@ -72,36 +79,34 @@ mat_hold.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
+		x = x,
+		formula.default = ~ open + high + low + close,
+		formula = cols,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
-	x <- as.matrix(
-		.Call(
-			C_impl_ta_CDLMATHOLD,
-			constructed_series[[1]],
-			constructed_series[[2]],
-			constructed_series[[3]],
-			constructed_series[[4]],
-			eps,
-			normalize,
-			as.logical(na.bridge)
-		)
+	x <- .Call(
+		C_impl_ta_CDLMATHOLD,
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
+		as.double(penetration),
+		normalize,
+		as.logical(na.bridge)
 	)
 
 	## add column name
 	colnames(x) <- "CDLMATHOLD"
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -114,12 +119,18 @@ mat_hold.default <- function(
 mat_hold.data.frame <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.5,
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
-		NextMethod()
+	as.data.frame(
+		mat_hold.default(
+			x = x,
+			cols = cols,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -130,11 +141,58 @@ mat_hold.data.frame <- function(
 mat_hold.matrix <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.5,
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	as.matrix(
+		mat_hold.default(
+			x = x,
+			cols = cols,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases mat_hold
+#'
+#' @export
+mat_hold.xts <- function(
+	x,
+	cols,
+	penetration = 0.5,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		mat_hold.default(
+			x = x,
+			cols = cols,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+
+#' @usage NULL
+CDLMATHOLD_lookback <- matHold_lookback <- mat_hold_lookback <- function(
+	x,
+	cols,
+	penetration = 0.5,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_CDLMATHOLD_lookback,
+		as.double(penetration)
+	)
 }
 
 #' @usage NULL
@@ -144,7 +202,7 @@ mat_hold.matrix <- function(
 mat_hold.plotly <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.5,
 	na.bridge = FALSE,
 	...
 ) {
@@ -163,7 +221,7 @@ mat_hold.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -174,7 +232,8 @@ mat_hold.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		eps = eps
+		penetration = penetration,
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -197,7 +256,6 @@ mat_hold.plotly <- function(
 	plotly_object
 }
 
-
 #' @usage NULL
 #' @aliases mat_hold
 #'
@@ -205,7 +263,7 @@ mat_hold.plotly <- function(
 mat_hold.ggplot <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.5,
 	na.bridge = FALSE,
 	...
 ) {
@@ -223,7 +281,7 @@ mat_hold.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -234,7 +292,8 @@ mat_hold.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		eps = eps
+		penetration = penetration,
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

@@ -12,6 +12,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#'
 #' @template returns
 typical_price <- function(
 	x,
@@ -28,6 +29,13 @@ typical_price <- function(
 #'
 #' @aliases typical_price
 TYPPRICE <- typical_price
+
+#' @export
+#' @usage NULL
+#' @rdname typical_price
+#'
+#' @aliases typical_price
+typicalPrice <- typical_price
 
 #' @usage NULL
 #' @aliases typical_price
@@ -48,30 +56,28 @@ typical_price.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low + close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low + close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_TYPPRICE,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		## splice:call:end
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -87,7 +93,7 @@ typical_price.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		typical_price.default(
 			x = x,
 			cols = cols,
@@ -107,10 +113,46 @@ typical_price.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	typical_price.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		typical_price.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases typical_price
+#'
+#' @export
+typical_price.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		typical_price.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+TYPPRICE_lookback <- typicalPrice_lookback <- typical_price_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_TYPPRICE_lookback
 	)
 }

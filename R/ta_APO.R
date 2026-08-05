@@ -1,27 +1,27 @@
 #' @export
-#' @family Momentum Indicator
+#' @family Momentum Indicators
 #'
 #' @title Absolute Price Oscillator
 #' @templateVar .title Absolute Price Oscillator
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun absolute_price_oscillator
-#' @templateVar .family Momentum Indicator
+#' @templateVar .family Momentum Indicators
 #' @templateVar .formula ~close
 #'
 ## splice:documentation:start
-#' @param fast ([integer]). Period for the fast Moving Average (MA).
-#' @param slow ([integer]). Period for the slow Moving Average (MA).
-#' @param ma ([list]). The type of Moving Average (MA) used for the `fast` and `slow` MA. [SMA] by default.
 ## splice:documentation:end
 #'
 #' @template description
+#' @param fastPeriod ([integer]). Period of the fast MA. Defaults to `12`.
+#' @param slowPeriod ([integer]). Period of the slow MA. Defaults to `26`.
+#' @param maType ([integer]). Type of Moving Average. Defaults to `1` ([EMA]). Can also be passed as talib::EMA.
 #' @template returns
 absolute_price_oscillator <- function(
 	x,
 	cols,
-	fast = 12,
-	slow = 26,
-	ma = SMA(n = 9),
+	fastPeriod = 12,
+	slowPeriod = 26,
+	maType = 1,
 	na.bridge = FALSE,
 	...
 ) {
@@ -35,6 +35,13 @@ absolute_price_oscillator <- function(
 #' @aliases absolute_price_oscillator
 APO <- absolute_price_oscillator
 
+#' @export
+#' @usage NULL
+#' @rdname absolute_price_oscillator
+#'
+#' @aliases absolute_price_oscillator
+absolutePriceOscillator <- absolute_price_oscillator
+
 #' @usage NULL
 #' @aliases absolute_price_oscillator
 #'
@@ -42,9 +49,9 @@ APO <- absolute_price_oscillator
 absolute_price_oscillator.default <- function(
 	x,
 	cols,
-	fast = 12,
-	slow = 26,
-	ma = SMA(n = 9),
+	fastPeriod = 12,
+	slowPeriod = 26,
+	maType = 1,
 	na.bridge = FALSE,
 	...
 ) {
@@ -57,31 +64,29 @@ absolute_price_oscillator.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_APO,
-		## splice:call:start
 		constructed_series[[1]],
-		as.integer(fast),
-		as.integer(slow),
-		ma$maType,
-		## splice:call:end
+		as.integer(fastPeriod),
+		as.integer(slowPeriod),
+		as.maType(maType),
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -94,19 +99,19 @@ absolute_price_oscillator.default <- function(
 absolute_price_oscillator.data.frame <- function(
 	x,
 	cols,
-	fast = 12,
-	slow = 26,
-	ma = SMA(n = 9),
+	fastPeriod = 12,
+	slowPeriod = 26,
+	maType = 1,
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		absolute_price_oscillator.default(
 			x = x,
 			cols = cols,
-			fast = fast,
-			slow = slow,
-			ma = ma,
+			fastPeriod = fastPeriod,
+			slowPeriod = slowPeriod,
+			maType = maType,
 			na.bridge = na.bridge,
 			...
 		)
@@ -120,23 +125,70 @@ absolute_price_oscillator.data.frame <- function(
 absolute_price_oscillator.matrix <- function(
 	x,
 	cols,
-	fast = 12,
-	slow = 26,
-	ma = SMA(n = 9),
+	fastPeriod = 12,
+	slowPeriod = 26,
+	maType = 1,
 	na.bridge = FALSE,
 	...
 ) {
-	absolute_price_oscillator.default(
-		x = x,
-		cols = cols,
-		fast = fast,
-		slow = slow,
-		ma = ma,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		absolute_price_oscillator.default(
+			x = x,
+			cols = cols,
+			fastPeriod = fastPeriod,
+			slowPeriod = slowPeriod,
+			maType = maType,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
+#' @usage NULL
+#' @aliases absolute_price_oscillator
+#'
+#' @export
+absolute_price_oscillator.xts <- function(
+	x,
+	cols,
+	fastPeriod = 12,
+	slowPeriod = 26,
+	maType = 1,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		absolute_price_oscillator.default(
+			x = x,
+			cols = cols,
+			fastPeriod = fastPeriod,
+			slowPeriod = slowPeriod,
+			maType = maType,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+APO_lookback <- absolutePriceOscillator_lookback <- absolute_price_oscillator_lookback <- function(
+	x,
+	cols,
+	fastPeriod = 12,
+	slowPeriod = 26,
+	maType = 1,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_APO_lookback,
+		as.integer(fastPeriod),
+		as.integer(slowPeriod),
+		as.maType(maType)
+	)
+}
 
 #' @usage NULL
 #' @aliases absolute_price_oscillator
@@ -145,9 +197,9 @@ absolute_price_oscillator.matrix <- function(
 absolute_price_oscillator.numeric <- function(
 	x,
 	cols,
-	fast = 12,
-	slow = 26,
-	ma = SMA(n = 9),
+	fastPeriod = 12,
+	slowPeriod = 26,
+	maType = 1,
 	na.bridge = FALSE,
 	...
 ) {
@@ -159,34 +211,28 @@ absolute_price_oscillator.numeric <- function(
 		warning("'cols' is passed but is unused for vectors.")
 	}
 
+	if (...length()) {
+		warning("'...' is passed but is unused for vectors.")
+	}
+
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
 		C_impl_ta_APO,
-		## splice:numeric:start
 		as.double(x),
-		as.integer(fast),
-		as.integer(slow),
-		ma$maType,
-		## splice:numeric:end
+		as.integer(fastPeriod),
+		as.integer(slowPeriod),
+		as.maType(maType),
 		as.logical(na.bridge)
 	)
 
-	## check if it has 'dims'
-	## and convert to double if
-	## not to honor the 'type-safety'-esque
-	## approach
-	##
-	## NOTE: this adds a few ns overhead but
-	##       its a robust alternative to code it
-	##       manually. Any suggestions are welcome
-	if (is.null(dim(x))) {
-		x <- as.double(x)
+	if (dim(x)[2] == 1L) {
+		dim(x) <- NULL
 	}
+	class(x) <- NULL
 
 	x
 }
-
 
 #' @usage NULL
 #' @aliases absolute_price_oscillator
@@ -195,9 +241,9 @@ absolute_price_oscillator.numeric <- function(
 absolute_price_oscillator.plotly <- function(
 	x,
 	cols,
-	fast = 12,
-	slow = 26,
-	ma = SMA(n = 9),
+	fastPeriod = 12,
+	slowPeriod = 26,
+	maType = 1,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -219,7 +265,7 @@ absolute_price_oscillator.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 
@@ -230,9 +276,9 @@ absolute_price_oscillator.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		fast = fast,
-		slow = slow,
-		ma = ma,
+		fastPeriod = fastPeriod,
+		slowPeriod = slowPeriod,
+		maType = maType,
 		na.bridge = TRUE
 	)
 
@@ -251,8 +297,8 @@ absolute_price_oscillator.plotly <- function(
 	## splice:plotly-assembly:start
 	name <- sprintf(
 		"APO(%d, %d)",
-		slow,
-		fast
+		slowPeriod,
+		fastPeriod
 	)
 
 	decorators <- list()
@@ -283,7 +329,8 @@ absolute_price_oscillator.plotly <- function(
 			}
 		),
 		data = constructed_indicator[, values_to_extract, drop = FALSE],
-		values_to_extract = values_to_extract
+		values_to_extract = values_to_extract,
+		name = get0(x = "name", ifnotfound = NULL)
 	)
 
 	state <- .chart_state()
@@ -299,13 +346,13 @@ absolute_price_oscillator.plotly <- function(
 absolute_price_oscillator.ggplot <- function(
 	x,
 	cols,
-	fast = 12,
-	slow = 26,
-	ma = SMA(n = 9),
+	fastPeriod = 12,
+	slowPeriod = 26,
+	maType = 1,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -322,7 +369,7 @@ absolute_price_oscillator.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 
@@ -333,9 +380,9 @@ absolute_price_oscillator.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		fast = fast,
-		slow = slow,
-		ma = ma,
+		fastPeriod = fastPeriod,
+		slowPeriod = slowPeriod,
+		maType = maType,
 		na.bridge = TRUE
 	)
 
@@ -356,7 +403,7 @@ absolute_price_oscillator.ggplot <- function(
 		ggplot_line(0),
 		list(y = "APO")
 	)
-	name <- sprintf("APO(%d, %d)", slow, fast)
+	name <- sprintf("APO(%d, %d)", slowPeriod, fastPeriod)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(

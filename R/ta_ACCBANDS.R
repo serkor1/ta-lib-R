@@ -1,22 +1,23 @@
 #' @export
-#' @family Overlap Study
+#' @family Overlap Studies
 #'
 #' @title Acceleration Bands
 #' @templateVar .title Acceleration Bands
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun acceleration_bands
-#' @templateVar .family Overlap Study
-#' @templateVar .formula ~ high + low + close
+#' @templateVar .family Overlap Studies
+#' @templateVar .formula ~high + low + close
 #'
 ## splice:documentation:start
 ## splice:documentation:end
 #'
 #' @template description
+#'
 #' @template returns
 acceleration_bands <- function(
 	x,
 	cols,
-	n = 20,
+	timePeriod = 20,
 	na.bridge = FALSE,
 	...
 ) {
@@ -30,6 +31,13 @@ acceleration_bands <- function(
 #' @aliases acceleration_bands
 ACCBANDS <- acceleration_bands
 
+#' @export
+#' @usage NULL
+#' @rdname acceleration_bands
+#'
+#' @aliases acceleration_bands
+accelerationBands <- acceleration_bands
+
 #' @usage NULL
 #' @aliases acceleration_bands
 #'
@@ -37,7 +45,7 @@ ACCBANDS <- acceleration_bands
 acceleration_bands.default <- function(
 	x,
 	cols,
-	n = 20,
+	timePeriod = 20,
 	na.bridge = FALSE,
 	...
 ) {
@@ -50,31 +58,29 @@ acceleration_bands.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low + close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low + close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_ACCBANDS,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		as.integer(n),
-		## splice:call:end
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -87,15 +93,15 @@ acceleration_bands.default <- function(
 acceleration_bands.data.frame <- function(
 	x,
 	cols,
-	n = 20,
+	timePeriod = 20,
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		acceleration_bands.default(
 			x = x,
 			cols = cols,
-			n = n,
+			timePeriod = timePeriod,
 			na.bridge = na.bridge,
 			...
 		)
@@ -109,19 +115,58 @@ acceleration_bands.data.frame <- function(
 acceleration_bands.matrix <- function(
 	x,
 	cols,
-	n = 20,
+	timePeriod = 20,
 	na.bridge = FALSE,
 	...
 ) {
-	acceleration_bands.default(
-		x = x,
-		cols = cols,
-		n = n,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		acceleration_bands.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
+#' @usage NULL
+#' @aliases acceleration_bands
+#'
+#' @export
+acceleration_bands.xts <- function(
+	x,
+	cols,
+	timePeriod = 20,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		acceleration_bands.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+ACCBANDS_lookback <- accelerationBands_lookback <- acceleration_bands_lookback <- function(
+	x,
+	cols,
+	timePeriod = 20,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_ACCBANDS_lookback,
+		as.integer(timePeriod)
+	)
+}
 
 #' @usage NULL
 #' @aliases acceleration_bands
@@ -130,7 +175,7 @@ acceleration_bands.matrix <- function(
 acceleration_bands.plotly <- function(
 	x,
 	cols,
-	n = 20,
+	timePeriod = 20,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	color = "steelblue",
@@ -153,7 +198,7 @@ acceleration_bands.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 
@@ -164,7 +209,7 @@ acceleration_bands.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -177,7 +222,7 @@ acceleration_bands.plotly <- function(
 	## splice:plotly-assembly:start
 	name <- label(
 		"Acceleration Bands",
-		n
+		timePeriod
 	)
 
 	traces <- list(
@@ -235,7 +280,7 @@ acceleration_bands.plotly <- function(
 acceleration_bands.ggplot <- function(
 	x,
 	cols,
-	n = 20,
+	timePeriod = 20,
 	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
@@ -255,7 +300,7 @@ acceleration_bands.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 
@@ -266,7 +311,7 @@ acceleration_bands.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -288,7 +333,7 @@ acceleration_bands.ggplot <- function(
 			y_lower = "LowerBand"
 		)
 	)
-	name <- label("ACCBANDS", n)
+	name <- label("ACCBANDS", timePeriod)
 	## splice:ggplot-assembly:end
 
 	state <- .chart_state()

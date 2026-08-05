@@ -1,11 +1,11 @@
 #' @export
-#' @family Overlap Study
+#' @family Overlap Studies
 #'
 #' @title Kaufman Adaptive Moving Average
 #' @templateVar .title Kaufman Adaptive Moving Average
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun kaufman_adaptive_moving_average
-#' @templateVar .family Overlap Study
+#' @templateVar .family Overlap Studies
 #' @templateVar .formula ~close
 #'
 ## splice:documentation:start
@@ -18,11 +18,12 @@
 #' indicators that supports various Moving Average specifications.
 #'
 #' @template description
+#'
 #' @template returns
 kaufman_adaptive_moving_average <- function(
 	x,
+	timePeriod = 30,
 	cols,
-	n = 30,
 	na.bridge = FALSE,
 	...
 ) {
@@ -33,13 +34,19 @@ kaufman_adaptive_moving_average <- function(
 		## from call
 		x <- structure(
 			list(
-				n = if (missing(n)) 30L else as.integer(n),
+				timePeriod = if (missing(timePeriod)) {
+					30L
+				} else {
+					as.integer(timePeriod)
+				},
 				maType = 6L
-			)
+			),
+			class = "maType"
 		)
 
 		return(x)
 	}
+
 	UseMethod("kaufman_adaptive_moving_average")
 }
 
@@ -50,14 +57,21 @@ kaufman_adaptive_moving_average <- function(
 #' @aliases kaufman_adaptive_moving_average
 KAMA <- kaufman_adaptive_moving_average
 
+#' @export
+#' @usage NULL
+#' @rdname kaufman_adaptive_moving_average
+#'
+#' @aliases kaufman_adaptive_moving_average
+kaufmanAdaptiveMovingAverage <- kaufman_adaptive_moving_average
+
 #' @usage NULL
 #' @aliases kaufman_adaptive_moving_average
 #'
 #' @export
 kaufman_adaptive_moving_average.default <- function(
 	x,
+	timePeriod = 30,
 	cols,
-	n = 30,
 	na.bridge = FALSE,
 	...
 ) {
@@ -70,27 +84,27 @@ kaufman_adaptive_moving_average.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~close,
-		data = x,
+		x = x,
+		formula.default = ~close,
+		formula = cols,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_KAMA,
-		as.double(constructed_series[[1]]),
-		as.integer(n),
+		constructed_series[[1]],
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -102,13 +116,19 @@ kaufman_adaptive_moving_average.default <- function(
 #' @export
 kaufman_adaptive_moving_average.data.frame <- function(
 	x,
+	timePeriod = 30,
 	cols,
-	n = 30,
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
-		NextMethod()
+	as.data.frame(
+		kaufman_adaptive_moving_average.default(
+			x = x,
+			timePeriod = timePeriod,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -118,20 +138,19 @@ kaufman_adaptive_moving_average.data.frame <- function(
 #' @export
 kaufman_adaptive_moving_average.matrix <- function(
 	x,
+	timePeriod = 30,
 	cols,
-	n = 30,
 	na.bridge = FALSE,
 	...
 ) {
-	## pass directly to
-	## kaufman_adaptive_moving_average.default to avoid
-	## shenanigans with NextMethod()
-	kaufman_adaptive_moving_average.default(
-		x = x,
-		cols = cols,
-		n = n,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		kaufman_adaptive_moving_average.default(
+			x = x,
+			timePeriod = timePeriod,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -139,10 +158,35 @@ kaufman_adaptive_moving_average.matrix <- function(
 #' @aliases kaufman_adaptive_moving_average
 #'
 #' @export
+kaufman_adaptive_moving_average.xts <- function(
+	x,
+	timePeriod = 30,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		kaufman_adaptive_moving_average.default(
+			x = x,
+			timePeriod = timePeriod,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+
+#' @usage NULL
+#' @aliases kaufman_adaptive_moving_average
+#'
+#' @export
 kaufman_adaptive_moving_average.numeric <- function(
 	x,
+	timePeriod = 30,
 	cols,
-	n = 30,
 	na.bridge = FALSE,
 	...
 ) {
@@ -154,28 +198,39 @@ kaufman_adaptive_moving_average.numeric <- function(
 		warning("'cols' is passed but is unused for vectors.")
 	}
 
+	if (...length()) {
+		warning("'...' is passed but is unused for vectors.")
+	}
+
 	## pass to 'C' directly
 	## with the input vector
 	x <- .Call(
 		C_impl_ta_KAMA,
 		as.double(x),
-		as.integer(n),
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
-	## check if it has 'dims'
-	## and convert to double if
-	## not to honor the 'type-safety'-esque
-	## approach
-	##
-	## NOTE: this adds a few ns overhead but
-	##       its a robust alternative to code it
-	##       manually. Any suggestions are welcome
-	if (is.null(dim(x))) {
-		x <- as.double(x)
+	if (dim(x)[2] == 1L) {
+		dim(x) <- NULL
 	}
+	class(x) <- NULL
 
 	x
+}
+
+#' @usage NULL
+KAMA_lookback <- kaufmanAdaptiveMovingAverage_lookback <- kaufman_adaptive_moving_average_lookback <- function(
+	x,
+	timePeriod = 30,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_KAMA_lookback,
+		as.integer(timePeriod)
+	)
 }
 
 #' @usage NULL
@@ -184,8 +239,8 @@ kaufman_adaptive_moving_average.numeric <- function(
 #' @export
 kaufman_adaptive_moving_average.plotly <- function(
 	x,
+	timePeriod = 30,
 	cols,
-	n = 30,
 	na.bridge = FALSE,
 	...
 ) {
@@ -204,7 +259,7 @@ kaufman_adaptive_moving_average.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 
@@ -215,7 +270,8 @@ kaufman_adaptive_moving_average.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n
+		timePeriod = timePeriod,
+		na.bridge = TRUE
 	)
 
 	## add conditional idx
@@ -238,14 +294,14 @@ kaufman_adaptive_moving_average.plotly <- function(
 				)
 			)
 		),
-		name = label("KAMA", n),
-		decorators = list()
+		name = label("KAMA", timePeriod),
+		decorators = list(),
+		data = constructed_indicator
 	)
 	state[["main"]] <- plotly_object
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases kaufman_adaptive_moving_average
@@ -253,8 +309,8 @@ kaufman_adaptive_moving_average.plotly <- function(
 #' @export
 kaufman_adaptive_moving_average.ggplot <- function(
 	x,
+	timePeriod = 30,
 	cols,
-	n = 30,
 	na.bridge = FALSE,
 	...
 ) {
@@ -272,7 +328,7 @@ kaufman_adaptive_moving_average.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 
@@ -283,7 +339,8 @@ kaufman_adaptive_moving_average.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n
+		timePeriod = timePeriod,
+		na.bridge = TRUE
 	)
 
 	## add conditional idx
@@ -300,7 +357,7 @@ kaufman_adaptive_moving_average.ggplot <- function(
 				y = "KAMA"
 			)
 		),
-		name = label("KAMA", n),
+		name = label("KAMA", timePeriod),
 		decorators = list(),
 		data = constructed_indicator
 	)

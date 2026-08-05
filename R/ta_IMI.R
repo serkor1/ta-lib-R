@@ -1,22 +1,23 @@
 #' @export
-#' @family Momentum Indicator
+#' @family Momentum Indicators
 #'
-#' @title Intraday Movement Index
-#' @templateVar .title Intraday Movement Index
+#' @title Intraday Momentum Index
+#' @templateVar .title Intraday Momentum Index
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun intraday_movement_index
-#' @templateVar .family Momentum Indicator
+#' @templateVar .family Momentum Indicators
 #' @templateVar .formula ~open + close
 #'
 ## splice:documentation:start
 ## splice:documentation:end
 #'
 #' @template description
+#'
 #' @template returns
 intraday_movement_index <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -30,6 +31,13 @@ intraday_movement_index <- function(
 #' @aliases intraday_movement_index
 IMI <- intraday_movement_index
 
+#' @export
+#' @usage NULL
+#' @rdname intraday_movement_index
+#'
+#' @aliases intraday_movement_index
+intradayMovementIndex <- intraday_movement_index
+
 #' @usage NULL
 #' @aliases intraday_movement_index
 #'
@@ -37,7 +45,7 @@ IMI <- intraday_movement_index
 intraday_movement_index.default <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -50,30 +58,28 @@ intraday_movement_index.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ open + close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_IMI,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
-		as.integer(n),
-		## splice:call:end
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -86,15 +92,15 @@ intraday_movement_index.default <- function(
 intraday_movement_index.data.frame <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		intraday_movement_index.default(
 			x = x,
 			cols = cols,
-			n = n,
+			timePeriod = timePeriod,
 			na.bridge = na.bridge,
 			...
 		)
@@ -108,19 +114,58 @@ intraday_movement_index.data.frame <- function(
 intraday_movement_index.matrix <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
-	intraday_movement_index.default(
-		x = x,
-		cols = cols,
-		n = n,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		intraday_movement_index.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
+#' @usage NULL
+#' @aliases intraday_movement_index
+#'
+#' @export
+intraday_movement_index.xts <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		intraday_movement_index.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+IMI_lookback <- intradayMovementIndex_lookback <- intraday_movement_index_lookback <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_IMI_lookback,
+		as.integer(timePeriod)
+	)
+}
 
 #' @usage NULL
 #' @aliases intraday_movement_index
@@ -129,7 +174,7 @@ intraday_movement_index.matrix <- function(
 intraday_movement_index.plotly <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -151,7 +196,7 @@ intraday_movement_index.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + close,
+		formula.default = ~ open + close,
 		...
 	)
 
@@ -162,7 +207,7 @@ intraday_movement_index.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -181,7 +226,7 @@ intraday_movement_index.plotly <- function(
 	## splice:plotly-assembly:start
 	name <- sprintf(
 		"IMI(%d)",
-		n
+		timePeriod
 	)
 
 	decorators <- list()
@@ -205,13 +250,14 @@ intraday_movement_index.plotly <- function(
 			),
 			data = constructed_indicator,
 			title = if (missing(title)) {
-				"Intraday Movement Index"
+				"Intraday Momentum Index"
 			} else {
 				title
 			}
 		),
 		data = constructed_indicator[, values_to_extract, drop = FALSE],
-		values_to_extract = values_to_extract
+		values_to_extract = values_to_extract,
+		name = get0(x = "name", ifnotfound = NULL)
 	)
 
 	state <- .chart_state()
@@ -227,11 +273,11 @@ intraday_movement_index.plotly <- function(
 intraday_movement_index.ggplot <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -248,7 +294,7 @@ intraday_movement_index.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + close,
+		formula.default = ~ open + close,
 		...
 	)
 
@@ -259,7 +305,7 @@ intraday_movement_index.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -282,7 +328,7 @@ intraday_movement_index.ggplot <- function(
 	layers <- list(
 		list(y = "IMI")
 	)
-	name <- sprintf("IMI(%d)", n)
+	name <- sprintf("IMI(%d)", timePeriod)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(
@@ -299,7 +345,7 @@ intraday_movement_index.ggplot <- function(
 			),
 			data = constructed_indicator,
 			title = if (missing(title)) {
-				"Intraday Movement Index"
+				"Intraday Momentum Index"
 			} else {
 				title
 			}

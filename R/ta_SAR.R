@@ -1,25 +1,25 @@
 #' @export
-#' @family Overlap Study
+#' @family Overlap Studies
 #'
-#' @title Parabolic Stop and Reverse (SAR)
-#' @templateVar .title Parabolic Stop and Reverse (SAR)
+#' @title Parabolic SAR
+#' @templateVar .title Parabolic SAR
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun parabolic_stop_and_reverse
-#' @templateVar .family Overlap Study
-#' @templateVar .formula ~high+low
+#' @templateVar .family Overlap Studies
+#' @templateVar .formula ~high + low
 #'
 ## splice:documentation:start
-#' @param acceleration ([double]). Acceleration factor used up to the maximum value.
-#' @param maximum ([double]). Acceleration factor maximum value.
 ## splice:documentation:end
 #'
 #' @template description
+#' @param accelerationFactor ([double]). Acceleration Factor used up to the Maximum value. Defaults to `0.02`.
+#' @param afMaximum ([double]). Acceleration Factor Maximum value. Defaults to `0.2`.
 #' @template returns
 parabolic_stop_and_reverse <- function(
 	x,
 	cols,
-	acceleration = 0.02,
-	maximum = 0.2,
+	accelerationFactor = 0.02,
+	afMaximum = 0.2,
 	na.bridge = FALSE,
 	...
 ) {
@@ -33,6 +33,13 @@ parabolic_stop_and_reverse <- function(
 #' @aliases parabolic_stop_and_reverse
 SAR <- parabolic_stop_and_reverse
 
+#' @export
+#' @usage NULL
+#' @rdname parabolic_stop_and_reverse
+#'
+#' @aliases parabolic_stop_and_reverse
+parabolicStopAndReverse <- parabolic_stop_and_reverse
+
 #' @usage NULL
 #' @aliases parabolic_stop_and_reverse
 #'
@@ -40,8 +47,8 @@ SAR <- parabolic_stop_and_reverse
 parabolic_stop_and_reverse.default <- function(
 	x,
 	cols,
-	acceleration = 0.02,
-	maximum = 0.2,
+	accelerationFactor = 0.02,
+	afMaximum = 0.2,
 	na.bridge = FALSE,
 	...
 ) {
@@ -54,31 +61,29 @@ parabolic_stop_and_reverse.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_SAR,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
-		as.double(acceleration),
-		as.double(maximum),
-		## splice:call:end
+		as.double(accelerationFactor),
+		as.double(afMaximum),
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -91,17 +96,17 @@ parabolic_stop_and_reverse.default <- function(
 parabolic_stop_and_reverse.data.frame <- function(
 	x,
 	cols,
-	acceleration = 0.02,
-	maximum = 0.2,
+	accelerationFactor = 0.02,
+	afMaximum = 0.2,
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		parabolic_stop_and_reverse.default(
 			x = x,
 			cols = cols,
-			acceleration = acceleration,
-			maximum = maximum,
+			accelerationFactor = accelerationFactor,
+			afMaximum = afMaximum,
 			na.bridge = na.bridge,
 			...
 		)
@@ -115,21 +120,64 @@ parabolic_stop_and_reverse.data.frame <- function(
 parabolic_stop_and_reverse.matrix <- function(
 	x,
 	cols,
-	acceleration = 0.02,
-	maximum = 0.2,
+	accelerationFactor = 0.02,
+	afMaximum = 0.2,
 	na.bridge = FALSE,
 	...
 ) {
-	parabolic_stop_and_reverse.default(
-		x = x,
-		cols = cols,
-		acceleration = acceleration,
-		maximum = maximum,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		parabolic_stop_and_reverse.default(
+			x = x,
+			cols = cols,
+			accelerationFactor = accelerationFactor,
+			afMaximum = afMaximum,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
+#' @usage NULL
+#' @aliases parabolic_stop_and_reverse
+#'
+#' @export
+parabolic_stop_and_reverse.xts <- function(
+	x,
+	cols,
+	accelerationFactor = 0.02,
+	afMaximum = 0.2,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		parabolic_stop_and_reverse.default(
+			x = x,
+			cols = cols,
+			accelerationFactor = accelerationFactor,
+			afMaximum = afMaximum,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+SAR_lookback <- parabolicStopAndReverse_lookback <- parabolic_stop_and_reverse_lookback <- function(
+	x,
+	cols,
+	accelerationFactor = 0.02,
+	afMaximum = 0.2,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_SAR_lookback,
+		as.double(accelerationFactor),
+		as.double(afMaximum)
+	)
+}
 
 #' @usage NULL
 #' @aliases parabolic_stop_and_reverse
@@ -138,8 +186,8 @@ parabolic_stop_and_reverse.matrix <- function(
 parabolic_stop_and_reverse.plotly <- function(
 	x,
 	cols,
-	acceleration = 0.02,
-	maximum = 0.2,
+	accelerationFactor = 0.02,
+	afMaximum = 0.2,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -160,7 +208,7 @@ parabolic_stop_and_reverse.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low,
+		formula.default = ~ high + low,
 		...
 	)
 
@@ -171,8 +219,8 @@ parabolic_stop_and_reverse.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		acceleration = acceleration,
-		maximum = maximum,
+		accelerationFactor = accelerationFactor,
+		afMaximum = afMaximum,
 		na.bridge = TRUE
 	)
 
@@ -245,8 +293,8 @@ parabolic_stop_and_reverse.plotly <- function(
 parabolic_stop_and_reverse.ggplot <- function(
 	x,
 	cols,
-	acceleration = 0.02,
-	maximum = 0.2,
+	accelerationFactor = 0.02,
+	afMaximum = 0.2,
 	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
@@ -266,7 +314,7 @@ parabolic_stop_and_reverse.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low,
+		formula.default = ~ high + low,
 		...
 	)
 
@@ -277,8 +325,8 @@ parabolic_stop_and_reverse.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		acceleration = acceleration,
-		maximum = maximum,
+		accelerationFactor = accelerationFactor,
+		afMaximum = afMaximum,
 		na.bridge = TRUE
 	)
 

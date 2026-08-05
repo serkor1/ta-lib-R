@@ -26,7 +26,7 @@
 abandoned_baby <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
@@ -40,6 +40,13 @@ abandoned_baby <- function(
 #' @aliases abandoned_baby
 CDLABANDONEDBABY <- abandoned_baby
 
+#' @export
+#' @usage NULL
+#' @rdname abandoned_baby
+#'
+#' @aliases abandoned_baby
+abandonedBaby <- abandoned_baby
+
 #' @usage NULL
 #' @aliases abandoned_baby
 #'
@@ -47,7 +54,7 @@ CDLABANDONEDBABY <- abandoned_baby
 abandoned_baby.default <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
@@ -72,36 +79,34 @@ abandoned_baby.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
+		x = x,
+		formula.default = ~ open + high + low + close,
+		formula = cols,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
-	x <- as.matrix(
-		.Call(
-			C_impl_ta_CDLABANDONEDBABY,
-			constructed_series[[1]],
-			constructed_series[[2]],
-			constructed_series[[3]],
-			constructed_series[[4]],
-			eps,
-			normalize,
-			as.logical(na.bridge)
-		)
+	x <- .Call(
+		C_impl_ta_CDLABANDONEDBABY,
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
+		as.double(penetration),
+		normalize,
+		as.logical(na.bridge)
 	)
 
 	## add column name
 	colnames(x) <- "CDLABANDONEDBABY"
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -114,12 +119,18 @@ abandoned_baby.default <- function(
 abandoned_baby.data.frame <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
-		NextMethod()
+	as.data.frame(
+		abandoned_baby.default(
+			x = x,
+			cols = cols,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -130,11 +141,58 @@ abandoned_baby.data.frame <- function(
 abandoned_baby.matrix <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	as.matrix(
+		abandoned_baby.default(
+			x = x,
+			cols = cols,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases abandoned_baby
+#'
+#' @export
+abandoned_baby.xts <- function(
+	x,
+	cols,
+	penetration = 0.3,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		abandoned_baby.default(
+			x = x,
+			cols = cols,
+			penetration = penetration,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+
+#' @usage NULL
+CDLABANDONEDBABY_lookback <- abandonedBaby_lookback <- abandoned_baby_lookback <- function(
+	x,
+	cols,
+	penetration = 0.3,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_CDLABANDONEDBABY_lookback,
+		as.double(penetration)
+	)
 }
 
 #' @usage NULL
@@ -144,7 +202,7 @@ abandoned_baby.matrix <- function(
 abandoned_baby.plotly <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
@@ -163,7 +221,7 @@ abandoned_baby.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -174,7 +232,8 @@ abandoned_baby.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		eps = eps
+		penetration = penetration,
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -197,7 +256,6 @@ abandoned_baby.plotly <- function(
 	plotly_object
 }
 
-
 #' @usage NULL
 #' @aliases abandoned_baby
 #'
@@ -205,7 +263,7 @@ abandoned_baby.plotly <- function(
 abandoned_baby.ggplot <- function(
 	x,
 	cols,
-	eps = 0,
+	penetration = 0.3,
 	na.bridge = FALSE,
 	...
 ) {
@@ -223,7 +281,7 @@ abandoned_baby.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -234,7 +292,8 @@ abandoned_baby.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		eps = eps
+		penetration = penetration,
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

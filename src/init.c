@@ -1,156 +1,117 @@
-// Generated from codegen/generate_FFI.sh
-#include <R.h>
+// init.c
+//
+// Description:
+//    This is where TA-Lib.h is being ported to
+//    R, and is the workhorse of the R package.
+//
+// Author: Serkan Korkmaz
+#include "ta_libc.h"
+#include "utils.h"
+#include "wrapper.h"
 #include <R_ext/Rdynload.h>
 #include <Rinternals.h>
-#include <stdlib.h>
+#include <limits.h>
 
-#include "api.h"
-
+// TA_DECL / TA_LB_DECL emit the forward declarations (prototypes) for the
+// mined TA-Lib entry points. They reuse the argument-shape helpers from
+// wrapper.h, so each prototype tracks its TA_WRAPPER-generated definition.
 // clang-format off
-#define CALLDEF(name, n) {#name, (DL_FUNC) &name, n}
+#define TA_DECL(NAME, RT, INS_, OPTS_, OUTS_, TA_OUTPUT_NAME_, KIND)  \
+      extern SEXP impl_ta_##NAME(                                     \
+        TA_APPLY(TA_IN_ARG, INS_)                                     \
+        TA_APPLY(TA_OPT_ARG, OPTS_)                                   \
+        SEXP s_na_bridge                                              \
+        TA_CAT(TA_NORM_ARG_, KIND)                                    \
+      );
 // clang-format on
+#define TA_LB_DECL(NAME, OPTS_)                                                \
+  extern SEXP impl_ta_##NAME##_lookback(TA_LB_PARAMS(OPTS_));
+
+// forward declaration of all
+// mined TA-Lib functions (indicator + lookback)
+#define TA_INDICATOR(...) TA_DECL(__VA_ARGS__)
+#define TA_LOOKBACK(...) TA_LB_DECL(__VA_ARGS__)
+#include "TA-Lib.h"
+#undef TA_INDICATOR
+#undef TA_LOOKBACK
+
+// construct TA-Lib wrappers (indicator + lookback)
+#define TA_INDICATOR(...) TA_WRAPPER(__VA_ARGS__)
+#define TA_LOOKBACK(...) TA_LB_WRAPPER(__VA_ARGS__)
+#include "TA-Lib.h"
+#undef TA_INDICATOR
+#undef TA_LOOKBACK
+
+// trading-volume wrappers (volume.c)
+extern SEXP impl_ta_VOLUME(SEXP, SEXP, SEXP);
+extern SEXP impl_ta_VOLUME_lookback(SEXP, SEXP);
+
+// global-setter wrappers (TA-Lib.c)
+extern SEXP ta_set_unstable_period(SEXP, SEXP);
+extern SEXP ta_set_compatibility(SEXP);
+extern SEXP set_candle_setting(SEXP, SEXP, SEXP, SEXP);
+extern SEXP reset_candle_setting(SEXP);
+extern SEXP initialize_ta_lib(void);
+extern SEXP map_dfr_double(SEXP);
+extern SEXP map_dfr_integer(SEXP);
+extern SEXP shutdown_ta_lib(void);
+
+// TA_REG / TA_LB_REG emit the R_CallMethodDef rows. Arity is derived from the
+// same TA_COUNT_ARGUMENTS / TA_NORM_ARITY helpers the wrapper signature uses:
+//   indicator = #inputs + #opts + 1 (na_bridge) + candlestick normalize arg
+//   lookback  = #opts
+// The registration STRING (not the C symbol) is what R names the routine:
+// with useDynLib(.fixes = "C_"), R exposes C_ + this string, matching the
+// generated .Call(C_impl_ta_<NAME>, ...).
+#define TA_REG(NAME, RT, INS_, OPTS_, OUTS_, TA_OUTPUT_NAME_, KIND)            \
+  {"impl_ta_" #NAME,                                                           \
+   (DL_FUNC) & impl_ta_##NAME,                                                 \
+   (TA_COUNT_ARGUMENTS INS_) + (TA_COUNT_ARGUMENTS OPTS_) + 1 +                \
+     TA_CAT(TA_NORM_ARITY_, KIND)},
+#define TA_LB_REG(NAME, OPTS_)                                                 \
+  {"impl_ta_" #NAME "_lookback",                                               \
+   (DL_FUNC) & impl_ta_##NAME##_lookback,                                      \
+   TA_COUNT_ARGUMENTS OPTS_},
 
 static const R_CallMethodDef CallEntries[] = {
-  CALLDEF(impl_ta_ACCBANDS, 5),
-  CALLDEF(impl_ta_ADOSC, 7),
-  CALLDEF(impl_ta_AD, 5),
-  CALLDEF(impl_ta_ADXR, 5),
-  CALLDEF(impl_ta_ADX, 5),
-  CALLDEF(impl_ta_APO, 5),
-  CALLDEF(impl_ta_AROONOSC, 4),
-  CALLDEF(impl_ta_AROON, 4),
-  CALLDEF(impl_ta_ATR, 5),
-  CALLDEF(impl_ta_AVGPRICE, 5),
-  CALLDEF(impl_ta_BBANDS, 6),
-  CALLDEF(impl_ta_BETA, 4),
-  CALLDEF(impl_ta_BOP, 5),
-  CALLDEF(impl_ta_CCI, 5),
-  CALLDEF(impl_ta_CDL2CROWS, 6),
-  CALLDEF(impl_ta_CDL3BLACKCROWS, 6),
-  CALLDEF(impl_ta_CDL3INSIDE, 6),
-  CALLDEF(impl_ta_CDL3LINESTRIKE, 6),
-  CALLDEF(impl_ta_CDL3OUTSIDE, 6),
-  CALLDEF(impl_ta_CDL3STARSINSOUTH, 6),
-  CALLDEF(impl_ta_CDL3WHITESOLDIERS, 6),
-  CALLDEF(impl_ta_CDLABANDONEDBABY, 7),
-  CALLDEF(impl_ta_CDLADVANCEBLOCK, 6),
-  CALLDEF(impl_ta_CDLBELTHOLD, 6),
-  CALLDEF(impl_ta_CDLBREAKAWAY, 6),
-  CALLDEF(impl_ta_CDLCLOSINGMARUBOZU, 6),
-  CALLDEF(impl_ta_CDLCONCEALBABYSWALL, 6),
-  CALLDEF(impl_ta_CDLCOUNTERATTACK, 6),
-  CALLDEF(impl_ta_CDLDARKCLOUDCOVER, 7),
-  CALLDEF(impl_ta_CDLDOJI, 6),
-  CALLDEF(impl_ta_CDLDOJISTAR, 6),
-  CALLDEF(impl_ta_CDLDRAGONFLYDOJI, 6),
-  CALLDEF(impl_ta_CDLENGULFING, 6),
-  CALLDEF(impl_ta_CDLEVENINGDOJISTAR, 7),
-  CALLDEF(impl_ta_CDLEVENINGSTAR, 7),
-  CALLDEF(impl_ta_CDLGAPSIDESIDEWHITE, 6),
-  CALLDEF(impl_ta_CDLGRAVESTONEDOJI, 6),
-  CALLDEF(impl_ta_CDLHAMMER, 6),
-  CALLDEF(impl_ta_CDLHANGINGMAN, 6),
-  CALLDEF(impl_ta_CDLHARAMICROSS, 6),
-  CALLDEF(impl_ta_CDLHARAMI, 6),
-  CALLDEF(impl_ta_CDLHIGHWAVE, 6),
-  CALLDEF(impl_ta_CDLHIKKAKEMOD, 6),
-  CALLDEF(impl_ta_CDLHIKKAKE, 6),
-  CALLDEF(impl_ta_CDLHOMINGPIGEON, 6),
-  CALLDEF(impl_ta_CDLIDENTICAL3CROWS, 6),
-  CALLDEF(impl_ta_CDLINNECK, 6),
-  CALLDEF(impl_ta_CDLINVERTEDHAMMER, 6),
-  CALLDEF(impl_ta_CDLKICKINGBYLENGTH, 6),
-  CALLDEF(impl_ta_CDLKICKING, 6),
-  CALLDEF(impl_ta_CDLLADDERBOTTOM, 6),
-  CALLDEF(impl_ta_CDLLONGLEGGEDDOJI, 6),
-  CALLDEF(impl_ta_CDLLONGLINE, 6),
-  CALLDEF(impl_ta_CDLMARUBOZU, 6),
-  CALLDEF(impl_ta_CDLMATCHINGLOW, 6),
-  CALLDEF(impl_ta_CDLMATHOLD, 7),
-  CALLDEF(impl_ta_CDLMORNINGDOJISTAR, 7),
-  CALLDEF(impl_ta_CDLMORNINGSTAR, 7),
-  CALLDEF(impl_ta_CDLONNECK, 6),
-  CALLDEF(impl_ta_CDLPIERCING, 6),
-  CALLDEF(impl_ta_CDLRICKSHAWMAN, 6),
-  CALLDEF(impl_ta_CDLRISEFALL3METHODS, 6),
-  CALLDEF(impl_ta_CDLSEPARATINGLINES, 6),
-  CALLDEF(impl_ta_CDLSHOOTINGSTAR, 6),
-  CALLDEF(impl_ta_CDLSHORTLINE, 6),
-  CALLDEF(impl_ta_CDLSPINNINGTOP, 6),
-  CALLDEF(impl_ta_CDLSTALLEDPATTERN, 6),
-  CALLDEF(impl_ta_CDLSTICKSANDWICH, 6),
-  CALLDEF(impl_ta_CDLTAKURI, 6),
-  CALLDEF(impl_ta_CDLTASUKIGAP, 6),
-  CALLDEF(impl_ta_CDLTHRUSTING, 6),
-  CALLDEF(impl_ta_CDLTRISTAR, 6),
-  CALLDEF(impl_ta_CDLUNIQUE3RIVER, 6),
-  CALLDEF(impl_ta_CDLUPSIDEGAP2CROWS, 6),
-  CALLDEF(impl_ta_CDLXSIDEGAP3METHODS, 6),
-  CALLDEF(impl_ta_CMO, 3),
-  CALLDEF(impl_ta_CORREL, 4),
-  CALLDEF(impl_ta_DEMA, 3),
-  CALLDEF(impl_ta_DX, 5),
-  CALLDEF(impl_ta_EMA, 3),
-  CALLDEF(impl_ta_HT_DCPERIOD, 2),
-  CALLDEF(impl_ta_HT_DCPHASE, 2),
-  CALLDEF(impl_ta_HT_PHASOR, 2),
-  CALLDEF(impl_ta_HT_SINE, 2),
-  CALLDEF(impl_ta_HT_TRENDLINE, 2),
-  CALLDEF(impl_ta_HT_TRENDMODE, 2),
-  CALLDEF(impl_ta_IMI, 4),
-  CALLDEF(impl_ta_KAMA, 3),
-  CALLDEF(impl_ta_MACDEXT, 8),
-  CALLDEF(impl_ta_MACDFIX, 3),
-  CALLDEF(impl_ta_MACD, 5),
-  CALLDEF(impl_ta_MAMA, 4),
-  CALLDEF(impl_ta_MAX, 3),
-  CALLDEF(impl_ta_MEDPRICE, 3),
-  CALLDEF(impl_ta_MFI, 6),
-  CALLDEF(impl_ta_MIDPRICE, 4),
-  CALLDEF(impl_ta_MIN, 3),
-  CALLDEF(impl_ta_MINUS_DI, 5),
-  CALLDEF(impl_ta_MINUS_DM, 4),
-  CALLDEF(impl_ta_MOM, 3),
-  CALLDEF(impl_ta_NATR, 5),
-  CALLDEF(impl_ta_OBV, 3),
-  CALLDEF(impl_ta_PLUS_DI, 5),
-  CALLDEF(impl_ta_PLUS_DM, 4),
-  CALLDEF(impl_ta_PPO, 5),
-  CALLDEF(impl_ta_ROCR, 3),
-  CALLDEF(impl_ta_ROC, 3),
-  CALLDEF(impl_ta_RSI, 3),
-  CALLDEF(impl_ta_SAREXT, 11),
-  CALLDEF(impl_ta_SAR, 5),
-  CALLDEF(impl_ta_SMA, 3),
-  CALLDEF(impl_ta_STDDEV, 4),
-  CALLDEF(impl_ta_STOCHF, 7),
-  CALLDEF(impl_ta_STOCHRSI, 6),
-  CALLDEF(impl_ta_STOCH, 9),
-  CALLDEF(impl_ta_SUM, 3),
-  CALLDEF(impl_ta_T3, 4),
-  CALLDEF(impl_ta_TEMA, 3),
-  CALLDEF(impl_ta_TRANGE, 4),
-  CALLDEF(impl_ta_TRIMA, 3),
-  CALLDEF(impl_ta_TRIX, 3),
-  CALLDEF(impl_ta_TYPPRICE, 4),
-  CALLDEF(impl_ta_ULTOSC, 7),
-  CALLDEF(impl_ta_VAR, 4),
-  CALLDEF(impl_ta_VOLUME, 3),
-  CALLDEF(impl_ta_WCLPRICE, 4),
-  CALLDEF(impl_ta_WILLR, 5),
-  CALLDEF(impl_ta_WMA, 3),
-  CALLDEF(initialize_ta_lib, 0),
-  CALLDEF(map_dfr_double, 1),
-  CALLDEF(map_dfr_integer, 1),
-  CALLDEF(reset_candle_setting, 0),
-  CALLDEF(rownames_data_frame, 2),
-  CALLDEF(rownames_matrix, 3),
-  CALLDEF(set_candle_setting, 4),
-  CALLDEF(shutdown_ta_lib, 0),
+#define TA_INDICATOR(...) TA_REG(__VA_ARGS__)
+#define TA_LOOKBACK(...) TA_LB_REG(__VA_ARGS__)
+#include "TA-Lib.h"
+#undef TA_INDICATOR
+#undef TA_LOOKBACK
+  {"impl_ta_VOLUME", (DL_FUNC)&impl_ta_VOLUME, 3},
+  {"impl_ta_VOLUME_lookback", (DL_FUNC)&impl_ta_VOLUME_lookback, 2},
+  {"ta_set_unstable_period", (DL_FUNC)&ta_set_unstable_period, 2},
+  {"ta_set_compatibility", (DL_FUNC)&ta_set_compatibility, 1},
+  {"set_candle_setting", (DL_FUNC)&set_candle_setting, 4},
+  {"reset_candle_setting", (DL_FUNC)&reset_candle_setting, 1},
+  {"index_data_frame", (DL_FUNC)&index_data_frame, 2},
+  {"index_matrix", (DL_FUNC)&index_matrix, 3},
+  {"index_xts", (DL_FUNC)&index_xts, 2},
+  {"map_dfr_double", (DL_FUNC)&map_dfr_double, 1},
+  {"map_dfr_integer", (DL_FUNC)&map_dfr_integer, 1},
+  {"initialize_ta_lib", (DL_FUNC)&initialize_ta_lib, 0},
+  {"shutdown_ta_lib", (DL_FUNC)&shutdown_ta_lib, 0},
   {NULL, NULL, 0}};
 
+// Initialize/Unload {talib}
+//
+// This section corresponds to zzz.R regarding load()/library()
+// and unload() and it will initialize/shutdown TA-Lib when needed
+//
+//
 void R_init_talib(DllInfo *dll) {
+
+  if (TA_Initialize() != TA_SUCCESS) {
+    Rf_error("TA_Initialize() failed");
+  }
+
   R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
   R_useDynamicSymbols(dll, FALSE);
   R_forceSymbols(dll, TRUE);
+}
+
+void R_unload_talib(DllInfo *dll) {
+  (void)dll;
+  TA_Shutdown();
 }

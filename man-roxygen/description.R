@@ -1,7 +1,8 @@
 #' @description
 #' `<%= tolower(.fun) %>()` is a generic S3 function that preserves
 #' the input [class]: [data.frame] in, [data.frame] out; [matrix] in,
-#' [matrix] out.
+#' [matrix] out; `xts` in, `xts` out. Other inputs coercible to
+#' [data.frame] (e.g. `zoo`) are computed on the coerced [data.frame].
 #'
 #' 
 <% if (any(grepl(pattern = "cols", x = names(formals(.fun))))) { %>
@@ -57,17 +58,21 @@
 <% } %>
 #'
 #' @param cols ([formula]). An optional `<%= length(all.vars(as.formula(.formula))) %>`-variable [formula] selecting columns from `x` via [model.frame].
+#'  For `xts` input each formula variable is matched against the column
+#'  names directly - exact matches first, then quantmod-style suffix
+#'  matches (`close` matches `TICKER.Close`), case-insensitively - and
+#'  columns are consumed in formula order.
 #'  Defaults to `<%= deparse(as.formula(.formula)) %>`.
 #'
 <% } %>
 #'
 <% fun_args <- names(formals(.fun)) %>
-<% if ("n" %in% fun_args) { %>
-#' @param n ([integer]). Lookback period (window size). A positive [integer]
+<% if ("timePeriod" %in% fun_args) { %>
+#' @param timePeriod ([integer]). Lookback period (window size). A positive [integer]
 #'   of [length] 1.
 <% } %>
-<% if ("eps" %in% fun_args) { %>
-#' @param eps ([double]). Penetration threshold for candlestick pattern
+<% if ("penetration" %in% fun_args) { %>
+#' @param penetration ([double]). Penetration threshold for candlestick pattern
 #'   recognition, expressed as a fraction of the candle body. A [double] of
 #'   [length] 1.
 <% } %>
@@ -82,7 +87,8 @@
 #'   `NA` values** section above for the consequences.
 <% } %>
 <% if ("..." %in% fun_args) { %>
-#' @param ... Additional parameters passed into [model.frame].
+#' @param ... Additional parameters passed into [model.frame]. Unused
+#'   for `xts` input (a warning is emitted when supplied).
 <% } %>
 #'
 #' @author <%= .author %>
@@ -92,6 +98,7 @@
 #' @concept trading
 #' @concept algorithmic trading
 #'
+<% if (!exists(".custom_example")) { %>
 <% if (grepl(pattern = "Price Transform", x = .family)) { %>
 #' @examples
 #' ## load Bitcoin (BTC)
@@ -135,4 +142,5 @@
 #'  )
 #' }
 
+<% } %>
 <% } %>

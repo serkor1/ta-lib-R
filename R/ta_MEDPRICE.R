@@ -12,6 +12,7 @@
 ## splice:documentation:end
 #'
 #' @template description
+#'
 #' @template returns
 median_price <- function(
 	x,
@@ -28,6 +29,13 @@ median_price <- function(
 #'
 #' @aliases median_price
 MEDPRICE <- median_price
+
+#' @export
+#' @usage NULL
+#' @rdname median_price
+#'
+#' @aliases median_price
+medianPrice <- median_price
 
 #' @usage NULL
 #' @aliases median_price
@@ -48,29 +56,27 @@ median_price.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_MEDPRICE,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
-		## splice:call:end
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -86,7 +92,7 @@ median_price.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		median_price.default(
 			x = x,
 			cols = cols,
@@ -106,10 +112,46 @@ median_price.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	median_price.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		median_price.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases median_price
+#'
+#' @export
+median_price.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		median_price.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+MEDPRICE_lookback <- medianPrice_lookback <- median_price_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_MEDPRICE_lookback
 	)
 }

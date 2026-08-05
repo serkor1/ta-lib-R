@@ -1,22 +1,23 @@
 #' @export
-#' @family Momentum Indicator
+#' @family Momentum Indicators
 #'
 #' @title Commodity Channel Index
 #' @templateVar .title Commodity Channel Index
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun commodity_channel_index
-#' @templateVar .family Momentum Indicator
-#' @templateVar .formula ~ high + low + close
+#' @templateVar .family Momentum Indicators
+#' @templateVar .formula ~high + low + close
 #'
 ## splice:documentation:start
 ## splice:documentation:end
 #'
 #' @template description
+#'
 #' @template returns
 commodity_channel_index <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -30,6 +31,13 @@ commodity_channel_index <- function(
 #' @aliases commodity_channel_index
 CCI <- commodity_channel_index
 
+#' @export
+#' @usage NULL
+#' @rdname commodity_channel_index
+#'
+#' @aliases commodity_channel_index
+commodityChannelIndex <- commodity_channel_index
+
 #' @usage NULL
 #' @aliases commodity_channel_index
 #'
@@ -37,7 +45,7 @@ CCI <- commodity_channel_index
 commodity_channel_index.default <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -50,31 +58,29 @@ commodity_channel_index.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low + close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low + close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_CCI,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
-		as.integer(n),
-		## splice:call:end
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -87,15 +93,15 @@ commodity_channel_index.default <- function(
 commodity_channel_index.data.frame <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		commodity_channel_index.default(
 			x = x,
 			cols = cols,
-			n = n,
+			timePeriod = timePeriod,
 			na.bridge = na.bridge,
 			...
 		)
@@ -109,19 +115,58 @@ commodity_channel_index.data.frame <- function(
 commodity_channel_index.matrix <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
-	commodity_channel_index.default(
-		x = x,
-		cols = cols,
-		n = n,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		commodity_channel_index.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
+#' @usage NULL
+#' @aliases commodity_channel_index
+#'
+#' @export
+commodity_channel_index.xts <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		commodity_channel_index.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+CCI_lookback <- commodityChannelIndex_lookback <- commodity_channel_index_lookback <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_CCI_lookback,
+		as.integer(timePeriod)
+	)
+}
 
 #' @usage NULL
 #' @aliases commodity_channel_index
@@ -130,12 +175,13 @@ commodity_channel_index.matrix <- function(
 commodity_channel_index.plotly <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = -100,
 	upper_bound = 100,
 	## splice:optional-plotly:end
+	title,
 	...
 ) {
 	## check that input value
@@ -153,7 +199,7 @@ commodity_channel_index.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 
@@ -164,9 +210,15 @@ commodity_channel_index.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
+
+	## the constructed indicator
+	## always returns excpected
+	## columns which can be passed
+	## down to add_last_values()
+	values_to_extract <- colnames(constructed_indicator)
 
 	## add conditional idx
 	constructed_indicator[["idx"]] <- add_idx(
@@ -177,7 +229,7 @@ commodity_channel_index.plotly <- function(
 	## splice:plotly-assembly:start
 	name <- sprintf(
 		"CCI(%d)",
-		n
+		timePeriod
 	)
 	traces <- list(
 		plotly_line(lower_bound, nrow(constructed_indicator)),
@@ -186,18 +238,32 @@ commodity_channel_index.plotly <- function(
 	)
 	## splice:plotly-assembly:end
 
-	state <- .chart_state()
-	plotly_object <- build_plotly(
-		init = state[["main"]],
-		traces = traces,
-		decorators = list(),
-		name = get0(
-			x = "name",
-			ifnotfound = NULL
+	plotly_object <- add_last_value_ly(
+		build_plotly(
+			init = plotly_init(),
+			traces = traces,
+			decorators = get0(
+				x = "decorators",
+				ifnotfound = list()
+			),
+			name = get0(
+				x = "name",
+				ifnotfound = NULL
+			),
+			data = constructed_indicator,
+			title = if (missing(title)) {
+				"Commodity Channel Index"
+			} else {
+				title
+			}
 		),
-		data = constructed_indicator
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		values_to_extract = values_to_extract,
+		name = get0(x = "name", ifnotfound = NULL)
 	)
-	state[["main"]] <- plotly_object
+
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(plotly_object))
 
 	plotly_object
 }
@@ -209,8 +275,9 @@ commodity_channel_index.plotly <- function(
 commodity_channel_index.ggplot <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
 	...
@@ -229,7 +296,7 @@ commodity_channel_index.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close,
+		formula.default = ~ high + low + close,
 		...
 	)
 
@@ -240,9 +307,15 @@ commodity_channel_index.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
+
+	## the constructed indicator
+	## always returns expected
+	## columns which can be passed
+	## down to add_last_value_gg()
+	values_to_extract <- colnames(constructed_indicator)
 
 	## add conditional idx
 	constructed_indicator[["idx"]] <- add_idx(
@@ -256,21 +329,35 @@ commodity_channel_index.ggplot <- function(
 		ggplot_line(100),
 		list(y = "CCI")
 	)
-	name <- sprintf("CCI(%d)", n)
+	name <- sprintf("CCI(%d)", timePeriod)
 	## splice:ggplot-assembly:end
 
-	state <- .chart_state()
-	ggplot_object <- build_ggplot(
-		init = state[["main"]],
-		layers = layers,
-		decorators = list(),
-		name = get0(
-			x = "name",
-			ifnotfound = NULL
+	ggplot_object <- add_last_value_gg(
+		build_ggplot(
+			init = ggplot_init(),
+			layers = layers,
+			decorators = get0(
+				x = "decorators",
+				ifnotfound = list()
+			),
+			name = get0(
+				x = "name",
+				ifnotfound = NULL
+			),
+			data = constructed_indicator,
+			title = if (missing(title)) {
+				"Commodity Channel Index"
+			} else {
+				title
+			}
 		),
-		data = constructed_indicator
+		data = constructed_indicator[, values_to_extract, drop = FALSE],
+		values_to_extract = values_to_extract,
+		name = get0(x = "name", ifnotfound = NULL)
 	)
-	state[["main"]] <- ggplot_object
+
+	state <- .chart_state()
+	state$sub <- c(state$sub, list(ggplot_object))
 
 	ggplot_object
 }

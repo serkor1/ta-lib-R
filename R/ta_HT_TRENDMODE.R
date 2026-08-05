@@ -1,17 +1,18 @@
 #' @export
-#' @family Cycle Indicator
+#' @family Cycle Indicators
 #'
 #' @title Hilbert Transform - Trend vs Cycle Mode
 #' @templateVar .title Hilbert Transform - Trend vs Cycle Mode
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun trend_cycle_mode
-#' @templateVar .family Cycle Indicator
+#' @templateVar .family Cycle Indicators
 #' @templateVar .formula ~close
 #'
 ## splice:documentation:start
 ## splice:documentation:end
 #'
 #' @template description
+#'
 #' @template returns
 trend_cycle_mode <- function(
 	x,
@@ -28,6 +29,13 @@ trend_cycle_mode <- function(
 #'
 #' @aliases trend_cycle_mode
 HT_TRENDMODE <- trend_cycle_mode
+
+#' @export
+#' @usage NULL
+#' @rdname trend_cycle_mode
+#'
+#' @aliases trend_cycle_mode
+trendCycleMode <- trend_cycle_mode
 
 #' @usage NULL
 #' @aliases trend_cycle_mode
@@ -48,28 +56,26 @@ trend_cycle_mode.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_HT_TRENDMODE,
-		## splice:call:start
 		constructed_series[[1]],
-		## splice:call:end
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -85,7 +91,7 @@ trend_cycle_mode.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		trend_cycle_mode.default(
 			x = x,
 			cols = cols,
@@ -105,14 +111,49 @@ trend_cycle_mode.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	trend_cycle_mode.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		trend_cycle_mode.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
+#' @usage NULL
+#' @aliases trend_cycle_mode
+#'
+#' @export
+trend_cycle_mode.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		trend_cycle_mode.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+HT_TRENDMODE_lookback <- trendCycleMode_lookback <- trend_cycle_mode_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_HT_TRENDMODE_lookback
+	)
+}
 
 #' @usage NULL
 #' @aliases trend_cycle_mode
@@ -132,31 +173,25 @@ trend_cycle_mode.numeric <- function(
 		warning("'cols' is passed but is unused for vectors.")
 	}
 
+	if (...length()) {
+		warning("'...' is passed but is unused for vectors.")
+	}
+
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
 		C_impl_ta_HT_TRENDMODE,
-		## splice:numeric:start
 		as.double(x),
-		## splice:numeric:end
 		as.logical(na.bridge)
 	)
 
-	## check if it has 'dims'
-	## and convert to double if
-	## not to honor the 'type-safety'-esque
-	## approach
-	##
-	## NOTE: this adds a few ns overhead but
-	##       its a robust alternative to code it
-	##       manually. Any suggestions are welcome
-	if (is.null(dim(x))) {
-		x <- as.double(x)
+	if (dim(x)[2] == 1L) {
+		dim(x) <- NULL
 	}
+	class(x) <- NULL
 
 	x
 }
-
 
 #' @usage NULL
 #' @aliases trend_cycle_mode
@@ -186,7 +221,7 @@ trend_cycle_mode.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 
@@ -248,7 +283,8 @@ trend_cycle_mode.plotly <- function(
 			}
 		),
 		data = constructed_indicator[, values_to_extract, drop = FALSE],
-		values_to_extract = values_to_extract
+		values_to_extract = values_to_extract,
+		name = get0(x = "name", ifnotfound = NULL)
 	)
 
 	state <- .chart_state()
@@ -265,9 +301,9 @@ trend_cycle_mode.ggplot <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -284,7 +320,7 @@ trend_cycle_mode.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 

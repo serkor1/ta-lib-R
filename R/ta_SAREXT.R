@@ -1,37 +1,37 @@
 #' @export
-#' @family Overlap Study
+#' @family Overlap Studies
 #'
-#' @title Parabolic Stop and Reverse (SAR) - Extended
-#' @templateVar .title Parabolic Stop and Reverse (SAR) - Extended
+#' @title Parabolic SAR - Extended
+#' @templateVar .title Parabolic SAR - Extended
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun extended_parabolic_stop_and_reverse
-#' @templateVar .family Overlap Study
-#' @templateVar .formula ~high+low
+#' @templateVar .family Overlap Studies
+#' @templateVar .formula ~high + low
 #'
 ## splice:documentation:start
-#' @param init ([double]). Start value and direction. 0 for Auto, >0 for Long, <0 for Short.
-#' @param offset ([double]). Offset added/removed to initial stop on short/long reversal.
-#' @param init_long ([double]). Acceleration factor initial value for the Long direction.
-#' @param long ([double]). Acceleration factor for the Long direction.
-#' @param max_long ([double]). Acceleration factor maximum value for the Long direction.
-#' @param init_short ([double]). Acceleration factor initial value for the Short direction.
-#' @param short ([double]). Acceleration factor for the Short direction.
-#' @param max_short ([double]). Acceleration factor maximum value for the Short direction.
 ## splice:documentation:end
 #'
 #' @template description
+#' @param startValue ([double]). Start value and direction. 0 for Auto, >0 for Long, <0 for Short. Defaults to `0`.
+#' @param offsetOnReverse ([double]). Percent offset added/removed to initial stop on short/long reversal. Defaults to `0`.
+#' @param afInitLong ([double]). Acceleration Factor initial value for the Long direction. Defaults to `0.02`.
+#' @param afLong ([double]). Acceleration Factor for the Long direction. Defaults to `0.02`.
+#' @param afMaxLong ([double]). Acceleration Factor maximum value for the Long direction. Defaults to `0.2`.
+#' @param afInitShort ([double]). Acceleration Factor initial value for the Short direction. Defaults to `0.02`.
+#' @param afShort ([double]). Acceleration Factor for the Short direction. Defaults to `0.02`.
+#' @param afMaxShort ([double]). Acceleration Factor maximum value for the Short direction. Defaults to `0.2`.
 #' @template returns
 extended_parabolic_stop_and_reverse <- function(
 	x,
 	cols,
-	init = 0,
-	offset = 0,
-	init_long = 0.02,
-	long = 0.02,
-	max_long = 0.2,
-	init_short = 0.02,
-	short = 0.02,
-	max_short = 0.2,
+	startValue = 0,
+	offsetOnReverse = 0,
+	afInitLong = 0.02,
+	afLong = 0.02,
+	afMaxLong = 0.2,
+	afInitShort = 0.02,
+	afShort = 0.02,
+	afMaxShort = 0.2,
 	na.bridge = FALSE,
 	...
 ) {
@@ -45,6 +45,13 @@ extended_parabolic_stop_and_reverse <- function(
 #' @aliases extended_parabolic_stop_and_reverse
 SAREXT <- extended_parabolic_stop_and_reverse
 
+#' @export
+#' @usage NULL
+#' @rdname extended_parabolic_stop_and_reverse
+#'
+#' @aliases extended_parabolic_stop_and_reverse
+extendedParabolicStopAndReverse <- extended_parabolic_stop_and_reverse
+
 #' @usage NULL
 #' @aliases extended_parabolic_stop_and_reverse
 #'
@@ -52,14 +59,14 @@ SAREXT <- extended_parabolic_stop_and_reverse
 extended_parabolic_stop_and_reverse.default <- function(
 	x,
 	cols,
-	init = 0,
-	offset = 0,
-	init_long = 0.02,
-	long = 0.02,
-	max_long = 0.2,
-	init_short = 0.02,
-	short = 0.02,
-	max_short = 0.2,
+	startValue = 0,
+	offsetOnReverse = 0,
+	afInitLong = 0.02,
+	afLong = 0.02,
+	afMaxLong = 0.2,
+	afInitShort = 0.02,
+	afShort = 0.02,
+	afMaxShort = 0.2,
 	na.bridge = FALSE,
 	...
 ) {
@@ -72,37 +79,35 @@ extended_parabolic_stop_and_reverse.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_SAREXT,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
-		init,
-		offset,
-		init_long,
-		long,
-		max_long,
-		init_short,
-		short,
-		max_short,
-		## splice:call:end
+		as.double(startValue),
+		as.double(offsetOnReverse),
+		as.double(afInitLong),
+		as.double(afLong),
+		as.double(afMaxLong),
+		as.double(afInitShort),
+		as.double(afShort),
+		as.double(afMaxShort),
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -115,29 +120,29 @@ extended_parabolic_stop_and_reverse.default <- function(
 extended_parabolic_stop_and_reverse.data.frame <- function(
 	x,
 	cols,
-	init = 0,
-	offset = 0,
-	init_long = 0.02,
-	long = 0.02,
-	max_long = 0.2,
-	init_short = 0.02,
-	short = 0.02,
-	max_short = 0.2,
+	startValue = 0,
+	offsetOnReverse = 0,
+	afInitLong = 0.02,
+	afLong = 0.02,
+	afMaxLong = 0.2,
+	afInitShort = 0.02,
+	afShort = 0.02,
+	afMaxShort = 0.2,
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		extended_parabolic_stop_and_reverse.default(
 			x = x,
 			cols = cols,
-			init = init,
-			offset = offset,
-			init_long = init_long,
-			long = long,
-			max_long = max_long,
-			init_short = init_short,
-			short = short,
-			max_short = max_short,
+			startValue = startValue,
+			offsetOnReverse = offsetOnReverse,
+			afInitLong = afInitLong,
+			afLong = afLong,
+			afMaxLong = afMaxLong,
+			afInitShort = afInitShort,
+			afShort = afShort,
+			afMaxShort = afMaxShort,
 			na.bridge = na.bridge,
 			...
 		)
@@ -151,33 +156,100 @@ extended_parabolic_stop_and_reverse.data.frame <- function(
 extended_parabolic_stop_and_reverse.matrix <- function(
 	x,
 	cols,
-	init = 0,
-	offset = 0,
-	init_long = 0.02,
-	long = 0.02,
-	max_long = 0.2,
-	init_short = 0.02,
-	short = 0.02,
-	max_short = 0.2,
+	startValue = 0,
+	offsetOnReverse = 0,
+	afInitLong = 0.02,
+	afLong = 0.02,
+	afMaxLong = 0.2,
+	afInitShort = 0.02,
+	afShort = 0.02,
+	afMaxShort = 0.2,
 	na.bridge = FALSE,
 	...
 ) {
-	extended_parabolic_stop_and_reverse.default(
-		x = x,
-		cols = cols,
-		init = init,
-		offset = offset,
-		init_long = init_long,
-		long = long,
-		max_long = max_long,
-		init_short = init_short,
-		short = short,
-		max_short = max_short,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		extended_parabolic_stop_and_reverse.default(
+			x = x,
+			cols = cols,
+			startValue = startValue,
+			offsetOnReverse = offsetOnReverse,
+			afInitLong = afInitLong,
+			afLong = afLong,
+			afMaxLong = afMaxLong,
+			afInitShort = afInitShort,
+			afShort = afShort,
+			afMaxShort = afMaxShort,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
+#' @usage NULL
+#' @aliases extended_parabolic_stop_and_reverse
+#'
+#' @export
+extended_parabolic_stop_and_reverse.xts <- function(
+	x,
+	cols,
+	startValue = 0,
+	offsetOnReverse = 0,
+	afInitLong = 0.02,
+	afLong = 0.02,
+	afMaxLong = 0.2,
+	afInitShort = 0.02,
+	afShort = 0.02,
+	afMaxShort = 0.2,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		extended_parabolic_stop_and_reverse.default(
+			x = x,
+			cols = cols,
+			startValue = startValue,
+			offsetOnReverse = offsetOnReverse,
+			afInitLong = afInitLong,
+			afLong = afLong,
+			afMaxLong = afMaxLong,
+			afInitShort = afInitShort,
+			afShort = afShort,
+			afMaxShort = afMaxShort,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+SAREXT_lookback <- extendedParabolicStopAndReverse_lookback <- extended_parabolic_stop_and_reverse_lookback <- function(
+	x,
+	cols,
+	startValue = 0,
+	offsetOnReverse = 0,
+	afInitLong = 0.02,
+	afLong = 0.02,
+	afMaxLong = 0.2,
+	afInitShort = 0.02,
+	afShort = 0.02,
+	afMaxShort = 0.2,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_SAREXT_lookback,
+		as.double(startValue),
+		as.double(offsetOnReverse),
+		as.double(afInitLong),
+		as.double(afLong),
+		as.double(afMaxLong),
+		as.double(afInitShort),
+		as.double(afShort),
+		as.double(afMaxShort)
+	)
+}
 
 #' @usage NULL
 #' @aliases extended_parabolic_stop_and_reverse
@@ -186,14 +258,14 @@ extended_parabolic_stop_and_reverse.matrix <- function(
 extended_parabolic_stop_and_reverse.plotly <- function(
 	x,
 	cols,
-	init = 0,
-	offset = 0,
-	init_long = 0.02,
-	long = 0.02,
-	max_long = 0.2,
-	init_short = 0.02,
-	short = 0.02,
-	max_short = 0.2,
+	startValue = 0,
+	offsetOnReverse = 0,
+	afInitLong = 0.02,
+	afLong = 0.02,
+	afMaxLong = 0.2,
+	afInitShort = 0.02,
+	afShort = 0.02,
+	afMaxShort = 0.2,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -214,7 +286,7 @@ extended_parabolic_stop_and_reverse.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low,
+		formula.default = ~ high + low,
 		...
 	)
 
@@ -225,14 +297,14 @@ extended_parabolic_stop_and_reverse.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		init = init,
-		offset = offset,
-		init_long = init_long,
-		long = long,
-		max_long = max_long,
-		init_short = init_short,
-		short = short,
-		max_short = max_short,
+		startValue = startValue,
+		offsetOnReverse = offsetOnReverse,
+		afInitLong = afInitLong,
+		afLong = afLong,
+		afMaxLong = afMaxLong,
+		afInitShort = afInitShort,
+		afShort = afShort,
+		afMaxShort = afMaxShort,
 		na.bridge = TRUE
 	)
 
@@ -305,14 +377,14 @@ extended_parabolic_stop_and_reverse.plotly <- function(
 extended_parabolic_stop_and_reverse.ggplot <- function(
 	x,
 	cols,
-	init = 0,
-	offset = 0,
-	init_long = 0.02,
-	long = 0.02,
-	max_long = 0.2,
-	init_short = 0.02,
-	short = 0.02,
-	max_short = 0.2,
+	startValue = 0,
+	offsetOnReverse = 0,
+	afInitLong = 0.02,
+	afLong = 0.02,
+	afMaxLong = 0.2,
+	afInitShort = 0.02,
+	afShort = 0.02,
+	afMaxShort = 0.2,
 	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
@@ -332,7 +404,7 @@ extended_parabolic_stop_and_reverse.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low,
+		formula.default = ~ high + low,
 		...
 	)
 
@@ -343,14 +415,14 @@ extended_parabolic_stop_and_reverse.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		init = init,
-		offset = offset,
-		init_long = init_long,
-		long = long,
-		max_long = max_long,
-		init_short = init_short,
-		short = short,
-		max_short = max_short,
+		startValue = startValue,
+		offsetOnReverse = offsetOnReverse,
+		afInitLong = afInitLong,
+		afLong = afLong,
+		afMaxLong = afMaxLong,
+		afInitShort = afInitShort,
+		afShort = afShort,
+		afMaxShort = afMaxShort,
 		na.bridge = TRUE
 	)
 

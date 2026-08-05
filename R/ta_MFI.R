@@ -1,22 +1,23 @@
 #' @export
-#' @family Momentum Indicator
+#' @family Momentum Indicators
 #'
 #' @title Money Flow Index
 #' @templateVar .title Money Flow Index
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun money_flow_index
-#' @templateVar .family Momentum Indicator
-#' @templateVar .formula ~ high + low + close + volume
+#' @templateVar .family Momentum Indicators
+#' @templateVar .formula ~high + low + close + volume
 #'
 ## splice:documentation:start
 ## splice:documentation:end
 #'
 #' @template description
+#'
 #' @template returns
 money_flow_index <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -30,6 +31,13 @@ money_flow_index <- function(
 #' @aliases money_flow_index
 MFI <- money_flow_index
 
+#' @export
+#' @usage NULL
+#' @rdname money_flow_index
+#'
+#' @aliases money_flow_index
+moneyFlowIndex <- money_flow_index
+
 #' @usage NULL
 #' @aliases money_flow_index
 #'
@@ -37,7 +45,7 @@ MFI <- money_flow_index
 money_flow_index.default <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
@@ -50,32 +58,30 @@ money_flow_index.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ high + low + close + volume,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ high + low + close + volume,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_MFI,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
 		constructed_series[[4]],
-		as.integer(n),
-		## splice:call:end
+		as.integer(timePeriod),
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -88,15 +94,15 @@ money_flow_index.default <- function(
 money_flow_index.data.frame <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		money_flow_index.default(
 			x = x,
 			cols = cols,
-			n = n,
+			timePeriod = timePeriod,
 			na.bridge = na.bridge,
 			...
 		)
@@ -110,19 +116,58 @@ money_flow_index.data.frame <- function(
 money_flow_index.matrix <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	...
 ) {
-	money_flow_index.default(
-		x = x,
-		cols = cols,
-		n = n,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		money_flow_index.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
+#' @usage NULL
+#' @aliases money_flow_index
+#'
+#' @export
+money_flow_index.xts <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		money_flow_index.default(
+			x = x,
+			cols = cols,
+			timePeriod = timePeriod,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+MFI_lookback <- moneyFlowIndex_lookback <- money_flow_index_lookback <- function(
+	x,
+	cols,
+	timePeriod = 14,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_MFI_lookback,
+		as.integer(timePeriod)
+	)
+}
 
 #' @usage NULL
 #' @aliases money_flow_index
@@ -131,7 +176,7 @@ money_flow_index.matrix <- function(
 money_flow_index.plotly <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	lower_bound = -20,
@@ -155,7 +200,7 @@ money_flow_index.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close + volume,
+		formula.default = ~ high + low + close + volume,
 		...
 	)
 
@@ -166,7 +211,7 @@ money_flow_index.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -185,7 +230,7 @@ money_flow_index.plotly <- function(
 	## splice:plotly-assembly:start
 	name <- sprintf(
 		"MFI(%d)",
-		n
+		timePeriod
 	)
 
 	traces <- list(
@@ -215,7 +260,8 @@ money_flow_index.plotly <- function(
 			}
 		),
 		data = constructed_indicator[, values_to_extract, drop = FALSE],
-		values_to_extract = values_to_extract
+		values_to_extract = values_to_extract,
+		name = get0(x = "name", ifnotfound = NULL)
 	)
 
 	state <- .chart_state()
@@ -231,11 +277,11 @@ money_flow_index.plotly <- function(
 money_flow_index.ggplot <- function(
 	x,
 	cols,
-	n = 14,
+	timePeriod = 14,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -252,7 +298,7 @@ money_flow_index.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ high + low + close + volume,
+		formula.default = ~ high + low + close + volume,
 		...
 	)
 
@@ -263,7 +309,7 @@ money_flow_index.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		n = n,
+		timePeriod = timePeriod,
 		na.bridge = TRUE
 	)
 
@@ -285,7 +331,7 @@ money_flow_index.ggplot <- function(
 		ggplot_line(80),
 		list(y = "MFI")
 	)
-	name <- sprintf("MFI(%d)", n)
+	name <- sprintf("MFI(%d)", timePeriod)
 	## splice:ggplot-assembly:end
 
 	ggplot_object <- add_last_value_gg(
