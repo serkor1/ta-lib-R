@@ -110,3 +110,9 @@ src/ta-lib/Makefile.in
 ## Claude.md
 ^src/ta-lib/CLAUDE.md
 ^src/ta-lib/.claude
+
+## addtional files introduced
+## by upstream
+^src/ta-lib/ta_codegen/output/java/library/.classpath
+^src/ta-lib/website/src/.vuepress
+^src/ta-lib/ta_codegen/output/java/library/src/io/github/talib/InsufficientHistoryException.java
