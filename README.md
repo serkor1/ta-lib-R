@@ -42,7 +42,6 @@ including 61 candlestick pattern detectors.
 | Candlestick patterns | Built-in Japanese candlestick pattern recognition |
 | OHLCV workflows | Works directly with open, high, low, close, and volume columns |
 | Performance | Computation delegated to C routines through `.Call()` |
-| Dependencies | Minimal required R dependencies; plotting packages are optional |
 | Charts | Composable financial charts with optional `{plotly}` and `{ggplot2}` support |
 
 </div>
