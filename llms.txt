@@ -46,29 +46,37 @@ pak::pak("serkor1/ta-lib-R")
 
 ## Quick start
 
-All functions provide S3 methods for `<data.frame>`, `<matrix>`,
-and—where applicable—`<vector>` inputs. The general convention is
-simple: the output uses the same container type as the input.
+All functions provide S3 methods for `<xts>`, `<data.frame>`,
+`<matrix>`, and—where applicable—`<vector>` inputs. The general
+convention is simple: the output uses the same container type as the
+input.
 
 ``` r
 
 ## calculate the
 ## relative strength index
 relative_strength_index <- talib::RSI(
-    talib::BTC
+    talib::GOOGL
 )
+
+## check class equivalence
+inherits(
+    relative_strength_index, 
+    class(talib::GOOGL)
+)
+#> [1] TRUE
 
 ## display results
 tail(
     relative_strength_index
 )
-#>                          RSI
-#> 2024-12-26 01:00:00 46.48851
-#> 2024-12-27 01:00:00 43.85488
-#> 2024-12-28 01:00:00 45.93888
-#> 2024-12-29 01:00:00 43.12301
-#> 2024-12-30 01:00:00 41.47686
-#> 2024-12-31 01:00:00 43.37358
+#>                 RSI
+#> 2021-12-22 53.47421
+#> 2021-12-23 54.45979
+#> 2021-12-27 56.42226
+#> 2021-12-28 53.37121
+#> 2021-12-29 53.28979
+#> 2021-12-30 52.07450
 ```
 
 Indicator outputs preserve input length, which keeps results aligned
@@ -79,19 +87,19 @@ with the original OHLCV rows.
 ## combine multiple
 ## indicators
 features <- cbind(
-    talib::relative_strength_index(talib::BTC),
-    talib::bollinger_bands(talib::BTC),
-    talib::engulfing(talib::BTC)
+    talib::relative_strength_index(talib::GOOGL),
+    talib::bollinger_bands(talib::GOOGL),
+    talib::engulfing(talib::GOOGL)
 )
 
 tail(features)
-#>                          RSI UpperBand MiddleBand LowerBand CDLENGULFING
-#> 2024-12-26 01:00:00 46.48851  106053.7   99594.80  93135.86         -100
-#> 2024-12-27 01:00:00 43.85488  106179.5   99305.69  92431.90            0
-#> 2024-12-28 01:00:00 45.93888  106051.3   99002.74  91954.18            0
-#> 2024-12-29 01:00:00 43.12301  106223.8   98814.94  91406.11         -100
-#> 2024-12-30 01:00:00 41.47686  106452.7   98613.30  90773.93            0
-#> 2024-12-31 01:00:00 43.37358  106283.3   98223.05  90162.77            0
+#>                 RSI UpperBand MiddleBand LowerBand CDLENGULFING
+#> 2021-12-22 53.47421  149.1432   144.4920  139.8408            0
+#> 2021-12-23 54.45979  149.2513   144.5318  139.8124            0
+#> 2021-12-27 56.42226  149.6263   144.8180  140.0097            0
+#> 2021-12-28 53.37121  149.7444   144.8758  140.0072         -100
+#> 2021-12-29 53.28979  149.8398   145.1137  140.3876            0
+#> 2021-12-30 52.07450  149.7308   145.3711  141.0115         -100
 ```
 
 ## Charting
@@ -106,16 +114,16 @@ functions are built on `model.frame` for maximum flexibility:
 ``` r
 
 ## subset data and
-## store as 'BTC'
-BTC <- talib::BTC[1:75, ]
+## store as 'GOOGL'
+GOOGL <- talib::GOOGL[1:75, ]
 
 ## construct chart in a brace block
 ## alternatively use `|>`
 {
     ## initialize main chart
     talib::chart(
-        x     = BTC,
-        title = "Bitcoin"
+        x     = GOOGL,
+        title = "Alphabet Inc."
     )
 
     ## add Bollinger Bands to
@@ -626,6 +634,8 @@ daily price data for BTC, SPY, NVDA, and ATOM.
   NVIDIA Corporation (NVDA)
 - [`ATOM`](https://serkor1.github.io/ta-lib-R/reference/ATOM.md) :
   Cosmos (ATOM)
+- [`GOOGL`](https://serkor1.github.io/ta-lib-R/reference/GOOGL.md) :
+  Alphabet Inc. (GOOGL)
 
 # Articles
 

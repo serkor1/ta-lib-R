@@ -5,7 +5,11 @@
 [data.frame](https://rdrr.io/r/base/data.frame.html) in,
 [data.frame](https://rdrr.io/r/base/data.frame.html) out;
 [matrix](https://rdrr.io/r/base/matrix.html) in,
-[matrix](https://rdrr.io/r/base/matrix.html) out.
+[matrix](https://rdrr.io/r/base/matrix.html) out; `xts` in, `xts` out.
+Other inputs coercible to
+[data.frame](https://rdrr.io/r/base/data.frame.html) (e.g. `zoo`) are
+computed on the coerced
+[data.frame](https://rdrr.io/r/base/data.frame.html).
 
 ### Handling of `NA` values
 
@@ -62,8 +66,11 @@ average_price(x, cols, na.bridge = FALSE, ...)
   ([formula](https://rdrr.io/r/stats/formula.html)). An optional
   `4`-variable [formula](https://rdrr.io/r/stats/formula.html) selecting
   columns from `x` via
-  [model.frame](https://rdrr.io/r/stats/model.frame.html). Defaults to
-  `~open + high + low + close`.
+  [model.frame](https://rdrr.io/r/stats/model.frame.html). For `xts`
+  input each formula variable is matched against the column names
+  directly - exact matches first, then quantmod-style suffix matches
+  (`close` matches `TICKER.Close`), case-insensitively - and columns are
+  consumed in formula order. Defaults to `~open + high + low + close`.
 
 - na.bridge:
 
@@ -82,7 +89,8 @@ average_price(x, cols, na.bridge = FALSE, ...)
 - ...:
 
   Additional parameters passed into
-  [model.frame](https://rdrr.io/r/stats/model.frame.html).
+  [model.frame](https://rdrr.io/r/stats/model.frame.html). Unused for
+  `xts` input (a warning is emitted when supplied).
 
 ## Value
 

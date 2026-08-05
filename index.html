@@ -138,43 +138,50 @@
 <div class="section level2">
 <h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
-<p>All functions provide S3 methods for <code>&lt;data.frame&gt;</code>, <code>&lt;matrix&gt;</code>, and—where applicable—<code>&lt;vector&gt;</code> inputs. The general convention is simple: the output uses the same container type as the input.</p>
+<p>All functions provide S3 methods for <code>&lt;xts&gt;</code>, <code>&lt;data.frame&gt;</code>, <code>&lt;matrix&gt;</code>, and—where applicable—<code>&lt;vector&gt;</code> inputs. The general convention is simple: the output uses the same container type as the input.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## calculate the</span></span>
 <span><span class="co">## relative strength index</span></span>
 <span><span class="va">relative_strength_index</span> <span class="op">&lt;-</span> <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="reference/relative_strength_index.html">RSI</a></span><span class="op">(</span></span>
-<span>    <span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="reference/BTC.html">BTC</a></span></span>
+<span>    <span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="reference/GOOGL.html">GOOGL</a></span></span>
 <span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## check class equivalence</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span></span>
+<span>    <span class="va">relative_strength_index</span>, </span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="reference/GOOGL.html">GOOGL</a></span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span>
 <span></span>
 <span><span class="co">## display results</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span></span>
 <span>    <span class="va">relative_strength_index</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;                          RSI</span></span>
-<span><span class="co">#&gt; 2024-12-26 01:00:00 46.48851</span></span>
-<span><span class="co">#&gt; 2024-12-27 01:00:00 43.85488</span></span>
-<span><span class="co">#&gt; 2024-12-28 01:00:00 45.93888</span></span>
-<span><span class="co">#&gt; 2024-12-29 01:00:00 43.12301</span></span>
-<span><span class="co">#&gt; 2024-12-30 01:00:00 41.47686</span></span>
-<span><span class="co">#&gt; 2024-12-31 01:00:00 43.37358</span></span></code></pre></div>
+<span><span class="co">#&gt;                 RSI</span></span>
+<span><span class="co">#&gt; 2021-12-22 53.47421</span></span>
+<span><span class="co">#&gt; 2021-12-23 54.45979</span></span>
+<span><span class="co">#&gt; 2021-12-27 56.42226</span></span>
+<span><span class="co">#&gt; 2021-12-28 53.37121</span></span>
+<span><span class="co">#&gt; 2021-12-29 53.28979</span></span>
+<span><span class="co">#&gt; 2021-12-30 52.07450</span></span></code></pre></div>
 <p>Indicator outputs preserve input length, which keeps results aligned with the original OHLCV rows.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## combine multiple</span></span>
 <span><span class="co">## indicators</span></span>
 <span><span class="va">features</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
-<span>    <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="reference/relative_strength_index.html">relative_strength_index</a></span><span class="op">(</span><span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="reference/BTC.html">BTC</a></span><span class="op">)</span>,</span>
-<span>    <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="reference/bollinger_bands.html">bollinger_bands</a></span><span class="op">(</span><span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="reference/BTC.html">BTC</a></span><span class="op">)</span>,</span>
-<span>    <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="reference/engulfing.html">engulfing</a></span><span class="op">(</span><span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="reference/BTC.html">BTC</a></span><span class="op">)</span></span>
+<span>    <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="reference/relative_strength_index.html">relative_strength_index</a></span><span class="op">(</span><span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="reference/GOOGL.html">GOOGL</a></span><span class="op">)</span>,</span>
+<span>    <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="reference/bollinger_bands.html">bollinger_bands</a></span><span class="op">(</span><span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="reference/GOOGL.html">GOOGL</a></span><span class="op">)</span>,</span>
+<span>    <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="reference/engulfing.html">engulfing</a></span><span class="op">(</span><span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="reference/GOOGL.html">GOOGL</a></span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">features</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                          RSI UpperBand MiddleBand LowerBand CDLENGULFING</span></span>
-<span><span class="co">#&gt; 2024-12-26 01:00:00 46.48851  106053.7   99594.80  93135.86         -100</span></span>
-<span><span class="co">#&gt; 2024-12-27 01:00:00 43.85488  106179.5   99305.69  92431.90            0</span></span>
-<span><span class="co">#&gt; 2024-12-28 01:00:00 45.93888  106051.3   99002.74  91954.18            0</span></span>
-<span><span class="co">#&gt; 2024-12-29 01:00:00 43.12301  106223.8   98814.94  91406.11         -100</span></span>
-<span><span class="co">#&gt; 2024-12-30 01:00:00 41.47686  106452.7   98613.30  90773.93            0</span></span>
-<span><span class="co">#&gt; 2024-12-31 01:00:00 43.37358  106283.3   98223.05  90162.77            0</span></span></code></pre></div>
+<span><span class="co">#&gt;                 RSI UpperBand MiddleBand LowerBand CDLENGULFING</span></span>
+<span><span class="co">#&gt; 2021-12-22 53.47421  149.1432   144.4920  139.8408            0</span></span>
+<span><span class="co">#&gt; 2021-12-23 54.45979  149.2513   144.5318  139.8124            0</span></span>
+<span><span class="co">#&gt; 2021-12-27 56.42226  149.6263   144.8180  140.0097            0</span></span>
+<span><span class="co">#&gt; 2021-12-28 53.37121  149.7444   144.8758  140.0072         -100</span></span>
+<span><span class="co">#&gt; 2021-12-29 53.28979  149.8398   145.1137  140.3876            0</span></span>
+<span><span class="co">#&gt; 2021-12-30 52.07450  149.7308   145.3711  141.0115         -100</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="charting">Charting<a class="anchor" aria-label="anchor" href="#charting"></a>
@@ -182,16 +189,16 @@
 <p><a href="https://serkor1.github.io/ta-lib-R/">{talib}</a> comes with a composable charting API built on two core functions: <code><a href="reference/indicator.html">indicator()</a></code> and <code><a href="reference/chart.html">chart()</a></code>—both functions are built on <code>model.frame</code> for maximum flexibility:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## subset data and</span></span>
-<span><span class="co">## store as 'BTC'</span></span>
-<span><span class="va">BTC</span> <span class="op">&lt;-</span> <span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="reference/BTC.html">BTC</a></span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">75</span>, <span class="op">]</span></span>
+<span><span class="co">## store as 'GOOGL'</span></span>
+<span><span class="va">GOOGL</span> <span class="op">&lt;-</span> <span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="reference/GOOGL.html">GOOGL</a></span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">75</span>, <span class="op">]</span></span>
 <span></span>
 <span><span class="co">## construct chart in a brace block</span></span>
 <span><span class="co">## alternatively use `|&gt;`</span></span>
 <span><span class="op">{</span></span>
 <span>    <span class="co">## initialize main chart</span></span>
 <span>    <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="reference/chart.html">chart</a></span><span class="op">(</span></span>
-<span>        x     <span class="op">=</span> <span class="va">BTC</span>,</span>
-<span>        title <span class="op">=</span> <span class="st">"Bitcoin"</span></span>
+<span>        x     <span class="op">=</span> <span class="va">GOOGL</span>,</span>
+<span>        title <span class="op">=</span> <span class="st">"Alphabet Inc."</span></span>
 <span>    <span class="op">)</span></span>
 <span></span>
 <span>    <span class="co">## add Bollinger Bands to</span></span>

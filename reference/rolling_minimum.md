@@ -3,7 +3,8 @@
 `rolling_minimum()` is a generic S3 function that preserves the input
 [class](https://rdrr.io/r/base/class.html):
 [double](https://rdrr.io/r/base/double.html) vector in,
-[double](https://rdrr.io/r/base/double.html) vector out.
+[double](https://rdrr.io/r/base/double.html) vector out; single-column
+`xts` in, `xts` out.
 
 ### Handling of `NA` values
 
@@ -36,7 +37,8 @@ rolling_minimum(x, timePeriod = 30, na.bridge = FALSE, ...)
 - x:
 
   ([double](https://rdrr.io/r/base/double.html)). A
-  [double](https://rdrr.io/r/base/double.html) vector.
+  [double](https://rdrr.io/r/base/double.html) vector, or a
+  single-column `xts`.
 
 - timePeriod:
 
@@ -66,8 +68,8 @@ rolling_minimum(x, timePeriod = 30, na.bridge = FALSE, ...)
 
 ## Value
 
-A [double](https://rdrr.io/r/base/double.html) vector with the same
-[length](https://rdrr.io/r/base/length.html) of `x`
+A [double](https://rdrr.io/r/base/double.html) vector (or single-column
+`xts`) with the same [length](https://rdrr.io/r/base/length.html) of `x`
 
 ## See also
 

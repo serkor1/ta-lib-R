@@ -3,7 +3,8 @@
 `rolling_beta()` is a generic S3 function that preserves the input
 [class](https://rdrr.io/r/base/class.html):
 [double](https://rdrr.io/r/base/double.html) vector in,
-[double](https://rdrr.io/r/base/double.html) vector out.
+[double](https://rdrr.io/r/base/double.html) vector out; single-column
+`xts` in, `xts` out.
 
 ### Handling of `NA` values
 
@@ -38,7 +39,8 @@ rolling_beta(x, y, timePeriod = 5, na.bridge = FALSE, ...)
   (([double](https://rdrr.io/r/base/double.html)),
   ([double](https://rdrr.io/r/base/double.html))). A pair of
   [double](https://rdrr.io/r/base/double.html) vectors of equal
-  [length](https://rdrr.io/r/base/length.html).
+  [length](https://rdrr.io/r/base/length.html), or single-column `xts`
+  objects.
 
 - timePeriod:
 
@@ -68,8 +70,8 @@ rolling_beta(x, y, timePeriod = 5, na.bridge = FALSE, ...)
 
 ## Value
 
-A [double](https://rdrr.io/r/base/double.html) vector with the same
-[length](https://rdrr.io/r/base/length.html) of `x`
+A [double](https://rdrr.io/r/base/double.html) vector (or single-column
+`xts`) with the same [length](https://rdrr.io/r/base/length.html) of `x`
 
 ## See also
 

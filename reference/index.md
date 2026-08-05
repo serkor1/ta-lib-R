@@ -364,3 +364,5 @@ daily price data for BTC, SPY, NVDA, and ATOM.
   NVIDIA Corporation (NVDA)
 - [`ATOM`](https://serkor1.github.io/ta-lib-R/reference/ATOM.md) :
   Cosmos (ATOM)
+- [`GOOGL`](https://serkor1.github.io/ta-lib-R/reference/GOOGL.md) :
+  Alphabet Inc. (GOOGL)
