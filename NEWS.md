@@ -150,6 +150,63 @@ absolute_price_oscillator(
 
 In this call the role of each argument is *should* be clearer than before.
 
+* _**Moving Average (MA) signatures:**_—the generic S3 signature of the MAs has been changed in response to the new TA-Lib (upstream) release. The release introduced the volume weighted moving average which uses the volume in its calculation.
+This deviates from the generic `x` + `timePeriod` signature, and breaks the `numeric`-method.
+One solution is to do the following:
+
+```r
+VWMA.numeric(x, cols, timePeriod, na.bridge = FALSE, volume, ...)
+```
+
+To avoid breaking the S3 signature. However, given the importance of the `volume`-argument and the fact that `cols` is rarely used, the signature has been changed to accommodate future additions of MAs which take additional series. The new signature is as follows:
+
+```r
+foo(x, [series], timePeriod, [optional], cols, na.bridge = FALSE, ...)
+```
+
+Additional *series* (the volume) lead directly after `x`, while additional *optional parameters* keep their place after `timePeriod`. In the case of VWMA this becomes:
+
+```r
+VWMA(
+	x,
+	volume,
+	timePeriod = 30,
+	cols,
+	na.bridge = FALSE,
+	...
+)
+```
+
+And for the remaining MAs:
+
+```r
+foo(
+	x,
+	timePeriod = 30,
+	cols,
+	na.bridge = FALSE,
+	...
+)
+```
+
+MAs with additional optional parameters retain them after `timePeriod`, e.g. `MAMA(x, timePeriod, fastLimit, slowLimit, cols, na.bridge, ...)` and `T3(x, timePeriod, volumeFactor, cols, na.bridge, ...)`.
+
+The `volume`-argument is *not* required when `x` carries a volume column: `VWMA(x)` selects it via the default formula `~close + volume` as before. An explicitly passed vector takes precedence, in which case only the `close`-column is required:
+
+```r
+## volume from the 'volume'-column of x
+VWMA(x)
+
+## explicitly passed volume; only 'close' required
+VWMA(x, volume = my_volume)
+
+## fully positional on vectors
+VWMA(price, volume, 20)
+```
+
+**NOTE:** passing `cols` *positionally* as the second argument no longer works for the MAs—it has to be passed by name, ie. `SMA(x, cols = ~open)`.
+
+
 ## bug-fixes
 
 * _**CCI:** Incorrect charting_—The indicator were incorrectly classified as a main chart indicator— 
