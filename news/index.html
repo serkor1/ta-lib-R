@@ -159,6 +159,43 @@
 <span>    <span class="va">...</span></span>
 <span><span class="op">)</span> </span></code></pre></div>
 <p>In this call the role of each argument is <em>should</em> be clearer than before.</p>
+<ul><li>
+<em><strong>Moving Average (MA) signatures:</strong></em>—the generic S3 signature of the MAs has been changed in response to the new TA-Lib (upstream) release. The release introduced the volume weighted moving average which uses the volume in its calculation. This deviates from the generic <code>x</code> + <code>timePeriod</code> signature, and breaks the <code>numeric</code>-method. One solution is to do the following:</li>
+</ul><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">VWMA.numeric</span><span class="op">(</span><span class="va">x</span>, <span class="va">cols</span>, <span class="va">timePeriod</span>, na.bridge <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">volume</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<p>To avoid breaking the S3 signature. However, given the importance of the <code>volume</code>-argument and the fact that <code>cols</code> is rarely used, the signature has been changed to accommodate future additions of MAs which take additional series. The new signature is as follows:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">foo</span>(x, [series], timePeriod, [optional], cols, <span class="at">na.bridge =</span> <span class="cn">FALSE</span>, ...)</span></code></pre></div>
+<p>Additional <em>series</em> (the volume) lead directly after <code>x</code>, while additional <em>optional parameters</em> keep their place after <code>timePeriod</code>. In the case of VWMA this becomes:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/volume_weighted_moving_average.html">VWMA</a></span><span class="op">(</span></span>
+<span>    <span class="va">x</span>,</span>
+<span>    <span class="va">volume</span>,</span>
+<span>    timePeriod <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>    <span class="va">cols</span>,</span>
+<span>    na.bridge <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>    <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>And for the remaining MAs:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">foo</span><span class="op">(</span></span>
+<span>    <span class="va">x</span>,</span>
+<span>    timePeriod <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>    <span class="va">cols</span>,</span>
+<span>    na.bridge <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>    <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>MAs with additional optional parameters retain them after <code>timePeriod</code>, e.g. <code>MAMA(x, timePeriod, fastLimit, slowLimit, cols, na.bridge, ...)</code> and <code>T3(x, timePeriod, volumeFactor, cols, na.bridge, ...)</code>.</p>
+<p>The <code>volume</code>-argument is <em>not</em> required when <code>x</code> carries a volume column: <code>VWMA(x)</code> selects it via the default formula <code>~close + volume</code> as before. An explicitly passed vector takes precedence, in which case only the <code>close</code>-column is required:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## volume from the 'volume'-column of x</span></span>
+<span><span class="fu"><a href="../reference/volume_weighted_moving_average.html">VWMA</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## explicitly passed volume; only 'close' required</span></span>
+<span><span class="fu"><a href="../reference/volume_weighted_moving_average.html">VWMA</a></span><span class="op">(</span><span class="va">x</span>, volume <span class="op">=</span> <span class="va">my_volume</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## fully positional on vectors</span></span>
+<span><span class="fu"><a href="../reference/volume_weighted_moving_average.html">VWMA</a></span><span class="op">(</span><span class="va">price</span>, <span class="va">volume</span>, <span class="fl">20</span><span class="op">)</span></span></code></pre></div>
+<p><strong>NOTE:</strong> passing <code>cols</code> <em>positionally</em> as the second argument no longer works for the MAs—it has to be passed by name, ie. <code>SMA(x, cols = ~open)</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="bug-fixes-0-9-3">bug-fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-9-3"></a></h3>
