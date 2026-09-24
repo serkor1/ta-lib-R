@@ -84,6 +84,7 @@ fast_stochastic.default <- function(
 		as.integer(fastKPeriod),
 		as.integer(fastDPeriod),
 		as.maType(fastDMa),
+		as.integer(get_lead(constructed_series)),
 		as.logical(na.bridge)
 	)
 

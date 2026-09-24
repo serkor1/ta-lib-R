@@ -74,6 +74,7 @@ chaikin_accumulation_distribution_line.default <- function(
 		constructed_series[[2]],
 		constructed_series[[3]],
 		constructed_series[[4]],
+		as.integer(get_lead(constructed_series)),
 		as.logical(na.bridge)
 	)
 

@@ -74,6 +74,7 @@ fixed_moving_average_convergence_divergence.default <- function(
 		C_impl_ta_MACDFIX,
 		constructed_series[[1]],
 		as.integer(signalPeriod),
+		as.integer(get_lead(constructed_series)),
 		as.logical(na.bridge)
 	)
 
@@ -189,12 +190,17 @@ fixed_moving_average_convergence_divergence.numeric <- function(
 		warning("'...' is passed but is unused for vectors.")
 	}
 
+	## strip talib-produced leading NAs
+	lookback <- attr(x, "lookback", exact = TRUE)
+	lead <- if (is.null(lookback)) 0L else as.integer(lookback)
+
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
 		C_impl_ta_MACDFIX,
 		as.double(x),
 		as.integer(signalPeriod),
+		as.integer(lead),
 		as.logical(na.bridge)
 	)
 

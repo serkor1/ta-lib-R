@@ -64,6 +64,10 @@ rolling_correlation.default <- function(
 		paste0("Got ", NCOL(y), " columns.")
 	)
 
+	## strip talib-produced leading NAs
+	lookback <- attr(x, "lookback", exact = TRUE)
+	lead <- if (is.null(lookback)) 0L else as.integer(lookback)
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -73,6 +77,7 @@ rolling_correlation.default <- function(
 		as.double(y),
 		as.integer(timePeriod),
 		## splice:call:end
+		as.integer(lead),
 		as.logical(na.bridge)
 	)
 
@@ -149,6 +154,10 @@ rolling_correlation.xts <- function(
 	## for later attachment
 	x_names <- index(x)
 
+	## strip talib-produced leading NAs
+	lookback <- attr(x, "lookback", exact = TRUE)
+	lead <- if (is.null(lookback)) 0L else as.integer(lookback)
+
 	## calculate indicator and
 	## return as <xts>
 	x <- .Call(
@@ -156,6 +165,7 @@ rolling_correlation.xts <- function(
 		as.double(x),
 		as.double(y),
 		as.integer(timePeriod),
+		as.integer(lead),
 		as.logical(na.bridge)
 	)
 

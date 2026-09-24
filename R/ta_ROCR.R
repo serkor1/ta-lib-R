@@ -74,6 +74,7 @@ ratio_of_change.default <- function(
 		C_impl_ta_ROCR,
 		constructed_series[[1]],
 		as.integer(timePeriod),
+		as.integer(get_lead(constructed_series)),
 		as.logical(na.bridge)
 	)
 
@@ -189,12 +190,17 @@ ratio_of_change.numeric <- function(
 		warning("'...' is passed but is unused for vectors.")
 	}
 
+	## strip talib-produced leading NAs
+	lookback <- attr(x, "lookback", exact = TRUE)
+	lead <- if (is.null(lookback)) 0L else as.integer(lookback)
+
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
 		C_impl_ta_ROCR,
 		as.double(x),
 		as.integer(timePeriod),
+		as.integer(lead),
 		as.logical(na.bridge)
 	)
 

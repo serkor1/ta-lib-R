@@ -97,6 +97,7 @@ ${MA_FALLBACK}
 	x <- .Call(
 		C_impl_ta_${ALIAS},
 		${MA_C_SERIES},
+		as.integer(get_lead(constructed_series)),
 		as.logical(na.bridge)
 	)
 
@@ -208,11 +209,16 @@ ${FUN}.numeric <- function(
 		warning("'...' is passed but is unused for vectors.")
 	}
 
+	## strip talib-produced leading NAs
+	lookback <- attr(x, "lookback", exact = TRUE)
+	lead <- if (is.null(lookback)) 0L else as.integer(lookback)
+
 	## pass to 'C' directly
 	## with the input vector
 	x <- .Call(
 		C_impl_ta_${ALIAS},
 		${C_NUMERIC},
+		as.integer(lead),
 		as.logical(na.bridge)
 	)
 

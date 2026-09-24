@@ -85,6 +85,7 @@ stochastic.default <- function(
 		as.maType(slowKMa),
 		as.integer(slowDPeriod),
 		as.maType(slowDMa),
+		as.integer(get_lead(constructed_series)),
 		as.logical(na.bridge)
 	)
 

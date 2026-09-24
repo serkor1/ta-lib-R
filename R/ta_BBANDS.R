@@ -85,6 +85,7 @@ bollinger_bands.default <- function(
 		as.double(deviationsUp),
 		as.double(deviationsDown),
 		as.maType(maType),
+		as.integer(get_lead(constructed_series)),
 		as.logical(na.bridge)
 	)
 
@@ -227,6 +228,10 @@ bollinger_bands.numeric <- function(
 		warning("'...' is passed but is unused for vectors.")
 	}
 
+	## strip talib-produced leading NAs
+	lookback <- attr(x, "lookback", exact = TRUE)
+	lead <- if (is.null(lookback)) 0L else as.integer(lookback)
+
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
@@ -236,6 +241,7 @@ bollinger_bands.numeric <- function(
 		as.double(deviationsUp),
 		as.double(deviationsDown),
 		as.maType(maType),
+		as.integer(lead),
 		as.logical(na.bridge)
 	)
 

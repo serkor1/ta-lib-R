@@ -84,6 +84,7 @@ ultimate_oscillator.default <- function(
 		as.integer(firstPeriod),
 		as.integer(secondPeriod),
 		as.integer(thirdPeriod),
+		as.integer(get_lead(constructed_series)),
 		as.logical(na.bridge)
 	)
 

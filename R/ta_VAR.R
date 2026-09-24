@@ -57,6 +57,10 @@ rolling_variance.default <- function(
 		paste0("Got ", NCOL(x), " columns.")
 	)
 
+	## strip talib-produced leading NAs
+	lookback <- attr(x, "lookback", exact = TRUE)
+	lead <- if (is.null(lookback)) 0L else as.integer(lookback)
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -66,6 +70,7 @@ rolling_variance.default <- function(
 		as.integer(timePeriod),
 		as.double(deviations),
 		## splice:call:end
+		as.integer(lead),
 		as.logical(na.bridge)
 	)
 
@@ -135,6 +140,10 @@ rolling_variance.xts <- function(
 	## for later attachment
 	x_names <- index(x)
 
+	## strip talib-produced leading NAs
+	lookback <- attr(x, "lookback", exact = TRUE)
+	lead <- if (is.null(lookback)) 0L else as.integer(lookback)
+
 	## calculate indicator and
 	## return as <xts>
 	x <- .Call(
@@ -142,6 +151,7 @@ rolling_variance.xts <- function(
 		as.double(x),
 		as.integer(timePeriod),
 		as.double(deviations),
+		as.integer(lead),
 		as.logical(na.bridge)
 	)
 

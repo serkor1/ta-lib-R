@@ -79,6 +79,7 @@ parabolic_stop_and_reverse.default <- function(
 		constructed_series[[2]],
 		as.double(accelerationFactor),
 		as.double(afMaximum),
+		as.integer(get_lead(constructed_series)),
 		as.logical(na.bridge)
 	)
 

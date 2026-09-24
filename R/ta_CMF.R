@@ -77,6 +77,7 @@ chaikin_money_flow.default <- function(
 		constructed_series[[3]],
 		constructed_series[[4]],
 		as.integer(timePeriod),
+		as.integer(get_lead(constructed_series)),
 		as.logical(na.bridge)
 	)
 

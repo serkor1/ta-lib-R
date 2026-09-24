@@ -64,6 +64,7 @@ trendline.default <- function(
 	x <- .Call(
 		C_impl_ta_HT_TRENDLINE,
 		constructed_series[[1]],
+		as.integer(get_lead(constructed_series)),
 		as.logical(na.bridge)
 	)
 
@@ -170,11 +171,16 @@ trendline.numeric <- function(
 		warning("'...' is passed but is unused for vectors.")
 	}
 
+	## strip talib-produced leading NAs
+	lookback <- attr(x, "lookback", exact = TRUE)
+	lead <- if (is.null(lookback)) 0L else as.integer(lookback)
+
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
 		C_impl_ta_HT_TRENDLINE,
 		as.double(x),
+		as.integer(lead),
 		as.logical(na.bridge)
 	)
 
