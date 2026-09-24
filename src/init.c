@@ -20,7 +20,7 @@
       extern SEXP impl_ta_##NAME(                                     \
         TA_APPLY(TA_IN_ARG, INS_)                                     \
         TA_APPLY(TA_OPT_ARG, OPTS_)                                   \
-        SEXP s_na_bridge                                              \
+        SEXP s_lead, SEXP s_na_bridge                                 \
         TA_CAT(TA_NORM_ARG_, KIND)                                    \
       );
 // clang-format on
@@ -58,7 +58,7 @@ extern SEXP shutdown_ta_lib(void);
 
 // TA_REG / TA_LB_REG emit the R_CallMethodDef rows. Arity is derived from the
 // same TA_COUNT_ARGUMENTS / TA_NORM_ARITY helpers the wrapper signature uses:
-//   indicator = #inputs + #opts + 1 (na_bridge) + candlestick normalize arg
+//   indicator = #inputs + #opts + 2 (lead, na_bridge) + candlestick normalize
 //   lookback  = #opts
 // The registration STRING (not the C symbol) is what R names the routine:
 // with useDynLib(.fixes = "C_"), R exposes C_ + this string, matching the
@@ -66,7 +66,7 @@ extern SEXP shutdown_ta_lib(void);
 #define TA_REG(NAME, RT, INS_, OPTS_, OUTS_, TA_OUTPUT_NAME_, KIND)            \
   {"impl_ta_" #NAME,                                                           \
    (DL_FUNC) & impl_ta_##NAME,                                                 \
-   (TA_COUNT_ARGUMENTS INS_) + (TA_COUNT_ARGUMENTS OPTS_) + 1 +                \
+   (TA_COUNT_ARGUMENTS INS_) + (TA_COUNT_ARGUMENTS OPTS_) + 2 +                \
      TA_CAT(TA_NORM_ARITY_, KIND)},
 #define TA_LB_REG(NAME, OPTS_)                                                 \
   {"impl_ta_" #NAME "_lookback",                                               \

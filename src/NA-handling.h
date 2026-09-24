@@ -17,6 +17,8 @@ R_xlen_t build_presence_mask(
   R_xlen_t n_rows,
   unsigned char **presence_mask);
 
+int mask_leading_only(const unsigned char *presence_mask, R_xlen_t n_rows);
+
 double *dense_array(R_xlen_t num_present_rows, int k_columns);
 
 double *compact_array(
