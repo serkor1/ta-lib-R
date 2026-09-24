@@ -71,7 +71,8 @@ ${FUN}.default <- function(
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_${ALIAS},
-		${C_SIGNATURE},		
+		${C_SIGNATURE},
+		as.integer(get_lead(constructed_series)),
 		as.logical(na.bridge)
 	)
 

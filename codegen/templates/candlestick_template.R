@@ -93,8 +93,9 @@ ${FUN}.default <- function(
 	x <- .Call(
 			C_impl_ta_${ALIAS},
 			${C_SIGNATURE},
-			normalize,
-			as.logical(na.bridge)
+			as.integer(get_lead(constructed_series)),
+			as.logical(na.bridge),
+			normalize
 		)
 
 	## add column name

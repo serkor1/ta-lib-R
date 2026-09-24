@@ -73,6 +73,7 @@ weighted_close_price.default <- function(
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
+		as.integer(get_lead(constructed_series)),
 		as.logical(na.bridge)
 	)
 

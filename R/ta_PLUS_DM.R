@@ -75,6 +75,7 @@ plus_directional_movement.default <- function(
 		constructed_series[[1]],
 		constructed_series[[2]],
 		as.integer(timePeriod),
+		as.integer(get_lead(constructed_series)),
 		as.logical(na.bridge)
 	)
 

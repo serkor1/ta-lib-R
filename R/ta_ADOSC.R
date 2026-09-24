@@ -81,6 +81,7 @@ chaikin_accumulation_distribution_oscillator.default <- function(
 		constructed_series[[4]],
 		as.integer(fastPeriod),
 		as.integer(slowPeriod),
+		as.integer(get_lead(constructed_series)),
 		as.logical(na.bridge)
 	)
 

@@ -55,6 +55,10 @@ rolling_sum.default <- function(
 		paste0("Got ", NCOL(x), " columns.")
 	)
 
+	## strip talib-produced leading NAs
+	lookback <- attr(x, "lookback", exact = TRUE)
+	lead <- if (is.null(lookback)) 0L else as.integer(lookback)
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -63,6 +67,7 @@ rolling_sum.default <- function(
 		as.double(x),
 		as.integer(timePeriod),
 		## splice:call:end
+		as.integer(lead),
 		as.logical(na.bridge)
 	)
 
@@ -129,12 +134,17 @@ rolling_sum.xts <- function(
 	## for later attachment
 	x_names <- index(x)
 
+	## strip talib-produced leading NAs
+	lookback <- attr(x, "lookback", exact = TRUE)
+	lead <- if (is.null(lookback)) 0L else as.integer(lookback)
+
 	## calculate indicator and
 	## return as <xts>
 	x <- .Call(
 		C_impl_ta_SUM,
 		as.double(x),
 		as.integer(timePeriod),
+		as.integer(lead),
 		as.logical(na.bridge)
 	)
 

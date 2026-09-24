@@ -47,6 +47,10 @@ ${FUN}.default <- function(
 	## of being flattened column-major
 	${SERIES_GUARD}
 
+	## strip talib-produced leading NAs
+	lookback <- attr(x, "lookback", exact = TRUE)
+	lead <- if (is.null(lookback)) 0L else as.integer(lookback)
+
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
@@ -54,6 +58,7 @@ ${FUN}.default <- function(
 		## splice:call:start
 		${C_NUMERIC},
 		## splice:call:end
+		as.integer(lead),
 		as.logical(na.bridge)
 	)
 
@@ -113,11 +118,16 @@ ${FUN}.xts <- function(
 	## for later attachment
 	x_names <- index(x)
 
+	## strip talib-produced leading NAs
+	lookback <- attr(x, "lookback", exact = TRUE)
+	lead <- if (is.null(lookback)) 0L else as.integer(lookback)
+
 	## calculate indicator and
 	## return as <xts>
 	x <- .Call(
 		C_impl_ta_${ALIAS},
 		${C_NUMERIC},
+		as.integer(lead),
 		as.logical(na.bridge)
 	)
 

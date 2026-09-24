@@ -82,6 +82,7 @@ moving_average_convergence_divergence.default <- function(
 		as.integer(fastPeriod),
 		as.integer(slowPeriod),
 		as.integer(signalPeriod),
+		as.integer(get_lead(constructed_series)),
 		as.logical(na.bridge)
 	)
 
@@ -215,6 +216,10 @@ moving_average_convergence_divergence.numeric <- function(
 		warning("'...' is passed but is unused for vectors.")
 	}
 
+	## strip talib-produced leading NAs
+	lookback <- attr(x, "lookback", exact = TRUE)
+	lead <- if (is.null(lookback)) 0L else as.integer(lookback)
+
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
@@ -223,6 +228,7 @@ moving_average_convergence_divergence.numeric <- function(
 		as.integer(fastPeriod),
 		as.integer(slowPeriod),
 		as.integer(signalPeriod),
+		as.integer(lead),
 		as.logical(na.bridge)
 	)
 

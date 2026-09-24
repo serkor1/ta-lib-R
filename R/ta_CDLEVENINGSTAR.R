@@ -98,8 +98,9 @@ evening_star.default <- function(
 		constructed_series[[3]],
 		constructed_series[[4]],
 		as.double(penetration),
-		normalize,
-		as.logical(na.bridge)
+		as.integer(get_lead(constructed_series)),
+		as.logical(na.bridge),
+		normalize
 	)
 
 	## add column name

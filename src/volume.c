@@ -16,8 +16,9 @@
 //   REALSXP matrix (n x (1 + length(maSpec))) with columns:
 //     "VOLUME", "<MAType><period>" e.g. "SMA7"
 //
-//   The "lookback" attribute is the (normalized) maximum lookback across all
-//   maSpec entries; the "VOLUME" column itself always has a lookback of 0.
+//   The "lookback" attribute is the number of leading rows not computed in
+//   every column (the leading-NA head of the maximum-lookback column); the
+//   "VOLUME" column itself is always computed everywhere.
 //
 #include "NA-handling.h"
 #include "attributes.h"
@@ -66,11 +67,9 @@ SEXP impl_ta_VOLUME_lookback(
         lookback = ma_lookback;
       }
     }
-  } else {
-    lookback += 1;
   }
 
-  return Rf_ScalarInteger(normalize_lookback(lookback));
+  return Rf_ScalarInteger(lookback);
 }
 
 // clang-format off
@@ -187,10 +186,18 @@ SEXP impl_ta_VOLUME(
     scatter_array(out_ptr, ta_n, ta_mask, ta_calc, 0, (int)ta_calc);
   }
 
-  // set the column names and the (normalized, maximum) lookback attribute
+  // set the column names and the lookback attribute: the number of
+  // leading rows not computed in every column; the maximum-lookback
+  // moving average determines the leading-NA head
   // see names.h and attributes.h for more details
   set_colnames(out, colname, n_cols);
-  set_attribute(out, LOOKBACK, Rf_ScalarInteger(lookback), &protection_counter);
+  const int cumulative_lookback =
+    ta_calc > (R_xlen_t)lookback ? (int)(ta_n - ta_calc) + lookback : (int)ta_n;
+  set_attribute(
+    out,
+    LOOKBACK,
+    Rf_ScalarInteger(cumulative_lookback),
+    &protection_counter);
 
   /* Attach classes to output so its easier to work with downstream */
   SEXP TA_CLASS = PROTECT(Rf_allocVector(STRSXP, 3));

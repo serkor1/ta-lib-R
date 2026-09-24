@@ -103,6 +103,7 @@ extended_parabolic_stop_and_reverse.default <- function(
 		as.double(afInitShort),
 		as.double(afShort),
 		as.double(afMaxShort),
+		as.integer(get_lead(constructed_series)),
 		as.logical(na.bridge)
 	)
 
