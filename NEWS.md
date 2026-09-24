@@ -10,14 +10,48 @@ The update is a big leap towards a stable release.
 
 ```R
 talib::lookback(
-  FUN = talib::SMA,
-  n   = 10,
-  x   = talib::BTC
+  FUN        = talib::SMA,
+  timePeriod = 10,
+  x          = talib::BTC
 )
+#> [1] 9
 ```
 
-The function returns the minimum required lookback for calculating the indicator.
+The function returns the required lookback for calculating the indicator. A lookback of 0 means the indicator is computable from the first observation (`talib::balance_of_power()`, for example).
 Its use-case is customized control-flows for downstream wrappers and/or packages that declares dependency on {talib}.
+
+* Each calculated indicator carries a `lookback` attribute: the total number of leading rows that are not computed. The attribute is cumulative, so chaining indicators sums each stage's lookback, and it is used internally to chain indicators deterministically at full input length:
+
+``` r
+tail(
+  output <- talib::BBANDS(
+    talib::SMA(
+      talib::RSI(
+        talib::GOOGL
+      )
+    )
+  )
+)
+#>            UpperBand MiddleBand LowerBand
+#> 2021-12-22  57.50571   54.51537  51.52503
+#> 2021-12-23  57.26401   54.23193  51.19985
+#> 2021-12-27  57.02005   53.97461  50.92918
+#> 2021-12-28  56.75847   53.71577  50.67306
+#> 2021-12-29  56.55065   53.47299  50.39534
+#> 2021-12-30  56.40837   53.25097  50.09356
+
+stopifnot(
+  nrow(talib::GOOGL) == nrow(output)
+)
+
+attr(
+  output,
+  "lookback"
+)
+#> [1] 62
+```
+
+The chain carries RSI (14), SMA (29) and BBANDS (19)—`attr(output, "lookback")` is their sum, the leading-NA head of the final series. The per-indicator lookback remains available via `talib::lookback()`.
 
 * The source code have been re-written so it generates the underlying TA-Lib wrappers using preprocessors and X-Macros, which compiles much faster than before. 
 
