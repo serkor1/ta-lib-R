@@ -146,13 +146,5 @@ lookback <- function(
 		return(NA)
 	}
 
-	## volume, for example, returns
-	## a lookback of 0 if calculated without
-	## moving averages - wrap the lookback
-	## in max() as a safety precaution
-	max(
-		minimum_lookback,
-		1,
-		na.rm = TRUE
-	)
+	minimum_lookback
 }

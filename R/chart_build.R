@@ -46,8 +46,9 @@ build_plotly.plotly <- function(
 
 	## strip lookback NAs from the
 	## beginning of the indicator data
-	if (!is.null(attr(data, "lookback", TRUE))) {
-		data <- data[-(1:attr(data, "lookback", TRUE)), ]
+	lookback <- attr(data, "lookback", TRUE)
+	if (!is.null(lookback) && lookback > 0L) {
+		data <- data[-(1:lookback), ]
 	}
 
 	## default trace properties for

@@ -268,6 +268,10 @@ series.data.frame <- function(
 
 	dots_quoted <- as.list(substitute(list(...)))[-1L]
 
+	## column subsetting drops custom attributes;
+	## carry 'lookback' so get_lead() can read it
+	lookback_attribute <- attr(x, "lookback", TRUE)
+
 	if (length(dots_quoted) == 0L) {
 		output <- x[, all.vars(formula), drop = FALSE]
 	} else {
@@ -284,6 +288,8 @@ series.data.frame <- function(
 			attr(output, "subset") <- match(rownames(output), rownames(x))
 		}
 	}
+
+	attr(output, "lookback") <- lookback_attribute
 
 	output
 }
@@ -426,4 +432,16 @@ series.xts <- function(
 	identified_columns <- max.col(hits, ties.method = "first")
 
 	x[, identified_columns, drop = FALSE]
+}
+
+## number of talib-produced leading NAs in a constructed
+## series; 0 when the input carries no 'lookback'
+get_lead <- function(x) {
+	lookback <- attr(x, "lookback", TRUE)
+
+	if (is.null(lookback)) {
+		return(0L)
+	}
+
+	as.integer(lookback)
 }
