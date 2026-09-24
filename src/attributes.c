@@ -26,16 +26,6 @@ static SEXP attribute_symbol(attribute attr) {
 }
 // clang-format on
 
-// Normalize lookback values
-//
-// Description:
-//  TA-Lib returns 0 for indicators that can
-//  be calculated as-is, which from an R perspective
-//  makes no sense as it is not possible to calculate
-//  indicators on "nothing." The normalization here translates
-//  to minimum number of observations.
-int normalize_lookback(int lookback) { return lookback <= 0 ? 1 : lookback; }
-
 // clang-format off
 void set_attribute(
   SEXP x, // object
@@ -45,18 +35,6 @@ void set_attribute(
 )
 // clang-format on
 {
-
-  // clang-format off
-  switch (attr) {
-    case LOOKBACK: {
-      attr_value = Rf_ScalarInteger(
-        normalize_lookback(
-          Rf_asInteger(attr_value)
-        )
-      );
-    }
-  }
-  // clang-format on
 
   SEXP protected_value = PROTECT(attr_value);
 
