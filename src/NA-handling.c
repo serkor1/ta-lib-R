@@ -55,6 +55,26 @@ R_xlen_t build_presence_mask(
   return num_present;
 }
 
+// Whether all absent rows precede all present rows (mask reads 0...01...1),
+// i.e. the dropped rows are purely leading. Vacuously true for an all-absent
+// or empty mask.
+// clang-format off
+int mask_leading_only(
+    const unsigned char *presence_mask,
+    R_xlen_t n_rows
+)
+// clang-format on
+{
+  R_xlen_t row = 0;
+  while (row < n_rows && !TA_BIT_GET(presence_mask, row)) {
+    row++;
+  }
+  while (row < n_rows && TA_BIT_GET(presence_mask, row)) {
+    row++;
+  }
+  return row == n_rows;
+}
+
 // clang-format off
 double *dense_array(
     R_xlen_t num_present_rows,

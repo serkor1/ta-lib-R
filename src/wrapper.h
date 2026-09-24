@@ -38,9 +38,9 @@
 #define TA_ACC_TA_INTEGER INTEGER
 
 // per-input workers
-//   TA_IN_ARG / TA_OPT_ARG emit trailing-comma parameters; the fixed final
-//   s_na_bridge parameter absorbs the last comma, so no first-argument special
-//   case is needed (same trick as the TA_IN_PASS call list below).
+//   TA_IN_ARG / TA_OPT_ARG emit trailing-comma parameters; the fixed s_lead
+//   parameter absorbs the last comma, so no first-argument special case is
+//   needed (same trick as the TA_IN_PASS call list below).
 #define TA_IN_ARG(name) SEXP s_##name,
 #define TA_IN_COERCE(name)                                                     \
   const double *name = ta_real(s_##name, ta_n, &protection_counter, #name);
@@ -53,6 +53,9 @@
 #define TA_IN_COMPACT(name)                                                    \
   name = compact_array(ta_dense + ta_dcol * ta_calc, name, ta_mask, ta_n);     \
   ta_dcol++;
+// leading-strip worker: advance each input pointer past the caller-declared
+// leading-NA rows (non-bridge path only).
+#define TA_IN_ADVANCE(name) name += ta_lead;
 
 // per-opt workers (consume the tuple)
 #define TA_OPT_ARG(t) TA_OPT_ARG_ t
@@ -97,10 +100,16 @@
   TA_ACC(RT)(out) + 0 * ta_n, TA_ACC(RT)(out) + 1 * ta_n,                      \
     TA_ACC(RT)(out) + 2 * ta_n
 
-// One shift per output column; column count is a compile-time literal.
+// One shift per output column; column count is a compile-time literal. The
+// offset restores the stripped lead rows on top of TA-Lib's begIdx; with
+// nbElement == 0 the shift is a pure NA fill of the column.
 #define TA_OUT_PAD(RT, OUTS_)                                                  \
   for (int ta_col = 0; ta_col < (TA_COUNT_ARGUMENTS OUTS_); ta_col++)          \
-    shift_array(TA_ACC(RT)(out) + ta_col * ta_n, ta_n, begIdx, nbElement);
+    shift_array(                                                               \
+      TA_ACC(RT)(out) + ta_col * ta_n,                                         \
+      ta_n,                                                                    \
+      begIdx + ta_lead,                                                        \
+      nbElement);
 
 // na.bridge counterpart of TA_OUT_PAD: expand each dense output column back
 // to full length, scattering NA into dropped rows and lookback slots.
@@ -158,7 +167,7 @@
   SEXP impl_ta_##NAME(                                                          \
     TA_APPLY(TA_IN_ARG, INS_)                                                   \
     TA_APPLY(TA_OPT_ARG, OPTS_)                                                 \
-    SEXP s_na_bridge                                                            \
+    SEXP s_lead, SEXP s_na_bridge                                               \
     TA_CAT(TA_NORM_ARG_, KIND)                                                  \
   )                                                                             \
   /* signature end*/                                                            \
@@ -178,6 +187,13 @@
                                                                                 \
     /* na.bridge: drop NA rows, compute on the dense series, scatter back. */   \
     int ta_bridge = (Rf_asLogical(s_na_bridge) == TRUE);                        \
+    /* leading strip: caller-declared leading-NA rows, clamped to [0, ta_n] */  \
+    int ta_lead = Rf_asInteger(s_lead);                                         \
+    if (ta_lead < 0) {                                                          \
+      ta_lead = 0;                                                              \
+    } else if ((R_xlen_t) ta_lead > ta_n) {                                     \
+      ta_lead = (int) ta_n;                                                     \
+    }                                                                           \
     R_xlen_t ta_calc = ta_n;                                                    \
     unsigned char *ta_mask = NULL;                                              \
     if (ta_bridge && ta_n > 0) {                                                \
@@ -201,6 +217,9 @@
                                                                                 \
         TA_APPLY(TA_IN_COMPACT, INS_)                                           \
       }                                                                         \
+    } else if (ta_n > 0) {                                                      \
+      TA_APPLY(TA_IN_ADVANCE, INS_)                                             \
+      ta_calc = ta_n - ta_lead;                                                 \
     }                                                                           \
     SEXP out = PROTECT(TA_ALLOC(RT, OUTS_));                                    \
     protection_counter++;                                                       \
@@ -220,20 +239,22 @@
     }                                                                           \
     if (ta_bridge) {                                                            \
       TA_OUT_SCATTER(RT, OUTS_)                                                 \
-    } else if (ta_calc > 0) {                                                   \
+    } else {                                                                    \
       TA_OUT_PAD(RT, OUTS_)                                                     \
     }                                                                           \
     TA_OUT_COLNAMES(TA_OUTPUT_NAME_)                                            \
                                                                                 \
-    /* lookback attributes */                                                   \
-    int lookback_value = TA_##NAME##_Lookback(TA_JOIN(TA_LB_PASS, OPTS_));      \
-                                                                                \
-    set_attribute(                                                              \
-      out,                                                                      \
-      LOOKBACK,                                                                 \
-      Rf_ScalarInteger(lookback_value),                                         \
-      &protection_counter                                                       \
-    );                                                                          \
+    /* lookback: cumulative count of leading rows TA-Lib did not compute; */    \
+    /* on the bridge path only when masked-out rows are purely leading */       \
+    /* (values stay trailing-contiguous) */                                     \
+    if (!ta_bridge || mask_leading_only(ta_mask, ta_n)) {                       \
+      set_attribute(                                                            \
+        out,                                                                    \
+        LOOKBACK,                                                               \
+        Rf_ScalarInteger((int)ta_n - nbElement),                                \
+        &protection_counter                                                     \
+      );                                                                        \
+    }                                                                           \
                                                                                 \
     /* Attach classes to output so its easier to work with downstream */        \
     SEXP TA_CLASS = PROTECT(Rf_allocVector(STRSXP, 3));                         \
@@ -252,14 +273,13 @@
 // TA_<NAME>_Lookback wrapper
 //   Driven by the TA_LOOKBACK(NAME, TA_OPTIONS(...)) lines in TA-Lib.h. The
 //   R-callable impl_ta_<NAME>_lookback(<opts>) reads the optional inputs from
-//   their SEXPs, calls the pure TA_<NAME>_Lookback(), and returns the
-//   (normalized) lookback - the same value set_attribute() attaches to the
-//   indicator output.
+//   their SEXPs, calls the pure TA_<NAME>_Lookback(), and returns the raw
+//   lookback - the value the indicator output's lookback attribute carries
+//   on a chain-free, NA-free input.
 #define TA_LB_WRAPPER(NAME, OPTS_)                                             \
   SEXP impl_ta_##NAME##_lookback(TA_LB_PARAMS(OPTS_)) {                        \
     TA_APPLY(TA_OPT_READ, OPTS_)                                               \
-    return Rf_ScalarInteger(                                                   \
-      normalize_lookback(TA_##NAME##_Lookback(TA_JOIN(TA_LB_PASS, OPTS_))));   \
+    return Rf_ScalarInteger(TA_##NAME##_Lookback(TA_JOIN(TA_LB_PASS, OPTS_))); \
   }
 
 #endif /* WRAPPER_H */
