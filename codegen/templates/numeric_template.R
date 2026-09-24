@@ -1,0 +1,43 @@
+#' @usage NULL
+#' @aliases ${FUN}
+#'
+#' @export
+${FUN}.numeric <- function(
+	x,
+	cols,
+	${ARGS}
+	na.bridge = FALSE,
+	...) {
+
+	## warn if 'cols' have been
+	## passed just to make sure
+	## the user knows its not possible
+	## or relevant
+	if (!missing(cols)) {
+		warning("'cols' is passed but is unused for vectors.")
+	}
+
+	if (...length()) {
+		warning("'...' is passed but is unused for vectors.")
+	}
+
+	## strip talib-produced leading NAs
+	lookback <- attr(x, "lookback", exact = TRUE)
+	lead <- if (is.null(lookback)) 0L else as.integer(lookback)
+
+	## pass the argument directly
+	## to 'C'
+	x <- .Call(
+		C_impl_ta_${ALIAS},
+		${C_NUMERIC},
+		as.integer(lead),
+		as.logical(na.bridge)
+	)
+
+	if (dim(x)[2] == 1L) {
+		dim(x) <- NULL
+	}
+	class(x) <- NULL
+
+	x
+}

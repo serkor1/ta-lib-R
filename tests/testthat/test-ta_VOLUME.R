@@ -42,6 +42,15 @@ testthat::test_that(desc = 'Class in, class out (<data.frame>)', code = {
 	)
 })
 
+## <xts> object
+testthat::test_that(desc = 'Class in, class out (<xts>)', code = {
+	## 1) check that the output class
+	##    matches the input class
+	testthat::expect_true(
+		inherits(trading_volume(GOOGL), class(GOOGL))
+	)
+})
+
 ## check that the default calls
 ## matches that of the constructed call
 ## with default values.

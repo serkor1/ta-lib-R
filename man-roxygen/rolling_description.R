@@ -1,6 +1,7 @@
 #' @description
 #' `<%= tolower(.fun) %>()` is a generic S3 function that preserves
-#' the input [class]: [double] vector in, [double] vector out.
+#' the input [class]: [double] vector in, [double] vector out;
+#' single-column `xts` in, `xts` out.
 #' 
 #' ## Handling of `NA` values
 #'
@@ -24,14 +25,14 @@
 <%
 	if (all(c("x","y") %in% names(formals(.fun))))
 { %>
-#' @param x,y (([double]), ([double])). A pair of [double] vectors of equal [length].
+#' @param x,y (([double]), ([double])). A pair of [double] vectors of equal [length], or single-column `xts` objects.
 <% } else { %>
-#' @param x ([double]). A [double] vector.
+#' @param x ([double]). A [double] vector, or a single-column `xts`.
 #'
 <% } %>
 <% fun_args <- names(formals(.fun)) %>
-<% if ("n" %in% fun_args) { %>
-#' @param n ([integer]). Lookback period (window size). A positive [integer]
+<% if ("timePeriod" %in% fun_args) { %>
+#' @param timePeriod ([integer]). Lookback period (window size). A positive [integer]
 #'   of [length] 1.
 <% } %>
 <% if ("na.bridge" %in% fun_args) { %>

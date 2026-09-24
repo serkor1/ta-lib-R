@@ -143,7 +143,9 @@ pattern_gg <- function(
 		bear_data <- data.frame(
 			.chart_pos = chart_pos[idx_bear],
 			y = high[idx_bear] + offset[idx_bear],
-			label = pattern_name
+			label = pattern_name,
+			## the default flipped in R 4.0; explicit for R >= 3.5
+			stringsAsFactors = FALSE
 		)
 
 		p <- p +
@@ -183,7 +185,9 @@ pattern_gg <- function(
 			} else {
 				low[idx_bull] - offset[idx_bull]
 			},
-			label = pattern_name
+			label = pattern_name,
+			## the default flipped in R 4.0; explicit for R >= 3.5
+			stringsAsFactors = FALSE
 		)
 
 		marker_color <- if (agnostic) {

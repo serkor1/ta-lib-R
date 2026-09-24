@@ -39,6 +39,13 @@ stalled_pattern <- function(
 #' @aliases stalled_pattern
 CDLSTALLEDPATTERN <- stalled_pattern
 
+#' @export
+#' @usage NULL
+#' @rdname stalled_pattern
+#'
+#' @aliases stalled_pattern
+stalledPattern <- stalled_pattern
+
 #' @usage NULL
 #' @aliases stalled_pattern
 #'
@@ -70,35 +77,34 @@ stalled_pattern.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
+		x = x,
+		formula.default = ~ open + high + low + close,
+		formula = cols,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
-	x <- as.matrix(
-		.Call(
-			C_impl_ta_CDLSTALLEDPATTERN,
-			constructed_series[[1]],
-			constructed_series[[2]],
-			constructed_series[[3]],
-			constructed_series[[4]],
-			normalize,
-			as.logical(na.bridge)
-		)
+	x <- .Call(
+		C_impl_ta_CDLSTALLEDPATTERN,
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
+		as.integer(get_lead(constructed_series)),
+		as.logical(na.bridge),
+		normalize
 	)
 
 	## add column name
 	colnames(x) <- "CDLSTALLEDPATTERN"
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -114,8 +120,13 @@ stalled_pattern.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
-		NextMethod()
+	as.data.frame(
+		stalled_pattern.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +140,49 @@ stalled_pattern.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	as.matrix(
+		stalled_pattern.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases stalled_pattern
+#'
+#' @export
+stalled_pattern.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		stalled_pattern.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+
+#' @usage NULL
+CDLSTALLEDPATTERN_lookback <- stalledPattern_lookback <- stalled_pattern_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_CDLSTALLEDPATTERN_lookback
+	)
 }
 
 #' @usage NULL
@@ -157,7 +210,7 @@ stalled_pattern.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -167,7 +220,8 @@ stalled_pattern.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +243,6 @@ stalled_pattern.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases stalled_pattern
@@ -215,7 +268,7 @@ stalled_pattern.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -225,7 +278,8 @@ stalled_pattern.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

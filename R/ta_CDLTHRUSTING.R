@@ -1,8 +1,8 @@
 #' @export
 #' @family Pattern Recognition
 #'
-#' @title Thrusting
-#' @templateVar .title Thrusting
+#' @title Thrusting Pattern
+#' @templateVar .title Thrusting Pattern
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun thrusting
 #' @templateVar .family Pattern Recognition
@@ -70,35 +70,34 @@ thrusting.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
+		x = x,
+		formula.default = ~ open + high + low + close,
+		formula = cols,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
-	x <- as.matrix(
-		.Call(
-			C_impl_ta_CDLTHRUSTING,
-			constructed_series[[1]],
-			constructed_series[[2]],
-			constructed_series[[3]],
-			constructed_series[[4]],
-			normalize,
-			as.logical(na.bridge)
-		)
+	x <- .Call(
+		C_impl_ta_CDLTHRUSTING,
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
+		as.integer(get_lead(constructed_series)),
+		as.logical(na.bridge),
+		normalize
 	)
 
 	## add column name
 	colnames(x) <- "CDLTHRUSTING"
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -114,8 +113,13 @@ thrusting.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
-		NextMethod()
+	as.data.frame(
+		thrusting.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +133,49 @@ thrusting.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	as.matrix(
+		thrusting.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases thrusting
+#'
+#' @export
+thrusting.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		thrusting.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+
+#' @usage NULL
+CDLTHRUSTING_lookback <- thrusting_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_CDLTHRUSTING_lookback
+	)
 }
 
 #' @usage NULL
@@ -157,7 +203,7 @@ thrusting.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -167,7 +213,8 @@ thrusting.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +236,6 @@ thrusting.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases thrusting
@@ -215,7 +261,7 @@ thrusting.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -225,7 +271,8 @@ thrusting.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

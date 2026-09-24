@@ -13,6 +13,7 @@ on:
     paths:
       - 'configure'
       - 'configure.win'
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -21,7 +22,9 @@ concurrency:
 permissions: read-all
 
 jobs:
-  R-CMD-check:
+  ## Vanilla remote install - verifies pak::pak("serkor1/ta-lib-R")
+  ## works on a clean runner with no compiler-wrapping in ~/.R/Makevars.
+  Remote-Install:
     runs-on: ${{ matrix.config.os }}
 
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
@@ -31,19 +34,19 @@ jobs:
       matrix:
         config:
           ## macOS
-          - {os: macos-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: macos-latest,   r: 'release'}
           - {os: macos-latest,   r: 'oldrel-1'}
+          - {os: macos-latest,   r: 'oldrel-2'}
 
           ## windows
-          - {os: windows-latest, r: 'devel', http-user-agent: 'release'}
           - {os: windows-latest, r: 'release'}
           - {os: windows-latest, r: 'oldrel-1'}
-          
+          - {os: windows-latest, r: 'oldrel-2'}
+
           # Ubuntu
-          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
           - {os: ubuntu-latest,   r: 'oldrel-1'}
+          - {os: ubuntu-latest,   r: 'oldrel-2'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -68,6 +71,108 @@ jobs:
       - name: Install {talib}
         run: pak::pak("serkor1/ta-lib-R")
         shell: Rscript {0}
+
+      - name: Calculate an indicator
+        run: talib::bollinger_bands(talib::BTC)
+        shell: Rscript {0}
+
+  ## Remote install with ccache configured in ~/.R/Makevars - regression
+  ## guard for https://github.com/serkor1/ta-lib-R/issues/57, where installs
+  ## with `CC = ccache gcc` in Makevars hit
+  ## "/usr/bin/ccache: invalid option -- 'D'" because the configure script
+  ## passed `CMAKE_C_COMPILER=ccache` and CMake then invoked ccache with
+  ## raw `-D` definitions.
+  Remote-Install-ccache:
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }}, ccache)
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          ## macOS
+          - {os: macos-latest,   r: 'release'}
+          - {os: macos-latest,   r: 'oldrel-1'}
+          - {os: macos-latest,   r: 'oldrel-2'}
+
+          ## windows
+          - {os: windows-latest, r: 'release'}
+          - {os: windows-latest, r: 'oldrel-1'}
+          - {os: windows-latest, r: 'oldrel-2'}
+
+          # Ubuntu
+          - {os: ubuntu-latest,   r: 'release'}
+          - {os: ubuntu-latest,   r: 'oldrel-1'}
+          - {os: ubuntu-latest,   r: 'oldrel-2'}
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.config.r }}
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+          use-public-rspm: true
+
+      - name: Install ccache (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y ccache
+        shell: bash
+
+      - name: Install ccache (macOS)
+        if: runner.os == 'macOS'
+        run: brew install ccache
+        shell: bash
+
+      - name: Install ccache (Windows)
+        if: runner.os == 'Windows'
+        run: choco install ccache -y --no-progress
+        shell: pwsh
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::pak any::plotly any::devtools any::roxygen2
+          needs: check
+
+      - name: Configure ~/.R/Makevars to use ccache
+        run: |
+          dir <- path.expand(file.path("~", ".R"))
+          dir.create(dir, recursive = TRUE, showWarnings = FALSE)
+          name <- if (.Platform$OS.type == "windows") "Makevars.win" else "Makevars"
+          if (Sys.info()[["sysname"]] == "Darwin") {
+            cc <- "clang"; cxx <- "clang++"
+          } else {
+            cc <- "gcc";  cxx <- "g++"
+          }
+          path <- file.path(dir, name)
+          writeLines(
+            c(paste0("CC=ccache ",  cc),
+              paste0("CXX=ccache ", cxx)),
+            path
+          )
+          cat("--- ", path, " ---\n", sep = "")
+          cat(readLines(path), sep = "\n"); cat("\n")
+        shell: Rscript {0}
+
+      - name: Reset ccache statistics
+        run: ccache --zero-stats
+        shell: bash
+
+      - name: Install {talib}
+        run: pak::pak("serkor1/ta-lib-R")
+        shell: Rscript {0}
+
+      - name: Show ccache statistics
+        if: always()
+        run: ccache -s
+        shell: bash
 
       - name: Calculate an indicator
         run: talib::bollinger_bands(talib::BTC)

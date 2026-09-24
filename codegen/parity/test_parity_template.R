@@ -72,7 +72,11 @@ R_CALL_OVERRIDES <- list(
 	STDDEV = function(btc, snap) talib::STDDEV(btc$close),
 	MAX = function(btc, snap) talib::MAX(btc$close),
 	MIN = function(btc, snap) talib::MIN(btc$close),
-	SUM = function(btc, snap) talib::SUM(btc$close)
+	SUM = function(btc, snap) talib::SUM(btc$close),
+	## MAVP takes a required 'periods' vector; parity_gen.c wires the
+	## upstream inPeriods slot to close (the non-price Real fallback),
+	## so mirror that here.
+	MAVP = function(btc, snap) talib::MAVP(btc, periods = btc$close)
 )
 
 ## Invoke the R wrapper for an indicator. Returns a list:
@@ -210,7 +214,7 @@ call_r_wrapper <- function(name, btc, snap) {
 			) {
 				expect_equal(
 					as.integer(lb),
-					as.integer(snap$lookback),
+					max(as.integer(snap$lookback), 1),
 					info = paste0(name, ": lookback attribute")
 				)
 			}

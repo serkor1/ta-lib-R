@@ -1,17 +1,18 @@
 #' @export
-#' @family Overlap Study
+#' @family Overlap Studies
 #'
 #' @title Hilbert Transform - Instantaneous Trendline
 #' @templateVar .title Hilbert Transform - Instantaneous Trendline
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun trendline
-#' @templateVar .family Overlap Study
+#' @templateVar .family Overlap Studies
 #' @templateVar .formula ~close
 #'
 ## splice:documentation:start
 ## splice:documentation:end
 #'
 #' @template description
+#'
 #' @template returns
 trendline <- function(
 	x,
@@ -48,28 +49,27 @@ trendline.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_HT_TRENDLINE,
-		## splice:call:start
 		constructed_series[[1]],
-		## splice:call:end
+		as.integer(get_lead(constructed_series)),
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -85,7 +85,7 @@ trendline.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		trendline.default(
 			x = x,
 			cols = cols,
@@ -105,14 +105,49 @@ trendline.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	trendline.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		trendline.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
+#' @usage NULL
+#' @aliases trendline
+#'
+#' @export
+trendline.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		trendline.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+HT_TRENDLINE_lookback <- trendline_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_HT_TRENDLINE_lookback
+	)
+}
 
 #' @usage NULL
 #' @aliases trendline
@@ -132,31 +167,30 @@ trendline.numeric <- function(
 		warning("'cols' is passed but is unused for vectors.")
 	}
 
+	if (...length()) {
+		warning("'...' is passed but is unused for vectors.")
+	}
+
+	## strip talib-produced leading NAs
+	lookback <- attr(x, "lookback", exact = TRUE)
+	lead <- if (is.null(lookback)) 0L else as.integer(lookback)
+
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
 		C_impl_ta_HT_TRENDLINE,
-		## splice:numeric:start
 		as.double(x),
-		## splice:numeric:end
+		as.integer(lead),
 		as.logical(na.bridge)
 	)
 
-	## check if it has 'dims'
-	## and convert to double if
-	## not to honor the 'type-safety'-esque
-	## approach
-	##
-	## NOTE: this adds a few ns overhead but
-	##       its a robust alternative to code it
-	##       manually. Any suggestions are welcome
-	if (is.null(dim(x))) {
-		x <- as.double(x)
+	if (dim(x)[2] == 1L) {
+		dim(x) <- NULL
 	}
+	class(x) <- NULL
 
 	x
 }
-
 
 #' @usage NULL
 #' @aliases trendline
@@ -185,7 +219,7 @@ trendline.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 
@@ -254,7 +288,7 @@ trendline.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~close,
+		formula.default = ~close,
 		...
 	)
 

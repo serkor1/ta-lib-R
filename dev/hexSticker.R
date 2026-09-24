@@ -6,14 +6,11 @@
 ## set clean to TRUE for deleting auxillary files
 ## run this code in the terminal to replace
 ## the log:
-##
-## Rscript -e "usethis::use_logo('talib-hex.png')"
 clean <- TRUE
 
 ## file destinations
-raw_file <- "talib-hex-raw.png"
-final_file <- "talib-hex.png"
-mask_file <- "talib-hex-mask.png"
+raw_file <- "talib-hex-raw.svg"
+final_file <- "talib-hex.svg"
 
 ## common colors and fonts
 ## across the sticker
@@ -23,8 +20,11 @@ up <- "#65a479"
 down <- "#d5695d"
 ink <- "#D8DEE3"
 
+## render text at the same dpi the sticker is saved at
+dpi <- 1200
 sysfonts::font_add_google("JetBrains Mono", "jbmono")
 showtext::showtext_auto()
+showtext::showtext_opts(dpi = dpi)
 
 ## construct OHLC
 ## series
@@ -127,11 +127,12 @@ p_candles <- ggplot2::ggplot(OHLC, ggplot2::aes(x = x)) +
 ## store locally
 hexSticker::sticker(
 	p_candles,
-	package = "",
+	package = "{talib}",
 	p_family = "jbmono",
-	p_size = 33,
-	p_color = ink,
-	p_y = 1.44,
+	p_size = 3,
+	p_color = grid_minor_col,
+	p_x = 0.503,
+	p_y = 1.313,
 	s_x = 1,
 	s_y = 1,
 	s_width = 2,
@@ -139,57 +140,72 @@ hexSticker::sticker(
 	h_fill = bg,
 	h_color = accent,
 	h_size = 1,
-	url = "{talib}",
-	u_color = accent,
-	u_size = 33,
+	url = "",
+	u_color = grid_major_col,
+	u_size = 3.5,
 	u_x = 0.4,
-	u_y = 1.5,
+	u_y = 1.6,
 	u_angle = 30,
 	filename = raw_file,
-	dpi = 600,
-	device = ragg::agg_png,
+	dpi = dpi,
+	# device = ragg::agg_png,
 	bg = "transparent",
 	white_around_sticker = FALSE
 )
 
-## construct an additional
-## hexsticker to crop figures outside
-## the hex
-p_blank <- ggplot2::ggplot() +
-	ggplot2::theme_void() +
-	hexSticker::theme_transparent()
+## crop everything outside the hex by clipping the SVG to a
+## hexagon-shaped <clipPath>.
+svg <- readLines(raw_file, warn = FALSE)
 
-hexSticker::sticker(
-	p_blank,
-	package = "",
-	p_size = 1,
-	p_color = "white",
-	s_x = 1,
-	s_y = 1,
-	s_width = 1,
-	s_height = 1,
-	h_fill = "white",
-	h_color = "white",
-	h_size = 0.001, # solid white hex
-	url = "",
-	filename = mask_file,
-	dpi = 600,
-	device = ragg::agg_png,
-	bg = "black", # black corners outside hex
-	white_around_sticker = FALSE
+poly_line <- grep("<polygon ", svg, fixed = TRUE)[1]
+if (is.na(poly_line)) {
+	stop("no <polygon> found in ", raw_file, " -- cannot locate the hexagon")
+}
+hex_pts <- trimws(sub(".*points='([^']*)'.*", "\\1", svg[poly_line]))
+
+clip_def <- sprintf(
+	"<defs><clipPath id='hexclip'><polygon points='%s'/></clipPath></defs>",
+	hex_pts
 )
 
-## apply the mask
-## and crop it
-img <- magick::image_read(raw_file)
-mask <- magick::image_read(mask_file)
+## inject the clip definition next to the <svg> tag and clip the
+## svglite drawing group to the hexagon
+svg_line <- grep("<svg ", svg, fixed = TRUE)[1]
 
-info <- magick::image_info(img)
-mask <- magick::image_resize(mask, paste0(info$width, "x", info$height, "!"))
+## crop the canvas to the hexagon's bounding box so the
+## transparent margin is symmetric on all sides
+pts <- do.call(
+	rbind,
+	lapply(strsplit(strsplit(hex_pts, " +")[[1]], ","), as.numeric)
+)
+hex_w <- diff(range(pts[, 1]))
+hex_h <- diff(range(pts[, 2]))
+svg[svg_line] <- sub(
+	"width='[^']*' height='[^']*' viewBox='[^']*'",
+	sprintf(
+		"width='%.2fpt' height='%.2fpt' viewBox='%.2f %.2f %.2f %.2f'",
+		hex_w,
+		hex_h,
+		min(pts[, 1]),
+		min(pts[, 2]),
+		hex_w,
+		hex_h
+	),
+	svg[svg_line]
+)
 
-out <- magick::image_composite(img, mask, operator = "CopyOpacity")
-magick::image_write(out, final_file)
+svg[svg_line] <- paste0(svg[svg_line], clip_def)
+svg <- sub(
+	"<g class='svglite'>",
+	"<g class='svglite' clip-path='url(#hexclip)'>",
+	svg,
+	fixed = TRUE
+)
+
+writeLines(svg, final_file)
+usethis::use_logo(final_file, geometry = "1980x1200")
 
 if (clean) {
-	base::unlink(c(mask_file, raw_file))
+	base::unlink(raw_file, force = TRUE)
+	base::unlink(final_file, force = TRUE)
 }
