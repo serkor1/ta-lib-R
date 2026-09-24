@@ -53,7 +53,7 @@ length as the input:
 x <- talib::doji(talib::BTC)
 table(x)
 #> CDLDOJI
-#>   0 100 
+#>   0   1 
 #> 300  56
 ```
 
@@ -172,7 +172,7 @@ action:
 
 ## default N = 10
 sum(abs(talib::doji(talib::BTC)), na.rm = TRUE)
-#> [1] 5600
+#> [1] 56
 ```
 
 ``` r
@@ -180,7 +180,7 @@ sum(abs(talib::doji(talib::BTC)), na.rm = TRUE)
 ## shorter lookback
 options(talib.BodyDoji.N = 3)
 sum(abs(talib::doji(talib::BTC)), na.rm = TRUE)
-#> [1] 6100
+#> [1] 61
 ```
 
 ### Effect of sensitivity (`alpha`)
@@ -192,7 +192,7 @@ higher `alpha` means a wider acceptance threshold:
 
 ## default alpha = 0.1
 sum(abs(talib::doji(talib::BTC)), na.rm = TRUE)
-#> [1] 5600
+#> [1] 56
 ```
 
 ``` r
@@ -200,7 +200,7 @@ sum(abs(talib::doji(talib::BTC)), na.rm = TRUE)
 ## more permissive: accept bodies up to 20% of the high-low range
 options(talib.BodyDoji.alpha = 0.2)
 sum(abs(talib::doji(talib::BTC)), na.rm = TRUE)
-#> [1] 10900
+#> [1] 109
 ```
 
 The default `alpha = 0.1` for BodyDoji means: “the real body is
