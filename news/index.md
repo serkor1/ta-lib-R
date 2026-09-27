@@ -133,6 +133,131 @@ timePeriod = 5
 #> [1] 4
 ```
 
+- ***CMF:** Chaikin Money Flow*—The function calculates the chaikin
+  money flow of HLC-V series. See below:
+
+``` r
+
+tail(
+  talib::CMF(
+    x = talib::GOOGL,
+    timePeriod = 20L,
+    cols = ~ high + low + close + volume
+  )
+)
+#>                   CMF
+#> 2021-12-22 0.08511277
+#> 2021-12-23 0.03979116
+#> 2021-12-27 0.08378773
+#> 2021-12-28 0.05341346
+#> 2021-12-29 0.12197905
+#> 2021-12-30 0.16362414
+```
+
+- ***CMOU:** Chande Momentum Oscillator (Unsmoothed)*—This function
+  calculates the unsmoothed chande momentum oscillator of a series. See
+  below:
+
+``` r
+
+tail(
+  talib::CMOU(
+    x = talib::GOOGL,
+    timePeriod = 20L,
+    cols = ~close
+  )
+)
+#>                 CMOU
+#> 2021-12-22  1.650705
+#> 2021-12-23  2.068290
+#> 2021-12-27 16.093739
+#> 2021-12-28  3.458882
+#> 2021-12-29 15.946284
+#> 2021-12-30 17.488048
+```
+
+- ***HMA:** Hull Moving Average*—This function calculates the hull
+  moving average of a series. See below:
+
+``` r
+
+tail(
+  talib::HMA(
+    talib::GOOGL,
+    timePeriod = 20L,
+    cols = ~open
+  )
+)
+#>                 HMA
+#> 2021-12-22 143.4272
+#> 2021-12-23 143.1059
+#> 2021-12-27 143.3396
+#> 2021-12-28 144.0303
+#> 2021-12-29 144.8070
+#> 2021-12-30 145.5167
+```
+
+- ***NVI:** Negative Volume Index*—This function calculates the negative
+  volume index of a C-V series. See below:
+
+``` r
+
+tail(
+  talib::NVI(
+    talib::GOOGL,
+    cols = ~ close + volume
+  )
+)
+#>                 NVI
+#> 2021-12-22 3087.244
+#> 2021-12-23 3087.244
+#> 2021-12-27 3108.047
+#> 2021-12-28 3108.047
+#> 2021-12-29 3107.369
+#> 2021-12-30 3097.739
+```
+
+- ***PVI:** Positive Volume Index*—This function calculates the positive
+  volume index of a C-V series. See below:
+
+``` r
+
+tail(
+  talib::PVI(
+    talib::GOOGL,
+    cols = ~ close + volume
+  )
+)
+#>                 PVI
+#> 2021-12-22 899.3401
+#> 2021-12-23 902.4205
+#> 2021-12-27 902.4205
+#> 2021-12-28 894.9800
+#> 2021-12-29 894.9800
+#> 2021-12-30 894.9800
+```
+
+- ***VWMA:** Volume Weighted Moving Average*—This function calculates
+  the volume weighted moving average of a series. See below:
+
+``` r
+
+tail(
+  talib::VWMA(
+    x = talib::GOOGL,
+    timePeriod = 20L,
+    cols = ~ close + volume
+  )
+)
+#>                VWMA
+#> 2021-12-22 144.1797
+#> 2021-12-23 144.2380
+#> 2021-12-27 144.4321
+#> 2021-12-28 144.4406
+#> 2021-12-29 144.6905
+#> 2021-12-30 144.9503
+```
+
 - All indicators have gotten a `camelCase` alias to introduce a form of
   consistency across R’s finance ecosystem and oldschool coding schemes.
   The indicators below produces the same output:

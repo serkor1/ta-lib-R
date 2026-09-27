@@ -129,8 +129,108 @@
 <span><span class="co">#&gt;  [1]  NA  NA  NA  NA 1.2 1.2 1.2 1.2 1.2 1.2</span></span>
 <span><span class="co">#&gt; attr(,"lookback")</span></span>
 <span><span class="co">#&gt; [1] 4</span></span></code></pre></div>
-<ul><li>All indicators have gotten a <code>camelCase</code> alias to introduce a form of consistency across R’s finance ecosystem and oldschool coding schemes. The indicators below produces the same output:</li>
+<ul><li>
+<em><strong>CMF:</strong> Chaikin Money Flow</em>—The function calculates the chaikin money flow of HLC-V series. See below:</li>
 </ul><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span></span>
+<span>  <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="../reference/chaikin_money_flow.html">CMF</a></span><span class="op">(</span></span>
+<span>    x <span class="op">=</span> <span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="../reference/GOOGL.html">GOOGL</a></span>,</span>
+<span>    timePeriod <span class="op">=</span> <span class="fl">20L</span>,</span>
+<span>    cols <span class="op">=</span> <span class="op">~</span> <span class="va">high</span> <span class="op">+</span> <span class="va">low</span> <span class="op">+</span> <span class="va">close</span> <span class="op">+</span> <span class="va">volume</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt;                   CMF</span></span>
+<span><span class="co">#&gt; 2021-12-22 0.08511277</span></span>
+<span><span class="co">#&gt; 2021-12-23 0.03979116</span></span>
+<span><span class="co">#&gt; 2021-12-27 0.08378773</span></span>
+<span><span class="co">#&gt; 2021-12-28 0.05341346</span></span>
+<span><span class="co">#&gt; 2021-12-29 0.12197905</span></span>
+<span><span class="co">#&gt; 2021-12-30 0.16362414</span></span></code></pre></div>
+<ul><li>
+<em><strong>CMOU:</strong> Chande Momentum Oscillator (Unsmoothed)</em>—This function calculates the unsmoothed chande momentum oscillator of a series. See below:</li>
+</ul><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span></span>
+<span>  <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="../reference/unsmoothed_chande_momentum_oscillator.html">CMOU</a></span><span class="op">(</span></span>
+<span>    x <span class="op">=</span> <span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="../reference/GOOGL.html">GOOGL</a></span>,</span>
+<span>    timePeriod <span class="op">=</span> <span class="fl">20L</span>,</span>
+<span>    cols <span class="op">=</span> <span class="op">~</span><span class="va">close</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt;                 CMOU</span></span>
+<span><span class="co">#&gt; 2021-12-22  1.650705</span></span>
+<span><span class="co">#&gt; 2021-12-23  2.068290</span></span>
+<span><span class="co">#&gt; 2021-12-27 16.093739</span></span>
+<span><span class="co">#&gt; 2021-12-28  3.458882</span></span>
+<span><span class="co">#&gt; 2021-12-29 15.946284</span></span>
+<span><span class="co">#&gt; 2021-12-30 17.488048</span></span></code></pre></div>
+<ul><li>
+<em><strong>HMA:</strong> Hull Moving Average</em>—This function calculates the hull moving average of a series. See below:</li>
+</ul><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span></span>
+<span>  <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="../reference/hull_moving_average.html">HMA</a></span><span class="op">(</span></span>
+<span>    <span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="../reference/GOOGL.html">GOOGL</a></span>,</span>
+<span>    timePeriod <span class="op">=</span> <span class="fl">20L</span>,</span>
+<span>    cols <span class="op">=</span> <span class="op">~</span><span class="va">open</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt;                 HMA</span></span>
+<span><span class="co">#&gt; 2021-12-22 143.4272</span></span>
+<span><span class="co">#&gt; 2021-12-23 143.1059</span></span>
+<span><span class="co">#&gt; 2021-12-27 143.3396</span></span>
+<span><span class="co">#&gt; 2021-12-28 144.0303</span></span>
+<span><span class="co">#&gt; 2021-12-29 144.8070</span></span>
+<span><span class="co">#&gt; 2021-12-30 145.5167</span></span></code></pre></div>
+<ul><li>
+<em><strong>NVI:</strong> Negative Volume Index</em>—This function calculates the negative volume index of a C-V series. See below:</li>
+</ul><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span></span>
+<span>  <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="../reference/negative_volume_index.html">NVI</a></span><span class="op">(</span></span>
+<span>    <span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="../reference/GOOGL.html">GOOGL</a></span>,</span>
+<span>    cols <span class="op">=</span> <span class="op">~</span> <span class="va">close</span> <span class="op">+</span> <span class="va">volume</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt;                 NVI</span></span>
+<span><span class="co">#&gt; 2021-12-22 3087.244</span></span>
+<span><span class="co">#&gt; 2021-12-23 3087.244</span></span>
+<span><span class="co">#&gt; 2021-12-27 3108.047</span></span>
+<span><span class="co">#&gt; 2021-12-28 3108.047</span></span>
+<span><span class="co">#&gt; 2021-12-29 3107.369</span></span>
+<span><span class="co">#&gt; 2021-12-30 3097.739</span></span></code></pre></div>
+<ul><li>
+<em><strong>PVI:</strong> Positive Volume Index</em>—This function calculates the positive volume index of a C-V series. See below:</li>
+</ul><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span></span>
+<span>  <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="../reference/positive_volume_index.html">PVI</a></span><span class="op">(</span></span>
+<span>    <span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="../reference/GOOGL.html">GOOGL</a></span>,</span>
+<span>    cols <span class="op">=</span> <span class="op">~</span> <span class="va">close</span> <span class="op">+</span> <span class="va">volume</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt;                 PVI</span></span>
+<span><span class="co">#&gt; 2021-12-22 899.3401</span></span>
+<span><span class="co">#&gt; 2021-12-23 902.4205</span></span>
+<span><span class="co">#&gt; 2021-12-27 902.4205</span></span>
+<span><span class="co">#&gt; 2021-12-28 894.9800</span></span>
+<span><span class="co">#&gt; 2021-12-29 894.9800</span></span>
+<span><span class="co">#&gt; 2021-12-30 894.9800</span></span></code></pre></div>
+<ul><li>
+<em><strong>VWMA:</strong> Volume Weighted Moving Average</em>—This function calculates the volume weighted moving average of a series. See below:</li>
+</ul><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span></span>
+<span>  <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="../reference/volume_weighted_moving_average.html">VWMA</a></span><span class="op">(</span></span>
+<span>    x <span class="op">=</span> <span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="../reference/GOOGL.html">GOOGL</a></span>,</span>
+<span>    timePeriod <span class="op">=</span> <span class="fl">20L</span>,</span>
+<span>    cols <span class="op">=</span> <span class="op">~</span> <span class="va">close</span> <span class="op">+</span> <span class="va">volume</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt;                VWMA</span></span>
+<span><span class="co">#&gt; 2021-12-22 144.1797</span></span>
+<span><span class="co">#&gt; 2021-12-23 144.2380</span></span>
+<span><span class="co">#&gt; 2021-12-27 144.4321</span></span>
+<span><span class="co">#&gt; 2021-12-28 144.4406</span></span>
+<span><span class="co">#&gt; 2021-12-29 144.6905</span></span>
+<span><span class="co">#&gt; 2021-12-30 144.9503</span></span></code></pre></div>
+<ul><li>All indicators have gotten a <code>camelCase</code> alias to introduce a form of consistency across R’s finance ecosystem and oldschool coding schemes. The indicators below produces the same output:</li>
+</ul><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="../reference/bollinger_bands.html">bollinger_bands</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="../reference/bollinger_bands.html">BBANDS</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="../reference/bollinger_bands.html">bollingerBands</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -140,7 +240,7 @@
 <h3 id="breaking-changes-0-9-3">breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-9-3"></a></h3>
 <ul><li>
 <strong>General:</strong> All functions now follows the naming convention of TA-Lib. All function signatures are on the following form:</li>
-</ul><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+</ul><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/indicator.html">indicator</a></span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,          <span class="co">## unchanged</span></span>
 <span>  <span class="va">cols</span>,       <span class="co">## unchanged</span></span>
@@ -154,20 +254,20 @@
 <p>This has the benefit of being transparent when comparing or reading the source code.</p>
 <ul><li>
 <strong>MATypes:</strong> Functions that used MATypes in the indicator function are now significantly different. See the <code><a href="../reference/bollinger_bands.html">bollinger_bands()</a></code> below:</li>
-</ul><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+</ul><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="../reference/bollinger_bands.html">bollinger_bands</a></span><span class="op">(</span></span>
 <span>        <span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="../reference/BTC.html">BTC</a></span>,</span>
 <span>        timePeriod <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>        maType <span class="op">=</span> <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="../reference/exponential_moving_average.html">EMA</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Prior to this update, the correct call was:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="../reference/bollinger_bands.html">bollinger_bands</a></span><span class="op">(</span></span>
 <span>        <span class="fu">talib</span><span class="fu">::</span><span class="va"><a href="../reference/BTC.html">BTC</a></span>,</span>
 <span>    ma <span class="op">=</span> <span class="fu">talib</span><span class="fu">::</span><span class="fu"><a href="../reference/exponential_moving_average.html">EMA</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>While the above function call is aestethically pleasing, it did introduce some ambigiuites in other calls. See, for example, <code><a href="../reference/absolute_price_oscillator.html">APO()</a></code> (v0.9.2) below:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/absolute_price_oscillator.html">absolute_price_oscillator</a></span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
 <span>  <span class="va">cols</span>,</span>
@@ -178,7 +278,7 @@
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>In this specific case the function has three different <code>n</code> - the underlying function were discarding <code>n = 9</code> while keeping the MAType. The new call is given as:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/absolute_price_oscillator.html">absolute_price_oscillator</a></span><span class="op">(</span></span>
 <span>    <span class="va">x</span>,</span>
 <span>    <span class="va">cols</span>,</span>
@@ -191,12 +291,12 @@
 <p>In this call the role of each argument is <em>should</em> be clearer than before.</p>
 <ul><li>
 <em><strong>Moving Average (MA) signatures:</strong></em>—the generic S3 signature of the MAs has been changed in response to the new TA-Lib (upstream) release. The release introduced the volume weighted moving average which uses the volume in its calculation. This deviates from the generic <code>x</code> + <code>timePeriod</code> signature, and breaks the <code>numeric</code>-method. One solution is to do the following:</li>
-</ul><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+</ul><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">VWMA.numeric</span><span class="op">(</span><span class="va">x</span>, <span class="va">cols</span>, <span class="va">timePeriod</span>, na.bridge <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">volume</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
 <p>To avoid breaking the S3 signature. However, given the importance of the <code>volume</code>-argument and the fact that <code>cols</code> is rarely used, the signature has been changed to accommodate future additions of MAs which take additional series. The new signature is as follows:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">foo</span>(x, [series], timePeriod, [optional], cols, <span class="at">na.bridge =</span> <span class="cn">FALSE</span>, ...)</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">foo</span>(x, [series], timePeriod, [optional], cols, <span class="at">na.bridge =</span> <span class="cn">FALSE</span>, ...)</span></code></pre></div>
 <p>Additional <em>series</em> (the volume) lead directly after <code>x</code>, while additional <em>optional parameters</em> keep their place after <code>timePeriod</code>. In the case of VWMA this becomes:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/volume_weighted_moving_average.html">VWMA</a></span><span class="op">(</span></span>
 <span>    <span class="va">x</span>,</span>
 <span>    <span class="va">volume</span>,</span>
@@ -206,7 +306,7 @@
 <span>    <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>And for the remaining MAs:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">foo</span><span class="op">(</span></span>
 <span>    <span class="va">x</span>,</span>
 <span>    timePeriod <span class="op">=</span> <span class="fl">30</span>,</span>
@@ -216,7 +316,7 @@
 <span><span class="op">)</span></span></code></pre></div>
 <p>MAs with additional optional parameters retain them after <code>timePeriod</code>, e.g. <code>MAMA(x, timePeriod, fastLimit, slowLimit, cols, na.bridge, ...)</code> and <code>T3(x, timePeriod, volumeFactor, cols, na.bridge, ...)</code>.</p>
 <p>The <code>volume</code>-argument is <em>not</em> required when <code>x</code> carries a volume column: <code>VWMA(x)</code> selects it via the default formula <code>~close + volume</code> as before. An explicitly passed vector takes precedence, in which case only the <code>close</code>-column is required:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## volume from the 'volume'-column of x</span></span>
 <span><span class="fu"><a href="../reference/volume_weighted_moving_average.html">VWMA</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span></span>
