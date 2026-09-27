@@ -39,6 +39,13 @@ gaps_side_white <- function(
 #' @aliases gaps_side_white
 CDLGAPSIDESIDEWHITE <- gaps_side_white
 
+#' @export
+#' @usage NULL
+#' @rdname gaps_side_white
+#'
+#' @aliases gaps_side_white
+gapsSideWhite <- gaps_side_white
+
 #' @usage NULL
 #' @aliases gaps_side_white
 #'
@@ -70,35 +77,34 @@ gaps_side_white.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
+		x = x,
+		formula.default = ~ open + high + low + close,
+		formula = cols,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
-	x <- as.matrix(
-		.Call(
-			C_impl_ta_CDLGAPSIDESIDEWHITE,
-			constructed_series[[1]],
-			constructed_series[[2]],
-			constructed_series[[3]],
-			constructed_series[[4]],
-			normalize,
-			as.logical(na.bridge)
-		)
+	x <- .Call(
+		C_impl_ta_CDLGAPSIDESIDEWHITE,
+		constructed_series[[1]],
+		constructed_series[[2]],
+		constructed_series[[3]],
+		constructed_series[[4]],
+		as.integer(get_lead(constructed_series)),
+		as.logical(na.bridge),
+		normalize
 	)
 
 	## add column name
 	colnames(x) <- "CDLGAPSIDESIDEWHITE"
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -114,8 +120,13 @@ gaps_side_white.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
-		NextMethod()
+	as.data.frame(
+		gaps_side_white.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -129,7 +140,49 @@ gaps_side_white.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	NextMethod()
+	as.matrix(
+		gaps_side_white.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases gaps_side_white
+#'
+#' @export
+gaps_side_white.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		gaps_side_white.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+
+#' @usage NULL
+CDLGAPSIDESIDEWHITE_lookback <- gapsSideWhite_lookback <- gaps_side_white_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_CDLGAPSIDESIDEWHITE_lookback
+	)
 }
 
 #' @usage NULL
@@ -157,7 +210,7 @@ gaps_side_white.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -167,7 +220,8 @@ gaps_side_white.plotly <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx
@@ -189,7 +243,6 @@ gaps_side_white.plotly <- function(
 
 	plotly_object
 }
-
 
 #' @usage NULL
 #' @aliases gaps_side_white
@@ -215,7 +268,7 @@ gaps_side_white.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -225,7 +278,8 @@ gaps_side_white.ggplot <- function(
 		x = constructed_series,
 		cols = rebuild_formula(
 			names(constructed_series)
-		)
+		),
+		na.bridge = na.bridge
 	)
 
 	## add conditional idx

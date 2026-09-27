@@ -1,10 +1,9 @@
 ---
 output: github_document
 ---
-```{r setup, include = FALSE}
-# set options
-Sys.setenv(OPENSSL_CONF = "/dev/null")
 
+```{r setup, include = FALSE}
+Sys.setenv(OPENSSL_CONF = "/dev/null")
 knitr::opts_chunk$set(
 	collapse  = TRUE,
 	comment   = "#>",
@@ -14,22 +13,131 @@ knitr::opts_chunk$set(
 )
 ```
 
+```{r load, include = FALSE}
+## The plot PNGs are produced by benchmark/run-all.R and referenced as
+## static markdown images below. The Rmd only computes the summary tables.
+source("benchmark-utils.R")
+
+overhead <- readRDS("results/overhead.rds")
+ttr      <- readRDS("results/ttr.rds")
+```
+
 # Benchmarks
 
-The benchmarks are run on the `bollinger_bands()` function, with three different specifications:
+These benchmarks answer two questions:
 
-1. *baseline:* This specification calls the C routine directly, without any calls to R functions.
-2. *data.frame:* This specification is the S3 `<data.frame>` dispatch.
-3. *matrix:* This specification is the S3 `<matrix>` dispatch.
+1. **How fast is `{talib}`?** We compare `{talib}` to [`{TTR}`](https://cran.r-project.org/package=TTR), the canonical R technical-analysis package, on eight indicators across the natural API in each package.
+2. **What does the R wrapper around `.Call` cost?** We measure three call paths into the same C routine: a bare `.Call`, the `<data.frame>` S3 method, and the `<matrix>` S3 method.
 
-All benchmarks uses a `r nrow(readRDS("dataframe.rds"))` row OHLC `<data.frame>`
+## Method
 
-## Benchmark results
+* **Indicators**: BBANDS, RSI, MACD, ATR, SMA, EMA, ADX, STOCH
+* **Sizes**: `r paste(format(BENCHMARK_SIZES, big.mark = ","), collapse = " / ")` observations of synthetic OHLCV
+* **Iterations**: `r BENCHMARK_ITERATIONS` timed iterations per cell, after `r BENCHMARK_WARMUP` warmup calls
+* **Sequential**: every `(indicator, n, expression)` cell is timed on its own, after a per-cell warmup
+* **Engine**: [`bench::mark()`](https://bench.r-lib.org) with `filter_gc = FALSE`, `memory = TRUE`
 
-```{r}
-library(bench)
-readRDS(
-    "overhead_benchmark.rds"
+Reported timings below are the **median** over the timed iterations. Ribbons show the min-to-max range across iterations.
+
+## `{talib}` vs `{TTR}`
+
+`{talib}` is faster than `{TTR}` across every indicator and every size, though the size of the speedup varies considerably and depends on what each package computes internally.
+
+The benchmark compares **equivalent output bundles**, not raw function calls. `{TTR}` returns more columns than `{talib}` for several indicators (`pctB` alongside Bollinger Bands; `tr` / `trueHigh` / `trueLow` alongside ATR; `DIp` / `DIn` / `DX` alongside ADX; `fastK` alongside the smoothed stochastic), and `{talib}` returns more for MACD (`hist`). To keep the comparison apples-to-apples each branch produces the same set of derived series per call: where the package's API does not return a column natively, the closure composes the equivalent talib calls (or a one-line arithmetic derivation) to recover it. The residual gap reflects the inner loops, not API shape.
+
+* **Wide gap** is concentrated where `{TTR}` implements the indicator in pure R with rolling-window helpers that allocate intermediate vectors per step.
+* **Narrow gap** appears for the moving averages (`SMA`, `EMA`) and a few others where `{TTR}`'s implementation is also C-backed via `.Call`. These facets are a fair benchmark of the wrappers, not of the algorithms.
+
+![{talib} vs {TTR} -- median execution time across observations](results/plot-ttr.png)
+
+![{talib} speedup over {TTR}](results/plot-speedup.png)
+
+### Speedup at the largest size
+
+<div align="center">
+
+```{r ttr-table}
+big <- ttr[ttr$n == max(ttr$n), c("indicator", "spec", "median")]
+big_wide <- reshape(
+	big,
+	idvar = "indicator",
+	timevar = "spec",
+	direction = "wide"
+)
+names(big_wide) <- sub("^median\\.", "", names(big_wide))
+big_wide$speedup <- big_wide$TTR / big_wide$talib
+
+fmt_time <- function(x) {
+	vapply(x, function(v) {
+		if (v < 1e-6) sprintf("%.0f ns", v * 1e9)
+		else if (v < 1e-3) sprintf("%.0f us", v * 1e6)
+		else if (v < 1) sprintf("%.1f ms", v * 1e3)
+		else sprintf("%.2f s", v)
+	}, character(1))
+}
+
+display <- data.frame(
+	Indicator           = big_wide$indicator,
+	`{talib} (median)` = fmt_time(big_wide$talib),
+	`{TTR} (median)`   = fmt_time(big_wide$TTR),
+	Speedup             = sprintf("%.1fx", big_wide$speedup),
+	check.names = FALSE
+)
+knitr::kable(
+	display,
+	caption = sprintf("n = %s observations", format(max(ttr$n), big.mark = ","))
 )
 ```
 
+</div>
+
+## R-side overhead
+
+For each indicator we time the same C routine three different ways:
+
+1. **baseline** -- raw `.Call` directly into the registered native symbol, with the same arguments the wrapper would emit.
+2. **data.frame** -- the natural `<data.frame>` S3 method (column selection via `series()`, result rewrapped via `map_dfr()`).
+3. **matrix** -- the `<matrix>` S3 method (column selection via `series()`, no `map_dfr()`).
+
+![{talib} R-side overhead by dispatch path](results/plot-overhead.png)
+
+### Overhead at the largest size
+
+<div align="center">
+
+```{r overhead-table}
+big <- overhead[overhead$n == max(overhead$n), c("indicator", "spec", "median")]
+big_wide <- reshape(
+	big,
+	idvar = "indicator",
+	timevar = "spec",
+	direction = "wide"
+)
+names(big_wide) <- sub("^median\\.", "", names(big_wide))
+big_wide$df_over    <- (big_wide$data.frame - big_wide$baseline) / big_wide$baseline
+big_wide$mat_over   <- (big_wide$matrix     - big_wide$baseline) / big_wide$baseline
+
+display <- data.frame(
+	Indicator        = big_wide$indicator,
+	baseline         = fmt_time(big_wide$baseline),
+	data.frame       = fmt_time(big_wide$data.frame),
+	matrix           = fmt_time(big_wide$matrix),
+	`data.frame +%`  = sprintf("%+.1f%%", 100 * big_wide$df_over),
+	`matrix +%`      = sprintf("%+.1f%%", 100 * big_wide$mat_over),
+	check.names = FALSE
+)
+knitr::kable(
+	display,
+	caption = sprintf("n = %s observations", format(max(overhead$n), big.mark = ","))
+)
+```
+
+</div>
+
+## Reproducing
+
+```bash
+make bench
+```
+
+This runs `benchmark/run-all.R`, which writes RDS results and PNG plots to `benchmark/results/`, then re-renders this README.

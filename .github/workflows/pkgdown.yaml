@@ -35,12 +35,17 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::pkgdown any::devtools any::roxygen2
+          extra-packages: any::pkgdown any::devtools any::roxygen2 any::rsvg any::magick
           needs: website
 
       - name: Render documentation and NAMESPACE
         run: devtools::document()
         shell: Rscript {0}
+
+      # realfavicongenerator.net rejects SVG logos (HTTP 500), so build
+      # the favicons locally; pkgdown skips the API when they exist
+      - name: Build favicons
+        run: Rscript dev/favicons.R
 
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = TRUE, clean = TRUE)

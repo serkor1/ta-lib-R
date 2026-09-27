@@ -1,5 +1,5 @@
 #' @export
-#' @family Volume Indicator
+#' @family Volume Indicators
 #'
 #' @title Trading Volume
 #' @templateVar .title Trading Volume
@@ -9,7 +9,7 @@
 #' @templateVar .formula ~volume + open + close
 #'
 ## splice:documentation:start
-#' @param ma A list of MA specifications.
+#' @param maType A [list] of maType specifications on the form SMA(timePeriod = 7).
 ## splice:documentation:end
 #'
 #' @template description
@@ -17,7 +17,7 @@
 trading_volume <- function(
 	x,
 	cols,
-	ma = list(SMA(n = 7), SMA(n = 15)),
+	maType = list(SMA(timePeriod = 7), SMA(timePeriod = 15)),
 	na.bridge = FALSE,
 	...
 ) {
@@ -31,6 +31,13 @@ trading_volume <- function(
 #' @aliases trading_volume
 VOLUME <- trading_volume
 
+#' @export
+#' @usage NULL
+#' @rdname trading_volume
+#'
+#' @aliases trading_volume
+tradingVolume <- trading_volume
+
 #' @usage NULL
 #' @aliases trading_volume
 #'
@@ -38,7 +45,7 @@ VOLUME <- trading_volume
 trading_volume.default <- function(
 	x,
 	cols,
-	ma = list(SMA(n = 7), SMA(n = 15)),
+	maType = list(SMA(timePeriod = 7), SMA(timePeriod = 15)),
 	na.bridge = FALSE,
 	...
 ) {
@@ -51,15 +58,15 @@ trading_volume.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ volume + open + close,
-		data = x,
+		x = x,
+		formula.default = ~ volume + open + close,
+		formula = cols,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
@@ -68,10 +75,10 @@ trading_volume.default <- function(
 		## splice:call:start
 		as.double(constructed_series[[1]]),
 		lapply(
-			ma,
+			maType,
 			function(x) {
 				as.integer(
-					unlist(x, use.names = FALSE)
+					x
 				)
 			}
 		),
@@ -80,7 +87,7 @@ trading_volume.default <- function(
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -93,7 +100,7 @@ trading_volume.default <- function(
 trading_volume.data.frame <- function(
 	x,
 	cols,
-	ma = list(SMA(n = 7), SMA(n = 15)),
+	maType = list(SMA(timePeriod = 7), SMA(timePeriod = 15)),
 	na.bridge = FALSE,
 	...
 ) {
@@ -101,7 +108,7 @@ trading_volume.data.frame <- function(
 		trading_volume.default(
 			x = x,
 			cols = cols,
-			ma = ma,
+			maType = maType,
 			na.bridge = na.bridge,
 			...
 		)
@@ -115,16 +122,42 @@ trading_volume.data.frame <- function(
 trading_volume.matrix <- function(
 	x,
 	cols,
-	ma = list(SMA(n = 7), SMA(n = 15)),
+	maType = list(SMA(timePeriod = 7), SMA(timePeriod = 15)),
 	na.bridge = FALSE,
 	...
 ) {
-	trading_volume.default(
-		x = x,
-		cols = cols,
-		ma = ma,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		trading_volume.default(
+			x = x,
+			cols = cols,
+			maType = maType,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+#' @aliases trading_volume
+#'
+#' @export
+trading_volume.xts <- function(
+	x,
+	cols,
+	maType = list(SMA(timePeriod = 7), SMA(timePeriod = 15)),
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		trading_volume.default(
+			x = x,
+			cols = cols,
+			maType = maType,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
@@ -136,7 +169,7 @@ trading_volume.matrix <- function(
 trading_volume.numeric <- function(
 	x,
 	cols,
-	ma = list(SMA(n = 7), SMA(n = 15)),
+	maType = list(SMA(timePeriod = 7), SMA(timePeriod = 15)),
 	na.bridge = FALSE,
 	...
 ) {
@@ -148,28 +181,32 @@ trading_volume.numeric <- function(
 		warning("'cols' is passed but is unused for vectors.")
 	}
 
+	if (...length()) {
+		warning("'...' is passed but is unused for vectors.")
+	}
+
 	## pass the argument directly
 	## to 'C'
 	x <- .Call(
 		C_impl_ta_VOLUME,
 		## splice:numeric:start
 		as.double(x),
-		ma,
+		lapply(
+			maType,
+			function(x) {
+				as.integer(
+					x
+				)
+			}
+		),
 		## splice:numeric:end
 		as.logical(na.bridge)
 	)
 
-	## check if it has 'dims'
-	## and convert to double if
-	## not to honor the 'type-safety'-esque
-	## approach
-	##
-	## NOTE: this adds a few ns overhead but
-	##       its a robust alternative to code it
-	##       manually. Any suggestions are welcome
-	if (is.null(dim(x))) {
-		x <- as.double(x)
+	if (dim(x)[2] == 1L) {
+		dim(x) <- NULL
 	}
+	class(x) <- NULL
 
 	x
 }
@@ -182,7 +219,7 @@ trading_volume.numeric <- function(
 trading_volume.plotly <- function(
 	x,
 	cols,
-	ma = list(SMA(n = 7), SMA(n = 15)),
+	maType = list(SMA(timePeriod = 7), SMA(timePeriod = 15)),
 	na.bridge = FALSE,
 	## splice:optional-plotly:start
 	## splice:optional-plotly:end
@@ -204,7 +241,7 @@ trading_volume.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ volume + open + close,
+		formula.default = ~ volume + open + close,
 		...
 	)
 
@@ -215,7 +252,7 @@ trading_volume.plotly <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		ma = ma,
+		maType = maType,
 		na.bridge = TRUE
 	)
 
@@ -274,7 +311,7 @@ trading_volume.plotly <- function(
 	## modify the first trace
 	## assuming its volume
 	traces[[1]]$color <- ~direction
-	traces[[1]]$colors = c(
+	traces[[1]]$colors <- c(
 		.chart_variables$bullish_body,
 		.chart_variables$bearish_body
 	)
@@ -319,7 +356,7 @@ trading_volume.plotly <- function(
 trading_volume.ggplot <- function(
 	x,
 	cols,
-	ma = list(SMA(n = 7), SMA(n = 15)),
+	maType = list(SMA(timePeriod = 7), SMA(timePeriod = 15)),
 	na.bridge = FALSE,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
@@ -340,7 +377,7 @@ trading_volume.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ volume + open + close,
+		formula.default = ~ volume + open + close,
 		...
 	)
 
@@ -351,7 +388,7 @@ trading_volume.ggplot <- function(
 		cols = rebuild_formula(
 			names(constructed_series)
 		),
-		ma = ma,
+		maType = maType,
 		na.bridge = TRUE
 	)
 
@@ -378,7 +415,7 @@ trading_volume.ggplot <- function(
 		list(
 			y = trace_cols[1],
 			geom = "bar",
-			direction = "direction"
+			directiotimePeriod = "direction"
 		)
 	)
 	if (length(trace_cols) > 1L) {

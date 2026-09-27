@@ -169,6 +169,31 @@ chart.default <- function(
 
 	## convert input to data.frame and store in state
 	x <- as.data.frame(x)
+
+	## normalize quantmod-style OHLCV names (TICKER.Close, Close)
+	## to the lowercase names the chart backends consume - exact
+	## matches win over dot-suffix matches, mirroring series.xts()
+	targets <- c("open", "high", "low", "close", "volume")
+	lowered <- tolower(colnames(x))
+	exact_hits <- outer(targets, lowered, `==`)
+	suffix_hits <- outer(
+		paste0(".", targets),
+		lowered,
+		function(suffix, name) endsWith(name, suffix)
+	)
+	suffix_hits[rowSums(exact_hits) > 0L, ] <- FALSE
+	hits <- exact_hits | suffix_hits
+	resolved <- rowSums(hits) == 1L
+	colnames(x)[max.col(hits, ties.method = "first")[resolved]] <-
+		targets[resolved]
+
+	## fail fast with the package's own message instead of a
+	## deferred backend error at render time
+	assert_column_names(
+		formula = ~ open + high + low + close,
+		available_variables = colnames(x)
+	)
+
 	x$idx <- if (is.null(idx)) {
 		## check if rownames can be
 		## converted to integer

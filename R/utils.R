@@ -67,6 +67,20 @@ assert_plotly_object <- function(x) {
 	)
 }
 
+## assert_xts(): assert that the xts PACKAGE is installed, and load
+## its namespace so the [.xts / index machinery is registered even in
+## sessions that never attached xts (deserialized objects, LazyData
+## fixtures like GOOGL). Mirrors assert_plotly_pkg()/assert_ggplot2().
+assert_xts <- function() {
+	if (!requireNamespace("xts", quietly = TRUE)) {
+		stop(
+			"Package 'xts' is required for <xts> input. ",
+			"Install it with install.packages('xts').",
+			call. = FALSE
+		)
+	}
+}
+
 assert_column_names <- function(formula, available_variables) {
 	## this assert function will give an error
 	## if the variables are not found. If it finds
@@ -150,6 +164,11 @@ assert_column_names <- function(formula, available_variables) {
 .set_names <- function(x, nm) {
 	names(x) <- nm
 	x
+}
+
+## base::nullfile() exists only from R 4.0
+.nullfile <- function() {
+	if (.Platform$OS.type == "windows") "nul:" else "/dev/null"
 }
 
 ## class related utility
@@ -298,6 +317,69 @@ candlestick_setting <- function() {
 	invisible(NULL)
 }
 
+index <- function(x) {
+	UseMethod("index")
+}
+
+#' @export
+index.default <- function(x) {
+	rownames(x)
+}
+
+#' @export
+index.xts <- function(x) {
+	attr(
+		x = x,
+		which = "index"
+	)
+}
+
+## Index
+set_index <- function(x, value) {
+	UseMethod("set_index", object = value)
+}
+
+#' @export
+set_index.default <- function(x, value) {
+	stop(
+		"Cannot set the index from <",
+		class(value)[1L],
+		">. Expected <character> rownames or a <numeric> <xts>-index.",
+		call. = FALSE
+	)
+}
+
+#' @export
+set_index.character <- function(x, value) {
+	if (is.matrix(x)) {
+		.Call(
+			C_index_matrix,
+			x,
+			value,
+			colnames(x)
+		)
+	} else {
+		## set the rownames
+		.Call(
+			C_index_data_frame,
+			x,
+			value
+		)
+	}
+
+	return(invisible(NULL))
+}
+
+#' @export
+set_index.numeric <- function(x, value) {
+	.Call(
+		C_index_xts,
+		x,
+		value
+	)
+
+	return(invisible(NULL))
+}
 
 ## rownaming
 set_rownames <- function(x, x_names) {
@@ -308,7 +390,7 @@ set_rownames <- function(x, x_names) {
 set_rownames.data.frame <- function(x, x_names) {
 	## set the rownames
 	.Call(
-		C_rownames_data_frame,
+		C_index_data_frame,
 		x,
 		x_names
 	)
@@ -320,7 +402,7 @@ set_rownames.data.frame <- function(x, x_names) {
 set_rownames.matrix <- function(x, x_names) {
 	## set the rownames
 	.Call(
-		C_rownames_matrix,
+		C_index_matrix,
 		x,
 		x_names,
 		colnames(x)
@@ -329,9 +411,47 @@ set_rownames.matrix <- function(x, x_names) {
 	return(invisible(NULL))
 }
 
+#' @export
+as.data.frame.ta_object <- function(x, row.names, optional, ...) {
+	## extract 'lookback' attribute
+	lookback_attribute <- attr(x, "lookback", TRUE)
+
+	if (is.matrix(x)) {
+		if (is.double(x)) {
+			x <- .Call(
+				C_map_dfr_double,
+				x
+			)
+		}
+		if (is.integer(x)) {
+			x <- .Call(
+				C_map_dfr_integer,
+				x
+			)
+		}
+	}
+
+	attr(x, "lookback") <- lookback_attribute
+
+	return(x)
+}
+
+#' @export
+as.matrix.ta_object <- function(x, ...) {
+	class(x) <- c("matrix", "array")
+
+	return(x)
+}
+
+
 ## map <matrix> to <data.frames>
 map_dfr <- function(x) {
 	UseMethod("map_dfr")
+}
+
+#' @export
+map_dfr.ta_object <- function(x) {
+	as.data.frame(x)
 }
 
 #' @export
@@ -360,5 +480,56 @@ map_dfr.integer <- function(x) {
 	x <- .Call(C_map_dfr_integer, x)
 	attr(x, "lookback") <- lookback_attribute
 
+	x
+}
+
+mapMaType <- function(x) {
+	switch(
+		as.character(x + 1),
+		`1` = "SMA",
+		`2` = "EMA",
+		`3` = "WMA",
+		`4` = "DEMA",
+		`5` = "TEMA",
+		`6` = "TRIMA",
+		`7` = "KAMA",
+		`8` = "MAMA",
+		`9` = "T3",
+		`10` = "HMA",
+		`11` = "VWMA",
+		"Unkown"
+	)
+}
+
+## maType
+##
+## Description:
+## 	A small S3 that helps mapping
+##  maTypes to <integers> and <characters>
+##
+as.maType <- function(x, ...) {
+	UseMethod("as.maType")
+}
+
+#' @export
+as.maType.maType <- function(x, ...) {
+	as.integer(x$maType)
+}
+
+#' @export
+as.maType.double <- function(x, ...) {
+	as.integer(x)
+}
+
+#' @export
+as.maType.integer <- as.maType.double
+
+as.xts <- function(x) {
+	UseMethod("as.xts")
+}
+
+#' @export
+as.xts.ta_object <- function(x) {
+	class(x) <- c("xts", "zoo")
 	x
 }

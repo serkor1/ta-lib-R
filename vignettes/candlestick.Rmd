@@ -184,13 +184,13 @@ table(talib::engulfing(talib::BTC))
 options(talib.normalize = TRUE)
 ```
 
-### The `eps` parameter
+### The `penetration` parameter
 
-Seven patterns accept an `eps` (penetration) parameter that controls how far one candle must intrude into the body of another. These are `morning_star()`, `evening_star()`, `morning_doji_star()`, `evening_doji_star()`, `abandoned_baby()`, `dark_cloud_cover()`, and `mat_hold()`. The default is `eps = 0` for all of them.
+Seven patterns accept an `penetration` (penetration) parameter that controls how far one candle must intrude into the body of another. These are `morning_star()`, `evening_star()`, `morning_doji_star()`, `evening_doji_star()`, `abandoned_baby()`, `dark_cloud_cover()`, and `mat_hold()`. The default is `penetration = 0` for all of them.
 
 ```{r}
 ## Evening Star with 30% penetration
-x <- talib::evening_star(talib::BTC, eps = 0.3)
+x <- talib::evening_star(talib::BTC, penetration = 0.3)
 sum(abs(x), na.rm = TRUE)
 ```
 

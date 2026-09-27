@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 	comment = "#>",
 	out.width = "100%",
 	out.height = "680",
-	fig.align = "center"
+	fig.aligtimePeriod = "center"
 )
 ```
 
@@ -99,8 +99,8 @@ Every indicator has a descriptive snake_case name and an uppercase alias that mi
 ```{r}
 ## these are equivalent
 identical(
-	talib::relative_strength_index(talib::BTC, n = 14),
-	talib::RSI(talib::BTC, n = 14)
+	talib::relative_strength_index(talib::BTC, timePeriod = 14),
+	talib::RSI(talib::BTC, timePeriod = 14)
 )
 ```
 
@@ -109,17 +109,17 @@ identical(
 Most indicators require a minimum number of observations before they can produce a value. This is called the **lookback period**. The first `lookback` rows of the result will be `NA`:
 
 ```{r}
-## SMA with n = 5 has a lookback of 4
+## SMA with timePeriod = 5 has a lookback of 4
 head(
-	talib::SMA(talib::BTC, n = 5),
-	n = 7
+	talib::SMA(talib::BTC, timePeriod = 5),
+	timePeriod = 7
 )
 ```
 
 The lookback is stored as an attribute on the result:
 
 ```{r}
-x <- talib::SMA(talib::BTC, n = 20)
+x <- talib::SMA(talib::BTC, timePeriod = 20)
 attr(x, "lookback")
 ```
 
@@ -209,7 +209,7 @@ Several indicators accept a **Moving Average specification** for their smoothing
 ```{r}
 ## SMA as a specification
 str(
-	talib::SMA(n = 20)
+	talib::SMA(timePeriod = 20)
 )
 ```
 
@@ -220,7 +220,8 @@ This specification can be passed to indicators like `bollinger_bands()` or `stoc
 tail(
 	talib::bollinger_bands(
 		talib::BTC,
-		ma = talib::EMA(n = 20)
+		timePeriod = 20,
+		maType = talib::EMA()
 	)
 )
 ```
@@ -230,8 +231,10 @@ tail(
 tail(
 	talib::stochastic(
 		talib::BTC,
-		slowk = talib::WMA(n = 5),
-		slowd = talib::EMA(n = 3)
+		slowKPeriod = 5,
+		slowKMa = talib::EMA(),
+		slowDPeriod = 5,
+		slowDMa = talib::EMA()
 	)
 )
 ```

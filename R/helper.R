@@ -81,17 +81,28 @@ add_idx <- function(x) {
 	## by chart during initialization
 	idx <- .chart_state()$idx$label
 
-	if (!is.null(idx)) {
-		idx[
-			if (is.null(attributes(x)$subset)) {
-				1:nrow(x)
-			} else {
-				attributes(x)$subset
-			}
-		]
-	} else {
-		1:nrow(x)
+	if (is.null(idx)) {
+		return(1:nrow(x))
 	}
+
+	subset <- attributes(x)$subset
+
+	if (!is.null(subset)) {
+		return(idx[subset])
+	}
+
+	## a data-override can differ from the chart: surface the
+	## mismatch and label the trace with its own rownames
+	## instead of silently stamping the chart's dates onto it
+	if (nrow(x) != length(idx)) {
+		warning(
+			"'data' length differs from the chart; using its own labels.",
+			call. = FALSE
+		)
+		return(rownames(x) %nn% 1:nrow(x))
+	}
+
+	idx[1:nrow(x)]
 }
 
 ## apply named overrides to every trace
@@ -195,4 +206,19 @@ is.empty.list <- function(x) {
 #' @export
 is.empty.character <- function(x) {
 	identical(x, character(0)) | grepl("^[[:space:]]*$", x)
+}
+
+
+as.title_case <- function(x) {
+	gsub(
+		pattern = "(^|_)([[:alpha:]])",
+		replacement = "\\1\\U\\2",
+		x = x,
+		perl = TRUE
+	)
+}
+
+#' @export
+`[[.ta_series` <- function(x, i, ...) {
+	x[, i]
 }

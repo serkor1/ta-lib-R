@@ -43,10 +43,15 @@ add_limit_ly <- function(
 
 ## add OHLC last-value annotation
 ## displayed at the top-right corner of the main chart
+##
+## when name is provided it is stored as metadata
+## on the plot so merge_subchart_plotly() can build
+## a combined spec-named label for multi-indicator panels
 add_last_value_ly <- function(
 	p,
 	data,
-	values_to_extract = c("open", "high", "low", "close")
+	values_to_extract = c("open", "high", "low", "close"),
+	name = NULL
 ) {
 	## extract the last row for the
 	## relevant OHLC columns
@@ -76,7 +81,7 @@ add_last_value_ly <- function(
 		collapse = " "
 	)
 
-	plotly::add_annotations(
+	p <- plotly::add_annotations(
 		p = p,
 		text = value_text,
 		x = 1,
@@ -94,6 +99,17 @@ add_last_value_ly <- function(
 				)
 		)
 	)
+
+	## store metadata for merge_subchart_plotly()
+	## to reconstruct a combined spec-named label
+	if (!is.null(name)) {
+		attr(p, "talib_last_value") <- list(
+			name = name,
+			values = values
+		)
+	}
+
+	p
 }
 
 ## ---- ggplot2 elements ----

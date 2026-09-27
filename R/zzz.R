@@ -149,7 +149,7 @@
 ) {
 	## reset candles on
 	## unload
-	.Call(C_reset_candle_setting)
+	.Call(C_reset_candle_setting, NULL)
 
 	## shutdown TA-Lib
 	## on unload

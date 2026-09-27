@@ -23,8 +23,9 @@ testthat::test_that(desc = "Charting", code = {
 
 	## 2) test that indicators
 	##    can be passed with custom
-	##    data
-	testthat::expect_no_error(
+	##    data - a length mismatch against the
+	##    chart is surfaced as a warning
+	testthat::expect_warning(
 		{
 			chart(SPY)
 			indicator(
@@ -32,7 +33,8 @@ testthat::test_that(desc = "Charting", code = {
 				cols = ~open,
 				data = BTC
 			)
-		}
+		},
+		regexp = "differs from the chart"
 	)
 })
 

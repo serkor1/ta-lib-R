@@ -152,6 +152,25 @@ R_CXXFLAGS=$("$R_BIN" CMD config CXXFLAGS)
 R_CPPFLAGS=$("$R_BIN" CMD config CPPFLAGS)
 R_LDFLAGS=$("$R_BIN" CMD config LDFLAGS)
 
+## Detect a compiler launcher (ccache/sccache/distcc) baked into
+## R's CC/CXX by ~/.R/Makevars and hand it to CMake via
+## CMAKE_<LANG>_COMPILER_LAUNCHER. Without this CMake invokes
+## "ccache -Dfoo ..." directly and ccache misreads -D as its own
+## debug-level flag (#57).
+LAUNCHER_ARGS=""
+case "$(basename "${R_CC_FULL%% *}")" in
+    ccache|sccache|distcc)
+        LAUNCHER_ARGS="$LAUNCHER_ARGS -DCMAKE_C_COMPILER_LAUNCHER=${R_CC_FULL%% *}"
+        R_CC_FULL="${R_CC_FULL#* }"
+        ;;
+esac
+case "$(basename "${R_CXX_FULL%% *}")" in
+    ccache|sccache|distcc)
+        LAUNCHER_ARGS="$LAUNCHER_ARGS -DCMAKE_CXX_COMPILER_LAUNCHER=${R_CXX_FULL%% *}"
+        R_CXX_FULL="${R_CXX_FULL#* }"
+        ;;
+esac
+
 ## details:
 ##  R CMD config returns the compiler with leading flags baked in
 ##  (e.g. "clang -arch x86_64" or "/opt/R/x86_64/bin/clang -arch
@@ -424,6 +443,20 @@ if [ "$(( PREINSTALLED + FORCE_VENDOR ))" -ne 0 ]; then
         NJOBS=1
     fi
 
+    ## details:
+    ##  R CMD check --as-cran sets _R_CHECK_LIMIT_CORES_=TRUE;
+    ##  CRAN allows at most 2 cores. Any value other than
+    ##  empty/false means "limit" (same as {parallelly}).
+    case "${_R_CHECK_LIMIT_CORES_:-}" in
+        ""|[Ff][Aa][Ll][Ss][Ee])
+            ;;
+        *)
+            if [ "$NJOBS" -gt 2 ]; then
+                NJOBS=2
+            fi
+            ;;
+    esac
+
     if command -v "${CMAKE}" >/dev/null 2>&1; then
         printf '%s Configure and generate TA-Lib\n' "$(info)"
 
@@ -440,6 +473,7 @@ if [ "$(( PREINSTALLED + FORCE_VENDOR ))" -ne 0 ]; then
             -DCMAKE_EXE_LINKER_FLAGS="$R_LDFLAGS" \
             -DCMAKE_SHARED_LINKER_FLAGS="$R_LDFLAGS" \
             $OSX_CMAKE_ARGS \
+            $LAUNCHER_ARGS \
             -DBUILD_DEV_TOOLS=OFF
 
         printf '%s\n' "$(success)"

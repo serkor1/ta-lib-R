@@ -2,40 +2,45 @@
 //
 // This 'C'-program sets the attributes of the
 // output container.
-//  - Its currently hardcoded for lookback only
-//    but it will be expanded if there is any demand
-//    for it.
+//  - Attributes are dispatched by a attribute tag so new
+//    attributes can be added without changing the call sites:
+//    add an enum entry and a case in attribute_symbol() below.
 //
 #include "attributes.h"
+#include "Rinternals.h"
 
-// initialize the lookback value
-static SEXP lookback_value = NULL;
-
-// set lookback value
-static inline SEXP ta_lookback(void) {
-
-  if (lookback_value == NULL) {
-    lookback_value = Rf_install("lookback");
+// resolve (and cache) the R symbol for an attribute
+// clang-format off
+static SEXP attribute_symbol(attribute attr) {
+  switch (attr) {
+    case LOOKBACK: {
+      static SEXP lookback = NULL;
+      if (lookback == NULL) {
+        lookback = Rf_install("lookback");
+      }
+      return lookback;
+    }
   }
-
-  return lookback_value;
+  
+  return R_NilValue;
 }
+// clang-format on
 
-// workhorse function to
-// set the attribute
 // clang-format off
 void set_attribute(
-  SEXP output_object, 
-  int lookback, 
-  int *protection_count) {
-  // clang-format on
+  SEXP x, // object
+  attribute attr, // attribute
+  SEXP attr_value, // attribute value
+  int *protection_count
+)
+// clang-format on
+{
 
-  SEXP symbolic_value = ta_lookback();
+  SEXP protected_value = PROTECT(attr_value);
 
-  SEXP value = PROTECT(Rf_ScalarInteger(lookback));
   if (protection_count) {
     (*protection_count)++;
   }
 
-  Rf_setAttrib(output_object, symbolic_value, value);
+  Rf_setAttrib(x, attribute_symbol(attr), protected_value);
 }

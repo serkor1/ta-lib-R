@@ -9,7 +9,7 @@ R package (`talib`) providing an interface to the TA-Lib C library for technical
 ## Build Commands
 
 ```bash
-make build          # Full build: gen-code → document → install
+make build          # Full build: clean → fmt → document → install (does NOT run gen-code)
 make check          # R CMD check --as-cran
 make check-full     # R CMD check with valgrind
 make test           # Run testthat suite
@@ -25,21 +25,19 @@ Single test file: `Rscript -e "testthat::test_file('tests/testthat/test-ta_APO.R
 
 ### Code Generation (Most Source Files Are Generated)
 
-Most R wrappers (`R/ta_*.R`), C wrappers (`src/ta_*.c`), and tests (`tests/testthat/test-ta_*.R`) are **auto-generated**. Do not edit these directly — modify the generation infrastructure in `codegen/` instead:
+Most R wrappers (`R/ta_*.R`), the C X-macro header (`src/TA-Lib.h`), and tests (`tests/testthat/test-ta_*.R`) are **auto-generated** by the zero-dependency Rust crate in `codegen/` — see `codegen/README.md` for the full architecture. Do not edit generated files directly — modify the generation infrastructure instead:
 
-- `codegen/gen_code/indicators.R` — Unified metadata for all 128 indicators
-- `codegen/gen_code/generate.R` — Single driver script that generates R, C, and test files
-- `codegen/gen_code/utils.R` — `impl_generate_indicator()` and `impl_generate_test()` helpers
-- `codegen/generate_indicator.sh`, `generate_API.sh`, `generate_FFI.sh` — Shell scripts for template-driven generation
-- `src/api.h` and `src/init.c` — Auto-generated (function prototypes and R registration)
+- `codegen/src/` — `main.rs` (driver), `c_header.rs` (C X-macro lines from ta_func.h), `metadata.rs` (XML mining), `render.rs` (template rendering + splice preservation), `testthat.rs` (test files), `tables.rs` (the hand-maintained per-indicator lookup tables: names, chart types, classifications, exclusions)
+- `codegen/templates/` — plain R files with `${...}` placeholders; the `chart_*` templates are dual-backend (one file renders both the `.plotly` and `.ggplot` method)
+- Hand-edited content between `## splice:<name>:start` / `## splice:<name>:end` markers in generated files survives regeneration
 
-Run `make gen-code` after changing any generation logic.
+Run `make gen-code` after changing any generation logic (`cargo test` inside `codegen/` tests the generator itself).
 
 ### R ↔ C Binding
 
 Uses `.Call()` (R's native C interface), not Rcpp. Each indicator has:
 
-1. **C wrapper** (`src/ta_*.c`): Converts R SEXP → C arrays, calls TA-Lib, returns SEXP matrix
+1. **C wrapper**: one X-macro line in the generated `src/TA-Lib.h`, expanded by the hand-written `src/wrapper.h`/`src/init.c` macros into a function that converts R SEXP → C arrays, calls TA-Lib, and returns a SEXP matrix (there are no per-indicator `.c` files)
 2. **R wrapper** (`R/ta_*.R`): S3 generic with methods for `default`, `data.frame`, and `plotly`
 
 C memory management uses manual `PROTECT`/`UNPROTECT` with protection counters.
@@ -87,8 +85,8 @@ isolated without depending on those packages. `chart()` and its
 - `R/helper.R` — Operators (`%nn%`, `%or%`), chart helpers (`plotly_init`, `plotly_line`, `ggplot_init`, `ggplot_line`, `modify_traces`, `add_idx`, `rebuild_formula`)
 - `R/BTC.R`, `R/NVDA.R`, `R/SPY.R`, `R/ATOM.R` — Built-in OHLCV datasets (docs only; `.rda` files in `data/`)
 - `R/talib-package.R` — `generate_returns_section()` used at roxygen-render time by `man-roxygen/returns.R`
-- `src/dataframe.c` — Matrix↔data.frame conversion (`map_dfr`)
-- `src/container.h`, `src/shift.h`, `src/names.h` — Shared C utilities
+- `src/data-frame.c` — Matrix↔data.frame conversion (`map_dfr`)
+- `src/shift.h`, `src/names.h` — Shared C utilities
 
 ### TA-Lib Submodule
 

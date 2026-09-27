@@ -1,17 +1,18 @@
 #' @export
-#' @family Momentum Indicator
+#' @family Momentum Indicators
 #'
-#' @title Balance of Power
-#' @templateVar .title Balance of Power
+#' @title Balance Of Power
+#' @templateVar .title Balance Of Power
 #' @templateVar .author Serkan Korkmaz
 #' @templateVar .fun balance_of_power
-#' @templateVar .family Momentum Indicator
-#' @templateVar .formula ~ open + high + low + close
+#' @templateVar .family Momentum Indicators
+#' @templateVar .formula ~open + high + low + close
 #'
 ## splice:documentation:start
 ## splice:documentation:end
 #'
 #' @template description
+#'
 #' @template returns
 balance_of_power <- function(
 	x,
@@ -28,6 +29,13 @@ balance_of_power <- function(
 #'
 #' @aliases balance_of_power
 BOP <- balance_of_power
+
+#' @export
+#' @usage NULL
+#' @rdname balance_of_power
+#'
+#' @aliases balance_of_power
+balanceOfPower <- balance_of_power
 
 #' @usage NULL
 #' @aliases balance_of_power
@@ -48,31 +56,30 @@ balance_of_power.default <- function(
 	## construct series
 	## from input
 	constructed_series <- series(
-		x = cols,
-		default_formula = ~ open + high + low + close,
-		data = x,
+		x = x,
+		formula = cols,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
 	## extract rownames
 	## for later attachment
-	x_names <- rownames(constructed_series)
+	x_names <- index(constructed_series)
 
 	## calculate indicator and
 	## return as data.frame
 	x <- .Call(
 		C_impl_ta_BOP,
-		## splice:call:start
 		constructed_series[[1]],
 		constructed_series[[2]],
 		constructed_series[[3]],
 		constructed_series[[4]],
-		## splice:call:end
+		as.integer(get_lead(constructed_series)),
 		as.logical(na.bridge)
 	)
 
 	## readd rownames
-	set_rownames(x, x_names)
+	set_index(x, x_names)
 
 	## return indicator
 	x
@@ -88,7 +95,7 @@ balance_of_power.data.frame <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	map_dfr(
+	as.data.frame(
 		balance_of_power.default(
 			x = x,
 			cols = cols,
@@ -108,14 +115,49 @@ balance_of_power.matrix <- function(
 	na.bridge = FALSE,
 	...
 ) {
-	balance_of_power.default(
-		x = x,
-		cols = cols,
-		na.bridge = na.bridge,
-		...
+	as.matrix(
+		balance_of_power.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
 	)
 }
 
+#' @usage NULL
+#' @aliases balance_of_power
+#'
+#' @export
+balance_of_power.xts <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	assert_xts()
+
+	as.xts(
+		balance_of_power.default(
+			x = x,
+			cols = cols,
+			na.bridge = na.bridge,
+			...
+		)
+	)
+}
+
+#' @usage NULL
+BOP_lookback <- balanceOfPower_lookback <- balance_of_power_lookback <- function(
+	x,
+	cols,
+	na.bridge = FALSE,
+	...
+) {
+	.Call(
+		C_impl_ta_BOP_lookback
+	)
+}
 
 #' @usage NULL
 #' @aliases balance_of_power
@@ -145,7 +187,7 @@ balance_of_power.plotly <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -204,13 +246,14 @@ balance_of_power.plotly <- function(
 			),
 			data = constructed_indicator,
 			title = if (missing(title)) {
-				"Balance of Power"
+				"Balance Of Power"
 			} else {
 				title
 			}
 		),
 		data = constructed_indicator[, values_to_extract, drop = FALSE],
-		values_to_extract = values_to_extract
+		values_to_extract = values_to_extract,
+		name = get0(x = "name", ifnotfound = NULL)
 	)
 
 	state <- .chart_state()
@@ -227,9 +270,9 @@ balance_of_power.ggplot <- function(
 	x,
 	cols,
 	na.bridge = FALSE,
+	title,
 	## splice:optional-ggplot:start
 	## splice:optional-ggplot:end
-	title,
 	...
 ) {
 	## check ggplot2 availability
@@ -246,7 +289,7 @@ balance_of_power.ggplot <- function(
 	constructed_series <- series(
 		x = x,
 		formula = cols,
-		default_formula = ~ open + high + low + close,
+		formula.default = ~ open + high + low + close,
 		...
 	)
 
@@ -296,7 +339,7 @@ balance_of_power.ggplot <- function(
 			),
 			data = constructed_indicator,
 			title = if (missing(title)) {
-				"Balance of Power"
+				"Balance Of Power"
 			} else {
 				title
 			}
