@@ -443,6 +443,20 @@ if [ "$(( PREINSTALLED + FORCE_VENDOR ))" -ne 0 ]; then
         NJOBS=1
     fi
 
+    ## details:
+    ##  R CMD check --as-cran sets _R_CHECK_LIMIT_CORES_=TRUE;
+    ##  CRAN allows at most 2 cores. Any value other than
+    ##  empty/false means "limit" (same as {parallelly}).
+    case "${_R_CHECK_LIMIT_CORES_:-}" in
+        ""|[Ff][Aa][Ll][Ss][Ee])
+            ;;
+        *)
+            if [ "$NJOBS" -gt 2 ]; then
+                NJOBS=2
+            fi
+            ;;
+    esac
+
     if command -v "${CMAKE}" >/dev/null 2>&1; then
         printf '%s Configure and generate TA-Lib\n' "$(info)"
 
