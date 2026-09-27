@@ -63,7 +63,7 @@ fi
 ##
 ##    "$(R_HOME)/bin$(R_ARCH_BIN)/Rscript" filename
 ##    "$(R_HOME)/bin$(R_ARCH_BIN)/Rscript" -e 'R expression'
-R_BIN="${R_HOME}/bin${R_ARCH_BIN}/R"
+R_BIN="${R_HOME}/bin${R_ARCH_BIN:-}/R"
 
 ## R compiler configuration
 ##
