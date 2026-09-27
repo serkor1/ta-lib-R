@@ -96,9 +96,9 @@ tail(features)
 #> 2021-12-22 53.47421  149.1432   144.4920  139.8408            0
 #> 2021-12-23 54.45979  149.2513   144.5318  139.8124            0
 #> 2021-12-27 56.42226  149.6263   144.8180  140.0097            0
-#> 2021-12-28 53.37121  149.7444   144.8758  140.0072         -100
+#> 2021-12-28 53.37121  149.7444   144.8758  140.0072           -1
 #> 2021-12-29 53.28979  149.8398   145.1137  140.3876            0
-#> 2021-12-30 52.07450  149.7308   145.3711  141.0115         -100
+#> 2021-12-30 52.07450  149.7308   145.3711  141.0115           -1
 ```
 
 ## Charting
@@ -259,7 +259,7 @@ Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html).
 By contributing to this project, you agree to abide by its terms.
 
 [^1]: See `benchmark/` for detailed benchmarks against
-    [{TTR}](https://serkor1.github.io/ta-lib-R/) and general performance
+    [{TTR}](https://github.com/joshuaulrich/TTR) and general performance
     across multiple indicators.
 
 [^2]: [talib](https://serkor1.github.io/ta-lib-R/) is a compiled

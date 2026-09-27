@@ -42,8 +42,7 @@ An `xts` object with 756 rows and 6 columns.
 
 ## Source
 
-Loaded using
-[quantmod](https://cran.r-project.org/web/packages/quantmod/index.html).
+Loaded using [quantmod](https://CRAN.R-project.org/package=quantmod).
 
 ## Examples
 
