@@ -116,3 +116,4 @@ src/ta-lib/Makefile.in
 ^src/ta-lib/ta_codegen/output/java/library/.classpath
 ^src/ta-lib/website/src/.vuepress
 ^src/ta-lib/ta_codegen/output/java/library/src/io/github/talib/InsufficientHistoryException.java
+^src/ta-lib/ta_codegen$
