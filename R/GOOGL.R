@@ -19,7 +19,7 @@
 #'  \item{GOOGL.Adjusted}{Adjusted closing price for the trading day.}
 #' }
 #'
-#' @source Loaded using [quantmod](https://cran.r-project.org/web/packages/quantmod/index.html).
+#' @source Loaded using [quantmod](https://CRAN.R-project.org/package=quantmod).
 #'
 #' @concept Financial Data
 #' @concept OHLCV
