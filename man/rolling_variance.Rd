@@ -3,17 +3,18 @@
 \name{rolling_variance}
 \alias{rolling_variance}
 \alias{VAR}
-\title{Rolling Standard Deviation}
+\alias{rollingVariance}
+\title{Variance}
 \usage{
-rolling_variance(x, n = 5, k = 1, na.bridge = FALSE)
+rolling_variance(x, timePeriod = 5, deviations = 1, na.bridge = FALSE, ...)
 }
 \arguments{
-\item{x}{(\link{double}). A \link{double} vector.}
+\item{x}{(\link{double}). A \link{double} vector, or a single-column \code{xts}.}
 
-\item{n}{(\link{integer}). Lookback period (window size). A positive \link{integer}
+\item{timePeriod}{(\link{integer}). Lookback period (window size). A positive \link{integer}
 of \link{length} 1.}
 
-\item{k}{multiplier}
+\item{deviations}{(\link{double}). Number of deviations. Defaults to \code{1}.}
 
 \item{na.bridge}{(\link{logical}). A \link{logical} of \link{length} 1. \link{FALSE} by
 default. When \link{FALSE}, input \code{NA}s propagate through the TA-Lib C
@@ -23,13 +24,16 @@ before computation and re-inserted at the original positions in
 the output, causing the statistic to treat non-consecutive
 non-\code{NA} observations as if they were adjacent - see the
 \strong{Handling of \code{NA} values} section above for the consequences.}
+
+\item{...}{Additional parameters.}
 }
 \value{
-A \link{double} vector with the same \link{length} of \code{x}
+A \link{double} vector (or single-column \code{xts}) with the same \link{length} of \code{x}
 }
 \description{
 \code{rolling_variance()} is a generic S3 function that preserves
-the input \link{class}: \link{double} vector in, \link{double} vector out.
+the input \link{class}: \link{double} vector in, \link{double} vector out;
+single-column \code{xts} in, \code{xts} out.
 \subsection{Handling of \code{NA} values}{
 
 Leading \code{NA}s are always produced for the initial lookback period
@@ -64,18 +68,18 @@ utils::tail(output)
 
 }
 \seealso{
-Other Rolling Statistic:
+Other Rolling Statistics:
 \code{\link[=rolling_beta]{rolling_beta()}},
 \code{\link[=rolling_correlation]{rolling_correlation()}},
-\code{\link[=rolling_max]{rolling_max()}},
-\code{\link[=rolling_min]{rolling_min()}},
+\code{\link[=rolling_maximum]{rolling_maximum()}},
+\code{\link[=rolling_minimum]{rolling_minimum()}},
 \code{\link[=rolling_standard_deviation]{rolling_standard_deviation()}},
 \code{\link[=rolling_sum]{rolling_sum()}}
 }
 \author{
 Serkan Korkmaz
 }
-\concept{Rolling Statistic}
+\concept{Rolling Statistics}
 \concept{algorithmic trading}
 \concept{finance}
 \concept{technical analysis}

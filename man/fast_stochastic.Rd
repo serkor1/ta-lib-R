@@ -3,19 +3,34 @@
 \name{fast_stochastic}
 \alias{fast_stochastic}
 \alias{STOCHF}
-\title{Fast Stochastic}
+\alias{fastStochastic}
+\title{Stochastic Fast}
 \usage{
-fast_stochastic(x, cols, fastk = 5, fastd = SMA(n = 3), na.bridge = FALSE, ...)
+fast_stochastic(
+  x,
+  cols,
+  fastKPeriod = 5,
+  fastDPeriod = 3,
+  fastDMa = 0,
+  na.bridge = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{An OHLC-V series coercible to \link{data.frame}.}
 
 \item{cols}{(\link{formula}). An optional \code{3}-variable \link{formula} selecting columns from \code{x} via \link{model.frame}.
+For \code{xts} input each formula variable is matched against the column
+names directly - exact matches first, then quantmod-style suffix
+matches (\code{close} matches \code{TICKER.Close}), case-insensitively - and
+columns are consumed in formula order.
 Defaults to \code{~high + low + close}.}
 
-\item{fastk}{(\link{integer}). Period for the fast-k line.}
+\item{fastKPeriod}{(\link{integer}). Time period for building the Fast-K line. Defaults to \code{5}.}
 
-\item{fastd}{(\link{list}). Period and Moving Average (MA) type  for the fast-d line. \link{SMA} by default.}
+\item{fastDPeriod}{(\link{integer}). Smoothing for making the Fast-D line. Usually set to 3. Defaults to \code{3}.}
+
+\item{fastDMa}{(\link{integer}). Type of Moving Average for Fast-D. Defaults to \code{0} (\link{SMA}). Can also be passed as talib::SMA.}
 
 \item{na.bridge}{(\link{logical}). A \link{logical} of \link{length} 1. \link{FALSE} by
 default. When \link{FALSE}, input \code{NA}s propagate through the TA-Lib C
@@ -26,7 +41,8 @@ output, causing the indicator to treat non-consecutive non-\code{NA}
 observations as if they were adjacent — see the \strong{Handling of
 \code{NA} values} section above for the consequences.}
 
-\item{...}{Additional parameters passed into \link{model.frame}.}
+\item{...}{Additional parameters passed into \link{model.frame}. Unused
+for \code{xts} input (a warning is emitted when supplied).}
 }
 \value{
 An object of same \link{class} and \link{length} of \code{x}:
@@ -39,7 +55,8 @@ An object of same \link{class} and \link{length} of \code{x}:
 \description{
 \code{fast_stochastic()} is a generic S3 function that preserves
 the input \link{class}: \link{data.frame} in, \link{data.frame} out; \link{matrix} in,
-\link{matrix} out.
+\link{matrix} out; \code{xts} in, \code{xts} out. Other inputs coercible to
+\link{data.frame} (e.g. \code{zoo}) are computed on the coerced \link{data.frame}.
 \subsection{Handling of \code{NA} values}{
 
 Every indicator always emits \strong{leading \code{NA}s} for the initial
@@ -109,7 +126,7 @@ utils::tail(output)
 }
 }
 \seealso{
-Other Momentum Indicator:
+Other Momentum Indicators:
 \code{\link[=absolute_price_oscillator]{absolute_price_oscillator()}},
 \code{\link[=aroon]{aroon()}},
 \code{\link[=aroon_oscillator]{aroon_oscillator()}},
@@ -130,19 +147,19 @@ Other Momentum Indicator:
 \code{\link[=percentage_price_oscillator]{percentage_price_oscillator()}},
 \code{\link[=plus_directional_indicator]{plus_directional_indicator()}},
 \code{\link[=plus_directional_movement]{plus_directional_movement()}},
-\code{\link[=rate_of_change]{rate_of_change()}},
 \code{\link[=ratio_of_change]{ratio_of_change()}},
 \code{\link[=relative_strength_index]{relative_strength_index()}},
 \code{\link[=stochastic]{stochastic()}},
 \code{\link[=stochastic_relative_strength_index]{stochastic_relative_strength_index()}},
 \code{\link[=triple_exponential_average]{triple_exponential_average()}},
 \code{\link[=ultimate_oscillator]{ultimate_oscillator()}},
+\code{\link[=unsmoothed_chande_momentum_oscillator]{unsmoothed_chande_momentum_oscillator()}},
 \code{\link[=williams_oscillator]{williams_oscillator()}}
 }
 \author{
 Serkan Korkmaz
 }
-\concept{Momentum Indicator}
+\concept{Momentum Indicators}
 \concept{algorithmic trading}
 \concept{finance}
 \concept{technical analysis}

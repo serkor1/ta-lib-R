@@ -3,7 +3,8 @@
 \name{break_away}
 \alias{break_away}
 \alias{CDLBREAKAWAY}
-\title{Break Away}
+\alias{breakAway}
+\title{Breakaway}
 \usage{
 break_away(x, cols, na.bridge = FALSE, ...)
 }
@@ -11,6 +12,10 @@ break_away(x, cols, na.bridge = FALSE, ...)
 \item{x}{An OHLC-V series coercible to \link{data.frame}.}
 
 \item{cols}{(\link{formula}). An optional \code{4}-variable \link{formula} selecting columns from \code{x} via \link{model.frame}.
+For \code{xts} input each formula variable is matched against the column
+names directly - exact matches first, then quantmod-style suffix
+matches (\code{close} matches \code{TICKER.Close}), case-insensitively - and
+columns are consumed in formula order.
 Defaults to \code{~open + high + low + close}.}
 
 \item{na.bridge}{(\link{logical}). A \link{logical} of \link{length} 1. \link{FALSE} by
@@ -22,7 +27,8 @@ output, causing the indicator to treat non-consecutive non-\code{NA}
 observations as if they were adjacent — see the \strong{Handling of
 \code{NA} values} section above for the consequences.}
 
-\item{...}{Additional parameters passed into \link{model.frame}.}
+\item{...}{Additional parameters passed into \link{model.frame}. Unused
+for \code{xts} input (a warning is emitted when supplied).}
 }
 \value{
 An object of same \link{class} and \link{length} of \code{x}:
@@ -41,7 +47,8 @@ Pattern codes depend on \code{options(talib.normalize)}:
 \description{
 \code{break_away()} is a generic S3 function that preserves
 the input \link{class}: \link{data.frame} in, \link{data.frame} out; \link{matrix} in,
-\link{matrix} out.
+\link{matrix} out; \code{xts} in, \code{xts} out. Other inputs coercible to
+\link{data.frame} (e.g. \code{zoo}) are computed on the coerced \link{data.frame}.
 \subsection{Handling of \code{NA} values}{
 
 Every indicator always emits \strong{leading \code{NA}s} for the initial

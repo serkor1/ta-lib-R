@@ -3,17 +3,22 @@
 \name{normalized_average_true_range}
 \alias{normalized_average_true_range}
 \alias{NATR}
+\alias{normalizedAverageTrueRange}
 \title{Normalized Average True Range}
 \usage{
-normalized_average_true_range(x, cols, n = 14, na.bridge = FALSE, ...)
+normalized_average_true_range(x, cols, timePeriod = 14, na.bridge = FALSE, ...)
 }
 \arguments{
 \item{x}{An OHLC-V series coercible to \link{data.frame}.}
 
 \item{cols}{(\link{formula}). An optional \code{3}-variable \link{formula} selecting columns from \code{x} via \link{model.frame}.
+For \code{xts} input each formula variable is matched against the column
+names directly - exact matches first, then quantmod-style suffix
+matches (\code{close} matches \code{TICKER.Close}), case-insensitively - and
+columns are consumed in formula order.
 Defaults to \code{~high + low + close}.}
 
-\item{n}{(\link{integer}). Lookback period (window size). A positive \link{integer}
+\item{timePeriod}{(\link{integer}). Lookback period (window size). A positive \link{integer}
 of \link{length} 1.}
 
 \item{na.bridge}{(\link{logical}). A \link{logical} of \link{length} 1. \link{FALSE} by
@@ -25,7 +30,8 @@ output, causing the indicator to treat non-consecutive non-\code{NA}
 observations as if they were adjacent — see the \strong{Handling of
 \code{NA} values} section above for the consequences.}
 
-\item{...}{Additional parameters passed into \link{model.frame}.}
+\item{...}{Additional parameters passed into \link{model.frame}. Unused
+for \code{xts} input (a warning is emitted when supplied).}
 }
 \value{
 An object of same \link{class} and \link{length} of \code{x}:
@@ -37,7 +43,8 @@ An object of same \link{class} and \link{length} of \code{x}:
 \description{
 \code{normalized_average_true_range()} is a generic S3 function that preserves
 the input \link{class}: \link{data.frame} in, \link{data.frame} out; \link{matrix} in,
-\link{matrix} out.
+\link{matrix} out; \code{xts} in, \code{xts} out. Other inputs coercible to
+\link{data.frame} (e.g. \code{zoo}) are computed on the coerced \link{data.frame}.
 \subsection{Handling of \code{NA} values}{
 
 Every indicator always emits \strong{leading \code{NA}s} for the initial
@@ -107,14 +114,14 @@ utils::tail(output)
 }
 }
 \seealso{
-Other Volatility Indicator:
+Other Volatility Indicators:
 \code{\link[=average_true_range]{average_true_range()}},
 \code{\link[=true_range]{true_range()}}
 }
 \author{
 Serkan Korkmaz
 }
-\concept{Volatility Indicator}
+\concept{Volatility Indicators}
 \concept{algorithmic trading}
 \concept{finance}
 \concept{technical analysis}

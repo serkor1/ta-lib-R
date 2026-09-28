@@ -3,19 +3,20 @@
 \name{extended_parabolic_stop_and_reverse}
 \alias{extended_parabolic_stop_and_reverse}
 \alias{SAREXT}
-\title{Parabolic Stop and Reverse (SAR) - Extended}
+\alias{extendedParabolicStopAndReverse}
+\title{Parabolic SAR - Extended}
 \usage{
 extended_parabolic_stop_and_reverse(
   x,
   cols,
-  init = 0,
-  offset = 0,
-  init_long = 0.02,
-  long = 0.02,
-  max_long = 0.2,
-  init_short = 0.02,
-  short = 0.02,
-  max_short = 0.2,
+  startValue = 0,
+  offsetOnReverse = 0,
+  afInitLong = 0.02,
+  afLong = 0.02,
+  afMaxLong = 0.2,
+  afInitShort = 0.02,
+  afShort = 0.02,
+  afMaxShort = 0.2,
   na.bridge = FALSE,
   ...
 )
@@ -24,23 +25,27 @@ extended_parabolic_stop_and_reverse(
 \item{x}{An OHLC-V series coercible to \link{data.frame}.}
 
 \item{cols}{(\link{formula}). An optional \code{2}-variable \link{formula} selecting columns from \code{x} via \link{model.frame}.
+For \code{xts} input each formula variable is matched against the column
+names directly - exact matches first, then quantmod-style suffix
+matches (\code{close} matches \code{TICKER.Close}), case-insensitively - and
+columns are consumed in formula order.
 Defaults to \code{~high + low}.}
 
-\item{init}{(\link{double}). Start value and direction. 0 for Auto, >0 for Long, <0 for Short.}
+\item{startValue}{(\link{double}). Start value and direction. 0 for Auto, >0 for Long, <0 for Short. Defaults to \code{0}.}
 
-\item{offset}{(\link{double}). Offset added/removed to initial stop on short/long reversal.}
+\item{offsetOnReverse}{(\link{double}). Percent offset added/removed to initial stop on short/long reversal. Defaults to \code{0}.}
 
-\item{init_long}{(\link{double}). Acceleration factor initial value for the Long direction.}
+\item{afInitLong}{(\link{double}). Acceleration Factor initial value for the Long direction. Defaults to \code{0.02}.}
 
-\item{long}{(\link{double}). Acceleration factor for the Long direction.}
+\item{afLong}{(\link{double}). Acceleration Factor for the Long direction. Defaults to \code{0.02}.}
 
-\item{max_long}{(\link{double}). Acceleration factor maximum value for the Long direction.}
+\item{afMaxLong}{(\link{double}). Acceleration Factor maximum value for the Long direction. Defaults to \code{0.2}.}
 
-\item{init_short}{(\link{double}). Acceleration factor initial value for the Short direction.}
+\item{afInitShort}{(\link{double}). Acceleration Factor initial value for the Short direction. Defaults to \code{0.02}.}
 
-\item{short}{(\link{double}). Acceleration factor for the Short direction.}
+\item{afShort}{(\link{double}). Acceleration Factor for the Short direction. Defaults to \code{0.02}.}
 
-\item{max_short}{(\link{double}). Acceleration factor maximum value for the Short direction.}
+\item{afMaxShort}{(\link{double}). Acceleration Factor maximum value for the Short direction. Defaults to \code{0.2}.}
 
 \item{na.bridge}{(\link{logical}). A \link{logical} of \link{length} 1. \link{FALSE} by
 default. When \link{FALSE}, input \code{NA}s propagate through the TA-Lib C
@@ -51,7 +56,8 @@ output, causing the indicator to treat non-consecutive non-\code{NA}
 observations as if they were adjacent — see the \strong{Handling of
 \code{NA} values} section above for the consequences.}
 
-\item{...}{Additional parameters passed into \link{model.frame}.}
+\item{...}{Additional parameters passed into \link{model.frame}. Unused
+for \code{xts} input (a warning is emitted when supplied).}
 }
 \value{
 An object of same \link{class} and \link{length} of \code{x}:
@@ -63,7 +69,8 @@ An object of same \link{class} and \link{length} of \code{x}:
 \description{
 \code{extended_parabolic_stop_and_reverse()} is a generic S3 function that preserves
 the input \link{class}: \link{data.frame} in, \link{data.frame} out; \link{matrix} in,
-\link{matrix} out.
+\link{matrix} out; \code{xts} in, \code{xts} out. Other inputs coercible to
+\link{data.frame} (e.g. \code{zoo}) are computed on the coerced \link{data.frame}.
 \subsection{Handling of \code{NA} values}{
 
 Every indicator always emits \strong{leading \code{NA}s} for the initial
@@ -133,25 +140,30 @@ utils::tail(output)
 }
 }
 \seealso{
-Other Overlap Study:
+Other Overlap Studies:
 \code{\link[=acceleration_bands]{acceleration_bands()}},
 \code{\link[=bollinger_bands]{bollinger_bands()}},
 \code{\link[=double_exponential_moving_average]{double_exponential_moving_average()}},
 \code{\link[=exponential_moving_average]{exponential_moving_average()}},
+\code{\link[=hull_moving_average]{hull_moving_average()}},
 \code{\link[=kaufman_adaptive_moving_average]{kaufman_adaptive_moving_average()}},
 \code{\link[=mesa_adaptive_moving_average]{mesa_adaptive_moving_average()}},
+\code{\link[=midpoint_period]{midpoint_period()}},
+\code{\link[=midpoint_price]{midpoint_price()}},
 \code{\link[=parabolic_stop_and_reverse]{parabolic_stop_and_reverse()}},
 \code{\link[=simple_moving_average]{simple_moving_average()}},
 \code{\link[=t3_exponential_moving_average]{t3_exponential_moving_average()}},
 \code{\link[=trendline]{trendline()}},
 \code{\link[=triangular_moving_average]{triangular_moving_average()}},
 \code{\link[=triple_exponential_moving_average]{triple_exponential_moving_average()}},
+\code{\link[=variable_moving_average_period]{variable_moving_average_period()}},
+\code{\link[=volume_weighted_moving_average]{volume_weighted_moving_average()}},
 \code{\link[=weighted_moving_average]{weighted_moving_average()}}
 }
 \author{
 Serkan Korkmaz
 }
-\concept{Overlap Study}
+\concept{Overlap Studies}
 \concept{algorithmic trading}
 \concept{finance}
 \concept{technical analysis}

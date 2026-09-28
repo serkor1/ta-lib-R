@@ -3,14 +3,18 @@
 \name{extended_moving_average_convergence_divergence}
 \alias{extended_moving_average_convergence_divergence}
 \alias{MACDEXT}
-\title{Moving Average Convergence Divergence (Extended)}
+\alias{extendedMovingAverageConvergenceDivergence}
+\title{MACD with controllable MA type}
 \usage{
 extended_moving_average_convergence_divergence(
   x,
   cols,
-  fast = SMA(n = 12),
-  slow = SMA(n = 26),
-  signal = SMA(n = 9),
+  fastPeriod = 12,
+  fastMa = 0,
+  slowPeriod = 26,
+  slowMa = 0,
+  signalPeriod = 9,
+  signalMa = 0,
   na.bridge = FALSE,
   ...
 )
@@ -20,13 +24,23 @@ extended_moving_average_convergence_divergence(
 Alternatively, \code{x} may also be supplied as a \link{double} vector.}
 
 \item{cols}{(\link{formula}). An optional \code{1}-variable \link{formula} selecting columns from \code{x} via \link{model.frame}.
+For \code{xts} input each formula variable is matched against the column
+names directly - exact matches first, then quantmod-style suffix
+matches (\code{close} matches \code{TICKER.Close}), case-insensitively - and
+columns are consumed in formula order.
 Defaults to \code{~close}.}
 
-\item{fast}{(\link{list}). Period and Moving Average (MA) type for the fast MA. \link{EMA} by default.}
+\item{fastPeriod}{(\link{integer}). Period of the fast MA. Defaults to \code{12}.}
 
-\item{slow}{(\link{list}). Period and Moving Average (MA) type for the slow MA. \link{EMA} by default.}
+\item{fastMa}{(\link{integer}). Type of Moving Average for fast MA. Defaults to \code{0} (\link{SMA}). Can also be passed as talib::SMA.}
 
-\item{signal}{(\link{list}). Period and Moving Average (MA) type for the signal MA. \link{EMA} by default.}
+\item{slowPeriod}{(\link{integer}). Period of the slow MA. Defaults to \code{26}.}
+
+\item{slowMa}{(\link{integer}). Type of Moving Average for slow MA. Defaults to \code{0} (\link{SMA}). Can also be passed as talib::SMA.}
+
+\item{signalPeriod}{(\link{integer}). Smoothing for the signal line (period length). Defaults to \code{9}.}
+
+\item{signalMa}{(\link{integer}). Type of Moving Average for signal line. Defaults to \code{0} (\link{SMA}). Can also be passed as talib::SMA.}
 
 \item{na.bridge}{(\link{logical}). A \link{logical} of \link{length} 1. \link{FALSE} by
 default. When \link{FALSE}, input \code{NA}s propagate through the TA-Lib C
@@ -37,7 +51,8 @@ output, causing the indicator to treat non-consecutive non-\code{NA}
 observations as if they were adjacent — see the \strong{Handling of
 \code{NA} values} section above for the consequences.}
 
-\item{...}{Additional parameters passed into \link{model.frame}.}
+\item{...}{Additional parameters passed into \link{model.frame}. Unused
+for \code{xts} input (a warning is emitted when supplied).}
 }
 \value{
 An object of same \link{class} and \link{length} of \code{x}:
@@ -51,7 +66,8 @@ An object of same \link{class} and \link{length} of \code{x}:
 \description{
 \code{extended_moving_average_convergence_divergence()} is a generic S3 function that preserves
 the input \link{class}: \link{data.frame} in, \link{data.frame} out; \link{matrix} in,
-\link{matrix} out.
+\link{matrix} out; \code{xts} in, \code{xts} out. Other inputs coercible to
+\link{data.frame} (e.g. \code{zoo}) are computed on the coerced \link{data.frame}.
 
 \code{extended_moving_average_convergence_divergence()} also accepts a \link{double} vector, in which case the indicator is calculated directly without column selection. When the result has a single column it is simplified to a \link{double} vector; otherwise the full \code{n} by \code{k} \link{matrix} is returned.
 \subsection{Handling of \code{NA} values}{
@@ -123,7 +139,7 @@ utils::tail(output)
 }
 }
 \seealso{
-Other Momentum Indicator:
+Other Momentum Indicators:
 \code{\link[=absolute_price_oscillator]{absolute_price_oscillator()}},
 \code{\link[=aroon]{aroon()}},
 \code{\link[=aroon_oscillator]{aroon_oscillator()}},
@@ -144,19 +160,19 @@ Other Momentum Indicator:
 \code{\link[=percentage_price_oscillator]{percentage_price_oscillator()}},
 \code{\link[=plus_directional_indicator]{plus_directional_indicator()}},
 \code{\link[=plus_directional_movement]{plus_directional_movement()}},
-\code{\link[=rate_of_change]{rate_of_change()}},
 \code{\link[=ratio_of_change]{ratio_of_change()}},
 \code{\link[=relative_strength_index]{relative_strength_index()}},
 \code{\link[=stochastic]{stochastic()}},
 \code{\link[=stochastic_relative_strength_index]{stochastic_relative_strength_index()}},
 \code{\link[=triple_exponential_average]{triple_exponential_average()}},
 \code{\link[=ultimate_oscillator]{ultimate_oscillator()}},
+\code{\link[=unsmoothed_chande_momentum_oscillator]{unsmoothed_chande_momentum_oscillator()}},
 \code{\link[=williams_oscillator]{williams_oscillator()}}
 }
 \author{
 Serkan Korkmaz
 }
-\concept{Momentum Indicator}
+\concept{Momentum Indicators}
 \concept{algorithmic trading}
 \concept{finance}
 \concept{technical analysis}

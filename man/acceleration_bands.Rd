@@ -3,17 +3,22 @@
 \name{acceleration_bands}
 \alias{acceleration_bands}
 \alias{ACCBANDS}
+\alias{accelerationBands}
 \title{Acceleration Bands}
 \usage{
-acceleration_bands(x, cols, n = 20, na.bridge = FALSE, ...)
+acceleration_bands(x, cols, timePeriod = 20, na.bridge = FALSE, ...)
 }
 \arguments{
 \item{x}{An OHLC-V series coercible to \link{data.frame}.}
 
 \item{cols}{(\link{formula}). An optional \code{3}-variable \link{formula} selecting columns from \code{x} via \link{model.frame}.
+For \code{xts} input each formula variable is matched against the column
+names directly - exact matches first, then quantmod-style suffix
+matches (\code{close} matches \code{TICKER.Close}), case-insensitively - and
+columns are consumed in formula order.
 Defaults to \code{~high + low + close}.}
 
-\item{n}{(\link{integer}). Lookback period (window size). A positive \link{integer}
+\item{timePeriod}{(\link{integer}). Lookback period (window size). A positive \link{integer}
 of \link{length} 1.}
 
 \item{na.bridge}{(\link{logical}). A \link{logical} of \link{length} 1. \link{FALSE} by
@@ -25,7 +30,8 @@ output, causing the indicator to treat non-consecutive non-\code{NA}
 observations as if they were adjacent — see the \strong{Handling of
 \code{NA} values} section above for the consequences.}
 
-\item{...}{Additional parameters passed into \link{model.frame}.}
+\item{...}{Additional parameters passed into \link{model.frame}. Unused
+for \code{xts} input (a warning is emitted when supplied).}
 }
 \value{
 An object of same \link{class} and \link{length} of \code{x}:
@@ -39,7 +45,8 @@ An object of same \link{class} and \link{length} of \code{x}:
 \description{
 \code{acceleration_bands()} is a generic S3 function that preserves
 the input \link{class}: \link{data.frame} in, \link{data.frame} out; \link{matrix} in,
-\link{matrix} out.
+\link{matrix} out; \code{xts} in, \code{xts} out. Other inputs coercible to
+\link{data.frame} (e.g. \code{zoo}) are computed on the coerced \link{data.frame}.
 \subsection{Handling of \code{NA} values}{
 
 Every indicator always emits \strong{leading \code{NA}s} for the initial
@@ -109,25 +116,30 @@ utils::tail(output)
 }
 }
 \seealso{
-Other Overlap Study:
+Other Overlap Studies:
 \code{\link[=bollinger_bands]{bollinger_bands()}},
 \code{\link[=double_exponential_moving_average]{double_exponential_moving_average()}},
 \code{\link[=exponential_moving_average]{exponential_moving_average()}},
 \code{\link[=extended_parabolic_stop_and_reverse]{extended_parabolic_stop_and_reverse()}},
+\code{\link[=hull_moving_average]{hull_moving_average()}},
 \code{\link[=kaufman_adaptive_moving_average]{kaufman_adaptive_moving_average()}},
 \code{\link[=mesa_adaptive_moving_average]{mesa_adaptive_moving_average()}},
+\code{\link[=midpoint_period]{midpoint_period()}},
+\code{\link[=midpoint_price]{midpoint_price()}},
 \code{\link[=parabolic_stop_and_reverse]{parabolic_stop_and_reverse()}},
 \code{\link[=simple_moving_average]{simple_moving_average()}},
 \code{\link[=t3_exponential_moving_average]{t3_exponential_moving_average()}},
 \code{\link[=trendline]{trendline()}},
 \code{\link[=triangular_moving_average]{triangular_moving_average()}},
 \code{\link[=triple_exponential_moving_average]{triple_exponential_moving_average()}},
+\code{\link[=variable_moving_average_period]{variable_moving_average_period()}},
+\code{\link[=volume_weighted_moving_average]{volume_weighted_moving_average()}},
 \code{\link[=weighted_moving_average]{weighted_moving_average()}}
 }
 \author{
 Serkan Korkmaz
 }
-\concept{Overlap Study}
+\concept{Overlap Studies}
 \concept{algorithmic trading}
 \concept{finance}
 \concept{technical analysis}

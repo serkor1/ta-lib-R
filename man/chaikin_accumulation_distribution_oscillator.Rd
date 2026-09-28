@@ -3,13 +3,14 @@
 \name{chaikin_accumulation_distribution_oscillator}
 \alias{chaikin_accumulation_distribution_oscillator}
 \alias{ADOSC}
+\alias{chaikinAccumulationDistributionOscillator}
 \title{Chaikin A/D Oscillator}
 \usage{
 chaikin_accumulation_distribution_oscillator(
   x,
   cols,
-  fast = 3,
-  slow = 10,
+  fastPeriod = 3,
+  slowPeriod = 10,
   na.bridge = FALSE,
   ...
 )
@@ -18,11 +19,15 @@ chaikin_accumulation_distribution_oscillator(
 \item{x}{An OHLC-V series coercible to \link{data.frame}.}
 
 \item{cols}{(\link{formula}). An optional \code{4}-variable \link{formula} selecting columns from \code{x} via \link{model.frame}.
+For \code{xts} input each formula variable is matched against the column
+names directly - exact matches first, then quantmod-style suffix
+matches (\code{close} matches \code{TICKER.Close}), case-insensitively - and
+columns are consumed in formula order.
 Defaults to \code{~high + low + close + volume}.}
 
-\item{fast}{(\link{integer}). Period for the fast Moving Average (MA).}
+\item{fastPeriod}{(\link{integer}). Period of the fast MA. Defaults to \code{3}.}
 
-\item{slow}{(\link{integer}). Period for the slow Moving Average (MA).}
+\item{slowPeriod}{(\link{integer}). Period of the slow MA. Defaults to \code{10}.}
 
 \item{na.bridge}{(\link{logical}). A \link{logical} of \link{length} 1. \link{FALSE} by
 default. When \link{FALSE}, input \code{NA}s propagate through the TA-Lib C
@@ -33,7 +38,8 @@ output, causing the indicator to treat non-consecutive non-\code{NA}
 observations as if they were adjacent — see the \strong{Handling of
 \code{NA} values} section above for the consequences.}
 
-\item{...}{Additional parameters passed into \link{model.frame}.}
+\item{...}{Additional parameters passed into \link{model.frame}. Unused
+for \code{xts} input (a warning is emitted when supplied).}
 }
 \value{
 An object of same \link{class} and \link{length} of \code{x}:
@@ -45,7 +51,8 @@ An object of same \link{class} and \link{length} of \code{x}:
 \description{
 \code{chaikin_accumulation_distribution_oscillator()} is a generic S3 function that preserves
 the input \link{class}: \link{data.frame} in, \link{data.frame} out; \link{matrix} in,
-\link{matrix} out.
+\link{matrix} out; \code{xts} in, \code{xts} out. Other inputs coercible to
+\link{data.frame} (e.g. \code{zoo}) are computed on the coerced \link{data.frame}.
 \subsection{Handling of \code{NA} values}{
 
 Every indicator always emits \strong{leading \code{NA}s} for the initial
@@ -115,15 +122,19 @@ utils::tail(output)
 }
 }
 \seealso{
-Other Volume Indicator:
+Other Volume Indicators:
 \code{\link[=chaikin_accumulation_distribution_line]{chaikin_accumulation_distribution_line()}},
+\code{\link[=chaikin_money_flow]{chaikin_money_flow()}},
+\code{\link[=negative_volume_index]{negative_volume_index()}},
 \code{\link[=on_balance_volume]{on_balance_volume()}},
+\code{\link[=percentage_volume_oscillator]{percentage_volume_oscillator()}},
+\code{\link[=positive_volume_index]{positive_volume_index()}},
 \code{\link[=trading_volume]{trading_volume()}}
 }
 \author{
 Serkan Korkmaz
 }
-\concept{Volume Indicator}
+\concept{Volume Indicators}
 \concept{algorithmic trading}
 \concept{finance}
 \concept{technical analysis}

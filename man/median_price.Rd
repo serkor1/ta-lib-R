@@ -3,6 +3,7 @@
 \name{median_price}
 \alias{median_price}
 \alias{MEDPRICE}
+\alias{medianPrice}
 \title{Median Price}
 \usage{
 median_price(x, cols, na.bridge = FALSE, ...)
@@ -11,6 +12,10 @@ median_price(x, cols, na.bridge = FALSE, ...)
 \item{x}{An OHLC-V series coercible to \link{data.frame}.}
 
 \item{cols}{(\link{formula}). An optional \code{2}-variable \link{formula} selecting columns from \code{x} via \link{model.frame}.
+For \code{xts} input each formula variable is matched against the column
+names directly - exact matches first, then quantmod-style suffix
+matches (\code{close} matches \code{TICKER.Close}), case-insensitively - and
+columns are consumed in formula order.
 Defaults to \code{~high + low}.}
 
 \item{na.bridge}{(\link{logical}). A \link{logical} of \link{length} 1. \link{FALSE} by
@@ -22,7 +27,8 @@ output, causing the indicator to treat non-consecutive non-\code{NA}
 observations as if they were adjacent — see the \strong{Handling of
 \code{NA} values} section above for the consequences.}
 
-\item{...}{Additional parameters passed into \link{model.frame}.}
+\item{...}{Additional parameters passed into \link{model.frame}. Unused
+for \code{xts} input (a warning is emitted when supplied).}
 }
 \value{
 An object of same \link{class} and \link{length} of \code{x}:
@@ -34,7 +40,8 @@ An object of same \link{class} and \link{length} of \code{x}:
 \description{
 \code{median_price()} is a generic S3 function that preserves
 the input \link{class}: \link{data.frame} in, \link{data.frame} out; \link{matrix} in,
-\link{matrix} out.
+\link{matrix} out; \code{xts} in, \code{xts} out. Other inputs coercible to
+\link{data.frame} (e.g. \code{zoo}) are computed on the coerced \link{data.frame}.
 \subsection{Handling of \code{NA} values}{
 
 Every indicator always emits \strong{leading \code{NA}s} for the initial
@@ -88,8 +95,8 @@ utils::tail(output)
 }
 \seealso{
 Other Price Transform:
+\code{\link[=average_deviation]{average_deviation()}},
 \code{\link[=average_price]{average_price()}},
-\code{\link[=midpoint_price]{midpoint_price()}},
 \code{\link[=typical_price]{typical_price()}},
 \code{\link[=weighted_close_price]{weighted_close_price()}}
 }

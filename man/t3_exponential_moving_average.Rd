@@ -3,13 +3,14 @@
 \name{t3_exponential_moving_average}
 \alias{t3_exponential_moving_average}
 \alias{T3}
+\alias{t3ExponentialMovingAverage}
 \title{Triple Exponential Moving Average (T3)}
 \usage{
 t3_exponential_moving_average(
   x,
+  timePeriod = 5,
+  volumeFactor = 0.7,
   cols,
-  n = 5,
-  vfactor = 0.7,
   na.bridge = FALSE,
   ...
 )
@@ -18,13 +19,17 @@ t3_exponential_moving_average(
 \item{x}{An OHLC-V series coercible to \link{data.frame}.
 Alternatively, \code{x} may also be supplied as a \link{double} vector.}
 
-\item{cols}{(\link{formula}). An optional \code{1}-variable \link{formula} selecting columns from \code{x} via \link{model.frame}.
-Defaults to \code{~close}.}
-
-\item{n}{(\link{integer}). Lookback period (window size). A positive \link{integer}
+\item{timePeriod}{(\link{integer}). Lookback period (window size). A positive \link{integer}
 of \link{length} 1.}
 
-\item{vfactor}{(\link{double}). Volume Factor controlling the smoothing weight of the T3 curve. A \link{double} in \verb{[0, 1]}: \code{0} collapses T3 to a standard triple EMA, larger values shift the curve closer to a DEMA. \code{0.7} by default, following Tillson (1998).}
+\item{volumeFactor}{(\link{double}). Volume Factor. Defaults to \code{0.7}.}
+
+\item{cols}{(\link{formula}). An optional \code{1}-variable \link{formula} selecting columns from \code{x} via \link{model.frame}.
+For \code{xts} input each formula variable is matched against the column
+names directly - exact matches first, then quantmod-style suffix
+matches (\code{close} matches \code{TICKER.Close}), case-insensitively - and
+columns are consumed in formula order.
+Defaults to \code{~close}.}
 
 \item{na.bridge}{(\link{logical}). A \link{logical} of \link{length} 1. \link{FALSE} by
 default. When \link{FALSE}, input \code{NA}s propagate through the TA-Lib C
@@ -35,7 +40,8 @@ output, causing the indicator to treat non-consecutive non-\code{NA}
 observations as if they were adjacent — see the \strong{Handling of
 \code{NA} values} section above for the consequences.}
 
-\item{...}{Additional parameters passed into \link{model.frame}.}
+\item{...}{Additional parameters passed into \link{model.frame}. Unused
+for \code{xts} input (a warning is emitted when supplied).}
 }
 \value{
 An object of same \link{class} and \link{length} of \code{x}:
@@ -47,7 +53,8 @@ An object of same \link{class} and \link{length} of \code{x}:
 \description{
 \code{t3_exponential_moving_average()} is a generic S3 function that preserves
 the input \link{class}: \link{data.frame} in, \link{data.frame} out; \link{matrix} in,
-\link{matrix} out.
+\link{matrix} out; \code{xts} in, \code{xts} out. Other inputs coercible to
+\link{data.frame} (e.g. \code{zoo}) are computed on the coerced \link{data.frame}.
 
 \code{t3_exponential_moving_average()} also accepts a \link{double} vector, in which case the indicator is calculated directly without column selection. When the result has a single column it is simplified to a \link{double} vector; otherwise the full \code{n} by \code{k} \link{matrix} is returned.
 \subsection{Handling of \code{NA} values}{
@@ -125,25 +132,30 @@ utils::tail(output)
 }
 }
 \seealso{
-Other Overlap Study:
+Other Overlap Studies:
 \code{\link[=acceleration_bands]{acceleration_bands()}},
 \code{\link[=bollinger_bands]{bollinger_bands()}},
 \code{\link[=double_exponential_moving_average]{double_exponential_moving_average()}},
 \code{\link[=exponential_moving_average]{exponential_moving_average()}},
 \code{\link[=extended_parabolic_stop_and_reverse]{extended_parabolic_stop_and_reverse()}},
+\code{\link[=hull_moving_average]{hull_moving_average()}},
 \code{\link[=kaufman_adaptive_moving_average]{kaufman_adaptive_moving_average()}},
 \code{\link[=mesa_adaptive_moving_average]{mesa_adaptive_moving_average()}},
+\code{\link[=midpoint_period]{midpoint_period()}},
+\code{\link[=midpoint_price]{midpoint_price()}},
 \code{\link[=parabolic_stop_and_reverse]{parabolic_stop_and_reverse()}},
 \code{\link[=simple_moving_average]{simple_moving_average()}},
 \code{\link[=trendline]{trendline()}},
 \code{\link[=triangular_moving_average]{triangular_moving_average()}},
 \code{\link[=triple_exponential_moving_average]{triple_exponential_moving_average()}},
+\code{\link[=variable_moving_average_period]{variable_moving_average_period()}},
+\code{\link[=volume_weighted_moving_average]{volume_weighted_moving_average()}},
 \code{\link[=weighted_moving_average]{weighted_moving_average()}}
 }
 \author{
 Serkan Korkmaz
 }
-\concept{Overlap Study}
+\concept{Overlap Studies}
 \concept{algorithmic trading}
 \concept{finance}
 \concept{technical analysis}
