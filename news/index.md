@@ -2,6 +2,8 @@
 
 ## version 0.9-3
 
+CRAN release: 2026-09-27
+
 This version brings *many* changes to the R package. The entire code
 generating backend have been rewritten so it *closely* follows the
 upstream naming of parameters and it uses X-macros so it also installs
