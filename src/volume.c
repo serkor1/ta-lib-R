@@ -23,6 +23,7 @@
 #include "NA-handling.h"
 #include "attributes.h"
 #include "names.h"
+#include "routines.h"
 #include "shift.h"
 #include "utils.h"
 #include <R_ext/RS.h>
