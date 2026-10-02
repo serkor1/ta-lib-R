@@ -5,6 +5,7 @@
 //    R, and is the workhorse of the R package.
 //
 // Author: Serkan Korkmaz
+#include "routines.h"
 #include "ta_libc.h"
 #include "utils.h"
 #include "wrapper.h"
@@ -42,20 +43,6 @@
 #undef TA_INDICATOR
 #undef TA_LOOKBACK
 
-// trading-volume wrappers (volume.c)
-extern SEXP impl_ta_VOLUME(SEXP, SEXP, SEXP);
-extern SEXP impl_ta_VOLUME_lookback(SEXP, SEXP);
-
-// global-setter wrappers (TA-Lib.c)
-extern SEXP ta_set_unstable_period(SEXP, SEXP);
-extern SEXP ta_set_compatibility(SEXP);
-extern SEXP set_candle_setting(SEXP, SEXP, SEXP, SEXP);
-extern SEXP reset_candle_setting(SEXP);
-extern SEXP initialize_ta_lib(void);
-extern SEXP map_dfr_double(SEXP);
-extern SEXP map_dfr_integer(SEXP);
-extern SEXP shutdown_ta_lib(void);
-
 // TA_REG / TA_LB_REG emit the R_CallMethodDef rows. Arity is derived from the
 // same TA_COUNT_ARGUMENTS / TA_NORM_ARITY helpers the wrapper signature uses:
 //   indicator = #inputs + #opts + 2 (lead, na_bridge) + candlestick normalize
@@ -80,11 +67,11 @@ static const R_CallMethodDef CallEntries[] = {
 #undef TA_INDICATOR
 #undef TA_LOOKBACK
   {"impl_ta_VOLUME", (DL_FUNC)&impl_ta_VOLUME, 3},
-  {"impl_ta_VOLUME_lookback", (DL_FUNC)&impl_ta_VOLUME_lookback, 2},
+  {"impl_ta_VOLUME_lookback", (DL_FUNC)&impl_ta_VOLUME_lookback, 1},
   {"ta_set_unstable_period", (DL_FUNC)&ta_set_unstable_period, 2},
   {"ta_set_compatibility", (DL_FUNC)&ta_set_compatibility, 1},
   {"set_candle_setting", (DL_FUNC)&set_candle_setting, 4},
-  {"reset_candle_setting", (DL_FUNC)&reset_candle_setting, 1},
+  {"reset_candle_setting", (DL_FUNC)&reset_candle_setting, 0},
   {"index_data_frame", (DL_FUNC)&index_data_frame, 2},
   {"index_matrix", (DL_FUNC)&index_matrix, 3},
   {"index_xts", (DL_FUNC)&index_xts, 2},

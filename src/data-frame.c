@@ -27,6 +27,7 @@
 // <sup>Created on 2026-07-13 with [reprex
 // v2.1.1](https://reprex.tidyverse.org)</sup>
 #include <R.h>
+#include "routines.h"
 #include <Rinternals.h>
 #include <string.h>
 
