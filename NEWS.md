@@ -1,3 +1,10 @@
+# version 0.9-4
+
+## bug-fixes
+
+* Fixed mismatched C function signatures for the candle-setting reset and the rading-volume lookback. 
+  They were registered with the wrong number of arguments, which triggered `-Wlto-type-mismatch` warnings in CRAN's LTO check.
+
 # version 0.9-3
 
 This version brings *many* changes to the R package.

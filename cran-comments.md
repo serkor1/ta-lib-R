@@ -4,4 +4,5 @@
 
 ### Changes
 
-* This update comes with various changes to the package interface, most importantly for the buildchain is the introduction of CCACHE and minor changes to `configure.win` which all passes locally and remote.
+* This version fixes the `-Wlto-type-mismatch` warnings reported in the additional LTO check (init.c: `impl_ta_VOLUME_lookback`, `reset_candle_setting`).
+  I reproduced the warnings locally with gcc 15 and `-flto`, and they are goneafter the fix.
