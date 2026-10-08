@@ -45,6 +45,16 @@ jobs:
         run: devtools::document()
         shell: Rscript {0}
 
+      ## *.Rd-files are untracked, so the
+      ## called workflows download them from here
+      - name: Upload documentation
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation
+          path: |
+            man/
+            NAMESPACE
+
       - name: Push documentation
         id: push
         if: inputs.push && github.event_name == 'push'

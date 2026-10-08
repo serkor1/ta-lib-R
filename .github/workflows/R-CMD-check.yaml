@@ -29,32 +29,11 @@ jobs:
   ## without modifictions to the actual runs.
   ## this means that untracked .Rd files never
   ## enters the build/check - to mitigate this
-  ## we create a temporary branch where the .Rd
-  ## files are pushed, and let r-universe build
-  ## and test from there
-  git-checkout:
+  ## we create a temporary branch where the
+  ## rendered .Rd files are pushed, and let
+  ## r-universe build and test from there
+  push-documentation:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: true
-
-      - name: Checkout and push
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout -B r-universe/check-pkg
-          git push --force origin r-universe/check-pkg
-
-  ## this step builds and pushes
-  ## the documentation to the temporary branch
-  render-documentation:
-    needs: git-checkout
-    runs-on: ubuntu-latest
-
-    env:
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     outputs:
       sha: ${{ steps.push.outputs.sha }}
@@ -62,42 +41,32 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: r-universe/check-pkg
-          submodules: recursive
           persist-credentials: true
 
-      - uses: r-lib/actions/setup-r@v2
+      - uses: actions/download-artifact@v4
         with:
-          r-version: release
-          use-public-rspm: true
-
-      - uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: any::devtools any::roxygen2
-          needs: check
-
-      - run: devtools::document()
-        shell: Rscript {0}
+          name: documentation
 
       - id: push
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -B r-universe/check-pkg
           git add -f man/ NAMESPACE
           git commit --allow-empty -m "CI/CD: render documentation for r-universe build"
-          git push origin r-universe/check-pkg
+          git push --force origin r-universe/check-pkg
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
   build:
-    needs: render-documentation
+    needs: push-documentation
     uses: r-universe-org/workflows/.github/workflows/build.yml@v3
     with:
       universe: ${{ github.repository_owner }}
-      ref: ${{ needs.render-documentation.outputs.sha }}
+      ref: ${{ needs.push-documentation.outputs.sha }}
 
   cleanup:
-    needs: [render-documentation, build]
+    needs: [push-documentation, build]
     if: always()
     runs-on: ubuntu-latest
     steps:

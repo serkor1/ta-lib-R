@@ -59,7 +59,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::pak any::plotly any::devtools any::roxygen2
+          extra-packages: any::pak any::plotly
           needs: check
 
       - name: Install {talib}
@@ -132,7 +132,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::pak any::plotly any::devtools any::roxygen2
+          extra-packages: any::pak any::plotly
           needs: check
 
       - name: Configure ~/.R/Makevars to use ccache
