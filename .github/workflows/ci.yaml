@@ -1,0 +1,65 @@
+## Workflow: CI
+## objective:
+##    - Render the documentation once, and run
+##      every other workflow after it has succeeded.
+##
+name: CI
+
+on:
+  push:
+    branches: [devel]
+  pull_request:
+    branches: [devel]
+
+permissions:
+  contents: read
+
+jobs:
+  documentation:
+    uses: ./.github/workflows/render-documentation.yaml
+    permissions:
+      contents: write
+    with:
+      push: true
+
+  ## the remote install only runs
+  ## when the configure scripts change
+  changes:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      configure: ${{ steps.filter.outputs.configure }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            configure:
+              - 'configure'
+              - 'configure.win'
+
+  R-CMD-check:
+    needs: documentation
+    uses: ./.github/workflows/R-CMD-check.yaml
+    permissions:
+      contents: write
+
+  pkgdown:
+    needs: documentation
+    uses: ./.github/workflows/pkgdown.yaml
+    permissions:
+      contents: write
+
+  test-coverage:
+    needs: documentation
+    uses: ./.github/workflows/test-coverage.yaml
+    secrets: inherit
+
+  remote-install:
+    needs: [documentation, changes]
+    if: needs.changes.outputs.configure == 'true'
+    uses: ./.github/workflows/remote-install.yaml

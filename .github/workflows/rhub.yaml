@@ -29,7 +29,11 @@ on:
 
 jobs:
 
+  documentation:
+    uses: ./.github/workflows/render-documentation.yaml
+
   setup:
+    needs: documentation
     runs-on: ubuntu-latest
     outputs:
       containers: ${{ steps.rhub-setup.outputs.containers }}

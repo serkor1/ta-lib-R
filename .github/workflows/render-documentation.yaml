@@ -5,21 +5,22 @@
 ##
 name: Render Documentation
 
-## the workflow will run on
-## on all branches but for CRAN
-## branches it will also push *.Rd-files
+## the workflow is called once by ci.yaml,
+## release.yaml and rhub.yaml, and gates their
+## remaining jobs. Only a caller passing `push: true`
+## pushes the *.Rd-files, and only on push events
 on:
-  push:
-    branches: [CRAN]
-  pull_request:
-    branches: [CRAN]
+  workflow_call:
+    inputs:
+      push:
+        description: 'Push the rendered documentation to the CRAN branch'
+        type: boolean
+        default: false
   workflow_dispatch:
 
-## it needs the permission
-## to read and write
-permissions:
-  contents: write
-
+## permissions are inherited from
+## the caller; pushing requires the
+## caller to grant `contents: write`
 jobs:
   render-documentation:
     runs-on: ubuntu-latest
@@ -46,7 +47,7 @@ jobs:
 
       - name: Push documentation
         id: push
-        if: github.event_name == 'push'
+        if: inputs.push && github.event_name == 'push'
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
@@ -59,4 +60,3 @@ jobs:
             git push origin CRAN
             echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           fi
-

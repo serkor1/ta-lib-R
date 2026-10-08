@@ -3,11 +3,10 @@
 ## not for aligning against r-universe.
 name: R-CMD-check
 
+## called by ci.yaml after the
+## documentation has been rendered
 on:
-  push:
-    branches: [devel]
-  pull_request:
-    branches: [devel]
+  workflow_call:
 
 ## the permission has to be 
 ## set to write so we are allowed

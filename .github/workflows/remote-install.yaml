@@ -2,24 +2,18 @@
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 name: Remote Install
 
+## called by ci.yaml when the
+## configure scripts change
 on:
-  push:
-    branches: [devel]
-    paths:
-      - 'configure'
-      - 'configure.win'
-  pull_request:
-    branches: [devel]
-    paths:
-      - 'configure'
-      - 'configure.win'
+  workflow_call:
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: remote-install-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
-permissions: read-all
+permissions:
+  contents: read
 
 jobs:
   ## Vanilla remote install - verifies pak::pak("serkor1/ta-lib-R")

@@ -8,7 +8,11 @@ permissions:
   contents: write
 
 jobs:
+  documentation:
+    uses: ./.github/workflows/render-documentation.yaml
+
   release:
+    needs: documentation
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
