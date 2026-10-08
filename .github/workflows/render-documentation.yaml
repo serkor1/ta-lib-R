@@ -1,6 +1,6 @@
 ## Workflow: Render Documentation
 ## objective:
-##    - Render *.Rd-files on CRAN-branch which has the CRAN version
+##    - Render *.Rd-files on devel-branch which has the devel version
 ##      of the package *and* the R-universe version.
 ##
 name: Render Documentation
@@ -13,7 +13,7 @@ on:
   workflow_call:
     inputs:
       push:
-        description: 'Push the rendered documentation to the CRAN branch'
+        description: 'Push the rendered documentation to the devel branch'
         type: boolean
         default: false
   workflow_dispatch:
@@ -67,6 +67,6 @@ jobs:
             echo "No documentation changes - nothing to commit."
           else
             git commit -m ":books: Rendered documentation"
-            git push origin CRAN
+            git push origin devel
             echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           fi

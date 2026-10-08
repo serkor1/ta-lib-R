@@ -23,26 +23,6 @@ jobs:
     with:
       push: true
 
-  ## the remote install only runs
-  ## when the configure scripts change
-  changes:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: read
-    outputs:
-      configure: ${{ steps.filter.outputs.configure }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          filters: |
-            configure:
-              - 'configure'
-              - 'configure.win'
-
   R-CMD-check:
     needs: documentation
     uses: ./.github/workflows/R-CMD-check.yaml
@@ -59,8 +39,3 @@ jobs:
     needs: documentation
     uses: ./.github/workflows/test-coverage.yaml
     secrets: inherit
-
-  remote-install:
-    needs: [documentation, changes]
-    if: needs.changes.outputs.configure == 'true'
-    uses: ./.github/workflows/remote-install.yaml
