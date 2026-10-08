@@ -8,7 +8,7 @@ The charting system ships with a set of built-in color themes. Each
 theme controls candle colors, background, text, grid lines, and a
 10-color palette (colorway) used to distinguish indicator lines.
 
-Use \code{\link[ggplot2:set_theme]{set_theme()}} to apply or list themes.
+Use \code{\link[=set_theme]{set_theme()}} to apply or list themes.
 }
 \details{
 \subsection{Available Themes}{
@@ -90,7 +90,7 @@ lines and legends}
 }
 
 Any of these properties can be individually overridden via the \code{...}
-argument to \code{\link[ggplot2:set_theme]{set_theme()}}.
+argument to \code{\link[=set_theme]{set_theme()}}.
 }
 }
 \examples{
