@@ -28,6 +28,13 @@ jobs:
     uses: ./.github/workflows/R-CMD-check.yaml
     with:
       ref: ${{ needs.documentation.outputs.sha || github.event.pull_request.head.sha || github.sha }}
+  
+  rhub:
+    needs: documentation
+    uses: ./.github/workflows/rhub.yaml
+    secrets: inherit
+    with:
+      ref: ${{ needs.documentation.outputs.sha || github.event.pull_request.head.sha || github.sha }}
 
   pkgdown:
     needs: documentation

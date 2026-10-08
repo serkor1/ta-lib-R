@@ -5,8 +5,8 @@
 ##
 name: Render Documentation
 
-## the workflow is called once by ci.yaml,
-## release.yaml and rhub.yaml, and gates their
+## the workflow is called once by ci.yaml
+## and release.yaml, and gates their
 ## remaining jobs. Only a caller passing `push: true`
 ## pushes the *.Rd-files, and only on push events
 on:
