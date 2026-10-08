@@ -5,7 +5,7 @@ theme controls candle colors, background, text, grid lines, and a
 10-color palette (colorway) used to distinguish indicator lines.
 
 Use
-[`set_theme()`](https://ggplot2.tidyverse.org/reference/get_theme.html)
+[`set_theme()`](https://serkor1.github.io/ta-lib-R/reference/set_theme.md)
 to apply or list themes.
 
 ## Details
@@ -121,7 +121,7 @@ Each theme sets the following color properties:
 
 Any of these properties can be individually overridden via the `...`
 argument to
-[`set_theme()`](https://ggplot2.tidyverse.org/reference/get_theme.html).
+[`set_theme()`](https://serkor1.github.io/ta-lib-R/reference/set_theme.md).
 
 ## References
 
