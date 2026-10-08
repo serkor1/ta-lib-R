@@ -26,8 +26,8 @@ jobs:
   R-CMD-check:
     needs: documentation
     uses: ./.github/workflows/R-CMD-check.yaml
-    permissions:
-      contents: write
+    with:
+      ref: ${{ needs.documentation.outputs.sha || github.event.pull_request.head.sha || github.sha }}
 
   pkgdown:
     needs: documentation

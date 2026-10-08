@@ -16,6 +16,10 @@ on:
         description: 'Push the rendered documentation to the devel branch'
         type: boolean
         default: false
+    outputs:
+      sha:
+        description: 'The commit with the rendered documentation, if pushed'
+        value: ${{ jobs.render-documentation.outputs.sha }}
   workflow_dispatch:
 
 ## permissions are inherited from
@@ -26,6 +30,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    outputs:
+      sha: ${{ steps.push.outputs.sha }}
     steps:
       - uses: actions/checkout@v4
         with:
