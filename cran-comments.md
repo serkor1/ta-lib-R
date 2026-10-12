@@ -4,5 +4,6 @@
 
 ### Changes
 
-* This version fixes the `-Wlto-type-mismatch` warnings reported in the additional LTO check (init.c: `impl_ta_VOLUME_lookback`, `reset_candle_setting`).
-  I reproduced the warnings locally with gcc 15 and `-flto`, and they are goneafter the fix.
+* This version fixes the pointer misalignment error given in M1-SAN. 
+  If I have understood the error correctly the unit-tests for the edge cases passes a zero-length
+  pointer to the underlying C-code which is considered undefined behaviour.

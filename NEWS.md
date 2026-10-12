@@ -1,3 +1,7 @@
+# version 0.9-5
+
+* Fixed undefined behaviour when passing zero-length arrays to the underlying C routines.
+
 # version 0.9-4
 
 ## bug-fixes
