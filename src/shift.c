@@ -51,13 +51,16 @@ void shift_double_array(
   );
   // clang-format on
 
-  // clang-format off
-  memmove(
-    col + begIdx, 
-    col, 
-    (size_t)nbElement * sizeof(double)
-  );
-  // clang-format on
+  // zero-length vectors carry a dummy, misaligned data pointer
+  if (nbElement > 0 && begIdx > 0) {
+    // clang-format off
+    memmove(
+      col + begIdx,
+      col,
+      (size_t)nbElement * sizeof(double)
+    );
+    // clang-format on
+  }
 
   // <NA> padding
   for (R_xlen_t i = 0; i < begIdx; i++) {
@@ -91,13 +94,16 @@ void shift_integer_array(
   );
   // clang-format on
 
-  // clang-format off
-  memmove(
-    col + begIdx, 
-    col, 
-    (size_t)nbElement * sizeof(int)
-  );
-  // clang-format on
+  // zero-length vectors carry a dummy, misaligned data pointer
+  if (nbElement > 0 && begIdx > 0) {
+    // clang-format off
+    memmove(
+      col + begIdx,
+      col,
+      (size_t)nbElement * sizeof(int)
+    );
+    // clang-format on
+  }
 
   // <NA> padding
   for (R_xlen_t i = 0; i < begIdx; i++) {
