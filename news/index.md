@@ -1,5 +1,16 @@
 # Changelog
 
+## version 0.9-4
+
+CRAN release: 2026-10-05
+
+### bug-fixes
+
+- Fixed mismatched C function signatures for the candle-setting reset
+  and the rading-volume lookback. They were registered with the wrong
+  number of arguments, which triggered `-Wlto-type-mismatch` warnings in
+  CRAN’s LTO check.
+
 ## version 0.9-3
 
 CRAN release: 2026-09-27
