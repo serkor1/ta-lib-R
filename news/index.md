@@ -1,5 +1,12 @@
 # Changelog
 
+## version 0.9-5
+
+CRAN release: 2026-10-12
+
+- Fixed undefined behaviour when passing zero-length arrays to the
+  underlying C routines.
+
 ## version 0.9-4
 
 CRAN release: 2026-10-05
