@@ -1,16 +1,14 @@
 # Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+## called by ci.yaml after the
+## documentation has been rendered
 on:
-  push:
-    branches: [devel]
-  pull_request:
-  release:
-    types: [published]
-  workflow_dispatch:
+  workflow_call:
 
 name: pkgdown
 
-permissions: read-all
+permissions:
+  contents: read
 
 jobs:
   pkgdown:
@@ -35,12 +33,12 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::pkgdown any::devtools any::roxygen2 any::rsvg any::magick
+          extra-packages: any::pkgdown any::rsvg any::magick
           needs: website
 
-      - name: Render documentation and NAMESPACE
-        run: devtools::document()
-        shell: Rscript {0}
+      - uses: actions/download-artifact@v4
+        with:
+          name: documentation
 
       # realfavicongenerator.net rejects SVG logos (HTTP 500), so build
       # the favicons locally; pkgdown skips the API when they exist

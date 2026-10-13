@@ -4,4 +4,6 @@
 
 ### Changes
 
-* This update comes with various changes to the package interface, most importantly for the buildchain is the introduction of CCACHE and minor changes to `configure.win` which all passes locally and remote.
+* This version fixes the pointer misalignment error given in M1-SAN. 
+  If I have understood the error correctly the unit-tests for the edge cases passes a zero-length
+  pointer to the underlying C-code which is considered undefined behaviour.

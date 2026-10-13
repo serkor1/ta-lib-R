@@ -1,30 +1,37 @@
 ## Workflow: Render Documentation
 ## objective:
-##    - Render *.Rd-files on CRAN-branch which has the CRAN version
+##    - Render *.Rd-files on devel-branch which has the devel version
 ##      of the package *and* the R-universe version.
 ##
 name: Render Documentation
 
-## the workflow will run on
-## on all branches but for CRAN
-## branches it will also push *.Rd-files
+## the workflow is called once by ci.yaml
+## and release.yaml, and gates their
+## remaining jobs. Only a caller passing `push: true`
+## pushes the *.Rd-files, and only on push events
 on:
-  push:
-    branches: [CRAN]
-  pull_request:
-    branches: [CRAN]
+  workflow_call:
+    inputs:
+      push:
+        description: 'Push the rendered documentation to the devel branch'
+        type: boolean
+        default: false
+    outputs:
+      sha:
+        description: 'The commit with the rendered documentation, if pushed'
+        value: ${{ jobs.render-documentation.outputs.sha }}
   workflow_dispatch:
 
-## it needs the permission
-## to read and write
-permissions:
-  contents: write
-
+## permissions are inherited from
+## the caller; pushing requires the
+## caller to grant `contents: write`
 jobs:
   render-documentation:
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    outputs:
+      sha: ${{ steps.push.outputs.sha }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -44,9 +51,19 @@ jobs:
         run: devtools::document()
         shell: Rscript {0}
 
+      ## *.Rd-files are untracked, so the
+      ## called workflows download them from here
+      - name: Upload documentation
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation
+          path: |
+            man/
+            NAMESPACE
+
       - name: Push documentation
         id: push
-        if: github.event_name == 'push'
+        if: inputs.push && github.event_name == 'push'
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
@@ -56,7 +73,6 @@ jobs:
             echo "No documentation changes - nothing to commit."
           else
             git commit -m ":books: Rendered documentation"
-            git push origin CRAN
+            git push origin devel
             echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           fi
-

@@ -1,0 +1,41 @@
+## Workflow: CI
+## objective:
+##    - Render the documentation once, and run
+##      every other workflow after it has succeeded.
+##
+name: CI
+
+on:
+  push:
+    branches: [devel]
+  pull_request:
+    branches: [devel]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  documentation:
+    uses: ./.github/workflows/render-documentation.yaml
+    permissions:
+      contents: write
+    with:
+      push: true
+
+  R-CMD-check:
+    needs: documentation
+    uses: ./.github/workflows/R-CMD-check.yaml
+    with:
+      ref: ${{ needs.documentation.outputs.sha || github.event.pull_request.head.sha || github.sha }}
+
+  pkgdown:
+    needs: documentation
+    uses: ./.github/workflows/pkgdown.yaml
+    permissions:
+      contents: write
+
+  test-coverage:
+    needs: documentation
+    uses: ./.github/workflows/test-coverage.yaml
+    secrets: inherit

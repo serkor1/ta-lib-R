@@ -1,23 +1,24 @@
 ## this workflow is primarily meant
-## for testing against CRAN-systems and 
+## for testing against CRAN-systems and
 ## not for aligning against r-universe.
 name: R-CMD-check
 
+## called by ci.yaml after the
+## documentation has been rendered
 on:
-  push:
-    branches: [devel]
-  pull_request:
-    branches: [devel]
+  workflow_call:
+    inputs:
+      ref:
+        description: 'The commit to build and check'
+        type: string
+        required: true
 
-## the permission has to be 
-## set to write so we are allowed
-## to create a new branch
 permissions:
-  contents: write
+  contents: read
 
 ## this section is important
-## for this workflow - the 
-## branch it works off of is 
+## for this workflow - the
+## branch it works off of is
 ## fixed, so if there is multiple pushes
 ## it will cancel the old ones
 concurrency:
@@ -26,82 +27,10 @@ concurrency:
 
 jobs:
   ## r-universe builds directly from
-  ## the repository its being run from
-  ## without modifictions to the actual runs.
-  ## this means that untracked .Rd files never
-  ## enters the build/check - to mitigate this
-  ## we create a temporary branch where the .Rd
-  ## files are pushed, and let r-universe build
-  ## and test from there
-  git-checkout:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: true
-
-      - name: Checkout and push
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout -B r-universe/check-pkg
-          git push --force origin r-universe/check-pkg
-
-  ## this step builds and pushes
-  ## the documentation to the temporary branch
-  render-documentation:
-    needs: git-checkout
-    runs-on: ubuntu-latest
-
-    env:
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-
-    outputs:
-      sha: ${{ steps.push.outputs.sha }}
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: r-universe/check-pkg
-          submodules: recursive
-          persist-credentials: true
-
-      - uses: r-lib/actions/setup-r@v2
-        with:
-          r-version: release
-          use-public-rspm: true
-
-      - uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: any::devtools any::roxygen2
-          needs: check
-
-      - run: devtools::document()
-        shell: Rscript {0}
-
-      - id: push
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -f man/ NAMESPACE
-          git commit --allow-empty -m "CI/CD: render documentation for r-universe build"
-          git push origin r-universe/check-pkg
-          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-
+  ## the repository at the given commit,
+  ## which has the rendered .Rd files
   build:
-    needs: render-documentation
     uses: r-universe-org/workflows/.github/workflows/build.yml@v3
     with:
       universe: ${{ github.repository_owner }}
-      ref: ${{ needs.render-documentation.outputs.sha }}
-
-  cleanup:
-    needs: [render-documentation, build]
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Delete r-universe/check-pkg
-        run: git push origin --delete r-universe/check-pkg || true
+      ref: ${{ inputs.ref }}
