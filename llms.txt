@@ -612,6 +612,17 @@ Price, Typical Price, and Weighted Close Price.
 - [`weighted_close_price()`](https://serkor1.github.io/ta-lib-R/reference/weighted_close_price.md)
   : Weighted Close Price
 
+## Signal Generators
+
+Generate trading signals using high-level functions.
+
+- [`cross_over()`](https://serkor1.github.io/ta-lib-R/reference/cross_over.md)
+  : Cross Over
+- [`cross_series()`](https://serkor1.github.io/ta-lib-R/reference/cross_series.md)
+  : Cross Series
+- [`cross_under()`](https://serkor1.github.io/ta-lib-R/reference/cross_under.md)
+  : Cross Under
+
 ## Utility Functions
 
 Utility functions used for downstream packages and wrappers that
