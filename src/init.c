@@ -5,6 +5,7 @@
 //    R, and is the workhorse of the R package.
 //
 // Author: Serkan Korkmaz
+#include "crossover.h"
 #include "routines.h"
 #include "ta_libc.h"
 #include "utils.h"
@@ -79,6 +80,7 @@ static const R_CallMethodDef CallEntries[] = {
   {"map_dfr_integer", (DL_FUNC)&map_dfr_integer, 1},
   {"initialize_ta_lib", (DL_FUNC)&initialize_ta_lib, 0},
   {"shutdown_ta_lib", (DL_FUNC)&shutdown_ta_lib, 0},
+  {"impl_simple_crossing", (DL_FUNC)&impl_simple_crossing, 4},
   {NULL, NULL, 0}};
 
 // Initialize/Unload {talib}
