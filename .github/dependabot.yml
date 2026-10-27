@@ -11,5 +11,8 @@ updates:
       interval: "monthly"
     assignees:
       - "serkor1"
+    cooldown:
+      exclude:
+        - "src/ta-lib"
     commit-message:
       prefix: ":hammer: TA-Lib"
